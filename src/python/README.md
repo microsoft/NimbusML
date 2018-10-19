@@ -1,4 +1,4 @@
-ML.NET for Python
+NimbusML
 
 `nimbusml` provides battle-tested state-of-the-art ML algorithms,
 transforms and components, aiming to make them useful for all

@@ -42,7 +42,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='0.6.0',
 
-    description='ML.NET for Python',
+    description='NimbusML',
     long_description=long_description,
     long_description_content_type='text/markdown',
 
