@@ -9,8 +9,6 @@ Loading, Saving and Serving Models
 
 .. index:: load save model
 
-.. contents::
-    :local:
 
 
 Persisting Models
