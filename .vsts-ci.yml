@@ -26,10 +26,7 @@ phases:
       Py37:
         _configuration: RlsMacPy3.7
     buildQueue:
-      name: RevolutionR
-      timeoutInMinutes: 180
-      demands:
-      - ShipRTag -equals macos-vs2017
+      name: Hosted macOS
 
 # Build all configurations for Linux
   # Run tests on Ubuntu16
