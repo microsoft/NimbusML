@@ -66,5 +66,5 @@ We welcome [contributions](docs/project-docs/contributing.md)!
 
 ## License
 
-ML.NET for Python is licensed under the [MIT license](LICENSE).
+NimbusML is licensed under the [MIT license](LICENSE).
 
