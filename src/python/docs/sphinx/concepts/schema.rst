@@ -16,13 +16,13 @@ Schema
 Introduction to Schema
 ----------------------
 
-The NimbusML data framework relies on a schema to understand the column names and mix of column
+The ``nimbusml`` data framework relies on a schema to understand the column names and mix of column
 types in the dataset, which may originate from any of the supported :ref:`datasources`. It is 
 automatically inferred when a :py:class:`nimbusml.FileDataStream` or :py:class:`nimbusml.DataSchema` is created.
 
 Transforms have the ability to operate on subsets of columns in the dataset, as well as alter the
 resulting output schema, which effects other transforms downstream. For users, it would be very useful to 
-understand how NimbusML processes the data in a pipeline for debugging purposes or training the model with :py:class:`nimbusml.FileDataStream`.
+understand how ``nimbusml`` processes the data in a pipeline for debugging purposes or training the model with :py:class:`nimbusml.FileDataStream`.
 
 The schema comes with two formats for its representation, (1) object representation and (2) string format. After generating a :py:class:`nimbusml.FileDataStream`, users can view the 
 object representation of the schema by using ``repr()`` function:
@@ -168,7 +168,7 @@ all of types R8, I8 and TX, with column names *X1*, *X2* and *X3*.
 Example of Schema for a File
 """"""""""""""""""""""""""""""""""""""
 
-The transforms and trainers in NimbusML support various :ref:`datasources` as inputs.
+The transforms and trainers in ``nimbusml`` support various :ref:`datasources` as inputs.
 When the data is in a ``pandas.DataFrame``, the schema is inferred automatically from the
 ``dtype`` of the columns.
 
