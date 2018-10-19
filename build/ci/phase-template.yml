@@ -54,5 +54,5 @@ phases:
       displayName: Publish wheel file to VSTS artifacts
       inputs:
         pathToPublish: $(Build.SourcesDirectory)/target
-        artifactName: NimbusML Wheels
+        artifactName: Mlnet Wheels
         artifactType: container

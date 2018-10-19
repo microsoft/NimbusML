@@ -1,4 +1,4 @@
-Building NimbusML from source on Linux
+Building `mlnet` from source on Linux
 ==========================================
 ## Prerequisites
 1. gcc >= 5.4
@@ -17,4 +17,4 @@ This downloads dependencies (.NET SDK, specific versions of Python and Boost), b
 For additional options including running tests and building components independently, see `./build.sh -h`.
 
 ### Known Issues
-The LightGBM estimator fails on Linux when building from source. The official NimbusML Linux wheel package on Pypi.org has a working version of LightGBM.
+The LightGBM estimator fails on Linux when building from source. The official `mlnet` Linux wheel package on Pypi.org has a working version of LightGBM.

@@ -26,7 +26,7 @@ The library requires the following dependencies, which will be installed automat
 Installation 
 -------------
 
-NimbusML can be installed using ``pip``:
+``nimbusml`` can be installed using ``pip``:
 
 .. code-block:: console
 
@@ -41,10 +41,10 @@ For a quick test, please run:
 Building
 --------------------
 
-The NimbusML package can also be built from the `source repo <https://github.com/Microsoft/NimbusML>`_
-on Github. For more details about building and testing, please refer to our `GitHub repo <https://github.com/Microsoft/NimbusML>`_
+The ``nimbusml`` package can also be built from the `source repo <https://github.com/Microsoft/ML.NET-for-Python>`_
+on Github. For more details about building and testing, please refer to our `GitHub repo <https://github.com/Microsoft/ML.NET-for-Python>`_
 
 Contributing
 ------------
 
-This is an open source package and we welcome contributions. The source code for the  NimbusML package is `available in GitHub <https://github.com/Microsoft/NimbusML>`_.
+This is an open source package and we welcome contributions. The source code for the  ``nimbusml`` package is `available in GitHub <https://github.com/Microsoft/ML.NET-for-Python>`_.
