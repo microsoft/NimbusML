@@ -1,4 +1,4 @@
-Building NimbusML from source on Linux
+Building `mlnet` from source on Linux
 ==========================================
 ## Prerequisites
 1. gcc >= 5.4

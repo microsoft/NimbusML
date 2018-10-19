@@ -1,8 +1,8 @@
-from .binner import Binner
-from .globalcontrastrowscaler import GlobalContrastRowScaler
-from .logmeanvariancescaler import LogMeanVarianceScaler
-from .meanvariancescaler import MeanVarianceScaler
-from .minmaxscaler import MinMaxScaler
+from ._binner import Binner
+from ._globalcontrastrowscaler import GlobalContrastRowScaler
+from ._logmeanvariancescaler import LogMeanVarianceScaler
+from ._meanvariancescaler import MeanVarianceScaler
+from ._minmaxscaler import MinMaxScaler
 
 __all__ = [
     'Binner',

@@ -1,4 +1,4 @@
-Building NimbusML from source on Windows
+Building `mlnet` from source on Windows
 ==========================================
 ## Prerequisites
 1. Visual Studio 2015 or higher

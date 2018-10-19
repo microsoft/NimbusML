@@ -189,9 +189,9 @@ def pd_concat(els, axis=0, join='inner'):
                         "of the input columns has name 'F?'.\n" +
                         "This happens for example when X and y contain the "
                         "same column name.\n" +
-                        "nimbusml cannot distinguish between the label in X and "
+                        "pytlc cannot distinguish between the label in X and "
                         "the label in Y.\n" +
-                        "nimbusml generates intermediate columns with this kind "
+                        "pytlc generates intermediate columns with this kind "
                         "of name. Issue with column '{0}' among "
                         "columns\n{1}".format(
                             i,

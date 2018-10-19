@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 """
-Owns nimbusml's containers.
+Owns pytlc's containers.
 """
 from shutil import copyfile
 

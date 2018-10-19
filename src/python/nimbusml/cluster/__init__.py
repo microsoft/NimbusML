@@ -1,4 +1,4 @@
-from .kmeansplusplus import KMeansPlusPlus
+from ._kmeansplusplus import KMeansPlusPlus
 
 __all__ = [
     'KMeansPlusPlus'

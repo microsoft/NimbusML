@@ -75,7 +75,7 @@ results = pipeline.predict(test_data["Text"])
 
 
 
-Many additional examples and tutorials can be found in the [documentation](https://docs.microsoft.com/en-us/NimbusML/overview).
+Many additional examples and tutorials can be found in the [documentation](https://docs.microsoft.com/en-us/nimbusml/overview).
 
 
 ## Building
