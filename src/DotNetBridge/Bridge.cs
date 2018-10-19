@@ -310,7 +310,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             using (var env = new RmlEnvironment(MarshalDelegate<CheckCancelled>(penv->checkCancel), penv->seed,
                     verbose: penv != null && penv->verbosity > 3, conc: penv != null ? penv->maxThreadsAllowed : 0))
             {
-                var host = env.Register("ML.NET_Execution");
+                var host = env.Register("MlNetExecution");
                 env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
                 env.ComponentCatalog.RegisterAssembly(typeof(LinearPredictor).Assembly); // ML.StandardLearners
                 env.ComponentCatalog.RegisterAssembly(typeof(CategoricalTransform).Assembly); // ML.Transforms

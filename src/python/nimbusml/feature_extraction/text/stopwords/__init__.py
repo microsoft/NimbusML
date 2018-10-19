@@ -1,7 +1,8 @@
-from .customstopwordsremover import CustomStopWordsRemover
-from .predefinedstopwordsremover import PredefinedStopWordsRemover
+from ._customstopwordsremover import CustomStopWordsRemover
+from ._predefinedstopwordsremover import PredefinedStopWordsRemover
 
 __all__ = [
     'CustomStopWordsRemover',
     'PredefinedStopWordsRemover'
 ]
+

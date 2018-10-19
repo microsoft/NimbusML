@@ -24,7 +24,6 @@ phases:
     - script: $(_buildScript) --configuration $(_configuration) --runTests
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
-    - script: brew install gcc
     - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
   # Linux phases
   - ${{ if ne(parameters.testDistro, '') }}:
@@ -49,5 +48,5 @@ phases:
       displayName: Publish wheel file to VSTS artifacts
       inputs:
         pathToPublish: $(Build.SourcesDirectory)/target
-        artifactName: NimbusML Wheels
+        artifactName: Mlnet Wheels
         artifactType: container

@@ -15,7 +15,7 @@ Types
 Column Types
 ------------
 
-NimbusML wraps a library written in C#, which is a strongly typed language. Columns of the input data sources are ascribed a type, which is used by
+``nimbusml`` wraps a library written in C#, which is a strongly typed language. Columns of the input data sources are ascribed a type, which is used by
 transforms and trainers to decide if they can operate on that column. Some transforms may only allow
 text data types, while others only numeric. Trainers almost exclusively require the features and
 labels to be of a numeric type.
@@ -41,7 +41,7 @@ VectorType Columns
 A VectorType column contains a vector of values of a homogenous type, and is associated with a
 ``column_name``.
 
-The following table shows how NimbusML processes a dataset:
+The following table shows how ``nimbusml`` processes a dataset:
 
 .. image:: ../_static/images/table_car.png
 The third column is a VectorType column named *Features* with 10 ``slots``. A VectorType column can

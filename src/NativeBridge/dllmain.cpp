@@ -9,7 +9,7 @@
 #define PARAM_SEED "seed"
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
-#define PARAM_NIMBUSML_PATH "nimbusmlPath"
+#define PARAM_MLNET_PATH "nimbusmlPath"
 #define PARAM_DATA "data"
 
 #define WIN_FOLDER L"\\Win"
@@ -70,13 +70,13 @@ bp::dict pxCall(bp::dict& params)
 	try
 	{
 		bp::extract<std::string> graph(params[PARAM_GRAPH]);
-		bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
+		bp::extract<std::string> nimbusmlPath(params[PARAM_MLNET_PATH]);
 		bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
 		std::int32_t i_verbose = std::int32_t(verbose);
 		std::string s_nimbusmlPath = std::string(nimbusmlPath);
 		std::string s_graph = std::string(graph);
-		const char *path = s_nimbusmlPath.c_str();
-		const char *coreclrpath = s_nimbusmlPath.c_str();
+		const char *path = s_nimbusmlPath.c_str();  // nimbusmlPath
+		const char *coreclrpath = s_nimbusmlPath.c_str();  // mlnet core clr
 
 		GENERICEXEC exec = EnsureExec(path, coreclrpath);
 		if (exec == nullptr)
