@@ -19,7 +19,7 @@ class TestSentiment(unittest.TestCase):
 
     @unittest.skip(
         "BUG: Error: *** System.InvalidOperationException: 'resourcePath', "
-        "issue with ML.NET")
+        "issue with ML.Net")
     def test_sentiment(self):
         # Bug 142794
         data = pd.DataFrame({"Sentiment": [0,

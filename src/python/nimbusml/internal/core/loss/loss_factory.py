@@ -100,7 +100,7 @@ class _LossFactory:
                 api_loss_name = getattr(api_loss, '_string_name')
                 api_loss_params = getattr(api_loss, '_params')
             except BaseException:
-                # The given object is not a nimbusml loss object
+                # The given object is not a pytlc loss object
                 raise TypeError(error_msg)
 
         if api_loss_name not in valid_str_losses:

@@ -22,7 +22,7 @@ from .internal.utils.data_schema import DataSchema
 from .internal.utils.data_stream import BinaryDataStream
 from .internal.utils.data_stream import FileDataStream
 from .internal.utils.utils import run_tests
-from .pipeline import Pipeline
+from ._pipeline import Pipeline
 
 if sys.platform.lower() == "linux":
     pkg_path = os.path.dirname(os.path.realpath(__file__))
