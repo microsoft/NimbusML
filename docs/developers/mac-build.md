@@ -1,4 +1,4 @@
-Building NimbusML from source on Mac
+Building `mlnet` from source on Mac
 ==========================================
 ## Prerequisites
 1. Xcode Command Line Tools (for Clang compiler)

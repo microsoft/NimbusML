@@ -6,8 +6,8 @@ NimbusML runs on Windows, Linux, and macOS and supports Python 3.7, 3.6, 3.5, an
 Building the repository
 =======================
 
-The NimbusML repo can be built directly from a terminal or cmd prompt. See the platform-specific build instructions for your dev environment:
+The `mlnet` repo can be built directly from a terminal or cmd prompt. See the platform-specific build instructions for your dev environment:
 
 | [Windows](windows-build.md) | [Linux](linux-build.md) | [Mac](mac-build.md) |
 
-Nimbus official builds are produced in Azure Dev Ops, as specified by the file `.vsts-ci.yml`.
+`mlnet` official builds are produced in Azure Dev Ops, as specified by the file `.vsts-ci.yml`.
