@@ -8,31 +8,31 @@
   - expanded: false
     href: tutorials.md#quick-start
     items:
-    - href: tutorials/A_A-Classification-with-Synthetic-Data.md
+    - href: tutorials/quickstart-nimbusml-python.md
       name: Classification
-    - href: tutorials/A_C-Regression-with-Synthetic-Data.md
+    - href: tutorials/quickstart-nimbusml-python-regression.md
       name: Regression
-    - href: tutorials/A_B-Twitter-Sentiment-1.md
+    - href: tutorials/sentimental-analysis-twitter.md
       name: Sentiment Analysis (Using Pandas)   
     name: Quick Start
   - expanded: false
     href: tutorials.md#important-concept
     items:
-    - href: tutorials/B_A-Fast-Data-Loading-with-Schema-Twitter-Sentiment-2.md
+    - href: tutorials/sentimental-analysis-twitter-loading.md
       name: Streaming Data Loading
-    - href: tutorials/B_B-Syntax-for-Column-Selection-Classification-Using-Flight-Schedule-Data.md
+    - href: tutorials/nimbusml-python-column-selection.md
       name: Column Selection
-    - href: tutorials/B_C-Image-Processing-Clustering.md
+    - href: tutorials/image-clustering.md
       name: Image Processing
-    - href: tutorials/B_D-Working-with-Scikit-Learn-Toolkit-Classification-Using-Wikipedia-Detox-Data.md
+    - href: tutorials/wikipedia-detox-analysis.md
       name: Sentiment Analysis
-    - href: tutorials/B_E-Learning-to-Rank-with-Microsoft-Bing-Data.md
+    - href: tutorials/defining-column-roles.md
       name: Subset Ranking Estimation
     name: Important Concepts
   - expanded: false
     href: tutorials.md#more-examples
     items:
-    - href: tutorials/C_A-Visualize-a-pipeline.md
+    - href: tutorials/pipeline-visualization.md
       name: Pipeline Visualization
     - href: loadsavemodels.md
       name: Loading and Saving Models
