@@ -1,0 +1,798 @@
+{
+  "GlobalChanges": {
+    "Inputs": [
+      {
+        "Name": "Acceleration",
+        "Desc": "Specifies the type of hardware acceleration to use. Possible values are ``sse_math``, ``avx_math``, ``mkl_math``, ``clr_math`` and ``gpu_math``. To use GPU acceleration, download NVidia CUDA toolkit 6.5 and NVidia cuDNN v2 and copy all DLL files to the ``mxLibs`` directory of the microsoft_scikit package"
+      },
+      {
+        "Name": "BaggingTrainFraction",
+        "NewName": "ExampleFraction"
+      },
+      {
+        "Name": "Calibrator",
+        "Hidden": true
+      },
+      {
+        "Name": "MaxCalibrationExamples",
+        "Hidden": true
+      },
+      {
+        "Name": "Data",
+        "Hidden": true
+      },
+      {
+        "Name": "DefaultHiddenNodes",
+        "NewName": "NumHiddenNodes"
+      },
+      {
+        "Name": "DenseOptimizer",
+        "Desc": "If ``True``, forces densification of the internal optimization vectors. If ``False``, enables the logistic regression optimizer use sparse or dense internal states as it finds appropriate. Setting ``denseOptimizer`` to ``True`` requires the internal optimizer to use a dense internal state, which may help alleviate load on the garbage collector for some varieties of larger problems."
+      },
+      {
+        "Name": "DistribTrainer",
+        "Hidden": true
+      },
+      {
+        "Name": "EnforceNonNegativity",
+        "Desc": "Enforce non-negative weights. This flag, however, does not put any constraint on the bias term; that is, the bias term can be still a negtaive number."
+      },
+      {
+        "Name": "FeatureFirstUsePenalty",
+        "NewName": "FirstUsePenalty",
+        "Desc": "The feature first use penalty coefficient. This is a form of regularization that incurs a penalty for using a new feature when creating the tree. Increase this value to create trees that don't use many features."
+      },
+      {
+        "Name": "GainConfidenceLevel",
+        "NewName": "GainConfLevel"
+      },
+      {
+        "Name": "InitWtsDiameter",
+        "Desc": "Sets the initial weights diameter that specifies the range from which values are drawn for the initial weights. These weights are initialized randomly from within this range. For example, if the diameter is specified to be ``d``, then the weights are uniformly distributed between ``-d/2`` and ``d/2``. The default value is ``0``, which specifies that all the  weights are set to zero."
+      },
+      {
+        "Name": "L2Const",
+        "NewName": "L2Weight"
+      },
+      {
+        "Name": "LearningRates",
+        "NewName": "LearningRate",
+        "Desc": "Determines the size of the step taken in the direction of the gradient in each step of the learning process.  This determines how fast or slow the learner converges on the optimal solution. If the step size is too big, you might overshoot the optimal solution.  If the step size is too small, training takes longer to converge to the best solution."
+      },
+      {
+        "Name": "LossFunction",
+        "NewName": "Loss"
+      },
+      {
+        "Name": "MaxBins",
+        "NewName": "NumBins"
+      },
+      {
+        "Name": "MemorySize",
+        "Desc": "Memory size for L-BFGS. Lower=faster, less accurate. The technique used for optimization here is L-BFGS, which uses only a limited amount of memory to compute the next step direction. This parameter indicates the number of past positions and gradients to store for the computation of the next step. Must be greater than or equal to ``1``"
+      },
+      {
+        "Name": "MinDocumentsInLeafs",
+        "NewName": "MinSplit",
+        "Desc": "Minimum number of training instances required to form a leaf. That is, the minimal number of documents allowed in a leaf of regression tree, out of the sub-sampled data. A 'split' means that features in each level of the tree (node) are randomly divided."
+      },
+      {
+        "Name": "NormalizeFeatures",
+        "NewName": "Normalize",
+        "Desc": "If ``Auto``, the choice to normalize depends on the preference declared by the algorithm. This is the default choice. If ``No``, no normalization is performed. If ``Yes``, normalization always performed. If ``Warn``, if normalization is needed by the algorithm, a warning message is displayed but normalization is not performed. If normalization is performed, a ``MaxMin`` normalizer is used. This normalizer preserves sparsity by mapping zero to zero."
+      },
+      {
+        "Name": "NumLeaves",
+        "Desc": "The maximum number of leaves (terminal nodes) that can be created in any tree. Higher values potentially increase the size of the tree and get better precision, but risk overfitting and requiring longer training times."
+      },
+      {
+        "Name": "NumThreads",
+        "NewName": "TrainThreads"
+      },
+      {
+        "Name": "NumTrees",
+        "Desc": "Specifies the total number of decision trees to create in the ensemble. By creating more decision trees, you can potentially get better coverage, but the training time increases."
+      },
+      {
+        "Name": "OptimizationAlgorithm",
+        "NewName": "Optimizer",
+        "Desc": "Default is ``sgd``. Choices are :py:func:`sgd_optimizer <nimbusml.sgd_optimizer>`, :py:func:`adadelta_optimizer <nimbusml.adadelta_optimizer>`"
+      },
+      {
+        "Name": "PrintTestGraph",
+        "Hidden": true
+      },
+      {
+        "Name": "PrintTrainValidGraph",
+        "Hidden": true
+      },
+      {
+        "Name": "RngSeed",
+        "NewName": "random_state"
+      },
+      {
+        "Name": "Seed",
+        "NewName": "random_state"
+      },
+      {
+        "Name": "SgdInitializationTolerance",
+        "NewName": "SgdInitTol"
+      },
+      {
+        "Name": "ShowTrainingStats",
+        "Hidden": true
+      },
+      {
+        "Name": "TrainingData",
+        "Hidden": true
+      },
+      {
+        "Name": "FeatureColumn",
+        "Hidden": true
+      },
+      {
+        "Name": "LabelColumn",
+        "Hidden": true
+      },
+      {
+        "Name": "WeightColumn",
+        "Hidden": true
+      },
+      {
+        "Name": "GroupIdColumn",
+        "Hidden": true
+      },
+      {
+        "Name": "Input",
+        "Hidden": true
+      },
+      {
+        "Name": "Output",
+        "Hidden": true
+      },
+      {
+        "Name": "Name",
+        "Hidden": true
+      },
+      {
+        "Name": "Source",
+        "Hidden": true
+      }
+    ]
+  },
+  "HiddenEntryPoints": [
+    "AffinityCalc.Calculate",
+    "CVSplit.Split",
+    "CntkScoring.Score",
+    "CntkScoring.Score",
+    "CntkTrainer.TrainBinary",
+    "CntkTrainer.TrainMultiClass",
+    "Commands.CrossValidateBinary",
+    "Commands.ExtractSweepResult",
+    "Commands.TrainTest",
+    "Commands.TrainTestBinary",
+    "Common.MakeArrayIDataView",
+    "Common.MakeArrayIPredictorModel",
+    "CountTable.Create",
+    "Dssm.Trigram",
+    "EnsembleCreator.CreateAnomalyPipelineEnsemble",
+    "EnsembleCreator.CreateBinaryEnsemble",
+    "EnsembleCreator.CreateBinaryPipelineEnsemble",
+    "EnsembleCreator.CreateMultiClassPipelineEnsemble",
+    "EnsembleCreator.CreateRegressionEnsemble",
+    "EnsembleCreator.CreateRegressionPipelineEnsemble",
+    "Evaluate.AnomalyDetection",
+    "Evaluate.Binary",
+    "Evaluate.Clustering",
+    "Evaluate.MultiClass",
+    "Evaluate.MultiOutputRegression",
+    "Evaluate.QuantileRegression",
+    "Evaluate.Ranking",
+    "Evaluate.Regression",
+    "FastTree.TrainRanking",
+    "FeatureCombiner.PrepareClassificationLabel",
+    "FeatureCombiner.PrepareFeatures",
+    "FeatureCombiner.PrepareRegressionLabel",
+    "HashJoin.Apply",
+    "ImportTextData.ImportText",
+    "LbfgsHiddenMarkovModel.TrainSequenceClassification",
+    "MmlSummary.BinaryLinearPredictor",
+    "ModelOperations.Apply",
+    "ModelOperations.CombineModels",
+    "ModelOperations.CombineTransformModels",
+    "ModelOperations.CombineTwoModels",
+    "NAHandling.Drop",
+    "NAHandling.Replace",
+    "NeuralNetwork.TrainBinary",
+    "NeuralNetwork.TrainMultiClass",
+    "NeuralNetwork.TrainMultiRegression",
+    "NeuralNetwork.TrainRegression",
+    "NopTransform.Nop",
+    "PipelineEnsemble.Summarize",
+    "Sar.TrainRecommendation",
+    "SchemaManipulation.MakeOptional",
+    "ScoreModel.MakeScoringTransform",
+    "ScoreModel.RenameBinaryPredictionScoreColumns",
+    "ScoreModel.Score",
+    "ScoreModel.SelectColumns",
+    "SelectRows.SkipTakeFilter",
+    "SummarizePredictor.Summarize",
+    "TextAnalytics.ExtractKeyPhrases",
+    "TextAnalytics.Lemmatize",
+    "XGBoost.TrainBinary",
+    "XGBoost.TrainMultiClass",
+    "XGBoost.TrainRanking",
+    "XGBoost.TrainRegression"
+  ],
+  "EntryPoints": [
+    {
+      "Name": "Trainers.AveragedPerceptronBinaryClassifier",
+      "NewName": "AveragedPerceptronBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Transforms.ApproximateBootstrapSampler",
+      "NewName": "BootstrapSampler",
+      "Module": "preprocessing.filter",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.CategoricalOneHotVectorizer",
+      "NewName": "OneHotVectorizer",
+      "Module": "feature_extraction.categorical",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.CategoricalHashOneHotVectorizer",
+      "NewName": "OneHotHashVectorizer",
+      "Module": "feature_extraction.categorical",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.KeyToTextConverter",
+      "NewName": "FromKey",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.TextToKeyConverter",
+      "NewName": "ToKey",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.TensorFlowScorer",
+      "NewName": "TensorFlowScorer",
+      "Module": "preprocessing",
+      "Type": "Transform",
+      "Inputs": [
+        {
+          "Name": "InputColumns",
+          "Default": null
+        },
+        {
+          "Name": "OutputColumns",
+          "Default": null
+        }
+      ]
+    },
+    {
+      "Name": "Models.OneVersusAll",
+      "NewName": "OneVsRestClassifier",
+      "Module": "multiclass",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true,
+      "Inputs": [
+        {
+          "Name": "Nodes",
+          "NewName": "Classifier"
+        }
+      ]
+    },
+    {
+      "Name": "Trainers.FieldAwareFactorizationMachineBinaryClassifier",
+      "NewName": "FactorizationMachineBinaryClassifier",
+      "Module": "decomposition",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Trainers.FastForestBinaryClassifier",
+      "NewName": "FastForestBinaryClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true,
+      "Inputs": [{
+        "Name": "MinDocsPercentageForCategoricalSplit",
+        "NewName": "min_docs_percentage_split"
+      }
+      ]
+    },
+    {
+      "Name": "Trainers.FastForestRegressor",
+      "NewName": "FastForestRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor",
+      "Inputs": [{
+        "Name": "MinDocsPercentageForCategoricalSplit",
+        "NewName": "min_docs_percentage_split"
+      }
+      ]
+    },
+    {
+      "Name": "Trainers.FastTreeBinaryClassifier",
+      "NewName": "FastTreesBinaryClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true,
+      "Inputs": [{
+        "Name": "MinDocsPercentageForCategoricalSplit",
+        "NewName": "min_docs_percentage_split"
+      },
+      {
+        "Name": "BestStepRankingRegressionTrees",
+        "NewName": "best_step_trees"
+      }
+      ]
+    },
+    {
+      "Name": "Trainers.FastTreeRegressor",
+      "NewName": "FastTreesRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor",
+      "Inputs": [{
+        "Name": "MinDocsPercentageForCategoricalSplit",
+        "NewName": "min_docs_percentage_split"
+      },
+      {
+        "Name": "BestStepRankingRegressionTrees",
+        "NewName": "best_step_trees"
+      }
+      ]
+    },
+    {
+      "Name": "Trainers.GeneralizedAdditiveModelBinaryClassifier",
+      "NewName": "GamBinaryClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true,
+      "Inputs": [
+        {
+          "Name": "MaxOutput",
+          "Default": "float('inf')"
+        }
+      ]
+    },
+    {
+      "Name": "Trainers.GeneralizedAdditiveModelRegressor",
+      "NewName": "GamRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor",
+      "Inputs": [
+        {
+          "Name": "MaxOutput",
+          "Default": "float('inf')"
+        }
+      ]
+    },
+    {
+      "Name": "Transforms.ImagePixelExtractor",
+      "NewName": "PixelExtractor",
+      "Module": "feature_extraction.image",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ImageLoader",
+      "NewName": "Loader",
+      "Module": "feature_extraction.image",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ImageResizer",
+      "NewName": "Resizer",
+      "Module": "feature_extraction.image",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.KMeansPlusPlusClusterer",
+      "NewName": "KMeansPlusPlus",
+      "Module": "cluster",
+      "Type": "Clusterer",
+      "Inputs": [{
+        "Name": "K",
+        "NewName": "n_clusters"
+      }
+      ]
+    },
+    {
+      "Name": "Trainers.LightGbmBinaryClassifier",
+      "NewName": "LightGbmBinaryClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Trainers.LightGbmClassifier",
+      "NewName": "LightGbmClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba": true,
+      "Decision_Function": true
+    },
+    {
+      "Name": "Trainers.LightGbmRegressor",
+      "NewName": "LightGbmRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor"
+    },
+    {
+      "Name": "Trainers.LightGbmRanker",
+      "NewName": "LightGbmRanker",
+      "Module": "ensemble",
+      "Type": "Ranker"
+    },
+    {
+      "Name": "Trainers.LogisticRegressionBinaryClassifier",
+      "NewName": "LogisticRegressionBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Trainers.LogisticRegressionClassifier",
+      "NewName": "LogisticRegressionClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : false
+    },
+    {
+      "Name": "Transforms.GlobalContrastNormalizer",
+      "NewName": "GlobalContrastRowScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.MissingValuesRowDropper",
+      "NewName": "Filter",
+      "Module": "preprocessing.missing_values",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.MissingValueHandler",
+      "NewName": "Handler",
+      "Module": "preprocessing.missing_values",
+      "Type": "Transform",
+      "Inputs":[
+        {
+          "Name": "ReplaceWith",
+          "Default": "DefaultValue"
+        }
+      ]
+    },
+    {
+      "Name": "Transforms.MissingValueIndicator",
+      "NewName": "Indicator",
+      "Module": "preprocessing.missing_values",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.NaiveBayesClassifier",
+      "NewName": "NaiveBayesClassifier",
+      "Module": "naive_bayes",
+      "Type": "Classifier",
+      "Predict_Proba" : false,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Transforms.BinNormalizer",
+      "NewName": "Binner",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.LogMeanVarianceNormalizer",
+      "NewName": "LogMeanVarianceScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.MeanVarianceNormalizer",
+      "NewName": "MeanVarianceScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.MinMaxNormalizer",
+      "NewName": "MinMaxScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.OrdinaryLeastSquaresRegressor",
+      "NewName": "OrdinaryLeastSquaresRegressor",
+      "Module": "linear_model",
+      "Type": "Regressor"
+    },
+    {
+      "Name": "Trainers.OnlineGradientDescentRegressor",
+      "NewName": "OnlineGradientDescentRegressor",
+      "Module": "linear_model",
+      "Type": "Regressor",
+      "Inputs": [
+          {
+            # Move this snippet to docs/docstrings when this learner gets its custom documentation
+            "Name": "LossFunction",
+            "Desc": "The default is :py:class:`'hinge' <nimbusml.loss.Hinge>`. Other choices are :py:class:`'exp' <nimbusml.loss.Exp>`, :py:class:`'log' <nimbusml.loss.Log>`, :py:class:`'smoothed_hinge' <nimbusml.loss.SmoothedHinge>`. For more information, please see :py:class:`'loss' <nimbusml.loss>`."
+          }
+      ]   
+    },
+    {
+      "Name": "Transforms.PcaCalculator",
+      "NewName": "PcaTransformer",
+      "Module": "decomposition",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.PcaAnomalyDetector",
+      "NewName": "PcaAnomalyDetector",
+      "Module": "decomposition",
+      "Type": "Anomaly"
+    },
+    {
+      "Name": "Trainers.PoissonRegressor",
+      "NewName": "PoissonRegressionRegressor",
+      "Module": "linear_model",
+      "Type": "Regressor"
+    },
+    {
+      "Name": "Transforms.ColumnConcatenator",
+      "NewName": "ColumnConcatenator",
+      "Module": "preprocessing.schema",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ColumnCopier",
+      "NewName": "ColumnDuplicator",
+      "Module": "preprocessing.schema",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ColumnDropper",
+      "NewName": "ColumnDropper",
+      "Module": "preprocessing.schema",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ColumnSelector",
+      "NewName": "ColumnSelector",
+      "Module": "preprocessing.schema",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.StochasticDualCoordinateAscentBinaryClassifier",
+      "NewName": "FastLinearBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Trainers.StochasticDualCoordinateAscentClassifier",
+      "NewName": "FastLinearClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true,
+      "Inputs": [
+          {
+            # Move this snippet to docs/docstrings when this learner gets its custom documentation
+            "Name": "LossFunction",
+            "Desc": "The default is :py:class:`'squared' <nimbusml.loss.Squared>`. Other choices are :py:class:`'poisson' <nimbusml.loss.Poisson>` and :py:class:`'tweedie' <nimbusml.loss.Tweedie>`. For more information, please see :py:class:`'loss' <nimbusml.loss>`."
+          }
+      ]
+    },
+    {
+      "Name": "Trainers.StochasticDualCoordinateAscentRegressor",
+      "NewName": "FastLinearRegressor",
+      "Module": "linear_model",
+      "Type": "Regressor"
+    },
+    {
+      "Name": "Transforms.FeatureSelectorByCount",
+      "NewName": "CountSelector",
+      "Module": "feature_selection",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.FeatureSelectorByMutualInformation",
+      "NewName": "MutualInformationSelector",
+      "Module": "feature_selection",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.RowRangeFilter",
+      "NewName": "RangeFilter",
+      "Module": "preprocessing.filter",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.RowSkipFilter",
+      "NewName": "SkipFilter",
+      "Module": "preprocessing.filter",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.RowTakeFilter",
+      "NewName": "TakeFilter",
+      "Module": "preprocessing.filter",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.StochasticGradientDescentBinaryClassifier",
+      "NewName": "SgdBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Trainers.SymSgdBinaryClassifier",
+      "NewName": "SymSgdBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
+      "Name": "Transforms.SentimentAnalyzer",
+      "NewName": "Sentiment",
+      "Module": "feature_extraction.text",
+      "Type": "Transform",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "NewName": "Column"
+        }
+      ]
+    },
+    {
+      "Name": "Transforms.CharacterTokenizer",
+      "NewName": "CharTokenizer",
+      "Module": "preprocessing.text",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.LightLda",
+      "NewName": "LightLda",
+      "Module": "feature_extraction.text",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.TextFeaturizer",
+      "NewName": "NGramFeaturizer",
+      "Module": "feature_extraction.text",
+      "Type": "Transform",
+      "Inputs": [
+        {
+          "Name": "CharFeatureExtractor",
+          "Default": null
+        }
+      ]
+    },
+    {
+      "Name": "Transforms.WordEmbeddings",
+      "NewName": "WordEmbedding",
+      "Module": "feature_extraction.text",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.TreeLeafFeaturizer",
+      "NewName": "TreeFeaturizer",
+      "Module": "feature_extraction",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Trainers.FastTreeTweedieRegressor",
+      "NewName": "FastTreesTweedieRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor",
+      "Inputs": [{
+        "Name": "MinDocsPercentageForCategoricalSplit",
+        "NewName": "min_docs_percentage_split"
+      },
+      {
+        "Name": "BestStepRankingRegressionTrees",
+        "NewName": "best_step_trees"
+      }
+      ]
+    },
+    {
+      "Name": "Transforms.ColumnTypeConverter",
+      "NewName": "TypeConverter",
+      "Module": "preprocessing.schema",
+      "Type": "Transform"
+    }
+  ],
+  "Components": [
+    {
+      "Kind": "ClassificationLossFunction"
+    },  
+    {
+      "Kind": "RegressionLossFunction"
+    },
+    {
+      "Kind": "SDCAClassificationLossFunction"
+    },
+    {
+      "Kind": "SDCARegressionLossFunction"
+    },
+    {
+      "Kind": "BoosterParameterFunction",
+      "Components": [
+        {
+          "Name": "dart",
+          "NewName": "Dart",
+          "Module": "ensemble.booster",
+          "Type": "Component"
+        },
+        {
+          "Name": "gbdt",
+          "NewName": "Gbdt",
+          "Module": "ensemble.booster",
+          "Type": "Component"
+        },
+        {
+          "Name": "goss",
+          "NewName": "Goss",
+          "Module": "ensemble.booster",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "NgramExtractor",
+      "Components": [
+        {
+          "Name": "NGram",
+          "NewName": "Ngram",
+          "Module": "feature_extraction.text.extractor",
+          "Type": "Component"
+        },
+        {
+          "Name": "NGramHash",
+          "NewName": "NgramHash",
+          "Module": "feature_extraction.text.extractor",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "StopWordsRemover",
+      "Components": [
+        {
+          "Name": "Custom",
+          "NewName": "CustomStopWordsRemover",
+          "Module": "feature_extraction.text.stopwords",
+          "Type": "Component"
+        },
+        {
+          "Name": "Predefined",
+          "NewName": "PredefinedStopWordsRemover",
+          "Module": "feature_extraction.text.stopwords",
+          "Type": "Component"
+        }
+      ]
+    }
+  ]
+}

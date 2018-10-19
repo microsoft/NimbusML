@@ -1,0 +1,28 @@
+    """
+
+    Take N first rows of the dataset, allowing limiting input to a subset
+    of rows.
+
+    :param columns: a string representing the column name to perform the
+        transformation on.
+
+        * Input column type: numeric.
+        * Output column type: numeric.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * TakeFilter(columns='age')
+         * TakeFilter() << {'age'}
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    :param count: number of rows to keep from the beginning of the dataset.
+
+    .. index:: transform, random
+	
+    Example:
+       .. literalinclude:: /../nimbusml/examples/SkipFilter.py
+              :language: python
+    """

@@ -1,0 +1,40 @@
+"""
+Some of the trainers accept a loss parameter that will be used for
+training. It is also known as loss function, objective function, or
+optimization score function.
+
+.. remarks::
+	Losses can be specified either as a string or a loss object. When
+	loss is specified as one of these strings, the default values are
+	used for the loss parameters. To change the default parameters, a
+	loss object should be used, as seen in examples below.
+
+	Each trainer supports only a subset of the losses mentioned above.
+	To get the supported losses and the default loss, please refer to
+	the documentation page for the specific trainer.
+
+	The `Tweedie loss
+	<https://en.wikipedia.org/wiki/Tweedie_distribution>`_ for
+	regression. Assuming that the response variable y follows Tweedie
+	distribution, maximum likelihood is used to estimate the parameters
+	by maximuzing the probability of obtaining the observed data. Its
+	string name is ``'tweedie'``.
+
+	It can be used for :py:class:`OnlineGradientDescentRegressor
+	<nimbusml.linear_model.OnlineGradientDescentRegressor>`.
+
+:param index: Index parameter for the Tweedie distribution, in the
+	range [1, 2]. 1 is Poisson loss, 2 is gamma loss, and intermediate
+	values are compound Poisson loss.
+
+.. seealso::
+	:py:class:`Squared <nimbusml.loss.Squared>`
+	:py:class:`Poisson <nimbusml.loss.Poisson>`
+	`API Guide: Loss Functions </nimbusml/apiguide#loss-functions>`_
+
+Example:
+	.. literalinclude:: /../nimbusml/examples/Tweedie.py
+		:language: python
+
+.. index:: loss
+"""

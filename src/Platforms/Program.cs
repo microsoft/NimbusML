@@ -1,0 +1,1 @@
+﻿namespace build { class Program { static void Main(string[] args) {} } }

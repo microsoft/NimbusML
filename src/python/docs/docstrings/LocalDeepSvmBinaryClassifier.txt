@@ -1,0 +1,87 @@
+    """
+
+    Local Deep Support Vector Machine
+
+    .. remarks::
+        LD-SVM learns a binary, non-linear SVM classifier with a kernel that
+        is
+        specifically designed to reduce prediction time. LD-SVM learns
+        decision
+        boundaries that are locally linear. This implies that a test point
+        can
+        be efficiently classified by testing it against its local decision
+        boundary rather than the entire set of decision boundaries all over
+        feature space. Furthermore, LD-SVM brings down the cost of testing a
+        point against its local decision boundary to be logarithmic in the
+        number of training points. This implies that LD-SVM is exponentially
+        faster at prediction than traditional SVMs, such as the RBF-SVM,
+        which
+        need to compute the kernel over all support vectors in order to make
+        a
+        prediction.
+
+        LD-SVM is most useful when all the following conditions are met:
+           * You have a binary classification problem or you can reduce your
+           problem to a set of binary classification problems. 
+           * Linear classifiers are not performing well 
+           * Non-linear SVMs or other classifiers yield high classification
+           accuracies but are taking too much time for making predictions. 
+           * You can afford to sacrifice prediction accuracy in order to
+        bring
+           down prediction time.
+
+        LD-SVM should not be used in situations where linear classifiers are
+        already giving good results or when high classification accuracies
+        can
+        be achieved by adding small amounts of non-linearity (such as with a
+        neural network with a small number of hidden nodes).
+
+        More details about LD-SVM can be found in this paper `Local deep
+        kernel
+        learning for efficient non-linear SVM prediction
+        <http://research.microsoft.com/en-
+        us/um/people/manik/pubs/Jose13.pdf>`_.
+        
+
+        **Reference**
+    
+            `Local deep kernel learning for efficient non-linear SVM prediction
+            <http://research.microsoft.com/en-
+            us/um/people/manik/pubs/Jose13.pdf>`_
+    
+
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling insures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MaxMin`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
+
+    .. seealso::
+        :py:func:`LogisticRegressionClassifier
+        <nimbusml.linear_model.LogisticRegressionClassifier>`,
+        :py:func:`AveragedPerceptronBinaryClassifier
+        <nimbusml.linear_model.AveragedPerceptronBinaryClassifier>`
+
+    .. index:: models, classification, svm
+
+    Example:
+       .. literalinclude::
+        /../nimbusml/examples/LocalDeepSvmBinaryClassifier.py
+              :language: python
+    """

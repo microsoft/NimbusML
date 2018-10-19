@@ -1,0 +1,28 @@
+    """
+
+    Specified columns to drop from the dataset.
+
+    :param columns: a list of strings representing the column names to
+        perform the transformation on.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * ColumnDropper(columns=['education', 'age'])
+         * ColumnDropper() << ['education', 'age']
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    .. seealso::
+        :py:class:`ColumnConcatenator
+        <nimbusml.preprocessing.schema.ColumnConcatenator>`,
+        :py:class:`ColumnSelector
+        <nimbusml.preprocessing.schema.ColumnSelector>`.
+
+    .. index:: transform, schema
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/ColumnDropper.py
+              :language: python
+    """

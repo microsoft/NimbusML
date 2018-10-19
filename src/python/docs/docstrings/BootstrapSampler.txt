@@ -1,0 +1,32 @@
+    """
+
+    Approximate bootstrap sampling using Poisson sampling.
+
+    .. remarks::
+        ``BootstrapSampler`` implements the `Poisson Sampling
+        <https://en.wikipedia.org/wiki/Poisson_sampling>`_ for generating
+        samples with replacement for large datasets. The number of occurences
+        for each observation in the new sample follows Binormial(n, 1/n),
+        where n is the number of observations in the origin data and the
+        number of target samples to generate.
+        With large sample size, the distribution converges to a Poisson(1)
+        distribution. Therefore, we generate
+        the number of occurence for each observation independently using
+        Poisson generation.
+
+    :param complement: Whether this is the out-of-bag sample, that is, return
+        all the rows that are not selected by the resampler.
+
+    :param pool_size: This parameter is used in the shuffling process. A pool
+        of a given number of rows will be constructed from the first
+       rows in the input cursor, and then, successively, the output cursor
+        will yield one
+       of these rows and replace it with another row from the input. It is
+        used in the shuffling process.
+
+    .. index:: transform, random
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/BootStrapSampler.py
+              :language: python
+    """

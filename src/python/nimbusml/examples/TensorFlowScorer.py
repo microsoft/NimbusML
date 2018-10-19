@@ -1,0 +1,36 @@
+###############################################################################
+# TensorFlowScorer
+import os
+from nimbusml import FileDataStream
+from nimbusml.preprocessing import TensorFlowScorer
+import pandas as pd
+import numpy as np
+
+data = pd.DataFrame(np.ones(9) * 1.1)
+data.to_csv("test.csv", index=False)
+data = FileDataStream.read_csv("test.csv",
+                               schema="col=a:R4:0-3 "
+                                      "col=b:R4:4-7")
+# In the model file,
+# inputs are two vector with dimension 4
+data.head()
+# transform usage
+xf = TensorFlowScorer(
+    model=os.path.join(os.path.dirname(__file__), 'frozen_saved_model.pb'),
+    columns={'c': ['a', 'b']}
+)
+
+# fit and transform
+features = xf.fit_transform(data)
+print(features)
+#    a.0  a.1  a.2  a.3  b.0  b.1  b.2  b.3 ...
+# 0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 1  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 2  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 3  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 4  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 5  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 6  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 7  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 8  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...
+# 9  1.1  0.0  0.0  0.0  0.0  0.0  0.0  0.0 ...

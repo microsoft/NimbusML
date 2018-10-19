@@ -1,0 +1,67 @@
+    """
+
+    Machine Learning Fast Forest
+
+    .. remarks::
+        Decision trees are non-parametric models that perform a sequence of
+        simple tests on inputs. This decision procedure maps them to outputs
+        found in the training dataset whose inputs were similar to the
+        instance
+        being processed. A decision is made at each node of the binary tree
+        data
+        structure based on a measure of similarity that maps each instance
+        recursively through the branches of the tree until the appropriate
+        leaf
+        node is reached and the output decision returned.
+
+        Decision trees have several advantages:
+
+        * They are efficient in both computation and memory usage during
+          training and prediction.
+        * They can represent non-linear decision boundaries.
+        * They perform integrated feature selection and classification.
+        * They are resilient in the presence of noisy features.
+
+        Fast forest regression is a random forest and quantile regression
+        forest
+        implementation using the regression tree learner in
+        :py:class:`FastTreesRegressor
+        <nimbusml.ensemble.FastTreesRegressor>`. The model consists of an
+        ensemble of decision trees. Each tree in a decision forest outputs a
+        Gaussian distribution by way of prediction. An aggregation is
+        performed
+        over the ensemble of trees to find a Gaussian distribution closest to
+        the combined distribution for all trees in the model.
+
+        This decision forest classifier consists of an ensemble of decision
+        trees. Generally, ensemble models provide better coverage and
+        accuracy
+        than single decision trees. Each tree in a decision forest outputs a
+        Gaussian distribution.
+
+
+        **Reference**
+    
+            `Wikipedia: Random forest
+            <http://en.wikipedia.org/wiki/Random_forest>`_
+    
+            `Quantile regression forest
+            <http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf>`_
+    
+            `From Stumps to Trees to Forests
+            <https://blogs.technet.microsoft.com/machinelearning/2014/09/10/from-
+            stumps-to-trees-to-forests/>`_
+    
+
+    .. seealso::
+        :py:class:`FastTreesRegressor
+        <nimbusml.ensemble.FastTreesRegressor>`,
+        :py:class:`FastForestBinaryClassifier
+        <nimbusml.ensemble.FastForestBinaryClassifier>`
+
+    .. index:: models, classification, regression
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/FastForestRegressor.py
+              :language: python
+    """

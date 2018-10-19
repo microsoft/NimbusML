@@ -1,0 +1,52 @@
+    """
+
+    One-vs-All macro (OVA)
+
+
+    .. remarks::
+        `OneVsRestClassifier
+        <https://en.wikipedia.org/wiki/Multiclass_classification>` converts
+        any binary classifiers into mult-class.
+        A multi-class classification problem (with K classes) can be
+        decomposed into K binary classification
+        problems per class, with label as 0 or 1 (if a sample belongs to the
+        class). OneVsRestClassifier
+        predicts the label with the highest score from the basic learners.
+
+    .. note::
+
+        This algorithm can be treated as a wrapper for all the binary
+        classifiers in nimbusml. A few binary
+        classifiers already have implementation for multi-class problems,
+        thus users can choose either one
+        depending on the context. The OVA version of a binary classifier,
+        such as wrapping a :py:class:`LightGbmBinaryClassifier
+        <nimbusml.ensemble.LightGbmBinaryClassifier>` ,
+        can be different from :py:class:`LightGbmClassifier
+        <nimbusml.ensemble.LightGbmClassifier>` ,
+        which develops a multi-class classifier directly.
+
+    .. seealso::
+        :py:class:`FastForestBinaryClassifier
+        <nimbusml.ensemble.FastForestBinaryClassifier>`,
+        :py:class:`FastTreesBinaryClassifier
+        <nimbusml.ensemble.FastTreesBinaryClassifier>`,
+        :py:class:`GamBinaryClassifier
+        <nimbusml.ensemble.GamBinaryClassifier>`,
+        :py:class:`LightGbmBinaryClassifier
+        <nimbusml.ensemble.LightGbmBinaryClassifier>`,
+        :py:class:`AveragedPerceptronBinaryClassifier
+        <nimbusml.linear_model.AveragedPerceptronBinaryClassifier>`,
+        :py:class:`FastLinearBinaryClassifier
+        <nimbusml.linear_model.FastLinearBinaryClassifier>`,
+        :py:class:`LogisticRegressionBinaryClassifier
+        <nimbusml.linear_model.LogisticRegressionBinaryClassifier>`,
+        :py:class:`SgdBinaryClassifier
+        <nimbusml.linear_model.SgdBinaryClassifier>`.
+
+    .. index:: models, classification, multi-class
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/OneVsRestClassifier.py
+              :language: python
+    """

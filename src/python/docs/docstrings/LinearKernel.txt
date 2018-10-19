@@ -1,0 +1,21 @@
+    """
+
+    Apply scalar product. <x,y>.
+
+    .. remarks::
+        `LinearKernel <https://en.wikipedia.org/wiki/Kernel_method>`_ is a
+        kernel function
+        that computes the similarity between two features, calculated as the
+        sum of the elementwise
+	products of the two. 
+
+    .. seealso::
+        :py:func:`PolynomialKernel <nimbusml.svm.kernel.PolynomialKernel>`,
+        :py:func:`RbfKernel <nimbusml.svm.kernel.RbfKernel>`,
+        :py:func:`SigmoidKernel <nimbusml.svm.kernel.SigmoidKernel>`,
+        :py:func:`OneClassSvmAnomalyDetector
+        <nimbusml.svm.OneClassSvmAnomalyDetector>`
+
+    .. index:: svm, kernel
+
+    """

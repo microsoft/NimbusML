@@ -1,0 +1,15 @@
+    """
+
+    Converts a column to a different type, using standard conversions.
+
+    :param result_type: The result type, e.g. 'R4', 'TX'. For more details
+        see `Types </nimbusml/concepts/types#column-types>`_.
+        Note that the converted type to should
+        compatible with the origin.
+
+    .. index:: transform, schema
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/TypeConverter.py
+              :language: python
+    """

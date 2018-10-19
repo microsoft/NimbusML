@@ -1,0 +1,20 @@
+    """
+
+    Apply sigmoid function. tanh(gamma*<x,y>+c).
+
+    .. remarks::
+        `SigmoidKernel <http://www2.spsc.tugraz.at/www-
+        archive/AdvancedSignalProcessing/WS05-Mistral/advances.pdf>`_ is a
+        kernel function
+        that computes the similarity between two features.
+
+    .. seealso::
+        :py:func:`LinearKernel <nimbusml.svm.kernel.LinearKernel>`,
+        :py:func:`PolynomialKernel <nimbusml.svm.kernel.PolynomialKernel>`,
+        :py:func:`RbfKernel <nimbusml.svm.kernel.RbfKernel>`,
+        :py:func:`OneClassSvmAnomalyDetector
+        <nimbusml.svm.OneClassSvmAnomalyDetector>`
+
+    .. index:: svm, kernel
+
+    """

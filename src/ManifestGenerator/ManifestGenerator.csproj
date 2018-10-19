@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProjectGuid>{D3AED287-722F-4243-966E-77AD0652B38E}</ProjectGuid>
+	<OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>x64</Platforms>
+    <AssemblyName>ManifestGenerator</AssemblyName>
+    <RootNamespace>ManifestGenerator</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>$(OutputBase)</OutputPath>
+    <Configurations>Debug;Release</Configurations>
+    <StartupObject>Microsoft.MachineLearning.ManifestGenerator.ManifestGenerator</StartupObject>
+    <ApplicationIcon />
+	<TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="packages.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML" Version="0.6.0-preview-26912-3" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="0.6.0-preview-26912-3" />
+    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.6.0-preview-26912-3" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.6.0-preview-26912-3" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.6.0-preview-26912-3" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.6.0-preview-26912-3" />
+  </ItemGroup>
+
+</Project>

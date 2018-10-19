@@ -1,0 +1,19 @@
+    """
+
+    Traditional Gradient Boosting Decision Tree. 
+
+    .. seealso::
+        :py:func:`Dart <nimbusml.ensemble.booster.Dart>`,
+        :py:func:`Goss <nimbusml.ensemble.booster.Goss>`,
+        :py:func:`LightGbmBinaryClassifier
+        <nimbusml.ensemble.LightGbmBinaryClassifier>`,
+        :py:func:`LightGbmClassifier <nimbusml.ensemble.LightGbmClassifier>`,
+        :py:func:`LightGbmRanker <nimbusml.ensemble.LightGbmRanker>`,
+        :py:func:`LightGbmRegressor <nimbusml.ensemble.LightGbmRegressor>`
+
+    .. index:: ensemble, booster
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/LightGbmRegressor.py
+              :language: python
+    """

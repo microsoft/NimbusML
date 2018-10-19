@@ -1,0 +1,24 @@
+    """
+
+    Remover with list of stopwords specified by the user.
+
+    .. remarks::
+        The :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>` transform produces a
+        bag of counts of
+        sequences of consecutive words from a given corpus of text.
+        It also offers stopwords removing. A user-defined list of stopwords.
+        It accepts the following option: ``stopword``.
+
+    .. seealso::
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+        :py:class:`PredefinedStopWordsRemover
+        <nimbusml.feature_extraction.text.stopwords.PredefinedStopWordsRemover>`,
+
+    .. index:: transform, featurizer, text
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/NGramFeaturizer2.py
+              :language: python
+    """

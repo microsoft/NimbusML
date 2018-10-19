@@ -1,0 +1,22 @@
+    """
+
+    Applies a `Exponential average
+    <https://en.wikipedia.org/wiki/K-means_clustering>`_ on a time
+    series.
+
+    :param decay: Coefficient d in: m(y_t) = d * y_t + (1-d) * m(y_(t-1)), it
+        should be in [0, 1], where m(y_t) is the output.
+
+    .. seealso::
+        :py:func:`PercentileThreshold
+        <nimbusml.preprocessing.timeseries.PercentileThreshold>`,
+        :py:func:`Pvalue <nimbusml.preprocessing.timeseries.Pvalue>`,
+        :py:func:`SlidingWindow
+        <nimbusml.preprocessing.timeseries.SlidingWindow>`.
+
+    .. index:: models, timeseries, transform
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/ExponentialAverage.py
+              :language: python
+    """

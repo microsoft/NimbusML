@@ -1,0 +1,53 @@
+parameters:
+  name: ''
+  buildScript: ''
+  buildMatrix: {}
+  buildQueue: {}
+  testDistro: ''
+
+phases:
+
+- phase: ${{ parameters.name }}
+  variables:
+    _buildScript: ${{ parameters.buildScript }}
+    _dockerRun: docker run -e SYSTEM_TEAMFOUNDATIONCOLLECTIONURI="$(System.TeamFoundationCollectionUri)" -e BUILD_BUILDNUMBER="$(Build.BuildNumber)" -i -v $(Build.SourcesDirectory):/builddir -w="/builddir"
+    _distro: ${{ parameters.testDistro }}
+  queue:
+   parallel: 99
+   matrix:
+     ${{ insert }}: ${{ parameters.buildMatrix }}
+   ${{ insert }}: ${{ parameters.buildQueue }}
+  steps:
+
+  # Windows phases
+  - ${{ if eq(parameters.name, 'Windows') }}:
+    - script: $(_buildScript) --configuration $(_configuration) --runTests
+  # Mac phases
+  - ${{ if eq(parameters.name, 'Mac') }}:
+    - script: brew install gcc
+    - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
+  # Linux phases
+  - ${{ if ne(parameters.testDistro, '') }}:
+    - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
+      displayName: Build native bridge
+    - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
+      displayName: Build python wheel
+    - ${{ if eq(parameters.testDistro, 'ubuntu16') }}:
+      - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly"
+        displayName: Run tests Ubuntu16
+    - ${{ if eq(parameters.testDistro, 'ubuntu14') }}:
+      - script: $(_dockerRun) mlnet/ubuntu14-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly"
+        displayName: Run tests Ubuntu14
+    - ${{ if eq(parameters.testDistro, 'centos7') }}:
+      - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly"
+        displayName: Run tests CentOS7
+
+  # Publish build artifacts
+  - ${{ if and(ne(parameters.testDistro, 'ubuntu14'), ne(parameters.testDistro, 'centos7')) }}:
+    - task: PublishBuildArtifacts@1
+      condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
+      displayName: Publish wheel file to VSTS artifacts
+      inputs:
+        pathToPublish: $(Build.SourcesDirectory)/target
+        artifactName: NimbusML Wheels
+        artifactType: container

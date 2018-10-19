@@ -1,0 +1,3 @@
+recursive-include nimbusml/internal/libs *
+recursive-include nimbusml/datasets *.csv *.tsv
+recursive-include nimbusml/examples *.py

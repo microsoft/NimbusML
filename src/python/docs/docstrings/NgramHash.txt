@@ -1,0 +1,53 @@
+    """
+
+    Extracts NGrams from text and convert them to vector using hashing
+    trick.
+
+    .. remarks::
+        The ``NGramFeaturizer`` transform produces a bag of counts of
+        sequences of consecutive words, called n-grams, from a given corpus
+        of text.
+        There are two ways it can do this:
+
+        * build a dictionary of n-grams and use the id in the dictionary as
+        the index in the bag;
+        * hash each n-gram and use the hash value as the index in the bag.
+
+        This class provide the text extractor that implement the second. In
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+        users should specify which text extractor to use as the argument.
+
+	    The purpose of hashing is to convert variable-length text documents
+        into equal-length numeric feature vectors, to support
+        dimensionality reduction and to make the lookup of feature weights
+        faster.
+
+        The n-grams are represented as count vectors, with vector slots
+        corresponding to their hashes. Embedding ngrams in 
+	    a vector space allows their contents to be compared in an efficient
+        manner.
+        The slot values in the vector can be weighted by the following
+        factors:
+
+        * *term frequency* - The number of occurrences of the slot in the
+        text
+        * *inverse document frequency* - A ratio (the logarithm of
+          inverse relative slot frequency) that measures the information a
+        slot
+          provides by determining how common or rare it is across the entire
+        text.
+        * *term frequency-inverse document frequency* - the product
+          term frequency and the inverse document frequency.
+
+    .. seealso::
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+        :py:class:`Ngram <nimbusml.feature_extraction.text.extractor.Ngram>`
+
+    .. index:: transform, featurizer, text
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/NGramFeaturizer3.py
+              :language: python
+    """

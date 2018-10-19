@@ -1,0 +1,32 @@
+    """
+
+    Filters all rows where the input columns have value of NaN.
+
+    .. remarks::
+        ``Filter`` removes the entire row if any of the input columns have
+        value of NaN in that row. This preprocessing is required for many ML
+        algorithms that cannot work with NaNs. Useful if any NaN entry
+        invalidates the entire row.
+
+    :param columns: a list of strings representing the column names to
+        perform the transformation on.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * Filter(columns=['education', 'age'])
+         * Filter() << ['education', 'age']
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    .. seealso::
+        :py:class:`Indicator <nimbusml.preprocessing.missing_values.Indicator>`,
+        :py:class:`Handler <nimbusml.preprocessing.missing_values.Handler>`.
+
+    .. index:: filter, image
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/Filter.py
+              :language: python
+    """

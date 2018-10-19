@@ -1,0 +1,37 @@
+"""
+Some of the trainers accept a loss parameter that will be used for
+training. It is also known as loss function, objective function, or
+optimization score function.
+
+.. remarks::
+	Losses can be specified either as a string or a loss object. When
+	loss is specified as one of these strings, the default values are
+	used for the loss parameters. To change the default parameters, a
+	loss object should be used, as seen in examples below.
+
+	Each trainer supports only a subset of the losses mentioned above.
+	To get the supported losses and the default loss, please refer to
+	the documentation page for the specific trainer.
+
+	The `Poisson loss
+	<https://en.wikipedia.org/wiki/Poisson_regression>`_ for
+	regression.
+	Assuming that the response variable y follows Poisson distribution,
+	maximum likelihood is used to estimate the parameters by maximuzing
+	the probability of obtaining the observed data. Its string name is
+	``'poisson'``.
+
+	It can be used for :py:class:`OnlineGradientDescentRegressor
+	<nimbusml.linear_model.OnlineGradientDescentRegressor>`.
+
+.. seealso::
+	:py:class:`Squared <nimbusml.loss.Squared>`
+	:py:class:`Tweedie <nimbusml.loss.Tweedie>`
+	`API Guide: Loss Functions </nimbusml/apiguide#loss-functions>`_
+
+Example:
+	.. literalinclude:: /../nimbusml/examples/Poisson.py
+		:language: python
+
+.. index:: loss
+"""

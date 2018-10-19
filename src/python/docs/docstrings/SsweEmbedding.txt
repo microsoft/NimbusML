@@ -1,0 +1,76 @@
+    """
+
+    A pretrained DNN model to generate word embeddings. See
+    :py:class:`WordEmbedding
+    <nimbusml.feature_extraction.text.WordEmbedding>`
+    for more generalized embedding text featurizer, including various
+    versions of `GloVe Models
+    <https://nlp.stanford.edu/projects/glove/>`_, `FastText
+    <https://en.wikipedia.org/wiki/FastText>`_, and `Sswe
+    <http://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
+
+    .. remarks::
+        Sentiment-specific word embedding (SSWE) is a DNN featurizer
+        developed
+        by MSRA (`paper <http://anthology.aclweb.org/P/P14/P14-1146.pdf>`_).
+        It
+        incorporates sentiment information into the neural network to learn
+        sentiment specific word embedding. It proves to be useful in various
+        sentiment analysis tasks, as well as generic text classification
+        tasks
+        in our benchmarking.
+
+    :param columns: a dictionary of key-value pairs, where key is the output
+        column name and value is the input column name.
+
+        * Only one key-value pair is allowed.
+        * Input column type: `Vector Type </nimbusml/concepts/types#vectortype-column>`_.
+        * Output column type: `Vector Type </nimbusml/concepts/types#vectortype-column>`_.
+        * If the output column name is same as the input column name, then
+        simply specify ``columns`` as a string.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * SsweEmbedding(columns={'out1':'input1',)
+         * SsweEmbedding() << {'ou1': 'input1'}
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    .. note::
+
+        As ``SsweEmbedding`` requires a column with text vector, e.g.
+        <'This', 'is', 'good'>, users need to create an input column by:
+
+        * concatenating columns with TX type,
+        * or using the ``output_tokens=True`` for ```NGramFeaturizer()`` to
+        convert a column with sentences like "This is good" into <'This',
+        'is', 'good'>. The column for the output token column is renamed with
+        a prefix of '_TranformedText'.
+
+        In the following example, after the ``NGramFeaturizer``, features
+        named *ngram.__* are generated.
+        A new column named *ngram_TransformedText* is also created with the
+        text vector, similar as running ``.split(' ')``.
+        However, due to the variable length of this column it cannot be
+        properly converted to pandas dataframe,
+        thus any pipelines/transforms output this text vector column will
+        throw errors. However, we use *ngram_TransformedText* as the input to
+        ``SsweEmbedding``, the
+        *ngram_TransformedText* column will be overwritten by the output from
+        ``SsweEmbedding``. The output from ``SsweEmbedding`` is named
+        *ngram_TransformedText.__*
+
+    .. seealso::
+        :py:class:`NGramFeaturizer <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+        :py:class:`DssmFeaturizer <nimbusml.feature_extraction.text.DssmFeaturizer>`,
+        :py:class:`Sentiment <nimbusml.feature_extraction.text.Sentiment>`,
+        :py:class:`WordEmbedding <nimbusml.feature_extraction.text.WordEmbedding>`.
+
+    .. index:: dnn, features, embedding
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/SsweEmbedding.py
+              :language: python
+    """

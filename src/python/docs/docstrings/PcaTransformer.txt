@@ -1,0 +1,51 @@
+    """
+
+    Pca Transformer
+
+    .. remarks::
+        `Principle Component Analysis (PCA)
+        <https://en.wikipedia.org/wiki/Principal_component_analysis>`_ is a
+        dimensionality-reduction transform which computes the projection of
+        the feature vector to onto a low-rank
+        subspace. Its training is done using the technique described in the
+        paper `Combining Structured and Unstructured
+        Randomness in Large Scale PCA
+        <https://arxiv.org/pdf/1310.6304v2.pdf>`_ by Nikos Karampatziakis and
+        Paul
+        Mineiro, and the paper `Finding Structure with Randomness:
+        Probabilistic Algorithms for Constructing Approximate
+        Matrix Decompositions <https://arxiv.org/pdf/0909.4061v2.pdf>`_ by N.
+        Halko et al.
+
+    :param weight: The PCA transform can take into account a weight for each
+        row. To use weights, the input must contain
+        a weight column, whose name is specified using this parameter. See
+        `Columns </nimbusml/concepts/columns>`_ for syntax.
+
+    :param rank: The number of components in the PCA. The default value is
+        20.
+
+    :param columns: see `Columns </nimbusml/concepts/columns>`_.
+         If users specify mutiple non-`Vector Type
+         </nimbusml/concepts/types#vectortype-column>`_ columns
+         as input, PCA
+         will select n features (in total) from the selected columns.
+         The output columns will be named after the first selected column
+         followed by the slot number.
+         Users can also apply PCA to a set of
+         `Vector Type </nimbusml/concepts/types#vectortype-column>`_
+         columns. In
+         this case, PCA will applies to each of the columns,
+         and this transform will generate n principle components for each of
+         the column.
+
+    .. seealso::
+        :py:class:`PcaAnomalyDetector
+        <nimbusml.decomposition.PcaAnomalyDetector>`.
+
+    .. index:: normalize, preprocessing
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/PcaTransformer.py
+              :language: python
+    """

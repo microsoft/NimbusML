@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutDir Condition="'$(OutDir)' == ''">../x64/</OutDir>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="MicroBuild.Core" Version="0.3.0" >
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>	
+    <PackageReference Include="Nuget.CommandLine" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <FilesToSign Include="$(OutDir)**/DotNetBridge.dll">
+        <Authenticode>Microsoft</Authenticode>
+      </FilesToSign>
+  </ItemGroup>
+
+</Project>

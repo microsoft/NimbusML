@@ -328,3 +328,22 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+*.egg-info/
+cli/
+dependencies/
+target/
+dist/
+lib/
+libs/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+pybridge.so
+install_manifest.txt
+_doc_report.txt
+.pytest_cache/
+data.csv
+data.txt
+

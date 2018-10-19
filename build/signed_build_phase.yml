@@ -1,0 +1,67 @@
+parameters:
+  name: 'default_placeholder_for_name'
+  config: 'RlsWinPy3.6'
+
+phases:
+######### Only Windows binaries need to be signed ##############################
+- phase: ${{ parameters.name }}
+################################################################################
+  variables:
+    BuildConfig: ${{ parameters.config }}
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+    DOTNET_MULTILEVEL_LOOKUP: 0
+    _UseEsrpSigning: true
+  queue:
+    name: DotNetCore-Build
+    demands: 
+      - agent.os -equals Windows_NT
+  steps:
+  - task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@1
+    displayName: Install MicroBuild Signing Plugin
+    inputs:
+      signType: '$(_SignType)'
+      zipSources: false
+      esrpSigning: '$(_UseEsrpSigning)'
+    env:
+      TeamName: $(_TeamName)
+    continueOnError: false
+    condition: and(succeeded(), in(variables._SignType, 'real', 'test'))
+
+  - script: ./build.cmd --buildDotNetBridgeOnly --configuration $(BuildConfig)
+    displayName: Build DotNetBridgeOnly
+  
+  - task: MSBuild@1
+    displayName: Sign Windows Binaries (Restore project)
+    inputs:
+      solution: build/sign.csproj
+      msbuildArguments: /p:SignType=$(_SignType) /t:restore
+      msbuildVersion: 15.0
+    continueOnError: false
+
+  - task: MSBuild@1
+    displayName: Sign Windows Binaries (Build and Sign)
+    inputs:
+      solution: build/sign.csproj
+      msbuildArguments: /p:SignType=$(_SignType)
+      msbuildVersion: 15.0
+    continueOnError: false
+
+  - script: ./build.cmd --skipDotNetBridge --configuration $(BuildConfig)  --runTests
+    displayName: Build
+  
+  - task: CopyFiles@2
+    condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Copy wheel file to Staging Directory in preparation for publishing 
+    inputs:
+      SourceFolder: $(Build.SourcesDirectory)/target
+      Contents: nimbusml-*.whl
+      TargetFolder: $(Build.StagingDirectory)/artifacts
+
+  - task: PublishBuildArtifacts@1
+    condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Publish wheel file to VSTS artifacts
+    inputs:
+      pathToPublish: $(Build.StagingDirectory)/artifacts
+      artifactName: NimbusML Wheels
+      artifactType: container

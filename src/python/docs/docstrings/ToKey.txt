@@ -1,0 +1,45 @@
+    """
+
+    Text transforms that can be performed on data before training
+    a model.
+
+    .. remarks::
+        The ``ToKey`` transform converts a column of text to key values
+        using a dictionary. This operation can be reversed by using
+        :py:class:`FromKey <nimbusml.preprocessing.FromKey>` to obtain the
+        orginal values.
+        
+    :param columns: a dictionary of key-value pairs, where key is the output
+        column name and value is the input column name.
+
+        * Multiple key-value pairs are allowed.
+        * Input column type: numeric or string.
+        * Output column type:
+         `Key Type </nimbusml/concepts/types#keytype-columns>`_.
+        * If the output column names are same as the input column names, then
+        simply specify ``columns`` as a list of strings.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * ToKey(columns={'out1':'input1', 'out2':'input2'})
+         * ToKey() << {'out1':'input1', 'out2':'input2'}
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    .. seealso::
+        :py:class:`FromKey <nimbusml.preprocessing.FromKey>`,
+        :py:class:`OneHotHashVectorizer
+        <nimbusml.feature_extraction.categorical.OneHotHashVectorizer>`,
+        :py:class:`OneHotVectorizer
+        <nimbusml.feature_extraction.categorical.OneHotVectorizer>`,
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`.
+
+    .. index:: transform, preprocessing, text
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/ToKey.py
+              :language: python
+    """

@@ -1,0 +1,122 @@
+    """
+
+    Machine Learning One Class Support Vector Machines
+
+    .. remarks::
+        One-class SVM is an algorithm for anomaly detection. The goal of
+        anomaly
+        detection is to identify outliers that do not belong to some target
+        class.
+        This type of SVM is one-class because the training set contains only
+        examples from the target class. It infers what properties are normal
+        for
+        the objects in the target class and from these properties predicts
+        which examples are unlike the normal examples. This is useful for
+        anomaly
+        detection because the scarcity of training examples is the defining
+        character of anomalies: typically there are very few examples of
+        network
+        intrusion, fraud, or other types of anomalous behavior.
+
+
+        **Reference**
+    
+            `Wikipedia: Anomaly detection
+            <https://en.wikipedia.org/wiki/Anomaly_detection>`_
+    
+            `Microsoft Azure Machine Learning Studio: One-Class Support Vector
+            Machine <https://msdn.microsoft.com/en-
+            us/library/azure/dn913103.aspx>`_
+    
+            `Estimating the Support of a High-Dimensional Distribution
+            <http://research.microsoft.com/pubs/69731/tr-99-87.pdf>`_
+    
+            `New Support Vector Algorithms
+            <http://www.stat.purdue.edu/~yuzhu/stat598m3/Papers/NewSVM.pdf>`_
+    
+            `LIBSVM: A Library for Support Vector Machines
+            <https://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf>`_
+    
+
+    :param kernel: A character string representing the kernel used for
+        computing
+        inner products. The
+        following choices are available:
+
+        * :py:class:`rbf_kernel <nimbusml.svm.kernel.RbfKernel>`: Radial basis
+        function kernel. It's parameter
+          represents``gamma`` in the term ``exp(-gamma|x-y|^2``. If not
+          specified, it defaults to ``1`` divided by the number of features
+          used. For example, ``rbf_kernel(gamma = .1)``. This is the default
+          value.
+        * :py:class:`linear_kernel <nimbusml.svm.kernel.LinearKernel>`: Linear
+        kernel.
+        * :py:class:`polynomial_kernel <nimbusml.svm.kernel.PolynomialKernel>`:
+          Polynomial kernel with parameter names ``a``, ``bias``, and ``deg``
+        in
+          the term ``(a*<x,y> + bias)^deg``. The ``bias``, defaults to ``0``.
+          The degree, ``deg``, defaults to ``3``. If ``a`` is not specified,
+        it
+          is set to ``1`` divided by the number of features.
+        * :py:class:`sigmoid_kernel  <nimbusml.svm.kernel.SigmoidKernel>`:
+          Sigmoid kernel with parameter names
+          ``gamma`` and ``coef0`` in the term ``tanh(gamma*<x,y> + coef0)``.
+          ``gamma``, defaults to to ``1`` divided by the number of features.
+        The
+          parameter ``coef0`` defaults to ``0``.  For example,
+          ``sigmoid_kernel(gamma = .1, coef0 = 0)``.
+
+    :param epsilon: The threshold for optimizer convergence. If the
+        improvement between iterations is less than the threshold, the
+        algorithm
+        stops and returns the current model. The value must be greater than
+        or equal
+        to ``numpy.finfo(double).eps``. The default value is 0.001.
+    :param nu: The trade-off between the fraction of outliers and the number
+        of
+        support vectors (represented by the Greek letter nu). Must be between
+        0 and
+        1, typically between 0.1 and 0.5. The default value is 0.1.
+    :param shrink: Uses the shrinking heuristic if ``True``. In this case,
+        some samples will be "shrunk" during the training procedure, which
+        may speed
+        up training. The default value is ``True``.
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling insures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MaxMin`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
+
+    .. note::
+
+        This algorithm is single-threaded and will always attempt to load the
+        entire dataset into memory.
+
+    .. seealso::
+        :py:class:`linear_kernel <nimbusml.svm.kernel.LinearKernel>`,
+        :py:class:`polynomial_kernel <nimbusml.svm.kernel.PolynomialKernel>`,
+        :py:class:`rbf_kernel <nimbusml.svm.kernel.RbfKernel>`,
+        :py:class:`sigmoid_kernel <nimbusml.svm.kernel.SigmoidKernel>`.
+
+    .. index:: models, anomaly, detection
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/OneClassSvmAnomalyDetector.py
+              :language: python
+    """

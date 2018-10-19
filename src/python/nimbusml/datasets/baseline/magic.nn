@@ -1,0 +1,14 @@
+input i [3];
+output o [3] linear { // Depth 0
+  Biases = Biases_0;
+  from i where (s,d) => s[0] == d[0] { Weights = Weights_0; }
+}
+
+const Weights_0 = [
+  1, 1, 1
+];
+
+const Biases_0 = [
+  0, 0, 0
+];
+

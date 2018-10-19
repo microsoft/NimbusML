@@ -1,0 +1,52 @@
+    """
+
+    Extracts NGrams from text and convert them to vector using
+    dictionary.
+
+    .. remarks::
+        The :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>` transform produces a
+        bag of counts of
+        sequences of consecutive words, called n-grams, from a given corpus
+        of text.
+        There are two ways it can do this:
+
+        * build a dictionary of n-grams and use the id in the dictionary as
+        the index in the bag;
+        * hash each n-gram and use the hash value as the index in the bag.
+
+
+        This class provides the text extractor that implement the first. In
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`, users should
+        specify which text extractor to use as the argument.
+
+        The n-grams are represented as count vectors, with vector slots
+        corresponding to n-grams. Embedding ngrams in a vector
+        space allows their contents to be compared in an efficient manner.
+        The slot values in the vector can be weighted by the following
+        factors:
+
+        * *term frequency* - The number of occurrences of the slot in the
+        text
+        * *inverse document frequency* - A ratio (the logarithm of
+          inverse relative slot frequency) that measures the information a
+        slot
+          provides by determining how common or rare it is across the entire
+        text.
+        * *term frequency-inverse document frequency* - the product
+          term frequency and the inverse document frequency.
+
+    .. seealso::
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+        :py:class:`NgramHash
+        <nimbusml.feature_extraction.text.extractor.NgramHash>`
+
+
+    .. index:: transform, featurizer, text
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/NGramFeaturizer.py
+              :language: python
+    """

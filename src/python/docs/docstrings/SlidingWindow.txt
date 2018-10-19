@@ -1,0 +1,19 @@
+    """
+
+    Returns the last values for a time series [y(t-d-l+1), y(t-d-l+2),
+    ..., y(t-l-1), y(t-l)] where d is the size of the window, l the lag
+    and y is a Float.
+
+    .. seealso::
+        :py:func:`PercentileThreshold
+        <nimbusml.preprocessing.timeseries.PercentileThreshold>`,
+        :py:func:`Pvalue <nimbusml.preprocessing.timeseries.Pvalue>`,
+        :py:func:`ExponentialAverage
+        <nimbusml.preprocessing.timeseries.ExponentialAverage>`.
+
+    .. index:: models, timeseries, transform
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/SlidingWindowTransform.py
+              :language: python
+    """

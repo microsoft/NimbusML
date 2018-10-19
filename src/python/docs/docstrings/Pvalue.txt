@@ -1,0 +1,19 @@
+    """
+
+    This P-Value transform calculates the p-value of the current input in
+    the sequence with regard to the values in the sliding window.
+
+    .. seealso::
+        :py:func:`PercentileThreshold
+        <nimbusml.preprocessing.timeseries.PercentileThreshold>`,
+        :py:func:`ExponentialAverage
+        <nimbusml.preprocessing.timeseries.ExponentialAverage>`,
+        :py:func:`SlidingWindow
+        <nimbusml.preprocessing.timeseries.SlidingWindow>`.
+
+    .. index:: models, timeseries, transform
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/PvalueTransform.py
+              :language: python
+    """

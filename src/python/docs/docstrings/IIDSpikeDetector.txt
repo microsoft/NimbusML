@@ -1,0 +1,34 @@
+    """
+
+    This transform detects the spikes in a i.i.d. sequence using adaptive
+    kernel density estimation.
+
+    .. remarks::
+        ``IIDSpikeDetector`` assumes a sequence of data points that are
+        independently sampled from one stationary
+        distribution. `Adaptive kernel density estimation
+        <https://en.wikipedia.org/wiki/Variable_kernel_density_estimation>`_
+        is used to model the distribution.
+        The `p-value <https://en.wikipedia.org/wiki/P-value`_> score
+        indicates the likelihood of the current observation according to
+        the estimated distribution. The lower its value, the more likely the
+        current point is an outlier.
+
+    :param side: The argument that determines whether to detect positive or
+        negative anomalies, or both. Available options are {``Positive``,
+        ``Negative``, ``TwoSided``}.
+
+    .. seealso::
+        :py:func:`IIDChangePointDetector
+        <nimbusml.preprocessing.timeseries.IIDChangePointDetector>`,
+        :py:func:`SsaSpikeDetector
+        <nimbusml.preprocessing.timeseries.SsaSpikeDetector>`,
+        :py:func:`SsaChangePointDetector
+        <nimbusml.preprocessing.timeseries.SsaChangePointDetector>`.
+
+    .. index:: models, timeseries, transform
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/IidSpikePointDetector.py
+              :language: python
+    """

@@ -1,0 +1,28 @@
+    """
+
+    Selects a set of columns to retrain, dropping all others.
+
+    :param columns: a list of strings representing the column names to
+        perform the transformation on.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * ColumnSelector(columns=['education', 'age'])
+         * ColumnSelector() << ['education', 'age']
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    .. seealso::
+        :py:class:`ColumnConcatenator
+        <nimbusml.preprocessing.schema.ColumnConcatenator>`,
+        :py:class:`ColumnDropper
+        <nimbusml.preprocessing.schema.ColumnDropper>`.
+
+    .. index:: transform, schema
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/ColumnSelector.py
+              :language: python
+    """

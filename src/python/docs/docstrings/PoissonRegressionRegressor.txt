@@ -1,0 +1,61 @@
+    """
+
+    Train an Poisson regression model.
+
+    .. remarks::
+        `Poisson regression
+        <https://en.wikipedia.org/wiki/Poisson_regression>`_ is a
+        parameterized
+        regression method. It assumes that the log of the conditional mean of
+        the dependent variable follows a linear function of
+        the dependent variables. Assuming that the dependent variable follows
+        a Poisson distribution,
+        the parameters of the regressor can be estimated by maximizing the
+        likelihood of the obtained observations.
+
+
+        **Reference**
+    
+            `Poisson regression
+            <https://en.wikipedia.org/wiki/Poisson_regression>`_
+    
+
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling insures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MaxMin`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
+
+
+    .. seealso::
+        :py:func:`FastLinearRegressor
+        <nimbusml.linear_model.FastLinearRegressor>`,
+        :py:func:`OrdinaryLeastSquaresRegressor
+        <nimbusml.linear_model.OrdinaryLeastSquaresRegressor>`,
+        :py:func:`LightGbmRegressor <nimbusml.ensemble.LightGbmRegressor>`,
+        :py:func:`FastForestRegressor <nimbusml.ensemble.FastForestRegressor>`,
+        :py:func:`FastTreesRegressor <nimbusml.ensemble.FastTreesRegressor>`,
+        :py:func:`GamRegressor <nimbusml.ensemble.GamRegressor>`.
+
+    .. index:: models, regression, linear
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/PoissonRegressionRegressor.py
+              :language: python
+    """

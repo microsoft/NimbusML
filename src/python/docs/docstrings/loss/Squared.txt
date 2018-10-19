@@ -1,0 +1,38 @@
+"""
+Some of the trainers accept a loss parameter that will be used for
+training. It is also known as loss function, objective function, or
+optimization score function.
+
+
+.. remarks::
+	Losses can be specified either as a string or a loss object. When
+	loss is specified as one of these strings, the default values are
+	used for the loss parameters. To change the default parameters, a
+	loss object should be used, as seen in examples below.
+
+	Each trainer supports only a subset of the losses mentioned above.
+	To get the supported losses and the default loss, please refer to
+	the documentation page for the specific trainer.
+	The `Square loss
+	<https://en.wikipedia.org/wiki/K-means_clustering>`_
+	for regression.
+	This loss calculates L2 loss, which is the square of the root mean
+	square loss. Its string name is ``'squared'``.
+	
+	It can be used for :py:class:`FastLinearRegressor
+	<nimbusml.linear_model.FastLinearRegressor>`,
+	:py:class:`OnlineGradientDescentRegressor
+	<nimbusml.linear_model.OnlineGradientDescentRegressor>`.
+
+.. seealso::
+	:py:class:`Tweedie <nimbusml.loss.Tweedie>`
+	:py:class:`Poisson <nimbusml.loss.Poisson>`
+	`API Guide: Loss Functions </nimbusml/apiguide#loss-functions>`_
+
+Example:
+	.. literalinclude:: /../nimbusml/examples/Squared.py
+		:language: python
+
+
+.. index:: loss
+"""

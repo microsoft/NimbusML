@@ -1,0 +1,186 @@
+   """
+
+   **Description**
+
+   Executes a given lambda expression on input column values to produce an
+        output column value.
+
+
+   **Details**
+
+   The ``Expression`` transform applies a lambda function specified by the
+        `expression` argument to
+   the specified input columns, to either produce new output columns, or
+        simply replace the values
+   in the existing columns. For the full list of the functions/operators
+        supported by expression, please refer
+   to [Expression Tutorial](../tutorials/3-5.md).
+
+   Some examples:
+
+   * ``x : x / 2.0`` will divide all values in a column by 2.0
+   * ``x : x ?? 0`` will replace NaN values with zero
+   * ``x : float(isna(x))`` will be 1 or 0, depending on if value is NA
+   * ``(x, y) : x * cos(y)`` multiplies values in first column by cos() of
+        values in the second column
+   * ``(x, y, z) : (x > y + z) ? "majority" : "not_majority"`` takes 3
+        columns as input, and evaluates to
+      "majority" if first column values are greater than sum of other two
+        columns.
+
+
+   The `with` expression:
+
+   The `with` expression is useful when derived values are easier to work
+        with than the
+   original values. Use this expression to generate a named temporary
+        variable
+
+   Some examples:
+   * ``x : with ( f = x * 9 / 5 + 32; f < 60 ? "cold" : "warm" )`` converts
+        celsius to
+      fahrenheit before determining if it's cold or warm.
+   * ``(x, y) : with ( f = x + y; f > 4 ? "too big" : "too small" )`` sums up
+        values in
+      two columns x and y, and stores that value in variable f for
+        comparison.
+
+
+   Supported Operators:
+
+   * ``? :`` -  the conditional operator (e.g. (x > 1) ? 5.0 : 1.0 )
+   * ``??`` - the coalesce operator  (e.g. x ?? y  resolves to y if x is NA,
+        else x)
+   * ``||`` - logical or
+   * ``&&`` -  logical and
+   * ``==``, ``=`` - equals
+   * ``!=``, ``<>`` - not equals
+   * ``<``, ``<=``, less than or equal
+   * ``>``, ``>=``, greater than or equal
+   * ``+``, ``-``, addition and subtraction
+   * ``*``, ``/``, ``%``` - multiplication, subtraction and modulus
+   * ``-``, ``!``, ``not`` - numeric negation and logical not
+   * ``^``  - power
+   * ``( )`` - parenthetical grouping
+
+   Supported Functions:
+
+   NA handling:
+
+   All are unary functions.
+
+   * ``isna`` - returns boolean if values is a NA
+   * ``na`` - convert value to NA of same type (e.g. text or numeric)
+   * ``default`` - returns default value of that type (e.g. zero for numeric,
+        empty string for text)
+
+   Type conversion:
+
+   All are unary functions.
+
+   * ``bool`` - convert TX or BL type to BL
+   * ``int`` - convert BL, I4, I8, R4, R8 or TX types to I4
+   * ``long`` - convert BL, I4, I8, R4, R8 or TX types to I8
+   * ``single, float`` - convert BL, I4, I8, R4, R8 or TX types to R8
+   * ``double`` - convert BL, I4, I8, R4, R8 or TX types to R8
+   * ``text`` - convert BL, I4, I8, R4, R8 or TX types to TX
+
+   Sign operations:
+
+   Unary functions, accepting inputs of type I4, I8, R4, or R8.
+
+   * ``abs`` - absolute value
+   * ``sign`` - produces -1, 0 or 1 if the input is negative, zero or
+        positive
+
+   Comparison operations:
+
+   Binary functions accepting inputs of type I4, I8, R4, or R8.
+
+   * ``min`` - minimum of two values
+   * ``max`` - maximum of two values
+
+   Mathematical functions:
+
+   Unary functions for inputs of type R4 or R8
+
+   * ``sqrt`` - square root
+   * ``exp`` - e to power of operand
+   * ``ln`` - natural log
+
+   * ``sin`` - sine in radians
+   * ``sind`` - sine in degrees
+   * ``sinh`` - hyperbolic sine
+   * ``cos`` - cosine in radians
+   * ``cosd`` - cosine in degrees
+   * ``cosh`` - hyperbolic cosine
+   * ``tan`` - tangent in radians
+   * ``tand`` - tangent in degrees
+   * ``tanh`` - hyperbolic tangent
+   * ``asin`` - inverse sine
+   * ``acos`` - inverse cosine
+   * ``atan`` - inverse tangent
+
+   Binary functions for inputs of type R4 or R8.
+
+   * ``log`` - log using a given base (e.g. log(x, 10))
+   * ``atan2``, ``atanyx`` - determine angle between -pi and pi from given y
+        and x values. y is first operand.
+
+   Text functions:
+
+   * ``len`` - length of text value, returning I4.
+   * ``lower`` - map to lower case
+   * ``upper`` - map to upper case
+   * ``left(str, k)`` - returns characters in str to left of index position
+        k. k is I4, and if negative implies from end of string value.
+   * ``right(str, k)`` - similar to left(str, k), but returns chars to the
+        right of k.
+   * ``mid(str, k, j)`` - returns characters between positions k and j.
+   * ``concat(s1, s2, ..., sn)`` - returns concatenation of strings.
+
+        
+   :param columns: a dictionary of key-value pairs, where key is the output
+        column name and value is the input column name.
+
+       * Multiple key-value pairs are allowed.
+       * Input column type: numeric or string (or list of numeric or string)
+       * Output column type: type depends on lambda operation.
+       * If the output column names are same as the input column names, then
+        simply specify ``columns`` as a list of strings.
+
+       The << operator can be used to set this value (see
+	   `Column Operator </nimbusml/concepts/columns>`_)
+
+       For example:
+
+       * Expression(columns={'out1':'input1', 'out2':'input2'})
+       * Expression() << {'out1':'input1', 'out2':'input2'}
+
+       The expression transform supports column types R4 (single precision
+        floating point number), R8 (double precision
+       floating point number), I4 (4 byte integer), I8 (8 byte integer), BL
+        (boolean), and TX (text). It does not
+       currently support the date/time types, or key types. For more details
+        see `Columns </nimbusml/concepts/columns>`_.
+
+
+    .. seealso::
+       :py:class:`MinMaxScaler
+        <nimbusml.preprocessing.normalization.MinMaxScaler>`,
+       :py:class:`Binner <nimbusml.preprocessing.normalization.Binner>`,
+       :py:class:`SupervizedBinner
+        <nimbusml.preprocessing.normalization.SupervizedBinner>`,
+       :py:class:`OptionalScaler
+        <nimbusml.preprocessing.normalization.OptionalScaler>`,
+       :py:class:`LogMeanVarianceScaler
+        <nimbusml.preprocessing.normalization.LogMeanVarianceScaler>`,
+       :py:class:`GlobalContrastRowScaler
+        <nimbusml.preprocessing.normalization.GlobalContrastRowScaler>`.
+
+   .. index:: transform, preprocessing
+
+   Example:
+      .. literalinclude:: /../nimbusml/examples/Expression.py
+              :language: python
+   """

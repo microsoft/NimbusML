@@ -1,0 +1,88 @@
+Sentiment	Text	Label
+Negative	@faketwitterid I am sad	0
+Negative	@wakeup_you  It is a very simple twit I created	0
+Positive	@anotherfakeid I would love to see the latest movie	1
+Negative	Oh my ladygaga! I haven't played tennis for 2 weeks	0
+Positive	I am heading on a road trip and taking a few days off	1
+Negative	The food is not good	0
+Negative	Argh. The movie is terrible	0
+Negative	argh I am dying sitting here	0
+Negative	ARGH why did the linux people have to call their task scheduler &quot;at&quot;? Makes it impossible to search for help with	0
+Negative	Argh! After a long drive, we finally got home. It was exhausted 	0
+Negative	argh! I have too much work to do	0
+Negative	argh!! My fingers are numb	0
+Negative	There is something wrong with the UI for the website	0
+Negative	I got 404 errors!!! 	0
+Negative	I hope the UI for that app can be much better!	0
+Negative	Argh. Where is my car key!!!!	0
+Negative	The music is too loud!!!	0
+Negative	I neeeeeeeeeeeeeeeed more sleep	0
+Negative	My parents-in-law are staying for 3 monthe! 	0
+Negative	Why so many people	0
+Negative	I am not goint to that party	0
+Positive	I like the food! Give me some more please	1
+Positive	Nailed it!	1
+Positive	Best moview so far	1
+Positive	I like your perfume	1
+Negative	Arr! twitter is not updating my profile	0
+Negative	Arr! Is it Monday already	0
+Negative	I am working on day tomorrow	0
+Negative	I have never seen such a bad movie	0
+Negative	I will give him bad reviews definetly	0
+Negative	I was at the airport and he told me that he forgot his passport 	0
+Negative	I am still so sleepy	0
+Negative	Can someone help me with this clock	0
+Negative	The breakfast in this model is hard to swallow	0
+Negative	Finally got an uber but my phone died	0
+Negative	ARRIVING AT WORK ALREADY	0
+Negative	I need a new iphone. This one completely died	0
+Negative	Oh I'm screwed totally. 	0
+Negative	I should have put on sunscreen	0
+Positive	The furniture looks great. I would go there more often	1
+Positive	Thanks for the great event! I enjoyed it very much	1
+Positive	Another MVP for Steven Curry!	1
+Negative	I would be heathier without you	0
+Negative	As much as I have tried to save money, it still costs a lot 	0
+Negative	As much as I would love to go, I have no time 	0
+Negative	As much I would have been gathered, I have no savings 	0
+Negative	As of yesterday, the stock plunged	0
+Negative	As of yesterday, my stock is not making any profit for me 	0
+Positive	As of today I am letting you go 	1
+Negative	As summer comes, the weather would become much intolerable 	0
+Positive	As being said, the new movie of him is worth the money	1
+Negative	She is at work the whole day	0
+Positive	I like their product	1
+Positive	Chocolate should definetly be bought in the country	1
+Negative	He would never go to Italy	0
+Positive	I will give you my phone number	1
+Negative	Can you check the printer? It is not printing anything	0
+Negative	Ask contact us usually means nothing	0
+Negative	I have been waiting for two hours!	0
+Negative	Asks how you want the phone, how much you want to pay for it! It is so expensive	0
+Positive	Oh I am almost finished!	1
+Positive	He created a very nice demo yesterday to show off the product	1
+Negative	It is nice outside, but we have so much to do	0
+Negative	Loading....	0
+Positive	I am looking foward to it	1
+Positive	We will meet in 20 years	1
+Negative	Oh damn, I am late	0
+Positive	Olala, here you are	1
+Negative	I drank too much yesterday. Dizzy!	0
+Positive	At a great party	1
+Positive	Having fun	1
+Positive	Finally got home sweet home	1
+Positive	Paradise, paradise, paradise	1
+Positive	you should definetly try their icecream	1
+Negative	I hate the food	0
+Positive	The kids' food is nice	1
+Positive	You find find everything you want at his shop	1
+Positive	At hoem with my cat	1
+Negative	At mom's, eating too much. Need to rest	0
+Negative	10 years later, we are still not good with each other	0
+Negative	still 20 left? OMG	0
+Negative	I will miss the latest episode! I don't want to stay	0
+Negative	I don't want to get up	0
+Positive	It has been a pleasure	1
+Negative	We lost to Italy	0
+Positive	I like the swim class. It is helpful	1
+

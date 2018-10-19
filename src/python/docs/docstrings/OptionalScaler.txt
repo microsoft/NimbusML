@@ -1,0 +1,38 @@
+    """
+
+    Normalizes columns if needed.
+
+    .. remarks::
+        TOBADDED.
+
+    :param columns: a dictionary of key-value pairs, where key is the output
+        column name and value is the input column name.
+
+        * Multiple key-value pairs are allowed.
+        * Input column type: numeric or `Vector Type </nimbusml/concepts/types#vectortype-column>`_.
+        * Output column type: `Vector Type </nimbusml/concepts/types#vectortype-column>`_.
+        * If the output column names are same as the input column names, then
+        simply specify ``columns`` as a list of strings.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * OptionalScaler(columns={'out1':'input1', 'out2':'input2'})
+         * OptionalScaler() << {'out1':'input1', 'out2':'input2'}
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    .. seealso::
+        :py:class:`MinMaxScaler <nimbusml.preprocessing.normalization.MinMaxScaler>`,
+        :py:class:`Binner <nimbusml.preprocessing.normalization.Binner>`,
+        :py:class:`MeanVarianceScaler <nimbusml.preprocessing.normalization.MeanVarianceScaler>`,
+        :py:class:`LogMeanVarianceScaler <nimbusml.preprocessing.normalization.LogMeanVarianceScaler>`,
+        :py:class:`GlobalContrastRowScaler <nimbusml.preprocessing.normalization.GlobalContrastRowScaler>`.
+
+    .. index:: normalize, preprocessing
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/OptionalScaler.py
+              :language: python
+    """

@@ -1,0 +1,25 @@
+    """
+
+    Text transforms that can be performed on data before training
+    a model.
+
+    .. remarks::
+        The ``FromKey`` transform converts a column of keys, generated using
+        :py:class:`ToKey <nimbusml.preprocessing.ToKey>`, to their original
+        values.
+ 
+    .. seealso::
+        :py:class:`ToKey <nimbusml.preprocessing.ToKey>`,
+        :py:class:`OneHotHashVectorizer
+        <nimbusml.feature_extraction.categorical.OneHotHashVectorizer>`,
+        :py:class:`OneHotVectorizer
+        <nimbusml.feature_extraction.categorical.OneHotVectorizer>`,
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+
+    .. index:: transform, preprocessing, text
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/FromKey.py
+              :language: python
+    """

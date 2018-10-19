@@ -1,0 +1,21 @@
+    """
+
+    Apply radial basis function. exp(-gamma*|x-y|^2).
+
+    .. remarks::
+        `Radial basis function kernel (RBF kernel)
+        <https://en.wikipedia.org/wiki/Radial_basis_function_kernel>`_ is a
+        kernel function
+        that computes the similarity between two features. It is the most
+        commonly used kernel in support vector machines.
+
+    .. seealso::
+        :py:func:`LinearKernel <nimbusml.svm.kernel.LinearKernel>`,
+        :py:func:`PolynomialKernel <nimbusml.svm.kernel.PolynomialKernel>`,
+        :py:func:`SigmoidKernel <nimbusml.svm.kernel.SigmoidKernel>`,
+        :py:func:`OneClassSvmAnomalyDetector
+        <nimbusml.svm.OneClassSvmAnomalyDetector>`
+
+    .. index:: svm, kernel
+
+    """

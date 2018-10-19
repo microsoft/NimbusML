@@ -1,0 +1,42 @@
+    """
+
+    Filters a dataview on a column of type Single, Double or Key
+    (contiguous).
+    Keeps the values that are in the specified min/max range. 
+    NaNs are always filtered out. 
+    If the input is a Key type, the min/max are considered percentages of
+    the number of values.
+
+    :param columns: a string representing the column name to perform the
+        transformation on.
+
+        * Input column type: numeric.
+        * Output column type: numeric.
+
+        The << operator can be used to set this value (see
+        `Column Operator </nimbusml/concepts/columns>`_)
+
+        For example
+         * RangeFilter(columns='age')
+         * RangeFilter() << {'age'}
+
+        For more details see `Columns </nimbusml/concepts/columns>`_.
+
+    :param min: Minimum value (0 to 1 for key types).
+
+    :param max: Maximum value (0 to 1 for key types).
+
+    :param complement: If true, keep the values that fall outside the range.
+
+    :param include_min: If true, include in the range the values that are
+        equal to min.
+
+    :param include_max: If true, include in the range the values that are
+        equal to max.
+
+    .. index:: transform, random
+	
+    Example:
+       .. literalinclude:: /../nimbusml/examples/RangeFilter.py
+              :language: python
+    """

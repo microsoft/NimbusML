@@ -1,0 +1,25 @@
+    """
+
+    Remover with predefined list of stop words.
+
+    .. remarks::
+        The :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>` transform produces a
+        bag of counts of
+        sequences of consecutive words from a given corpus of text.
+        It also offers stopwords removing. A precompiled language-specific
+        lists of stop words is used in this class that includes the most
+        common words from Microsoft Office.
+
+    .. seealso::
+        :py:class:`NGramFeaturizer
+        <nimbusml.feature_extraction.text.NGramFeaturizer>`,
+        :py:class:`CustomStopWordsRemover
+        <nimbusml.feature_extraction.text.stopwords.CustomStopWordsRemover>`,
+
+    .. index:: transform, featurizer, text
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/NGramFeaturizer.py
+              :language: python
+    """

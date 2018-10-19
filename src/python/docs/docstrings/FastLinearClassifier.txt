@@ -1,0 +1,110 @@
+    """
+
+    Train an SDCA multi class model
+
+    .. remarks::
+        ``FastLinearClassifier`` is a trainer based on the Stochastic Dual
+        Coordinate Ascent (SDCA) method, a state-of-the-art optimization
+        technique for convex objective functions. The algorithm can be scaled
+        for use on large out-of-memory data sets due to a semi-asynchronized
+        implementation that supports multi-threading. Convergence is
+        underwritten by periodically enforcing synchronization between primal
+        and dual updates in a separate thread. Several choices of loss
+        functions
+        are also provided. The SDCA method combines several of the best
+        properties and capabilities of logistic regression and SVM
+        algorithms.
+        For more information on SDCA, see the citations in the reference
+        section.
+
+        Traditional optimization algorithms, such as stochastic gradient
+        descent
+        (SGD), optimize the empirical loss function directly. The SDCA
+        chooses a
+        different approach that optimizes the dual problem instead. The dual
+        loss function is parameterized by per-example weights. In each
+        iteration,
+        when a training example from the training data set is read, the
+        corresponding example weight is adjusted so that the dual loss
+        function
+        is optimized with respect to the current example. No learning rate is
+        needed by SDCA to determine step size as is required by various
+        gradient
+        descent methods.
+
+        ``FastLinearClassifier`` supports classification with three types of
+        loss functions
+        currently: Log loss, hinge loss, and smoothed hinge loss. Elastic net
+        regularization can be
+        specified by the ``l2_weight`` and ``l1_threshold`` parameters. Note
+        that the ``l2_weight`` has
+        an effect on the rate of convergence. In general, the larger the
+        ``l2_weight``, the faster
+        SDCA converges.
+
+        Note that ``FastLinearClassifier`` is a stochastic and streaming
+        optimization
+        algorithm. The results depends on the order of the training data. For
+        reproducible results, it is recommended that one sets ``shuffle`` to
+        ``False`` and ``train_threads`` to ``1``.
+
+
+        **Reference**
+    
+            `Scaling Up Stochastic Dual Coordinate Ascent
+            <https://www.microsoft.com/en-us/research/wp-
+            content/uploads/2016/06/main-3.pdf>`_
+    
+            `Stochastic Dual Coordinate Ascent Methods for Regularized Loss
+            Minimization <http://www.jmlr.org/papers/volume14/shalev-
+            shwartz13a/shalev-shwartz13a.pdf>`_
+    
+
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param loss: The default is :py:class:`'log' <nimbusml.loss.Log>`. Other
+        choices are
+        :py:class:`'hinge' <nimbusml.loss.Hinge>`
+        and :py:class:`'smoothed_hinge'
+        <nimbusml.loss.SmoothedHinge>`. For more information, please see the
+        documentation
+        page about losses, [Loss](xref:nimbusml.loss).
+
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling insures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MaxMin`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
+
+
+    .. seealso::
+        :py:class:`FastLinearRegressor
+        <nimbusml.linear_model.FastLinearRegressor>`,
+        :py:class:`FastLinearBinaryClassifier
+        <nimbusml.linear_model.FastLinearBinaryClassifier>`
+
+
+    .. index:: models, linear, SDCA, stochastic, classification, regression
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/FastLinearClassifier.py
+              :language: python
+    """

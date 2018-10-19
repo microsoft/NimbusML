@@ -1,0 +1,35 @@
+    """
+
+    Dropouts meet Multiple Additive Regresion Trees. 
+
+    .. remarks::
+        `Multiple Additive Regression Trees (MART)
+        <https://arxiv.org/abs/1505.01866>`_ is an
+        ensemble method of boosted regression trees. The Dropouts meet
+        Multiple Additive Regression
+	Trees (DART) employs dropouts in MART and overcomes the issues of over-
+        specialization of MART,
+	achiving better performance in many tasks.
+
+
+        **Reference**
+    
+            `https://arxiv.org/abs/1505.01866
+            <https://arxiv.org/abs/1505.01866>`_
+    
+
+    .. seealso::
+        :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`,
+        :py:func:`Goss <nimbusml.ensemble.booster.Goss>`,
+        :py:func:`LightGbmBinaryClassifier
+        <nimbusml.ensemble.LightGbmBinaryClassifier>`,
+        :py:func:`LightGbmClassifier <nimbusml.ensemble.LightGbmClassifier>`,
+        :py:func:`LightGbmRanker <nimbusml.ensemble.LightGbmRanker>`,
+        :py:func:`LightGbmRegressor <nimbusml.ensemble.LightGbmRegressor>`
+
+    .. index:: ensemble, booster
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/LightGbmClassifier.py
+              :language: python
+    """

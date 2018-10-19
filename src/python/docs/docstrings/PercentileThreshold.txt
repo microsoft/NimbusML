@@ -1,0 +1,18 @@
+    """
+
+    Detects the values of time-series that are in the top percentile of
+    the sliding window.
+
+    .. seealso::
+        :py:func:`ExponentialAverage
+        <nimbusml.preprocessing.timeseries.ExponentialAverage>`,
+        :py:func:`Pvalue <nimbusml.preprocessing.timeseries.Pvalue>`,
+        :py:func:`SlidingWindow
+        <nimbusml.preprocessing.timeseries.SlidingWindow>`.
+
+    .. index:: models, timeseries, transform
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/PercentileThresholdTransform.py
+              :language: python
+    """

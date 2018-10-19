@@ -1,0 +1,23 @@
+    """
+
+    TreeFeaturizer.
+
+    .. remarks::
+        Trains a tree ensemble, or loads it from a file, then maps a numeric
+        feature vector to three outputs:
+
+        * A vector containing the individual tree outputs of the tree
+          ensemble.
+        * A vector indicating the leaves that the feature vector falls on in
+          the tree ensemble.
+        * A vector indicating the paths that the feature vector falls on in
+          the
+          tree ensemble. If a both a model file and a trainer are specified,
+          will use the model file. If neither are specified, will train a
+          default FastTree model. This can handle key labels by training a
+          regression model towards their optionally permuted indices.
+
+    .. seealso::
+        :py:class:`TensorFlowScorer
+        <nimbusml.preprocessing.TensorFlowScorer>`
+    """

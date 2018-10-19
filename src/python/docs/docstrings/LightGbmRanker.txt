@@ -1,0 +1,39 @@
+    """
+
+    Gradient Boosted Decision Trees
+
+    .. remarks::
+        Light GBM is an open source implementation of boosted trees. It is
+        available in nimbusml as a binary classification trainer, a multi-class
+        trainer, a regression trainer and a ranking trainer. Note that for
+        this learner,
+        we constraint the largest rank to be 12. Users might need to
+        normalize their label
+        columns for the rank, else may get "out of bound" errors.
+
+
+        **Reference**
+    
+            `GitHub: LightGBM <https://github.com/Microsoft/LightGBM/wiki>`_
+    
+
+    :param booster: Which booster to use. Available options are:
+
+        #. :py:func:`Dart <nimbusml.ensemble.booster.Dart>`
+        #. :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`
+        #. :py:func:`Goss <nimbusml.ensemble.booster.Goss>`
+
+    .. seealso::
+        :py:class:`FastTreesBinaryClassifier
+        <nimbusml.ensemble.FastTreesBinaryClassifier>`,
+        :py:class:`FastForestRegressor <nimbusml.ensemble.FastForestRegressor>`,
+        :py:func:`Dart <nimbusml.ensemble.booster.Dart>`,
+        :py:func:`Goss <nimbusml.ensemble.booster.Goss>`,
+        :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`
+
+    .. index:: models, classification, regression
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/LightGbmRanker.py
+              :language: python
+    """

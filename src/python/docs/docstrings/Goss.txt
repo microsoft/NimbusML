@@ -1,0 +1,36 @@
+    """
+
+    Gradient-based One-Side Sampling.
+
+    .. remarks::
+        Gradient-based One-Side Sampling (GOSS) employs an adaptive sampling
+        named gradient-based
+	sampling. For datasets with large sample size, GOSS has considerable
+        advantage in terms of
+	statistical and computational efficiency.	
+
+
+
+        **Reference**
+    
+            `https://papers.nips.cc/paper/6579-gradient-based-sampling-an-
+            adaptive-importance-sampling-for-least-squares.pdf
+            <https://papers.nips.cc/paper/6579-gradient-based-sampling-an-
+            adaptive-importance-sampling-for-least-squares.pdf>`_
+    
+
+    .. seealso::
+        :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`,
+        :py:func:`Dart <nimbusml.ensemble.booster.Dart>`,
+        :py:func:`LightGbmBinaryClassifier
+        <nimbusml.ensemble.LightGbmBinaryClassifier>`,
+        :py:func:`LightGbmClassifier <nimbusml.ensemble.LightGbmClassifier>`,
+        :py:func:`LightGbmRanker <nimbusml.ensemble.LightGbmRanker>`,
+        :py:func:`LightGbmRegressor <nimbusml.ensemble.LightGbmRegressor>`
+
+    .. index:: ensemble, booster
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/LightGbmBinaryClassifier.py
+              :language: python
+    """

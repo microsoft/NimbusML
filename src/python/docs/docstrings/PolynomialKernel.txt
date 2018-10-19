@@ -1,0 +1,23 @@
+    """
+
+     Apply polinomial function. a*<x,y>+b)^d.
+
+    .. remarks::
+        `PolynomialKernel <https://en.wikipedia.org/wiki/Polynomial_kernel>`_
+        is a kernel function
+        that computes the similarity between two features. It is commonly
+        used in support vector machines.
+
+    .. seealso::
+        :py:func:`LinearKernel <nimbusml.svm.kernel.LinearKernel>`,
+        :py:func:`RbfKernel <nimbusml.svm.kernel.RbfKernel>`,
+        :py:func:`SigmoidKernel <nimbusml.svm.kernel.SigmoidKernel>`,
+        :py:func:`OneClassSvmAnomalyDetector
+        <nimbusml.svm.OneClassSvmAnomalyDetector>`
+
+    .. index:: svm, kernel
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/OneClassSVMAnomalyDetector.py
+              :language: python
+    """
