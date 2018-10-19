@@ -9,8 +9,6 @@ Evaluation Metrics
 
 .. index:: evaluation metrics
 
-.. contents::
-    :local:
 
 
 Metrics from Pipeline.test()
