@@ -64,7 +64,7 @@ operations.
 Optimized Chaining of Trainers/Transforms
 """""""""""""""""""""""""""""""""""""""""
 
-Using ``nimbusml``, trainers and transforms within a :py:class:`nimbusml.Pipeline` will
+Using NimbusML, trainers and transforms within a :py:class:`nimbusml.Pipeline` will
 generally result in better performance compared to using them in a
 `sklearn.Pipeline <http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_.
 Data copying is minimized when processing is limited to within the C# libraries, and if all

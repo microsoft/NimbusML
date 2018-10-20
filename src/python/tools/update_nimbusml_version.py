@@ -9,7 +9,7 @@ update ML.NET version
 
 # run this file to update the ML.NET version in all the necessary files:
 #   * double click it in File Explorer, or
-#   * run it directly on Command Prompt, e.g., !python update_mlnet_version.py
+#   * run it directly on Command Prompt, e.g., !python update_nimbusml_version.py
 # see the bottom section of this file for details about this updating process.
 
 import os

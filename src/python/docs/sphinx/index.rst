@@ -9,7 +9,7 @@ ML.NET for Python
 Getting Started
 ===============
 
-``nimbusml`` is a Python module that provides experimental Python bindings for [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet). 
+NimbusML is a Python module that provides experimental Python bindings for [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet). 
 It provides battle-tested state-of-the-art ML algorithms, transforms and components,
 aiming to make them useful for all developers, data scientists, and information
 workers and helpful in all products, services and devices. The components are
@@ -18,21 +18,21 @@ Bing and other teams at Microsoft.
 
 ``nimbusml`` is interoperable with ``scikit-learn`` estimators and transforms, while adding 
 a suite of highly optimized algorithms written in C++ and C# for speed and performance. 
-``nimbusml`` trainers and transforms support the following data structures for the ``fit()`` and ``transform()`` methods:
+NimbusML trainers and transforms support the following data structures for the ``fit()`` and ``transform()`` methods:
 
 * ``numpy.ndarray`` 
 * ``scipy.sparse_cst``
 * ``pandas.DataFrame``.
    
-In addition, ``nimbusml`` also supports streaming from files without loading the dataset
+In addition, NimbusML also supports streaming from files without loading the dataset
 into memory, which allows training on data significantly 
 exceeding memory using [``FileDataStream``](docs-ref-autogen/nimbusml.FileDataStream.yml).
 
-With [``FileDataStream``](docs-ref-autogen/nimbusml.FileDataStream.yml), ``nimbusml`` is able to handle
+With [``FileDataStream``](docs-ref-autogen/nimbusml.FileDataStream.yml), NimbusML is able to handle
 up to **billion** features and **billions** of training examples for select algorithms.
 
 
-``nimbusml`` can be easily used for the following problems:
+NimbusML can be easily used for the following problems:
 
 .. image:: _static/images/examples1.png
       :target: tutorials/1-3.md

@@ -14,7 +14,7 @@ Column Roles for Trainers
 Roles and Learners
 ------------------
 
-Columns play different roles in the context of trainers. ``nimbusml`` supports the following roles, as defined in :py:class:`nimbusml.Role`
+Columns play different roles in the context of trainers. NimbusML supports the following roles, as defined in :py:class:`nimbusml.Role`
 
 * Role.Label - the column representing the dependent variable.
 * Role.Feature - the column(s) representing the independent variable(s).
@@ -126,7 +126,7 @@ Example of GroupId Role
 
 Same goes for the group. Rankers needs the GroupId to link rows to rank. A ranker for search engine needs a
 dataset with a row per displayed result. The GroupId is ued to tell the learner which results belong to the
-same query, to group together the candidate set of documents for a single query. ``nimbusml`` needs features,
+same query, to group together the candidate set of documents for a single query. NimbusML needs features,
 a target (relevance label of the result) and a GroupId.
 
 Below is an example of using GroupId at the trainer.

@@ -216,7 +216,7 @@ class TestMetrics(unittest.TestCase):
             err_msg="AvgMinScore  should be %s" %
                     0.014)
 
-    @unittest.skip('ML.Net does not have svm')
+    @unittest.skip('ML.NET does not have svm')
     def test_metrics_evaluate_anomalydetection(self):
         np.random.seed(0)
         df = get_dataset("iris").as_df().drop(['Label', 'Species'], axis=1)
@@ -441,9 +441,9 @@ class TestMetrics(unittest.TestCase):
         aucsksc = auc(recall, precision)
         print(aucnimbusml, aucskpr, aucsksc)
         assert aucskpr == aucsksc
-        # MLNET: 0.980114
+        # ML.NET: 0.980114
         # SKL: 0.9667731012859688
-        # MLNET computes the AUC as the probability that the score
+        # ML.NET computes the AUC as the probability that the score
         # for a positive example is higher than the score for a negative
         # example.
         # https://github.com/dotnet/machinelearning/blob/master/src/
