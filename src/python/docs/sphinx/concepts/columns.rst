@@ -17,7 +17,7 @@ How To Select Columns to Transform
 ``transform()`` and ``fit_transform()`` methods of trainers and transforms. By default, all
 columns are transformed equally.
 
-``nimbusml`` additionally provides a syntax to transform only a subset of columns. This is a useful
+NimbusML additionally provides a syntax to transform only a subset of columns. This is a useful
 feature for many transforms, especially when the dataset containts columns of mixed types. For
 example, a dataset with both numeric features and free text features. Similarly for trainers, the
 concept of :ref:`roles` provides a mechanism to select which columns to use as labels and features.
@@ -55,7 +55,7 @@ What if we only want to encode one of the columns? We simply use the ``<<`` oper
 transform to restrict operations to the columns of interest. The ``<<`` operatator is syntactic
 sugar for setting the ``columns`` argument of the transform.
 
-All transforms in ``nimbusml`` have an implicit ``columns`` parameter to tell which columns to process,
+All transforms in NimbusML have an implicit ``columns`` parameter to tell which columns to process,
 and optionally how to name the output columns, if any. Refer to the reference sections for each
 transform to see what format is allowed for the ``columns`` argument.
 
