@@ -55,7 +55,7 @@ phases:
     displayName: Copy wheel file to Staging Directory in preparation for publishing 
     inputs:
       SourceFolder: $(Build.SourcesDirectory)/target
-      Contents: mlnet-*.whl
+      Contents: nimbusml-*.whl
       TargetFolder: $(Build.StagingDirectory)/artifacts
 
   - task: PublishBuildArtifacts@1
@@ -63,5 +63,5 @@ phases:
     displayName: Publish wheel file to VSTS artifacts
     inputs:
       pathToPublish: $(Build.StagingDirectory)/artifacts
-      artifactName: Mlnet Wheels
+      artifactName: NimbusML Wheels
       artifactType: container

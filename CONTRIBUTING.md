@@ -6,9 +6,9 @@ If you are here, it means you are interested in helping us out. A hearty welcome
 * Give us feedback and bug reports regarding the software or the documentation.
 * Improve our examples, tutorials, and documentation.
 
-### mlnet and ML.NET
+### NimbusML and ML.NET
 
-`mlnet` provides Python bindings for the [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) library of machine learning algorithms. If you would like to contribute to the underlying library of algorithms, please check out [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet).  If you would like to contribute to the `mlnet` python bindings project, please read on.
+NimbusML provides Python bindings for the [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) library of machine learning algorithms. If you would like to contribute to the underlying library of algorithms, please check out [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet).  If you would like to contribute to the NimbusML python bindings project, please read on.
 
 ## New Contributers
 
