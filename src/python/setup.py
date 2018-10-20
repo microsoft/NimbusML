@@ -56,7 +56,7 @@ setup(
 
     # Author details
     author='Microsoft',
-    author_email='pytlc@microsoft.com',
+    author_email='nimbusml@microsoft.com',
 
     # Choose your license
     license='All rights reserved',
