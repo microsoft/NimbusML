@@ -26,11 +26,16 @@ phases:
     - script: $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
+<<<<<<< HEAD
     - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb mono-libgdiplus gettext && brew link gettext --force
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
+=======
+    - script: brew install gcc
+    - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
+>>>>>>> Manually copied naming changes over from master.
   # Linux phases
   - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7')) }}:
     - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
