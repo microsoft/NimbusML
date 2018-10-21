@@ -57,7 +57,7 @@ This corresponds to evaltype='binary'.
     The computed AUC is defined as the probability that the score
     for a positive example is higher than the score for a negative one
     (see `AucAggregator.cs <https://github.com/dotnet/machinelearning/blob/master/src/Microsoft.ML.Data/Evaluators/AucAggregator.cs#L135>`_
-    in `ML.net <https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet>`_).
+    in `ML.NET <https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet>`_).
     This expression is asymptotically equivalent to the area under the curve
     which is what
     `scikit-learn <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html>`_ computation.

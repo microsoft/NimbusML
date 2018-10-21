@@ -102,7 +102,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
             err_msg="NMI loss should be %s" %
                     0.36840763005544264)
 
-    @unittest.skip("BUG: Not included in Ml.net yet")
+    @unittest.skip("BUG: Not included in ML.NET yet")
     def test_score_anomalydetection(self):
         np.random.seed(0)
         df = get_dataset("iris").as_df().drop(['Label', 'Species'], axis=1)

@@ -3,7 +3,7 @@
 import pandas
 from nimbusml import Pipeline
 from nimbusml.feature_extraction.text import WordEmbedding
-from nimbusml.feature_extraction.text import NGramFeaturizer
+from nimbusml.feature_extraction.text.ngramfeaturizer import NGramFeaturizer
 from nimbusml.feature_extraction.text.extractor import Ngram
 
 # create the data

@@ -449,7 +449,7 @@ PredictedProba|<f2> Score",shape=record,fontsize=8];
         assert out == ['PredictedLabel', 'Score.0', 'Score.1', 'Score.2']
         assert len(scores) == 9
 
-    @unittest.skip('ML.Net does not have svm')
+    @unittest.skip('ML.NET does not have svm')
     def test_get_fit_info_anomaly(self):
         df = get_dataset("iris").as_df()
         df.drop(['Label', 'Setosa', 'Species'], axis=1, inplace=True)

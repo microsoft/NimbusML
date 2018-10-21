@@ -19,7 +19,7 @@ analyze = Sentiment() << 'review'
 # No need to fit any real data, just a dummy call to fit() to ensure the
 # column name 'review' is present when transform() is invoked
 
-# Skip until ML.Net resolve the resouce issue with Sentiment transform
+# Skip until ML.NET resolve the resouce issue with Sentiment transform
 # y = analyze.fit_transform(customer_reviews)
 
 # View the sentiment scores!!
