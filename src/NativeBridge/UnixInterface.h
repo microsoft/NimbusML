@@ -14,9 +14,9 @@
 
 #define NATIVE_BRIDGE_LIB "/pybridge.so"
 #ifdef __APPLE__
-#define CORECLR_LIB "libcoreclr.dylib"
+#define CORECLR_LIB "/libcoreclr.dylib"
 #else
-#define CORECLR_LIB "libcoreclr.so"
+#define CORECLR_LIB "/libcoreclr.so"
 #endif
 
 #define CORECLR_INIT "coreclr_initialize"
