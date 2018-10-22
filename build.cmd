@@ -140,7 +140,7 @@ if "%BuildDotNetBridgeOnly%" == "True" (
     exit /b %ERRORLEVEL%
 )
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
-call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force --self-contained -r win-x64 -c %Configuration%
+call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force -r win-x64 -c %Configuration%
 
 echo ""
 echo "#################################"
@@ -258,6 +258,25 @@ if %PythonVersion% == 3.6 (
 echo Placing binaries in libs dir for wheel packaging
 echo dummy > excludedfileslist.txt
 echo .exe >> excludedfileslist.txt
+echo System. >> excludedfileslist.txt
+echo api-ms-win >> excludedfileslist.txt
+echo sos >> excludedfileslist.txt
+echo mscor >> excludedfileslist.txt
+echo netstandard >> excludedfileslist.txt
+echo clrcompression >> excludedfileslist.txt
+echo clretwrc >> excludedfileslist.txt
+echo clrjit >> excludedfileslist.txt
+echo coreclr >> excludedfileslist.txt
+echo dbgshim >> excludedfileslist.txt
+echo hostpolicy >> excludedfileslist.txt
+echo hostfxr >> excludedfileslist.txt
+echo Microsoft.CSharp >> excludedfileslist.txt
+echo Microsoft.Win32.Primitives >> excludedfileslist.txt
+echo Microsoft.DiaSymReader.Native.amd64 >> excludedfileslist.txt
+echo Microsoft.VisualBasic >> excludedfileslist.txt
+echo Microsoft.Win32.Registry >> excludedfileslist.txt
+echo ucrtbase.dll >> excludedfileslist.txt
+echo WindowsBase.dll >> excludedfileslist.txt
 if "%DebugBuild%" == "False" (
     echo .pdb >> excludedfileslist.txt
     echo .ipdb >> excludedfileslist.txt

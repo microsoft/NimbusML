@@ -10,9 +10,9 @@
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
 #define PARAM_NIMBUSML_PATH "nimbusmlPath"
+#define PARAM_DOTNETCLR_PATH "dotnetClrPath"
 #define PARAM_DATA "data"
 
-#define WIN_FOLDER L"\\Win"
 
 enum FnId
 {
@@ -44,14 +44,14 @@ static MlNetInterface *g_mlnetInterface = nullptr;
 static GENERICEXEC g_exec = nullptr;
 
 // Ensure that we have the DotNetBridge managed code entry point.
-GENERICEXEC EnsureExec(const char *path, const char *coreclrpath)
+GENERICEXEC EnsureExec(const char *nimbuslibspath, const char *coreclrpath)
 {
 	if (g_mlnetInterface == nullptr)
 		g_mlnetInterface = new MlNetInterface();
 
 	if (g_exec == nullptr)
 	{
-		FNGETTER getter = g_mlnetInterface->EnsureGetter(path, coreclrpath);
+		FNGETTER getter = g_mlnetInterface->EnsureGetter(nimbuslibspath, coreclrpath);
 		if (getter != nullptr)
 			g_exec = (GENERICEXEC)getter(FnIdGenericExec);
 	}
@@ -70,26 +70,21 @@ bp::dict pxCall(bp::dict& params)
 	try
 	{
 		bp::extract<std::string> graph(params[PARAM_GRAPH]);
-		bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
-		bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
+        bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
+        bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
+        bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
 		std::int32_t i_verbose = std::int32_t(verbose);
 		std::string s_nimbusmlPath = std::string(nimbusmlPath);
-		std::string s_graph = std::string(graph);
-		const char *path = s_nimbusmlPath.c_str();
-		const char *coreclrpath = s_nimbusmlPath.c_str();
+        std::string s_dotnetClrPath = std::string(dotnetClrPath);
+        std::string s_graph = std::string(graph);
+		const char *nimbuslibspath = s_nimbusmlPath.c_str();
+		const char *coreclrpath = s_dotnetClrPath.c_str();
 
-		GENERICEXEC exec = EnsureExec(path, coreclrpath);
+		GENERICEXEC exec = EnsureExec(nimbuslibspath, coreclrpath);
 		if (exec == nullptr)
-			throw std::invalid_argument("Failed to communicate with the managed library. Path searched: " + s_nimbusmlPath);
+            throw std::invalid_argument("Failed to communicate with the managed library. Path searched: "
+                + s_nimbusmlPath + " and " + s_dotnetClrPath);
 
-		// REVIEW: This is a hack to work around CNTK not finding it's own dependencies that are in
-		// the same folder as itself on Windows. On Linux, it should work without any hack.
-#if _MSC_VER
-		std::wstring dir = Utf8ToUtf16le(path);
-		dir.append(WIN_FOLDER);
-        ConvertToWinPath(dir);
-		SetDllDirectoryW(dir.c_str());
-#endif
 		int seed = 42;
 		if (params.has_key(PARAM_SEED))
 			seed = bp::extract<int>(params[PARAM_SEED]);
@@ -112,10 +107,6 @@ bp::dict pxCall(bp::dict& params)
 		if (retCode == -1)
 			// REVIEW: get the content of IChannel and add it the the error message.
 			throw std::runtime_error("Returned code is -1. Check the log for error messages.");
-
-#if _MSC_VER
-		SetDllDirectoryW(nullptr);
-#endif
 	}
 	catch (const std::exception& e)
 	{

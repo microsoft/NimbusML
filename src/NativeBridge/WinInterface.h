@@ -161,34 +161,24 @@ private:
         FindClose(findHandle);
     }
 
-    ICLRRuntimeHost2* EnsureClrHost(const wchar_t * dirRoot, const wchar_t * coreclrDirRoot)
+    ICLRRuntimeHost2* EnsureClrHost(const wchar_t * libsRoot, const wchar_t * coreclrDirRoot)
     {
         if (_host != nullptr)
             return _host;
 
         // Set up paths.
-        std::wstring dirNative(dirRoot);
-        dirNative.append(L"Win\\");
-
-        std::wstring dirClr(coreclrDirRoot);
-        dirClr.append(L"Platform\\win-x64\\publish\\");
-
-        std::wstring dirAutoLoad(dirRoot);
-        dirAutoLoad.append(L"AutoLoad\\");
-
-        std::wstring appPath(dirRoot);
-        std::wstring appNiPath(dirRoot);
-        appNiPath.append(W(";")).append(dirClr);
-        std::wstring nativeDllSearchDirs(dirNative);
-        nativeDllSearchDirs.append(W(";")).append(appNiPath);
+        std::wstring dirmlnet(libsRoot);
+        dirmlnet.append(L"Platform\\win-x64\\publish\\");
 
         std::wstring tpaList;
-        AddDllsToList(dirRoot, tpaList);
-        AddDllsToList(dirClr.c_str(), tpaList);
-        AddDllsToList(dirAutoLoad.c_str(), tpaList);
+        AddDllsToList(libsRoot, tpaList);
+        AddDllsToList(dirmlnet.c_str(), tpaList);
+
+        //std::wstring dirClr1(L"E:\\sources\\NimbusML\\dependencies\\Python3.6\\Lib\\site-packages\\dotnetcore2\\bin\\shared\\Microsoft.NETCore.App\\2.1.0\\");
+        AddDllsToList(coreclrDirRoot, tpaList);
 
         // Start the CoreCLR.
-        HMODULE hmodCore = EnsureCoreClrModule(dirClr.c_str());
+        HMODULE hmodCore = EnsureCoreClrModule(coreclrDirRoot);
 
         FnGetCLRRuntimeHost pfnGetCLRRuntimeHost =
             (FnGetCLRRuntimeHost)::GetProcAddress(hmodCore, "GetCLRRuntimeHost");
@@ -238,25 +228,19 @@ private:
         // APP_NI_PATHS
         // - The list of additional paths that the assembly loader will probe for ngen images
         //
-        // NATIVE_DLL_SEARCH_DIRECTORIES
-        // - The list of paths that will be probed for native DLLs called by PInvoke
-        //
         const wchar_t *property_keys[] = {
             W("TRUSTED_PLATFORM_ASSEMBLIES"),
             W("APP_PATHS"),
             W("APP_NI_PATHS"),
-            W("NATIVE_DLL_SEARCH_DIRECTORIES"),
             W("AppDomainCompatSwitch"),
         };
         const wchar_t *property_values[] = {
             // TRUSTED_PLATFORM_ASSEMBLIES
             tpaList.c_str(),
             // APP_PATHS
-            appPath.c_str(),
+            libsRoot,
             // APP_NI_PATHS
-            appNiPath.c_str(),
-            // NATIVE_DLL_SEARCH_DIRECTORIES
-            nativeDllSearchDirs.c_str(),
+            dirmlnet.c_str(),
             // AppDomainCompatSwitch
             W("UseLatestBehaviorWhenTFMNotSpecified")
         };
@@ -295,13 +279,13 @@ private:
     }
 
 public:
-    FNGETTER EnsureGetter(const char *path, const char *coreclrpath)
+    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath)
     {
         if (_getter != nullptr)
             return _getter;
 
-        std::wstring dir = Utf8ToUtf16le(path);
-        ConvertToWinPath(dir);
+        std::wstring libsdir = Utf8ToUtf16le(nimbuslibspath);
+        ConvertToWinPath(libsdir);
 
         std::wstring coreclrdir;
         if (strlen(coreclrpath) != 0)
@@ -311,10 +295,10 @@ public:
         }
         else
         {
-            coreclrdir = dir;
+            coreclrdir = libsdir;
         }
 
-        ICLRRuntimeHost2* host = EnsureClrHost(dir.c_str(), coreclrdir.c_str());
+        ICLRRuntimeHost2* host = EnsureClrHost(libsdir.c_str(), coreclrdir.c_str());
         if (host == nullptr)
             return nullptr;
 
