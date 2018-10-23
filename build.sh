@@ -152,7 +152,7 @@ then
     then 
         PublishDir=osx-x64
     fi
-    ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force --self-contained -r ${PublishDir} -c ${__configuration}
+    ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force -r ${PublishDir} -c ${__configuration}
     ${_dotnet} build -c ${__configuration} -o "${BuildOutputDir}/${__configuration}"  --force "${__currentScriptDir}/src/DotNetBridge/DotNetBridge.csproj"
 
     # Build nimbusml wheel
@@ -171,14 +171,20 @@ then
     touch "${__currentScriptDir}/src/python/nimbusml/internal/libs/__init__.py"
 
     echo "Placing binaries in libs dir for wheel packaging ... "
-    mv "${BuildOutputDir}/${__configuration}"/Platform "${__currentScriptDir}/src/python/nimbusml/internal/libs/Platform"
-    mv "${BuildOutputDir}/${__configuration}"/*.* "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-    find "${__currentScriptDir}/src/python/nimbusml/internal/libs/" \( -name "dummy*" -o -name "*.exe" \) -print | xargs rm
-    if [[ ! $__configuration = Dbg* ]]
-    then
-        find "${__currentScriptDir}/src/python/nimbusml/internal/libs/" \( -name "*.pdb" -o -name "*.ipdb" \) -print | xargs rm
-    fi
+    cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
+	ls  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/
+	
+    cat build/libs.txt | while read i; do
+        cp  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    done
+
+    if "%DebugBuild%" == "True" (
+        cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}"/pybridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    )
+    
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 

@@ -252,17 +252,10 @@ private:
             return _host;
 
         // Set up paths.
-        std::string dirmlnet(libsRoot);
-#ifdef __APPLE__
-        dirmlnet.append("/Platform/osx-x64/publish/");
-#else
-        dirmlnet.append("/Platform/linux-x64/publish/");
-#endif
         std::string dirClr(coreclrDirRoot);
 
         std::string tpaList;
         AddDllsToList(libsRoot, tpaList);
-        AddDllsToList(dirmlnet.c_str(), tpaList);
 
         // Start the CoreCLR.
         HMODULE hmodCore = EnsureCoreClrModule(dirClr.c_str());
@@ -284,13 +277,9 @@ private:
         // APP_PATHS
         // - The list of paths which will be probed by the assembly loader
         //
-        // APP_NI_PATHS
-        // - The list of additional paths that the assembly loader will probe for ngen images
-        //
         const char *property_keys[] = {
             W("TRUSTED_PLATFORM_ASSEMBLIES"),
             W("APP_PATHS"),
-            W("APP_NI_PATHS"),
             W("AppDomainCompatSwitch"),
         };
         const char *property_values[] = {
@@ -298,8 +287,6 @@ private:
             tpaList.c_str(),
             // APP_PATHS
             libsRoot,
-            // APP_NI_PATHS
-            dirmlnet.c_str(),
             // AppDomainCompatSwitch
             W("UseLatestBehaviorWhenTFMNotSpecified")
         };

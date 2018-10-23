@@ -167,12 +167,8 @@ private:
             return _host;
 
         // Set up paths.
-        std::wstring dirmlnet(libsRoot);
-        dirmlnet.append(L"Platform\\win-x64\\publish\\");
-
         std::wstring tpaList;
         AddDllsToList(libsRoot, tpaList);
-        AddDllsToList(dirmlnet.c_str(), tpaList);
 
         //std::wstring dirClr1(L"E:\\sources\\NimbusML\\dependencies\\Python3.6\\Lib\\site-packages\\dotnetcore2\\bin\\shared\\Microsoft.NETCore.App\\2.1.0\\");
         AddDllsToList(coreclrDirRoot, tpaList);
@@ -225,13 +221,9 @@ private:
         // APP_PATHS
         // - The list of paths which will be probed by the assembly loader
         //
-        // APP_NI_PATHS
-        // - The list of additional paths that the assembly loader will probe for ngen images
-        //
         const wchar_t *property_keys[] = {
             W("TRUSTED_PLATFORM_ASSEMBLIES"),
             W("APP_PATHS"),
-            W("APP_NI_PATHS"),
             W("AppDomainCompatSwitch"),
         };
         const wchar_t *property_values[] = {
@@ -239,8 +231,6 @@ private:
             tpaList.c_str(),
             // APP_PATHS
             libsRoot,
-            // APP_NI_PATHS
-            dirmlnet.c_str(),
             // AppDomainCompatSwitch
             W("UseLatestBehaviorWhenTFMNotSpecified")
         };
