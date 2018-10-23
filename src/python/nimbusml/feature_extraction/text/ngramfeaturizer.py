@@ -227,7 +227,7 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
             dictionary=None,
             word_feature_extractor=Ngram(
                 max_num_terms=[10000000]),
-            char_feature_extractor=n_gram(
+            char_feature_extractor=Ngram(
                 ngram_length=3,
                 all_lengths=False,
                 max_num_terms=[10000000]),
