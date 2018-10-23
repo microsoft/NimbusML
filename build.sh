@@ -180,10 +180,11 @@ then
         cp  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     done
 
-    if "%DebugBuild%" == "True" (
+    if [[ $__configuration = Dbg* ]]
+    then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}"/pybridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-    )
+    fi
     
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
