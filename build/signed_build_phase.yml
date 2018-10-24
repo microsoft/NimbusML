@@ -47,7 +47,7 @@ phases:
       msbuildVersion: 15.0
     continueOnError: false
 
-  - script: ./build.cmd --skipDotNetBridge --configuration $(BuildConfig)  --runTests
+  - script: ./build.cmd --skipDotNetBridge --configuration $(BuildConfig)
     displayName: Build
   
   - task: CopyFiles@2
