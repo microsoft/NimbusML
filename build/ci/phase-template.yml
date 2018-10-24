@@ -30,7 +30,7 @@ phases:
     - ${{ if eq(parameters.testDistro, '') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
   # Linux phases
-  - ${{ if ne(parameters.testDistro, '') }}:
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7')) }}:
     - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
       displayName: Build native bridge
     - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
@@ -46,7 +46,7 @@ phases:
         displayName: Run tests CentOS7
 
   # Publish build artifacts
-  - ${{ if and(ne(parameters.testDistro, 'ubuntu14'), ne(parameters.testDistro, 'centos7')) }}:
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Windows'), eq(parameters.name, 'Mac')) }}:
     - task: PublishBuildArtifacts@1
       condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: Publish wheel file to VSTS artifacts
