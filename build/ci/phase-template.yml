@@ -25,7 +25,10 @@ phases:
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
     - script: brew install gcc
-    - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
+    - ${{ if eq(parameters.testDistro, 'noTests') }}:
+      - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
+    - ${{ if eq(parameters.testDistro, '') }}:
+      - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
   # Linux phases
   - ${{ if ne(parameters.testDistro, '') }}:
     - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"

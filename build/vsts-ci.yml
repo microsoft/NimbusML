@@ -16,9 +16,23 @@ phases:
   # Run tests on Ubuntu16
 - template: /build/ci/phase-template.yml
   parameters:
+    name: Mac
+    buildScript: ./build.sh
+    testDistro: noTests
+    buildMatrix:
+      Py36:
+        _configuration: RlsMacPy3.6
+      Py35:
+        _configuration: RlsMacPy3.5
+      Py27:
+        _configuration: RlsMacPy2.7
+    buildQueue:
+      name: Hosted macOS
+- template: /build/ci/phase-template.yml
+  parameters:
     name: Linux_Ubuntu16
     buildScript: ./build.sh
-    testDistro: notests
+    testDistro: noTests
     buildMatrix:
       Py36:
         _configuration: RlsLinPy3.6
