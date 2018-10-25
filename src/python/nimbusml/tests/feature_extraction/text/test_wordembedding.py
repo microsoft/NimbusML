@@ -91,7 +91,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 409)
+        assert features.shape == (248, 802)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
     # Test works on ubuntu16.
@@ -127,7 +127,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 409)
+        assert features.shape == (248, 802)
         assert 'features_TransformedText.94' in list(features.columns)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
@@ -166,7 +166,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 409)
+        assert features.shape == (248, 802)
 
     @unittest.skip('System.ArgumentOutOfRangeException')
     def test_word_embedding_example_dict_newname(self):

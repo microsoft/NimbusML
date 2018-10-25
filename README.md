@@ -29,8 +29,7 @@ Here is an example of how to train a model to predict sentiment from text sample
 ```python
 pipeline = Pipeline([ # nimbusml pipeline
     NGramFeaturizer(columns={'Features': ['SentimentText']}),
-	FastTreeBinaryClassifier(feature=['Features'], 
-	                                   label='Sentiment')
+    FastTreeBinaryClassifier(feature=['Features'], label='Sentiment')
 ])
 
 # fit and predict
