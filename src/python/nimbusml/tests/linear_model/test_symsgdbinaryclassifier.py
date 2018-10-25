@@ -15,7 +15,7 @@ from sklearn.utils.testing import assert_greater
 
 class TestSymSgdBinaryClassifier(unittest.TestCase):
 
-    @unittest.skip("BUG: Not included in Ml.net yet")
+    @unittest.skip("BUG: Not included in ML.NET yet")
     def test_SymSgdBinaryClassifier(self):
         np.random.seed(0)
         df = get_dataset("infert").as_df()

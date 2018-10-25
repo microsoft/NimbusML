@@ -6,7 +6,7 @@ ML.NET was originally developed in Microsoft Research and is used across many pr
 
 This package enables training ML.NET pipelines or integrating ML.NET components directly into Scikit-Learn pipelines (it supports  `numpy.ndarray`, `scipy.sparse_cst`, and `pandas.DataFrame` as inputs).
 
-Documentation can be found [here](https://docs.microsoft.com/en-us/nimbusml/overview) with additional [notebook samples](https://github.com/Microsoft/ML.NET-for-Python-Samples).
+Documentation can be found [here](https://docs.microsoft.com/en-us/NimbusML/overview) with additional [notebook samples](https://github.com/Microsoft/NimbusML-Samples).
 
 ## Installation
 
@@ -53,7 +53,7 @@ results = pipeline.predict(data)
 
 
 
-Many additional examples and tutorials can be found in the [documentation](https://docs.microsoft.com/en-us/nimbusml/overview).
+Many additional examples and tutorials can be found in the [documentation](https://docs.microsoft.com/en-us/NimbusML/overview).
 
 
 ## Building
