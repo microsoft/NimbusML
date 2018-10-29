@@ -21,8 +21,10 @@ pipeline = Pipeline([
     FastForestRegressor(feature=['parity', 'edu'], label='age')
 ])
 
+# Improve by replacing .test() with CV as noted in 
+# https://github.com/Microsoft/NimbusML/issues/32
+
 # train, predict, and evaluate
-# TODO: Replace with CV
 metrics, predictions = pipeline.fit(data).test(data, output_scores=True)
 
 # print predictions
