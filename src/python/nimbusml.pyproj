@@ -180,6 +180,7 @@
     <Compile Include="nimbusml\examples\_Load_Save_Models.py" />
     <Compile Include="nimbusml\examples\_Load_Save_Pipeline.py" />
     <Compile Include="nimbusml\examples\_Load_Save_transforms.py" />
+    <Compile Include="nimbusml\examples\__init__.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\ngram.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />
@@ -551,9 +552,7 @@
     <Compile Include="nimbusml\tests\cluster\__init__.py" />
     <Compile Include="nimbusml\tests\data_type\test_numeric.py" />
     <Compile Include="nimbusml\tests\data_type\test_text.py" />
-    <Compile Include="nimbusml\tests\data_type\test_text_label.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="nimbusml\tests\data_type\test_text_label.py" />
     <Compile Include="nimbusml\tests\data_type\__init__.py" />
     <Compile Include="nimbusml\tests\decomposition\test_factorizationmachine.py" />
     <Compile Include="nimbusml\tests\decomposition\test_pcaanomalydetector.py" />
@@ -584,9 +583,7 @@
     <Compile Include="nimbusml\tests\multiclass\__init__.py" />
     <Compile Include="nimbusml\tests\pipeline\test_clone.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_syntax.py" />
-    <Compile Include="nimbusml\tests\pipeline\test_load_save.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="nimbusml\tests\pipeline\test_load_save.py" />
     <Compile Include="nimbusml\tests\pipeline\test_predict_proba_decision_function.py" />
     <Compile Include="nimbusml\tests\pipeline\test_score_method.py" />
     <Compile Include="nimbusml\tests\pipeline\test_uci_adult.py" />
