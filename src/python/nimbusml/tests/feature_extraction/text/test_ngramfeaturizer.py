@@ -38,7 +38,7 @@ class TestNGramFeaturizer(unittest.TestCase):
         X_train = texttransform.fit_transform(X_train[:100])
         sum = X_train.iloc[:].sum().sum()
         print(sum)
-        assert_equal(sum, 4594, "sum of all features is incorrect!")
+        assert_equal(sum, 30513, "sum of all features is incorrect!")
 
 
 if __name__ == '__main__':

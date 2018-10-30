@@ -87,7 +87,9 @@ signature_fixes = {
                       ('name=name,', 'output=output,')],
     'NGramFeaturizer': [(NG_1, NG_1_correct),
                         ('word_feature_extractor = n_gram',
-                         'word_feature_extractor = Ngram')],
+                         'word_feature_extractor = Ngram'),
+                         ('char_feature_extractor = n_gram',
+                         'char_feature_extractor = Ngram')],
     'CountSelector': ('count = 0,', 'count = 1.0,'),
     'OneClassSvmAnomalyDetector': (
         'label_column=label_column,', 'label_column=None,'),

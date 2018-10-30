@@ -682,19 +682,22 @@ class DataSchema:
         """
         Infers the schema of a data view.
 
-        :param data: features, labels, weights, groups
-        :param ind: first column index (in case DataFrame are concatenated)
-        :param tool: `'pandas'` or `'nimbusml'`
-        :param options: additional options
-        :return: schema as a string
-
-        Additional options:
-
-        * collapse: (False by default), collapse columns for of the same type
+        :param data: features, labels, weights, groups 
+        :param collapse: (False by default), collapse columns for of the same type
           if it follows *read_csv* function. Use internal structure of a
           dataframe. If ``collapse* == 'all'``,
           the method collapses all columns not specified in parameter *names*.
-        * numeric_dtype: if not None, changes all numeric types into this type
+        :param sep: string value of file seperation character (for example: ',')
+        :param header: whether the data has a header row; defaults to True 
+        :param dtype: change dtype of specific columns; takes dictionary of column
+          names mapped to desired dtype
+        :param numeric_dtype: if not None, changes all numeric types into this type
+        :param names: specify new names for columns; takes dictionary of column
+          index mapped to desired name
+        :param ind: first column index (in case DataFrame are concatenated)
+        :param tool: `'pandas'` or `'nimbusml'`
+        :return: schema as a string
+
         """
         if isinstance(options.get('dtype', None), dict) and \
                 options.get('numeric_dtype', None):

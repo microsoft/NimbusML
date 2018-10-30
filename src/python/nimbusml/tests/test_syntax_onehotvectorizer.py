@@ -146,4 +146,4 @@ class TestSyntaxOneHotVectorizer(unittest.TestCase):
         ng4 = NGramFeaturizer(word_feature_extractor=n_gram()) << {
             'out1': ['education1', 'education2']}
         output4 = ng4.fit_transform(X)
-        assert output4.shape == (5, 7)
+        assert output4.shape == (5, 13)

@@ -91,7 +91,7 @@ class TestNGramFeaturizer(unittest.TestCase):
         textt = NGramFeaturizer(word_feature_extractor=n_gram()) << 'review'
         X = textt.fit_transform(X)
 
-        assert X.shape == (25, 21)
+        assert X.shape == (25, 116)
 
         mymodel = LogisticRegressionBinaryClassifier().fit(X, y, verbose=0)
         X_test = textt.transform(test_reviews)
@@ -180,7 +180,7 @@ class TestNGramFeaturizer(unittest.TestCase):
             'outg': ['review']}
         X = textt.fit_transform(X)
 
-        assert X.shape == (25, 22)
+        assert X.shape == (25, 117)
         # columns ordering changed between 0.22 and 0.23
         assert 'review' in (X.columns[0], X.columns[-1])
         X = X.drop('review', axis=1)
@@ -204,7 +204,7 @@ class TestNGramFeaturizer(unittest.TestCase):
                              columns={'features': ['id', 'education']})
 
         features = xf.fit_transform(data)
-        assert features.shape == (248, 259)
+        assert features.shape == (248, 652)
 
     def test_ngramfeaturizer_multi(self):
 
