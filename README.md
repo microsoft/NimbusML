@@ -12,7 +12,7 @@ Documentation can be found [here](https://docs.microsoft.com/en-us/NimbusML/over
 
 `nimbusml` runs on Windows, Linux, and macOS - any platform where 64 bit .NET Core is available. It relies on .NET Core, and this is installed automatically as part of the package.
 
-`nimbusml` requires Python 2.7, 3.5, or 3.6, 64 bit version only.
+`nimbusml` requires Python **2.7**, **3.5**, or **3.6**, 64 bit version only. Python 3.7 is not yet supported.
 
 Install `nimbusml` using `pip` with:
 
@@ -24,13 +24,12 @@ pip install nimbusml
 
 ## Examples
 
-Here is an example of how to train a model to predict sentiment from text samples (based on the ML.NET example [here](https://github.com/dotnet/machinelearning/blob/master/README.md))
+Here is an example of how to train a model to predict sentiment from text samples (based on [this](https://github.com/dotnet/machinelearning/blob/master/README.md) ML.NET example). The full code for this example is [here](https://github.com/Microsoft/NimbusML-Samples/blob/master/samples/2.1%20%5BText%5D%20Sentiment%20Analysis%201%20-%20Data%20Loading%20with%20Pandas.ipynb).
 
 ```python
 pipeline = Pipeline([ # nimbusml pipeline
     NGramFeaturizer(columns={'Features': ['SentimentText']}),
-	FastTreeBinaryClassifier(feature=['Features'], 
-	                                   label='Sentiment')
+    FastTreeBinaryClassifier(feature=['Features'], label='Sentiment')
 ])
 
 # fit and predict
