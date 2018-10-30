@@ -1,7 +1,7 @@
-from .lightlda import LightLda
-from .ngramfeaturizer import NGramFeaturizer
-from .sentiment import Sentiment
-from .wordembedding import WordEmbedding
+from ._lightlda import LightLda
+from ._ngramfeaturizer import NGramFeaturizer
+from ._sentiment import Sentiment
+from ._wordembedding import WordEmbedding
 
 __all__ = [
     'LightLda',
@@ -9,3 +9,4 @@ __all__ = [
     'Sentiment',
     'WordEmbedding'
 ]
+
