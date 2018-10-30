@@ -180,6 +180,9 @@
     <Compile Include="nimbusml\examples\_Load_Save_Models.py" />
     <Compile Include="nimbusml\examples\_Load_Save_Pipeline.py" />
     <Compile Include="nimbusml\examples\_Load_Save_transforms.py" />
+    <Compile Include="nimbusml\examples\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="nimbusml\feature_extraction\text\extractor\ngram.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />
