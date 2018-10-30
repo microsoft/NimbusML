@@ -682,13 +682,7 @@
       "Name": "Transforms.TextFeaturizer",
       "NewName": "NGramFeaturizer",
       "Module": "feature_extraction.text",
-      "Type": "Transform",
-      "Inputs": [
-        {
-          "Name": "CharFeatureExtractor",
-          "Default": null
-        }
-      ]
+      "Type": "Transform"
     },
     {
       "Name": "Transforms.WordEmbeddings",

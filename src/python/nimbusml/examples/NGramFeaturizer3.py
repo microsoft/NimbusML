@@ -18,8 +18,6 @@ print(data.head())
 # 4          1  ::::: Why are you threatening me? I'm not bein...
 
 # transform usage
-# TODO: Bug 149583
-# TODO: Bug 149700
 xf = NGramFeaturizer(word_feature_extractor=NgramHash(),
                      columns=['SentimentText'])
 

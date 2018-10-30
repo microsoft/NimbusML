@@ -206,8 +206,11 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
             dictionary=None,
             word_feature_extractor=n_gram(
                 max_num_terms=[10000000]),
-            char_feature_extractor=None,
-            vector_normalizer='L2',
+            char_feature_extractor=n_gram(
+                ngram_length=3,
+                all_lengths=False,
+                max_num_terms=[10000000]),
+        vector_normalizer='L2',
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
