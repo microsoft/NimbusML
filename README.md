@@ -61,7 +61,7 @@ To build `nimbusml` from source please visit our [developers guide](docs/develop
 
 ## Contributing
 
-We welcome [contributions](docs/project-docs/contributing.md)!
+We welcome [contributions](CONTRIBUTING.md) and will try our best to address feedback for this experimental project.
 
 ## License
 

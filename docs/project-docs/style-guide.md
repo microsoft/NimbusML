@@ -1,4 +1,4 @@
-Contributing to Machine Learning
+Contributing to NimbusML
 ======================
 
 This document describes contribution guidelines that are specific to NimbusML. Please read [Python Style Guide](https://www.python.org/dev/peps/pep-0008/) for more general Python style guidelines.
