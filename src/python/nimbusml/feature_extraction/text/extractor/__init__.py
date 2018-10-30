@@ -1,8 +1,7 @@
-from ._ngram import Ngram
-from ._ngramhash import NgramHash
+from .ngram import Ngram
+from .ngramhash import NgramHash
 
 __all__ = [
     'Ngram',
     'NgramHash'
 ]
-

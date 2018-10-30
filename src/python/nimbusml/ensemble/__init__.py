@@ -1,14 +1,14 @@
-from ._fastforestbinaryclassifier import FastForestBinaryClassifier
-from ._fastforestregressor import FastForestRegressor
-from ._fasttreesbinaryclassifier import FastTreesBinaryClassifier
-from ._fasttreesregressor import FastTreesRegressor
-from ._fasttreestweedieregressor import FastTreesTweedieRegressor
-from ._gambinaryclassifier import GamBinaryClassifier
-from ._gamregressor import GamRegressor
-from ._lightgbmbinaryclassifier import LightGbmBinaryClassifier
-from ._lightgbmclassifier import LightGbmClassifier
-from ._lightgbmranker import LightGbmRanker
-from ._lightgbmregressor import LightGbmRegressor
+from .fastforestbinaryclassifier import FastForestBinaryClassifier
+from .fastforestregressor import FastForestRegressor
+from .fasttreesbinaryclassifier import FastTreesBinaryClassifier
+from .fasttreesregressor import FastTreesRegressor
+from .fasttreestweedieregressor import FastTreesTweedieRegressor
+from .gambinaryclassifier import GamBinaryClassifier
+from .gamregressor import GamRegressor
+from .lightgbmbinaryclassifier import LightGbmBinaryClassifier
+from .lightgbmclassifier import LightGbmClassifier
+from .lightgbmranker import LightGbmRanker
+from .lightgbmregressor import LightGbmRegressor
 
 __all__ = [
     'FastForestBinaryClassifier',
@@ -23,5 +23,3 @@ __all__ = [
     'LightGbmRanker',
     'LightGbmRegressor'
 ]
-
-

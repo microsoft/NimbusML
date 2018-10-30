@@ -1,4 +1,4 @@
-from ._cv import CV
+from .cv import CV
 
 __all__ = [
     'CV'

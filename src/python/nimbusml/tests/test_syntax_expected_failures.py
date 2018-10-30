@@ -11,7 +11,7 @@ from nimbusml import Pipeline
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.internal.utils.data_roles import Role
 from nimbusml.linear_model import FastLinearRegressor
-from nimbusml._pipeline import TrainedWarning
+from nimbusml.pipeline import TrainedWarning
 
 if six.PY2:
     pass

@@ -1,7 +1,5 @@
-from ._naivebayesclassifier import NaiveBayesClassifier
+from .naivebayesclassifier import NaiveBayesClassifier
 
 __all__ = [
     'NaiveBayesClassifier'
 ]
-
-

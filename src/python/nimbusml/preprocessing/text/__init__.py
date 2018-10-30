@@ -1,4 +1,4 @@
-from ._chartokenizer import CharTokenizer
+from .chartokenizer import CharTokenizer
 
 __all__ = [
     'CharTokenizer'

@@ -1,6 +1,5 @@
-from ._onevsrestclassifier import OneVsRestClassifier
+from .onevsrestclassifier import OneVsRestClassifier
 
 __all__ = [
     'OneVsRestClassifier'
 ]
-

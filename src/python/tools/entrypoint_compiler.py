@@ -185,7 +185,7 @@ def write_api(entrypoint, kind="node", pkg_path=None, overwrite=False):
     class_name = entrypoint['NewName']
     class_dir = entrypoint['Module']
     class_type = entrypoint['Type']
-    class_file = '_' + class_name.lower()
+    class_file = class_name.lower()
 
     doc_builder = DocBuilder()
     doc_builder.class_name = class_name

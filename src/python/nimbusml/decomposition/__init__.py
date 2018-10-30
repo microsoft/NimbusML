@@ -1,6 +1,7 @@
-from ._factorizationmachinebinaryclassifier import FactorizationMachineBinaryClassifier
-from ._pcaanomalydetector import PcaAnomalyDetector
-from ._pcatransformer import PcaTransformer
+from .factorizationmachinebinaryclassifier import \
+    FactorizationMachineBinaryClassifier
+from .pcaanomalydetector import PcaAnomalyDetector
+from .pcatransformer import PcaTransformer
 
 __all__ = [
     'FactorizationMachineBinaryClassifier',
