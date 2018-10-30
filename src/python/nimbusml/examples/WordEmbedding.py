@@ -18,8 +18,6 @@ print(data.head())
 # 4          1  ::::: Why are you threatening me? I'm not bein...
 
 # transform usage
-# TODO: Bug 146863
-# TODO: Bug 149666
 pipeline = Pipeline([
     NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
                     columns={'ngram': ['SentimentText']}),
