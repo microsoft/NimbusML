@@ -18,8 +18,6 @@ print(data.head())
 # 3          1  ==You're cool==  You seem like a really cool g...
 # 4          1  ::::: Why are you threatening me? I'm not bein...
 
-# TODO: Bug 149583
-# TODO: Bug 149700
 xf = NGramFeaturizer(word_feature_extractor=Ngram(),
                      stop_words_remover=CustomStopWordsRemover(['!',
                                                                 '$',
