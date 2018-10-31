@@ -12,4 +12,4 @@ Project Docs
 - [API](https://docs.microsoft.com/en-us/nimbusml/overview)
 - [Tutorials](https://docs.microsoft.com/en-us/nimbusml/tutorials)
 - [Developer Guide](developers/developer-guide.md)
-- [Contributing to ML.NET](project-docs/contributing.md)
+- [Contributing to ML.NET](CONTRIBUTING.md)
