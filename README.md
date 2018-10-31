@@ -24,7 +24,7 @@ pip install nimbusml
 
 ## Examples
 
-Here is an example of how to train a model to predict sentiment from text samples (based on the ML.NET example [here](https://github.com/dotnet/machinelearning/blob/master/README.md))
+Here is an example of how to train a model to predict sentiment from text samples (based on [this](https://github.com/dotnet/machinelearning/blob/master/README.md) ML.NET example). The full code for this example is [here](https://github.com/Microsoft/NimbusML-Samples/blob/master/samples/2.1%20%5BText%5D%20Sentiment%20Analysis%201%20-%20Data%20Loading%20with%20Pandas.ipynb).
 
 ```python
 pipeline = Pipeline([ # nimbusml pipeline
