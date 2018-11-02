@@ -28,4 +28,4 @@ See the [Style Guide](docs/project-docs/style-guide.md) for information about co
 
 ## Building and Devleopment
 
-See the [Developer Guide](../developers/developer-guide.md) for details about building from source and developing in this repo.
+See the [Developer Guide](docs/developers/developer-guide.md) for details about building from source and developing in this repo.
