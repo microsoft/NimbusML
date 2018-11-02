@@ -34,9 +34,8 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
 
         **Reference**
 
-            `https://www.microsoft.com/en-us/research/wp-
-            content/uploads/2016/02/ding15.pdf <https://www.microsoft.com/en-
-            us/research/wp-content/uploads/2016/02/ding15.pdf>`_
+            `https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ding15.pdf 
+            <https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ding15.pdf>`_
 
 
     :param normalize: Specifies the type of automatic normalization used:
