@@ -6,6 +6,7 @@
 #include "DataViewInterop.h"
 #include "ManagedInterop.h"
 
+#ifdef BOOST_PYTHON
 #define SetDict2(cpptype, nptype); \
 		{\
 			PythonObject<cpptype>* col = dynamic_cast<PythonObject<cpptype>*>(column);\
@@ -17,9 +18,19 @@
 				bp::make_tuple(shrd->size()),\
 				bp::make_tuple(sizeof(nptype)), bp::object());\
 		}
+#else
+#define SetDict2(cpptype, nptype); \
+		{\
+            PythonObject<cpptype>* col = dynamic_cast<PythonObject<cpptype>*>(column); \
+            auto shrd = col->GetData(); \
+            auto* data = shrd->data(); \
+            dict[_names[i].c_str()] = bp::array(shrd->size(), data); \
+        }
+#endif
 
 #define SetDict1(type) SetDict2(type, type)
 
+#ifdef BOOST_PYTHON
 #define SetDictAndKeys(type, i); \
 		{\
 			PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
@@ -52,7 +63,34 @@
 				}\
 				dict[_names[i]]["..KeyValues"] = list;\
 			}\
-		}\
+		}
+#else
+#define SetDictAndKeys(type, i); \
+        {\
+            PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
+            auto shrd = col->GetData();\
+            auto* data = shrd->data();\
+            bp::array npdata = bp::array(shrd->size(), data);\
+            if (keyNames == nullptr)\
+                dict[_names[i].c_str()] = npdata;\
+            else\
+            {\
+                dict[_names[i].c_str()] = bp::dict(); \
+                dict[_names[i].c_str()]["..Data"] = npdata;\
+                auto shrd = keyNames->GetData();\
+                bp::list list;\
+                for (int j = 0; j < shrd->size(); j++)\
+                {\
+                    bp::object obj;\
+                    const std::string& value = shrd->at(j);\
+                    if (!value.empty())\
+                        obj = bp::str(value);\
+                    list.append(obj);\
+                }\
+                dict[_names[i].c_str()]["..KeyValues"] = list;\
+            }\
+        }
+#endif
 
 #define STATIC
 
@@ -244,16 +282,29 @@ bp::dict EnvironmentBlock::GetData()
 			{
 				bp::object obj;
 				signed char value = shrd->at(i);
-				if (value < 0)
-					obj = bp::object(NAN);
-				else if (value == 0)
-					obj = bp::object(false);
-				else
+#ifdef BOOST_PYTHON
+                if (value < 0)
+                    obj = bp::object(NAN);
+                else if (value == 0)
+                    obj = bp::object(false);
+                else
 					obj = bp::object(true);
+#else
+                if (value < 0)
+                    obj = bp::cast<double>(NAN);
+                else if (value == 0)
+                    obj = bp::cast<bool>(false);
+                else
+                    obj = bp::cast<bool>(true);
+#endif
 
 				list.append(obj);
 			}
-			dict[_names[i]] = list;
+#ifdef BOOST_PYTHON
+            dict[_names[i]] = list;
+#else
+			dict[_names[i].c_str()] = list;
+#endif
 		}
 		break;
 		case BL:
@@ -299,12 +350,18 @@ bp::dict EnvironmentBlock::GetData()
 				bp::object obj;
 				const std::string& value = shrd->at(i);
 				if (!value.empty())
-				{
-					obj = bp::object(value);
-				}
+#ifdef BOOST_PYTHON
+                    obj = bp::object(value);
+#else
+					obj = bp::str(value);
+#endif
 				list.append(obj);
 			}
+#ifdef BOOST_PYTHON
 			dict[_names[i]] = list;
+#else
+            dict[_names[i].c_str()] = list;
+#endif
 		}
 		break;
 		case TS:

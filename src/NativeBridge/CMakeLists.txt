@@ -47,7 +47,7 @@ MESSAGE( STATUS "BOOST_DIR: " ${BOOST_DIR} )
 MESSAGE( STATUS "PYTHON_DIR: " ${PYTHON_DIR} )
 MESSAGE( STATUS "CMAKE_SYSTEM_NAME: " ${CMAKE_SYSTEM_NAME} )
 
-include_directories(${PYTHON_DIR}/include/python2.7 ${PYTHON_DIR}/include/python3.5m ${PYTHON_DIR}/include/python3.6m ${BOOST_DIR}/Include)
+include_directories(${PYTHON_DIR}/include/python2.7 ${PYTHON_DIR}/include/python3.5m ${PYTHON_DIR}/include/python3.6m ${PYTHON_DIR}/include/python3.7m ${BOOST_DIR}/Include)
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=unused-variable -Wno-error=attributes -Wno-error=unused-value")
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
