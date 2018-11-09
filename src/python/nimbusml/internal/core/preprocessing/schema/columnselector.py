@@ -83,9 +83,12 @@ class ColumnSelector(BasePipelineItem, NoOutputSignature):
                 "input has to be a list of strings, instead got %s" %
                 type(input_columns))
 
+        keep_columns = self.keep_columns
+        if self.keep_columns is None and self.drop_columns is None:
+            keep_columns = input_columns
         algo_args = dict(
             column=input_columns,
-            keep_columns=self.keep_columns,
+            keep_columns=keep_columns,
             drop_columns=self.drop_columns,
             keep_hidden=self.keep_hidden,
             ignore_missing=self.ignore_missing)

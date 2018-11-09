@@ -294,7 +294,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_columndropper.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnselector.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columntypeconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_combinerbycontiguousgroupid.py" />
@@ -492,7 +491,6 @@
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnconcatenator.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnselector.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\typeconverter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\__init__.py" />
@@ -538,7 +536,6 @@
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
-    <Compile Include="nimbusml\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnselector.py" />
     <Compile Include="nimbusml\preprocessing\schema\typeconverter.py" />
