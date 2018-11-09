@@ -20,6 +20,15 @@ class ColumnSelector(BasePipelineItem, NoOutputSignature):
 
     Selects a set of columns to retrain, dropping all others.
 
+    :param keep_columns: List of columns to keep.
+
+    :param drop_columns: List of columns to drop.
+
+    :param keep_hidden: Specifies whether to keep or remove hidden columns.
+
+    :param ignore_missing: Specifies whether to ignore columns that are missing
+        from the input.
+
     :param params: Additional arguments sent to compute engine.
 
     .. seealso::
@@ -38,9 +47,18 @@ class ColumnSelector(BasePipelineItem, NoOutputSignature):
     @trace
     def __init__(
             self,
+            keep_columns=None,
+            drop_columns=None,
+            keep_hidden=False,
+            ignore_missing=False,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
+
+        self.keep_columns = keep_columns
+        self.drop_columns = drop_columns
+        self.keep_hidden = keep_hidden
+        self.ignore_missing = ignore_missing
 
     @property
     def _entrypoint(self):
@@ -66,7 +84,11 @@ class ColumnSelector(BasePipelineItem, NoOutputSignature):
                 type(input_columns))
 
         algo_args = dict(
-            column=input_columns)
+            column=input_columns,
+            keep_columns=self.keep_columns,
+            drop_columns=self.drop_columns,
+            keep_hidden=self.keep_hidden,
+            ignore_missing=self.ignore_missing)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

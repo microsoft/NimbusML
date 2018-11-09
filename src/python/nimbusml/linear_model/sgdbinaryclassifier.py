@@ -80,7 +80,7 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
         <nimbusml.loss.SmoothedHinge>`. For more information, please see the
         documentation page about losses, [Loss](xref:nimbusml.loss).
 
-    :param l2_weight: L2 regularizer constant.
+    :param l2_weight: L2 Regularization constant.
 
     :param train_threads: Degree of lock-free parallelism. Defaults to
         automatic depending on data sparseness. Determinism not guaranteed.
