@@ -16,7 +16,7 @@ from nimbusml.internal.utils.data_roles import Role
 from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.preprocessing.normalization import LogMeanVarianceScaler
 from nimbusml.preprocessing.schema import ColumnConcatenator as Concat, \
-    ColumnSelector as Drop
+    ColumnDropper as Drop
 # from sklearn.pipeline import Pipeline
 
 if six.PY2:
@@ -309,7 +309,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'f2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
-            Drop(drop_columns=['education', 'workclass', 'f1', 'f2', 'f3']),
+            Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
             FastLinearBinaryClassifier(max_iterations=1) << ['Features']
         ])
         exp.fit(X, y)
@@ -332,7 +332,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'f2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'FeaturesCustom': ['f%d' % i for i in range(1, 4)]},
-            Drop(drop_columns=['education', 'workclass', 'f1', 'f2', 'f3']),
+            Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
             FastLinearBinaryClassifier(max_iterations=1) << 'FeaturesCustom'
         ])
         exp.fit(X, y)
@@ -361,7 +361,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'f2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
-            Drop(drop_columns=['education', 'workclass', 'f1', 'f2', 'f3']),
+            Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
             FastLinearBinaryClassifier(max_iterations=1) << ['Features']
         ])
         exp.fit(X, y)
