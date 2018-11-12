@@ -14,16 +14,16 @@ class DataSourceBlock;
 // Callback function for getting labels for key-type columns. Returns success.
 typedef MANAGED_CALLBACK_PTR(bool, GETLABELS)(DataSourceBlock *source, int col, int count, const char **buffer);
 
-// REVIEW: boost_python is not updated at the same speed as swig or pybind11.
-// Both have a larger audience now, see about pybind11 https://github.com/davisking/dlib/issues/293
-// It handles csr_matrix: http://pybind11-rtdtest.readthedocs.io/en/stable/advanced.html#transparent-conversion-of-dense-and-sparse-eigen-data-types.
 #ifdef BOOST_PYTHON
+// Used for Python 2.7
 using namespace boost::python;
 #if !defined(extract_or_cast)
 #define extract_or_cast extract
 #define has_key_or_contains has_key
+#define isnan boost::python::isnan
 #endif
 #else
+// Used for Python 3.5+
 using namespace pybind11;
 #if !defined(extract_or_cast)
 #define extract_or_cast cast

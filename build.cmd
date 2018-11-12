@@ -84,10 +84,10 @@ if /i [%1] == [RlsWinPy2.7]     (
     set Configuration=RlsWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls2.7
+    set PythonVersion=2.7
+    set PythonTag=cp27
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.7]     (
@@ -122,10 +122,10 @@ if /i [%1] == [DbgWinPy2.7]     (
     set Configuration=DbgWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg2.7
+    set PythonVersion=2.7
+    set PythonTag=cp27
     shift && goto :Arg_Loop
 )
 
@@ -163,7 +163,12 @@ if not exist "%PythonRoot%\.done" (
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
+    if "%PythonVersion%" != "2.7" (
+        echo Installing pybind11 ...
+        %PythonRoot%\python.exe -m pip install pybind11    
+    )
 )
+
 echo ""
 echo "#################################"
 echo "Building Native Bridge ... "
@@ -239,7 +244,7 @@ if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
-if %PythonVersion% == 3.6 (
+if %PythonVersion% == 3.7 (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2

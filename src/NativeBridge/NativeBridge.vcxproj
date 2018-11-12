@@ -211,7 +211,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;_HAS_ITERATOR_DEBUGGING;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(PythonRoot)\include;c:\Python370_x64\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PythonRoot)\include</AdditionalIncludeDirectories>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -223,7 +223,7 @@
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(PythonRoot)\libs;$(OutDir);c:\Python370_x64\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PythonRoot)\libs;$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy2.7|x64'">
@@ -272,7 +272,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BoostRoot)\Include;$(PythonRoot)\include;c:\Python370_x64\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BoostRoot)\Include;$(PythonRoot)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -291,7 +291,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(PythonRoot)\include;c:\Python370_x64\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PythonRoot)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -301,7 +301,7 @@
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(PythonRoot)\libs;$(OutDir);c:\Python370_x64\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PythonRoot)\libs;$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

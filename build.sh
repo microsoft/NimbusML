@@ -129,12 +129,18 @@ fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
 # Download & unzip Boost
-if [ ! -e "${BoostRoot}/.done" ]
+
+if [ ${PythonVersion} = 2.7 ]
+    if [ ! -e "${BoostRoot}/.done" ]
+    then
+        mkdir -p "${BoostRoot}"
+        echo "Downloading and extracting Boost archive ... "
+        curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
+        touch "${BoostRoot}/.done"
+    fi
 then
-    mkdir -p "${BoostRoot}"
-    echo "Downloading and extracting Boost archive ... "
-    curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
-    touch "${BoostRoot}/.done"
+    echo "Instaling pybind11 ..."
+    "${PythonExe}" -m pip install pybind11
 fi
 
 if [ ${__buildNativeBridge} = true ]
