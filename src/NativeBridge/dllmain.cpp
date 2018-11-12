@@ -69,9 +69,9 @@ bp::dict pxCall(bp::dict& params)
 	bp::dict res = bp::dict();
 	try
 	{
-		bp::extract<std::string> graph(params[PARAM_GRAPH]);
-		bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
-		bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
+		auto graph = bp::extract_or_cast<std::string> (params[PARAM_GRAPH]);
+		auto nimbusmlPath = bp::extract_or_cast<std::string> (params[PARAM_NIMBUSML_PATH]);
+		auto verbose = bp::extract_or_cast<std::int32_t> (params[PARAM_VERBOSE]);
 		std::int32_t i_verbose = std::int32_t(verbose);
 		std::string s_nimbusmlPath = std::string(nimbusmlPath);
 		std::string s_graph = std::string(graph);
@@ -87,18 +87,22 @@ bp::dict pxCall(bp::dict& params)
 #if _MSC_VER
 		std::wstring dir = Utf8ToUtf16le(path);
 		dir.append(WIN_FOLDER);
-        ConvertToWinPath(dir);
+		ConvertToWinPath(dir);
 		SetDllDirectoryW(dir.c_str());
 #endif
 		int seed = 42;
-		if (params.has_key(PARAM_SEED))
-			seed = bp::extract<int>(params[PARAM_SEED]);
+		if (params.has_key_or_contains(PARAM_SEED))
+			seed = bp::extract_or_cast<int>(params[PARAM_SEED]);
 
 		EnvironmentBlock env(i_verbose, 0, seed);
 		int retCode;
-		if (params.has_key(PARAM_DATA) && bp::extract<bp::dict>(params[PARAM_DATA]).check())
+#if BOOST_PYTHON
+		if (params.has_key_or_contains(PARAM_DATA) && bp::extract_or_cast<bp::dict>(params[PARAM_DATA]).check())
+#else
+        if (params.has_key_or_contains(PARAM_DATA) && bp::isinstance<bp::dict>(params[PARAM_DATA]))
+#endif
 		{
-			bp::dict d = bp::extract<bp::dict>(params[PARAM_DATA]);
+			bp::dict d = bp::extract_or_cast<bp::dict>(params[PARAM_DATA]);
 			DataSourceBlock data(d);
 			const DataSourceBlock *datas[1];
 			datas[0] = &data;
@@ -129,7 +133,11 @@ bp::dict pxCall(bp::dict& params)
 	return res;
 }
 
+#ifdef BOOST_PYTHON
 BOOST_PYTHON_MODULE(pybridge)
+#else
+PYBIND11_MODULE(pybridge, m)
+#endif
 {
 	//The managed code assumes that each pointer occupies 8 bytes.
 	assert(sizeof(void*) == 8);
@@ -142,8 +150,13 @@ BOOST_PYTHON_MODULE(pybridge)
 	//
 	// initialize numpy types
 	//
-	np::initialize();
 
+#ifdef BOOST_PYTHON
+	np::initialize();
 	bp::register_exception_translator<MlNetExecutionError>(&translate_mlnet_exception);
 	def("px_call", pxCall);
+#else
+	bp::register_exception<MlNetExecutionError>(m, "MlNetExecutionError");
+	m.def("px_call", pxCall);
+#endif
 }
