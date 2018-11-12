@@ -39,7 +39,7 @@ if /i [%1] == [--skipDotNetBridge]     (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
 )
-else goto :Usage
+goto :Usage
 
 :Usage
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
@@ -187,10 +187,11 @@ call "%_VSCOMNTOOLS%\VsDevCmd.bat"
 
 if "%VisualStudioVersion%"=="15.0" (
     goto :VS2017
-) else if "%VisualStudioVersion%"=="14.0" (
+)
+if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
 )
-else goto :MissingVersion
+goto :MissingVersion
 
 :MissingVersion
 :: Can't find VS 2015 or 2017

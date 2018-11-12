@@ -130,13 +130,13 @@
     <TargetName>pybridge</TargetName>
     <OutDir>..\..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.7|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.5|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <TargetName>pybridge</TargetName>
     <OutDir>..\..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.5|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.7|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <TargetName>pybridge</TargetName>
@@ -168,7 +168,7 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;_HAS_ITERATOR_DEBUGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;_HAS_ITERATOR_DEBUGGING;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(PythonRoot)\include</AdditionalIncludeDirectories>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -189,7 +189,7 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;_HAS_ITERATOR_DEBUGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;_HAS_ITERATOR_DEBUGGING;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(PythonRoot)\include</AdditionalIncludeDirectories>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -252,7 +252,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(BoostRoot)\Include;$(PythonRoot)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -271,7 +271,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(BoostRoot)\Include;$(PythonRoot)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
