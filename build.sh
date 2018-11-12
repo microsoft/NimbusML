@@ -131,6 +131,7 @@ echo "Python executable: ${PythonExe}"
 # Download & unzip Boost
 
 if [ ${PythonVersion} = 2.7 ]
+then
     if [ ! -e "${BoostRoot}/.done" ]
     then
         mkdir -p "${BoostRoot}"
@@ -138,7 +139,7 @@ if [ ${PythonVersion} = 2.7 ]
         curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
         touch "${BoostRoot}/.done"
     fi
-then
+else
     echo "Instaling pybind11 ..."
     "${PythonExe}" -m pip install pybind11
 fi
