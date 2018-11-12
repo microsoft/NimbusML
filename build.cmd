@@ -161,12 +161,17 @@ if not exist "%PythonRoot%\.done" (
     powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
     echo Extracting python zip ... 
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
-    echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
-    if "%PythonVersion%" neq "2.7" (
-        echo Installing pybind11 ...
-        %PythonRoot%\python.exe -m pip install pybind11    
-    )
+    echo.>"%PythonRoot%\.done"
+)
+
+if "%PythonVersion%" neq "2.7" (
+    echo ""
+    echo "#################################"
+    echo "Installing pybind11 "
+    echo "#################################"
+    echo Installing pybind11 ...
+    %PythonRoot%\python.exe -m pip install pybind11    
 )
 
 echo ""
