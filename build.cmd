@@ -16,8 +16,6 @@ set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
 set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
 set PythonRoot=%DependenciesDir%Python3.6
-set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip
-set BoostRoot=%DependenciesDir%BoostDbg3.6
 set PythonVersion=3.6
 set PythonTag=cp36
 set RunTests=False
@@ -54,13 +52,20 @@ echo "  --skipDotNetBridge                Build everything except DotNetBridge"
 goto :Exit_Success
 
 :Configuration
+if /i [%1] == [RlsWinPy3.7]     (
+    set DebugBuild=False
+    set Configuration=RlsWinPy3.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.7
+    set PythonVersion=3.7
+    set PythonTag=cp37
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [RlsWinPy3.6]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.6-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.6
     set PythonVersion=3.6
     set PythonTag=cp36
     shift && goto :Arg_Loop
@@ -70,8 +75,6 @@ if /i [%1] == [RlsWinPy3.5]     (
     set Configuration=RlsWinPy3.5
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.5
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.5-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.5
     set PythonVersion=3.5
     set PythonTag=cp35
     shift && goto :Arg_Loop
@@ -81,10 +84,19 @@ if /i [%1] == [RlsWinPy2.7]     (
     set Configuration=RlsWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls2.7
     set PythonVersion=2.7
     set PythonTag=cp27
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostRls2.7
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [DbgWinPy3.7]     (
+    set DebugBuild=True
+    set Configuration=DbgWinPy3.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.7
+    set PythonVersion=3.7
+    set PythonTag=cp37
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.6]     (
@@ -92,8 +104,6 @@ if /i [%1] == [DbgWinPy3.6]     (
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.6
     set PythonVersion=3.6
     set PythonTag=cp36
     shift && goto :Arg_Loop
@@ -103,8 +113,6 @@ if /i [%1] == [DbgWinPy3.5]     (
     set Configuration=DbgWinPy3.5
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.5
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.5-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.5
     set PythonVersion=3.5
     set PythonTag=cp35
     shift && goto :Arg_Loop
@@ -114,10 +122,10 @@ if /i [%1] == [DbgWinPy2.7]     (
     set Configuration=DbgWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg2.7
     set PythonVersion=2.7
     set PythonTag=cp27
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostDbg2.7
     shift && goto :Arg_Loop
 )
 
@@ -156,17 +164,6 @@ if not exist "%PythonRoot%\.done" (
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
 )
-:: Download & unzip Boost
-if not exist "%BoostRoot%\.done" (
-    md "%BoostRoot%"
-    echo Downloading boost zip ... 
-    powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%BoostUrl%', '%DependenciesDir%boost.zip');}"
-    echo Extracting boost zip ... 
-    powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%boost.zip', '%BoostRoot%'); }"
-    echo.>"%BoostRoot%\.done"
-    del %DependenciesDir%boost.zip
-)
-
 echo ""
 echo "#################################"
 echo "Building Native Bridge ... "

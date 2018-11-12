@@ -12,7 +12,7 @@ Documentation can be found [here](https://docs.microsoft.com/en-us/NimbusML/over
 
 `nimbusml` runs on Windows, Linux, and macOS. 
 
-`nimbusml` requires Python **2.7**, **3.5**, or **3.6**, 64 bit version only. Python 3.7 is not yet supported.
+`nimbusml` requires Python **2.7**, **3.5**, or **3.6**, **3.7** 64 bit version only.
 
 Install `nimbusml` using `pip` with:
 

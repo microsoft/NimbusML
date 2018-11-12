@@ -59,15 +59,18 @@ while [ "$1" != "" ]; do
 done
 
 case $__configuration in
+*LinPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.3.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
+    ;;
 *LinPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.6-1.64.0.0.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
     ;;
 *LinPy3.5)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-4.2.0.v9.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.5-1.64.0.0.tar.gz
     PythonVersion=3.5
     PythonTag=cp35
     ;;
@@ -77,15 +80,18 @@ case $__configuration in
     PythonVersion=2.7
     PythonTag=cp27
     ;;
+*MacPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.3.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
+    ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.6-1.64.0.0.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
     ;;
 *MacPy3.5)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-4.2.0.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.5-1.64.0.0.tar.gz
     PythonVersion=3.5
     PythonTag=cp35
     ;;
