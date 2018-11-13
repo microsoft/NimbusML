@@ -114,7 +114,7 @@ def test_dtype(xtype=None, ytype=None, dense=False):
         assert ydata.dtype == ytype
 
     algo = FastLinearBinaryClassifier(max_iterations=2)
-    algo.fit(xdata, ydata)
+    algo.fit(xdata, ydata, verbose=0)
     assert algo.model_ is not None
 
     test_sparse_data = tfidf.transform(test_X)
@@ -135,6 +135,8 @@ def test_dtype(xtype=None, ytype=None, dense=False):
 class TestDTypes(unittest.TestCase):
     def test_data_types(self):
         types = [
+            # float16 is not supported, move it in first position to fail faster
+            np.float16,
             None,
             np.bool,
             np.int8,
@@ -147,10 +149,9 @@ class TestDTypes(unittest.TestCase):
             np.uint64,
             np.double,
             np.float,
-            np.float16
         ]
-        for xtype in types:
-            for ytype in types:
+        for ytype in types:
+            for xtype in types:
                 print(
                     "================ Testing sparse xtype %s, ytype %s "
                     "================" %

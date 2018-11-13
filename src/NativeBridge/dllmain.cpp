@@ -67,6 +67,7 @@ void translate_mlnet_exception(MlNetExecutionError const& exc)
 bp::dict pxCall(bp::dict& params)
 {
 	bp::dict res = bp::dict();
+
 	try
 	{
 		auto graph = bp::extract_or_cast<std::string> (params[PARAM_GRAPH]);
@@ -96,6 +97,7 @@ bp::dict pxCall(bp::dict& params)
 
 		EnvironmentBlock env(i_verbose, 0, seed);
 		int retCode;
+
 #if BOOST_PYTHON
 		if (params.has_key_or_contains(PARAM_DATA) && bp::extract_or_cast<bp::dict>(params[PARAM_DATA]).check())
 #else
@@ -111,6 +113,7 @@ bp::dict pxCall(bp::dict& params)
 		else
 			retCode = exec(&env, s_graph.c_str(), 0, NULL);
 
+        // test_syntax10_multi_output1 silently fails somewhere in this function.
 		res = env.GetData();
 
 		if (retCode == -1)
@@ -156,7 +159,21 @@ PYBIND11_MODULE(pybridge, m)
 	bp::register_exception_translator<MlNetExecutionError>(&translate_mlnet_exception);
 	def("px_call", pxCall);
 #else
-	bp::register_exception<MlNetExecutionError>(m, "MlNetExecutionError");
+    //static bp::register_exception<MlNetExecutionError>(m, "MlNetExecutionError");
+    static bp::exception<BridgeExecutionError> exc(m, "BridgeExecutionError");
+    bp::register_exception_translator([](std::exception_ptr p) {
+        try {
+            if (p)
+                std::rethrow_exception(p);
+        }
+        catch (const MlNetExecutionError &em) {
+            ::PyErr_SetString(::PyExc_RuntimeError, em.what());
+        }
+        catch (const std::exception &e) {
+            exc(e.what());
+        }
+    });
+
 	m.def("px_call", pxCall);
 #endif
 }

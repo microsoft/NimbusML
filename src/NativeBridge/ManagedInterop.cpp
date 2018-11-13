@@ -81,11 +81,11 @@
                 bp::list list;\
                 for (int j = 0; j < shrd->size(); j++)\
                 {\
-                    bp::object obj;\
                     const std::string& value = shrd->at(j);\
                     if (!value.empty())\
-                        obj = bp::str(value);\
-                    list.append(obj);\
+                        list.append(bp::str(value));\
+                    else\
+                        list.append(bp::none());\
                 }\
                 dict[_names[i].c_str()]["..KeyValues"] = list;\
             }\
@@ -259,9 +259,7 @@ STATIC MANAGED_CALLBACK(bool) EnvironmentBlock::CheckCancel()
 bp::dict EnvironmentBlock::GetData()
 {
 	if (_names.size() == 0)
-	{
 		return bp::dict();
-	}
 
 	bp::dict dict = bp::dict();
 	for (size_t i = 0; i < _names.size(); i++)
@@ -345,18 +343,22 @@ bp::dict EnvironmentBlock::GetData()
 			PythonObject<string>* col = dynamic_cast<PythonObject<string>*>(column);
 			auto shrd = col->GetData();
 			bp::list list;
-			for (size_t i = 0; i < shrd->size(); i++)
-			{
-				bp::object obj;
-				const std::string& value = shrd->at(i);
-				if (!value.empty())
+            for (size_t i = 0; i < shrd->size(); i++)
+            {
+                const std::string& value = shrd->at(i);
 #ifdef BOOST_PYTHON
-                    obj = bp::object(value);
+                if (!value.empty())
+                    list.append(bp::object(value));
+                else
+                    list.append(bp::object());
 #else
-					obj = bp::str(value);
+                if (!value.empty())
+                    list.append(bp::str(value));
+                else
+                    list.append(bp::none());
 #endif
-				list.append(obj);
-			}
+            }
+
 #ifdef BOOST_PYTHON
 			dict[_names[i]] = list;
 #else
