@@ -218,11 +218,11 @@ private:
 		CxInt64 txCol = pdata->_mptxt[col];
 		assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
 		bp::object s = pdata->_vtextdata[txCol][index];
-		
+
 #ifdef BOOST_PYTHON
 		if (bp::extract_or_cast<const char*>(s).check())
 #else
-		if (bp::isinstance<const char*>(s))
+		if (bp::isinstance<bp::str>(s))
 #endif
 		{
 			size = -1;
@@ -247,7 +247,7 @@ private:
 		}
 		else
 		{
-			// Missing values in Python are float.NaN.
+            // Missing values in Python are float.NaN.
 			assert(bp::extract_or_cast<float>(s) != NULL);
 			missing = 1;
 		}
@@ -264,7 +264,7 @@ private:
 #ifdef BOOST_PYTHON
 		if (bp::extract_or_cast<const char*>(str(s).encode("utf_8")).check())
 #else
-        if (bp::isinstance<const char*>(s))
+        if (bp::isinstance<bp::str>(s))
 #endif
 		{
 			missing = -1;
