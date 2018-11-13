@@ -87,6 +87,7 @@ private:
 	std::vector<const void *> _vgetter;
 
 	std::vector<const void*> _vdata;
+    // REVIEW: change to something more efficient to enable loading data from numpy.arrays
 	std::vector<bp::list> _vtextdata;
 	std::vector<char*> _vtextdata_cache;
 	std::vector<bp::list> _vkeydata;

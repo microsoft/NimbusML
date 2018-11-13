@@ -330,6 +330,28 @@ class Graph(EntryPoint):
                         str(e), model=output_modelfilename)
             else:
                 raise e
+        except SystemError as es:
+            vars = '?'
+            if "data" in call_parameters:
+                if isinstance(
+                        call_parameters.get(
+                            "data",
+                            None),
+                        pd.DataFrame):
+                    df = call_parameters["data"]
+                    vars = "type={0} shape={1} columns={2}".format(
+                        type(df), df.shape, df.columns)
+                elif isinstance(call_parameters.get("data", None),
+                                OrderedDict):
+                    od = call_parameters["data"]
+                    vars = "type={0} keys={1}".format(
+                        type(od), ','.join(od))
+            import pprint
+            pprint.pprint(call_parameters)
+            raise SystemError(
+                "{0}.\n--CODE--\n{1}\n--GRAPH--\n{2}\n--DATA--\n{3}"
+                "\n--\nconcatenated={4}".format(
+                    str(es), code, str(self), vars, concatenated))
         return ret
 
     def _get_separator(self):

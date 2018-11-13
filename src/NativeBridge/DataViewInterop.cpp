@@ -121,22 +121,51 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                 kind = R8;
                 pgetter = (void*)&GetR8;
                 break;
+            case (ML_PY_TEXT):
+                kind = TX;
+                pgetter = (void*)&GetTX;
+                isNumeric = false;
+                break;
+            case (ML_PY_UNICODE):
+                kind = TX;
+                pgetter = (void*)&GetUnicodeTX;
+                isNumeric = false;
+                break;
             default:
-                throw std::invalid_argument("column " + colName + " has unsupported type");
+                throw std::invalid_argument("column '" + colName + "' has unsupported type (" + std::to_string(colType) +")");
             }
-#ifdef BOOT_PYTHON
-            const char *data = val.get_data();
-#else
-            const char *data = (const char*)val.data();
-#endif
-            this->_vdata.push_back(data);
 
-            assert(this->_mpnum.size() == dataframeColCount);
-            this->_mpnum.push_back(_vdata.size() - 1);
-            if (llTotalNumRows == -1)
-                llTotalNumRows = val.shape(0);
-            else
-                assert(llTotalNumRows == val.shape(0));
+            if (isNumeric) {
+#ifdef BOOT_PYTHON
+                const char *data = val.get_data();
+#else
+                const char *data = (const char*)val.data();
+#endif
+                this->_vdata.push_back(data);
+
+                assert(this->_mpnum.size() == dataframeColCount);
+                this->_mpnum.push_back(_vdata.size() - 1);
+                if (llTotalNumRows == -1)
+                    llTotalNumRows = val.shape(0);
+                else
+                    assert(llTotalNumRows == val.shape(0));
+            }
+            else {
+                const char *data = (const char*)val.data();
+
+                bp::list colText;
+                for (auto it = val.begin(); it != val.end(); ++it)
+                    colText.append(*it);
+                
+                this->_vtextdata.push_back(colText);
+
+                assert(this->_mptxt.size() == dataframeColCount);
+                this->_mptxt.push_back(_vtextdata.size() - 1);
+                if (llTotalNumRows == -1)
+                    llTotalNumRows = val.shape(0);
+                else
+                    assert(llTotalNumRows == val.shape(0));
+            }
         }
 
         // Text or key values.
@@ -209,7 +238,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                     assert(llTotalNumRows == len(list));
                 break;
             default:
-                throw std::invalid_argument("column " + colName + " has unsupported type");
+                throw std::invalid_argument("column '" + colName + "' has unsupported type");
             }
         }
         // A sparse vector.
