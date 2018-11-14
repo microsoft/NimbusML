@@ -8,16 +8,16 @@ set __currentScriptDir=%~dp0
 set DependenciesDir=%__currentScriptDir%dependencies\
 if not exist "%DependenciesDir%" (md "%DependenciesDir%")
 
-:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.6)
+:: Default configuration: fails if no arguments passed to build.cmd (RlsWinPy3.7)
 set __BuildArch=x64
 set __VCBuildArch=x86_amd64
-set Configuration=DbgWinPy3.6
+set Configuration=DbgWinPyX.X
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
-set PythonRoot=%DependenciesDir%Python3.6
-set PythonVersion=3.6
-set PythonTag=cp36
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-X.X.X-mohoov-amd64.zip
+set PythonRoot=%DependenciesDir%PythonX.X
+set PythonVersion=X.X
+set PythonTag=cpXX
 set RunTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
@@ -27,28 +27,28 @@ if [%1] == [] goto :Build
 if /i [%1] == [--configuration] (
     shift && goto :Configuration
 )
-if /i [%1] == [--runTests]     (
+if /i [%1] == [--runTests] (
     set RunTests=True
     shift && goto :Arg_Loop
 )
-if /i [%1] == [--buildDotNetBridgeOnly]     (
+if /i [%1] == [--buildDotNetBridgeOnly] (
     set BuildDotNetBridgeOnly=True
     shift && goto :Arg_Loop
 )
-if /i [%1] == [--skipDotNetBridge]     (
+if /i [%1] == [--skipDotNetBridge] (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
 )
-goto :Usage
 
 :Usage
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "
 goto :Exit_Success
 
 :Configuration
@@ -130,6 +130,7 @@ if /i [%1] == [DbgWinPy2.7]     (
 )
 
 :Build
+if "%Configuration%"= "DbgWinPyX.X" goto :Usage
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
@@ -161,8 +162,8 @@ if not exist "%PythonRoot%\.done" (
     powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
     echo Extracting python zip ... 
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
-    del %DependenciesDir%python.zip
     echo.>"%PythonRoot%\.done"
+    del %DependenciesDir%python.zip
 )
 
 if "%PythonVersion%" neq "2.7" (
