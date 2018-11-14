@@ -31,24 +31,33 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 #ifdef BOOST_PYTHON
         bp::object key = *keys;
         char* name = bp::extract_or_cast<char*>(key);
-#else
-        bp::object key = bp::cast<bp::object>(it->first);
-        const char* name = (char*)PyUnicode_DATA(key.ptr());
-#endif
-#ifdef BOOST_PYTHON
-        bp::object value = *values++;
-#else
-        bp::object value = bp::cast<bp::object>(it->second);
-#endif
         if (strcmp(name, PYTHON_DATA_KEY_INFO) == 0 || strcmp(name, PYTHON_DATA_COL_TYPES) == 0)
             continue;
-
+        bp::object value = *values++;
         // now it should be a column names
         std::string colName = bp::extract_or_cast<std::string>(key);
         dataframeColCount++;
-#ifdef BOOST_PYTHON
         const char* tp = bp::extract_or_cast<const char*>(colTypes[dataframeColCount]);
 #else
+        if (!bp::isinstance<bp::str>(it->first))
+            continue;
+
+        // Function PyUnicode_AS_DATA is deprecated as getting the expected unicode
+        // requires the creation of a new object. We keep a copy of the string.
+        // See https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_AS_DATA.
+        // pybind11 uses a bytes representation of the string and then call
+        // PyUnicode_AsEncodedString which creates a new reference.
+        bp::str skey = bp::cast<bp::str>(it->first.ptr());
+        std::string string_name = (std::string)skey;
+        const char* name = string_name.c_str();
+        if (strcmp(name, PYTHON_DATA_KEY_INFO) == 0 || strcmp(name, PYTHON_DATA_COL_TYPES) == 0)
+            continue;
+        this->_vname_cache.push_back(string_name);
+
+        bp::object value = bp::cast<bp::object>(it->second);
+        // now it should be a column names
+        std::string colName = bp::extract_or_cast<std::string>(it->first);
+        dataframeColCount++;
         const char* tp = (char*)PyUnicode_DATA(colTypes[dataframeColCount].ptr());
 #endif
         ML_PY_TYPE_MAP_ENUM colType = static_cast<ML_PY_TYPE_MAP_ENUM>(tp[0]);
@@ -184,7 +193,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 #ifdef BOOST_PYTHON
                 if (varInfo.contains(colName))
 #else
-                if (varInfo.contains(colName.c_str()))
+                if (varInfo.contains(bp::str(colName)))
 #endif
                 {
                     isKey = true;
@@ -192,8 +201,8 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                     assert(bp::extract_or_cast<bp::list>(varInfo[colName]).check());
                     bp::list keyNames = bp::extract_or_cast<bp::list>(varInfo[colName]);
 #else
-                    assert(bp::isinstance<bp::list>(varInfo[colName.c_str()]));
-                    bp::list keyNames = bp::extract_or_cast<bp::list>(varInfo[colName.c_str()]);
+                    assert(bp::isinstance<bp::list>(varInfo[bp::str(colName)]));
+                    bp::list keyNames = bp::extract_or_cast<bp::list>(varInfo[bp::str(colName)]);
 #endif
 
                     kind = U4;
@@ -317,7 +326,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                 pgetter = (void*)&GetR8Vector;
                 break;
             default:
-                throw std::invalid_argument("column " + colName + " has unsupported type");
+                throw std::invalid_argument("column '" + colName + "' has unsupported type");
             }
             vecCard = bp::extract_or_cast<int>(sparse["colCount"]);
             name = (char*)"Data";
@@ -331,7 +340,6 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
             throw std::invalid_argument("unsupported data type provided");
 
         this->_vgetter.push_back(pgetter);
-        this->_vname.push_back(name);
         this->_vkind.push_back(kind);
         _vvecCard.push_back(vecCard);
 
@@ -353,10 +361,13 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         }
     }
 
-    assert(_vname.size() <= (size_t)(dataframeColCount + 1));
+    for (auto it = _vname_cache.begin(); it != _vname_cache.end(); ++it)
+        _vname_pointers.push_back(it->c_str());
+
+    assert(_vname_pointers.size() <= (size_t)(dataframeColCount + 1));
 
     this->crow = llTotalNumRows;
-    this->ccol = this->_vname.size();
+    this->ccol = this->_vname_cache.size();
     this->getLabels = &GetKeyNames;
 
     assert(this->ccol == this->_vkind.size());
@@ -368,7 +379,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 
     if (this->ccol > 0)
     {
-        this->names = &this->_vname[0];
+        this->names = &this->_vname_pointers[0];
         this->kinds = &this->_vkind[0];
         this->keyCards = &this->_vkeyCard[0];
         this->vecCards = &this->_vvecCard[0];
