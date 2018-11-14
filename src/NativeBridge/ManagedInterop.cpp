@@ -24,7 +24,7 @@
             PythonObject<cpptype>* col = dynamic_cast<PythonObject<cpptype>*>(column); \
             auto shrd = col->GetData(); \
             auto* data = shrd->data(); \
-            dict[_names[i].c_str()] = bp::array(shrd->size(), data); \
+            dict[bp::str(_names[i])] = bp::array(shrd->size(), data); \
         }
 #endif
 
@@ -42,9 +42,7 @@
 				bp::make_tuple(shrd->size()),\
 				bp::make_tuple(sizeof(float)), bp::object());\
 			if (keyNames == nullptr)\
-			{\
 				dict[_names[i]] = npdata;\
-			}\
 			else\
 			{\
 				dict[_names[i]] = bp::dict();\
@@ -72,11 +70,12 @@
             auto* data = shrd->data();\
             bp::array npdata = bp::array(shrd->size(), data);\
             if (keyNames == nullptr)\
-                dict[_names[i].c_str()] = npdata;\
+                dict[bp::str(_names[i])] = npdata;\
             else\
             {\
-                dict[_names[i].c_str()] = bp::dict(); \
-                dict[_names[i].c_str()]["..Data"] = npdata;\
+                auto pykey = bp::str(_names[i]);\
+                dict[pykey] = bp::dict(); \
+                dict[pykey]["..Data"] = npdata;\
                 auto shrd = keyNames->GetData();\
                 bp::list list;\
                 for (int j = 0; j < shrd->size(); j++)\
@@ -87,7 +86,7 @@
                     else\
                         list.append(bp::none());\
                 }\
-                dict[_names[i].c_str()]["..KeyValues"] = list;\
+                dict[pykey]["..KeyValues"] = list;\
             }\
         }
 #endif
@@ -301,7 +300,7 @@ bp::dict EnvironmentBlock::GetData()
 #ifdef BOOST_PYTHON
             dict[_names[i]] = list;
 #else
-			dict[_names[i].c_str()] = list;
+			dict[bp::str(_names[i])] = list;
 #endif
 		}
 		break;
@@ -362,7 +361,7 @@ bp::dict EnvironmentBlock::GetData()
 #ifdef BOOST_PYTHON
 			dict[_names[i]] = list;
 #else
-            dict[_names[i].c_str()] = list;
+            dict[bp::str(_names[i])] = list;
 #endif
 		}
 		break;

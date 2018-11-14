@@ -75,8 +75,12 @@ private:
 
 	// The vectors below here are parallel.
 
-	// Column names.
-	std::vector<const char*> _vname;
+	// Column names. It holds pointers on Python data.
+	std::vector<const char*> _vname_pointers;
+#if BOOST_PYTHON
+#else
+    std::vector<std::string> _vname_cache;
+#endif
 	// Column DataKind values.
 	std::vector<BYTE> _vkind;
 	// Column key type cardinalities. Zero for unbounded, -1 for non-key-types.
