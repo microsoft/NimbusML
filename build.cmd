@@ -293,7 +293,6 @@ if "%RunTests%" == "False" (
     goto :Exit_Success
 )
 
-
 echo ""
 echo "#################################"
 echo "Running tests ... "
