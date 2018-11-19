@@ -8,16 +8,16 @@ set __currentScriptDir=%~dp0
 set DependenciesDir=%__currentScriptDir%dependencies\
 if not exist "%DependenciesDir%" (md "%DependenciesDir%")
 
-:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.6)
+:: Default configuration: fails if no arguments passed to build.cmd (RlsWinPy3.7)
 set __BuildArch=x64
 set __VCBuildArch=x86_amd64
-set Configuration=DbgWinPy3.6
+set Configuration=DbgWinPyX.X
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
-set PythonRoot=%DependenciesDir%Python3.6
-set PythonVersion=3.6
-set PythonTag=cp36
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-X.X.X-mohoov-amd64.zip
+set PythonRoot=%DependenciesDir%PythonX.X
+set PythonVersion=X.X
+set PythonTag=cpXX
 set RunTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
@@ -27,32 +27,32 @@ if [%1] == [] goto :Build
 if /i [%1] == [--configuration] (
     shift && goto :Configuration
 )
-if /i [%1] == [--runTests]     (
+if /i [%1] == [--runTests] (
     set RunTests=True
     shift && goto :Arg_Loop
 )
-if /i [%1] == [--buildDotNetBridgeOnly]     (
+if /i [%1] == [--buildDotNetBridgeOnly] (
     set BuildDotNetBridgeOnly=True
     shift && goto :Arg_Loop
 )
-if /i [%1] == [--skipDotNetBridge]     (
+if /i [%1] == [--skipDotNetBridge] (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
 )
-else goto :Usage
 
 :Usage
-echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
+echo "Usage: build.cmd --configuration <Configuration> [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "
 goto :Exit_Success
 
 :Configuration
-if /i [%1] == [RlsWinPy3.7]     (
+if /i [%1] == [RlsWinPy3.7] (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
@@ -61,7 +61,7 @@ if /i [%1] == [RlsWinPy3.7]     (
     set PythonTag=cp37
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy3.6]     (
+if /i [%1] == [RlsWinPy3.6] (
     set DebugBuild=False
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
@@ -70,7 +70,7 @@ if /i [%1] == [RlsWinPy3.6]     (
     set PythonTag=cp36
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy3.5]     (
+if /i [%1] == [RlsWinPy3.5] (
     set DebugBuild=False
     set Configuration=RlsWinPy3.5
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
@@ -79,18 +79,18 @@ if /i [%1] == [RlsWinPy3.5]     (
     set PythonTag=cp35
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy2.7]     (
+if /i [%1] == [RlsWinPy2.7] (
     set DebugBuild=False
     set Configuration=RlsWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls2.7
+    set PythonVersion=2.7
+    set PythonTag=cp27
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.7]     (
+if /i [%1] == [DbgWinPy3.7] (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
@@ -99,7 +99,7 @@ if /i [%1] == [DbgWinPy3.7]     (
     set PythonTag=cp37
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.6]     (
+if /i [%1] == [DbgWinPy3.6] (
     set DebugBuild=True
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
@@ -108,7 +108,7 @@ if /i [%1] == [DbgWinPy3.6]     (
     set PythonTag=cp36
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.5]     (
+if /i [%1] == [DbgWinPy3.5] (
     set DebugBuild=True
     set Configuration=DbgWinPy3.5
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
@@ -117,19 +117,20 @@ if /i [%1] == [DbgWinPy3.5]     (
     set PythonTag=cp35
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy2.7]     (
+if /i [%1] == [DbgWinPy2.7] (
     set DebugBuild=True
     set Configuration=DbgWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg2.7
+    set PythonVersion=2.7
+    set PythonTag=cp27
     shift && goto :Arg_Loop
 )
 
 :Build
+if "%Configuration%" == "DbgWinPyX.X" goto :Usage
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
@@ -164,6 +165,16 @@ if not exist "%PythonRoot%\.done" (
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
 )
+
+if "%PythonVersion%" neq "2.7" (
+    echo ""
+    echo "#################################"
+    echo "Installing pybind11 "
+    echo "#################################"
+    echo Installing pybind11 ...
+    %PythonRoot%\python.exe -m pip install pybind11    
+)
+
 echo ""
 echo "#################################"
 echo "Building Native Bridge ... "
@@ -182,10 +193,11 @@ call "%_VSCOMNTOOLS%\VsDevCmd.bat"
 
 if "%VisualStudioVersion%"=="15.0" (
     goto :VS2017
-) else if "%VisualStudioVersion%"=="14.0" (
+)
+if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
 )
-else goto :MissingVersion
+goto :MissingVersion
 
 :MissingVersion
 :: Can't find VS 2015 or 2017
@@ -217,7 +229,7 @@ goto :NativeBridge
 :: Build NativeBridge.vcxproj
 echo Building NativeBridge.vcxproj ...
 set __msbuildArgs=/p:Platform=%__BuildArch% /p:PlatformToolset="%__PlatformToolset%"
-call msbuild  "%__currentScriptDir%src\NativeBridge\NativeBridge.vcxproj"  /p:Configuration=%Configuration%  %__msbuildArgs%
+call msbuild "%__currentScriptDir%src\NativeBridge\NativeBridge.vcxproj" /p:Configuration=%Configuration% %__msbuildArgs%
 if %errorlevel% neq 0 goto :Exit_Error
 
 
@@ -239,7 +251,7 @@ if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
-if %PythonVersion% == 3.6 (
+if %PythonVersion% == 3.7 (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2
