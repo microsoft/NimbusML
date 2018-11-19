@@ -41,7 +41,7 @@ if /i [%1] == [--skipDotNetBridge] (
 )
 
 :Usage
-echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
+echo "Usage: build.cmd --configuration <Configuration> [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
 echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
@@ -52,7 +52,7 @@ echo "
 goto :Exit_Success
 
 :Configuration
-if /i [%1] == [RlsWinPy3.7]     (
+if /i [%1] == [RlsWinPy3.7] (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
@@ -61,7 +61,7 @@ if /i [%1] == [RlsWinPy3.7]     (
     set PythonTag=cp37
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy3.6]     (
+if /i [%1] == [RlsWinPy3.6] (
     set DebugBuild=False
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
@@ -70,7 +70,7 @@ if /i [%1] == [RlsWinPy3.6]     (
     set PythonTag=cp36
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy3.5]     (
+if /i [%1] == [RlsWinPy3.5] (
     set DebugBuild=False
     set Configuration=RlsWinPy3.5
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
@@ -79,7 +79,7 @@ if /i [%1] == [RlsWinPy3.5]     (
     set PythonTag=cp35
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy2.7]     (
+if /i [%1] == [RlsWinPy2.7] (
     set DebugBuild=False
     set Configuration=RlsWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
@@ -90,7 +90,7 @@ if /i [%1] == [RlsWinPy2.7]     (
     set PythonTag=cp27
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.7]     (
+if /i [%1] == [DbgWinPy3.7] (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
@@ -99,7 +99,7 @@ if /i [%1] == [DbgWinPy3.7]     (
     set PythonTag=cp37
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.6]     (
+if /i [%1] == [DbgWinPy3.6] (
     set DebugBuild=True
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
@@ -108,7 +108,7 @@ if /i [%1] == [DbgWinPy3.6]     (
     set PythonTag=cp36
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.5]     (
+if /i [%1] == [DbgWinPy3.5] (
     set DebugBuild=True
     set Configuration=DbgWinPy3.5
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
@@ -117,7 +117,7 @@ if /i [%1] == [DbgWinPy3.5]     (
     set PythonTag=cp35
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy2.7]     (
+if /i [%1] == [DbgWinPy2.7] (
     set DebugBuild=True
     set Configuration=DbgWinPy2.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
@@ -130,7 +130,7 @@ if /i [%1] == [DbgWinPy2.7]     (
 )
 
 :Build
-if "%Configuration%"= "DbgWinPyX.X" goto :Usage
+if "%Configuration%" == "DbgWinPyX.X" goto :Usage
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
@@ -229,7 +229,7 @@ goto :NativeBridge
 :: Build NativeBridge.vcxproj
 echo Building NativeBridge.vcxproj ...
 set __msbuildArgs=/p:Platform=%__BuildArch% /p:PlatformToolset="%__PlatformToolset%"
-call msbuild  "%__currentScriptDir%src\NativeBridge\NativeBridge.vcxproj"  /p:Configuration=%Configuration%  %__msbuildArgs%
+call msbuild "%__currentScriptDir%src\NativeBridge\NativeBridge.vcxproj" /p:Configuration=%Configuration% %__msbuildArgs%
 if %errorlevel% neq 0 goto :Exit_Error
 
 
