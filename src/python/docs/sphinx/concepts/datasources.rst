@@ -122,7 +122,7 @@ Output Data Types of Transforms
 
 The return type of all of the transforms is a ``pandas.DataFrame``, when they
 are used inside a `sklearn.pipeline.Pipeline
-<http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_
+<https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_
 or when they are used individually.
 
 However, when used inside a :py:class:`nimbusml.Pipeline`, the outputs are often stored in

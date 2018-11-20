@@ -58,7 +58,7 @@ This corresponds to evaltype='binary'.
     in `ML.NET <https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet>`_).
     This expression is asymptotically equivalent to the area under the curve
     which is what
-    `scikit-learn <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html>`_ computation.
+    `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html>`_ computation.
     computes
     (see `auc <https://github.com/scikit-learn/scikit-learn/blob/a24c8b46/sklearn/metrics/ranking.py#L101>`_).
     That explains discrepencies on small test sets.
