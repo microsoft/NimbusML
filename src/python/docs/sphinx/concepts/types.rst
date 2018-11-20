@@ -61,7 +61,7 @@ dataframe and therefore the column_name can still be used to refer to the Vector
     efficiently without any conversion to a dataframe. Since the ``column_name`` of the vector is
     also preserved, it is possible to refer to it by downstream transforms by name. However, when
     transforms are used inside a `sklearn.pipeline.Pipeline()
-    <http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_, the output
+    <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_, the output
     of every transform is converted to a ``pandas.DataFrame`` first where the names of ``slots`` are
     preserved, but the ``column_name`` of the vector is dropped.
 

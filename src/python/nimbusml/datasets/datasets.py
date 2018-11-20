@@ -75,7 +75,7 @@ class DataSet:
 
 class DataSetIris(DataSet):
     """
-    `Iris dataset <http://scikit-learn.org/stable/auto_examples/datasets
+    `Iris dataset <https://scikit-learn.org/stable/auto_examples/datasets
     /plot_iris_dataset.html>`_ dataset.
     """
 
