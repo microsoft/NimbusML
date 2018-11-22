@@ -14,8 +14,7 @@ class DataSourceBlock;
 // Callback function for getting labels for key-type columns. Returns success.
 typedef MANAGED_CALLBACK_PTR(bool, GETLABELS)(DataSourceBlock *source, int col, int count, const char **buffer);
 
-// REVIEW: boost_python is not updated at the same speed as swig or pybind11.
-// Both have a larger audience now, see about pybind11 https://github.com/davisking/dlib/issues/293
+// boost_python is used if BOOST_PYTHON is defined pybind11 otherwise.
 // It handles csr_matrix: http://pybind11-rtdtest.readthedocs.io/en/stable/advanced.html#transparent-conversion-of-dense-and-sparse-eigen-data-types.
 #ifdef BOOST_PYTHON
 using namespace boost::python;
@@ -40,7 +39,7 @@ class DataSourceBlock
 	// Fields that are visible to managed code come first and do not start with an underscore.
 	// Fields that are only visible to this code start with an underscore.
 
-private:
+public:
 	// *** These fields are known by managed code. It is critical that this struct not have a vtable.
 	//     It is also critical that the layout of this prefix NOT vary from release to release or build to build.
 
@@ -65,6 +64,10 @@ private:
 
 	// Call back function for getting labels.
 	GETLABELS getLabels;
+
+    inline size_t ColumnCount() {
+        return _vname_cache.size();
+    }
 
 private:
 	// *** Stuff below here is not known by the managed code.
@@ -118,9 +121,7 @@ private:
 			bp::object item = container[index];
 
 			if (!item.is_none())
-			{
 				return item;
-			}
 		}
 
 		return bp::object();
