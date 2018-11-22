@@ -5,6 +5,7 @@
 #include "DataViewInterop.h"
 #include "ManagedInterop.h"
 
+
 DataSourceBlock::DataSourceBlock(bp::dict& data)
 {
     // Assert that this class doesn't have a vtable.
@@ -69,6 +70,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         bool isText = false;
         CxInt64 vecCard = -1;
         // Numeric or bool values.
+
 #ifdef BOOST_PYTHON
         if (bp::extract_or_cast<numpy_array>(value).check())
 #else
@@ -329,7 +331,10 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                 throw std::invalid_argument("column '" + colName + "' has unsupported type");
             }
             vecCard = bp::extract_or_cast<int>(sparse["colCount"]);
-            name = (char*)"Data";
+            std::string name = "Data";
+            if (std::find(_vname_cache.begin(), _vname_cache.end(), name) != _vname_cache.end())
+                throw std::runtime_error("Only one sparse column is allowed and is renamed into Data (reserved column name).");
+            this->_vname_cache.push_back(name);
 
             if (llTotalNumRows == -1)
                 llTotalNumRows = len(indptr) - 1;

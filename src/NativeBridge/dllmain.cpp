@@ -104,19 +104,19 @@ bp::dict pxCall(bp::dict& params)
         if (params.has_key_or_contains(PARAM_DATA) && bp::isinstance<bp::dict>(params[PARAM_DATA]))
 #endif
 		{
-			bp::dict d = bp::extract_or_cast<bp::dict>(params[PARAM_DATA]);
+            bp::dict d = bp::extract_or_cast<bp::dict>(params[PARAM_DATA]);
 			DataSourceBlock data(d);
 			const DataSourceBlock *datas[1];
 			datas[0] = &data;
 			retCode = exec(&env, s_graph.c_str(), 1, datas);
 		}
-		else
-			retCode = exec(&env, s_graph.c_str(), 0, NULL);
+        else
+            retCode = exec(&env, s_graph.c_str(), 0, NULL);
 
         // test_syntax10_multi_output1 silently fails somewhere in this function.
 		res = env.GetData();
 
-		if (retCode == -1)
+        if (retCode == -1)
 			// REVIEW: get the content of IChannel and add it the the error message.
 			throw std::runtime_error("Returned code is -1. Check the log for error messages.");
 

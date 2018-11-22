@@ -8,6 +8,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from scipy.sparse.csr import csr_matrix
 from nimbusml import Pipeline as nimbusmlPipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.ensemble import FastTreesBinaryClassifier
@@ -89,8 +90,14 @@ class TestUciAdultScikit(unittest.TestCase):
         ])
         pipe = Pipeline(
             steps=[
-                ('fu', fu), ('linear', FastLinearBinaryClassifier(
-                    shuffle=False, train_threads=1))])
+                ('fu', fu), 
+                ('linear', FastLinearBinaryClassifier(shuffle=False, train_threads=1))
+                ])
+
+        fu.fit(train)
+        res = fu.transform(train)
+        assert isinstance(res, csr_matrix)
+        
         pipe.fit(train, label)
         out_data = pipe.predict(test)
         check_accuracy_scikit(test_file, label_column, out_data, 0.709)
@@ -315,4 +322,5 @@ class TestUciAdultScikit(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    TestUciAdultScikit().test_feature_union()
     unittest.main()
