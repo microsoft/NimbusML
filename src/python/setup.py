@@ -24,6 +24,7 @@ with open(path.join(here, 'README.md')) as f:
     long_description = f.read()
 
 _install_requires = [
+        'dotnetcore2>=2.1.2',
         'numpy>=1.14.0',
         'pandas>=0.22',
         'scipy>=0.18',

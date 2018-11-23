@@ -12,22 +12,17 @@
 #include <unistd.h>
 #include <vector>
 
-#define NATIVE_FOLDER "/Linux/"
-#define AUTOLOAD_FOLDER "/AutoLoad/"
-#define PLATFORM_FOLDER "/Platform/"
-#define PUBLISH_FOLDER "/publish/"
 #define NATIVE_BRIDGE_LIB "/pybridge.so"
 #ifdef __APPLE__
-#define CORECLR_LIB "libcoreclr.dylib"
+#define CORECLR_LIB "/libcoreclr.dylib"
 #else
-#define CORECLR_LIB "libcoreclr.so"
+#define CORECLR_LIB "/libcoreclr.so"
 #endif
 
 #define CORECLR_INIT "coreclr_initialize"
 #define CORECLR_DELEGATE "coreclr_create_delegate"
 #define CORECLR_SHUTDOWN "coreclr_shutdown"
 
-#define DOTNETBRIDGE_DLL "DotNetBridge.dll"
 #define DOTNETBRIDGE "DotNetBridge"
 #define DOTNETBRIDGE_FQDN "Microsoft.MachineLearning.DotNetBridge.Bridge"
 
@@ -149,18 +144,15 @@ public:
     {
     }
 
-    FNGETTER EnsureGetter(const char *path, const char *coreclrpath)
+    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath)
     {
         if (_getter != nullptr)
             return _getter;
 
-        std::string dir(path);
+        std::string libsroot(nimbuslibspath);
         std::string coreclrdir(coreclrpath);
 
-        std::string dll(dir);
-        dll.append(W(DOTNETBRIDGE_DLL));
-
-        ICLRRuntimeHost2* host = EnsureClrHost(dir.c_str(), coreclrdir.c_str());
+        ICLRRuntimeHost2* host = EnsureClrHost(libsroot.c_str(), coreclrdir.c_str());
         if (host == nullptr)
             return nullptr;
 
@@ -254,58 +246,21 @@ private:
         closedir(dir);
     }
 
-    const char* GetDistribution()
-    {
-#ifdef __APPLE__
-        return "osx-x64";
-#else
-        return "linux-x64";
-#endif
-    }
-
-    ICLRRuntimeHost2* EnsureClrHost(const char * dirRoot, const char * coreclrDirRoot)
+    ICLRRuntimeHost2* EnsureClrHost(const char * libsRoot, const char * coreclrDirRoot)
     {
         if (_host != nullptr)
             return _host;
 
         // Set up paths.
-        std::string dirNative(dirRoot);
-        dirNative.append(NATIVE_FOLDER);
-
         std::string dirClr(coreclrDirRoot);
 
-        const char* distribution = GetDistribution();
-        if (distribution == nullptr)
-            throw std::runtime_error("Found unsupported platform when looking for Core CLR libs. The supported Linux distributions include Redhat (CentOS) and Ubuntu.");
-
-        dirClr.append(PLATFORM_FOLDER);
-        dirClr.append(distribution);
-        dirClr.append(PUBLISH_FOLDER);
-
-        // REVIEW: now the assemblies in AutoLoad are added to the TPA list.
-        // This is a workaround to circumvent this CoreCLR issue: https://github.com/dotnet/coreclr/issues/5837
-        // This bug is fixed but not published yet. When a newer version of CoreCLR is available, we should
-        // 1. Remove the assemblies in AutoLoad from TPA.
-        // 2. Modify AppDomainProxy (in ML.NET Core) so that all assemblies are resolved using events.
-        std::string dirAutoLoad(dirRoot);
-        dirAutoLoad.append(AUTOLOAD_FOLDER);
-
-        std::string appPath(dirRoot);
-        std::string appNiPath(dirRoot);
-        appNiPath.append(":").append(dirClr);
-        
-        std::string nativeDllSearchDirs(dirNative);
-        nativeDllSearchDirs.append(":").append(appNiPath);
-
         std::string tpaList;
-        AddDllsToList(dirRoot, tpaList);
-        AddDllsToList(dirClr.c_str(), tpaList);
-        AddDllsToList(dirAutoLoad.c_str(), tpaList);
+        AddDllsToList(libsRoot, tpaList);
 
         // Start the CoreCLR.
         HMODULE hmodCore = EnsureCoreClrModule(dirClr.c_str());
 
-        ICLRRuntimeHost2 *host = new ICLRRuntimeHost2(hmodCore, dirRoot);
+        ICLRRuntimeHost2 *host = new ICLRRuntimeHost2(hmodCore, libsRoot);
         HRESULT hr;
         // App domain flags are not used by UnixCoreConsole.
         DWORD appDomainFlags = 0;
@@ -322,28 +277,16 @@ private:
         // APP_PATHS
         // - The list of paths which will be probed by the assembly loader
         //
-        // APP_NI_PATHS
-        // - The list of additional paths that the assembly loader will probe for ngen images
-        //
-        // NATIVE_DLL_SEARCH_DIRECTORIES
-        // - The list of paths that will be probed for native DLLs called by PInvoke
-        //
         const char *property_keys[] = {
             W("TRUSTED_PLATFORM_ASSEMBLIES"),
             W("APP_PATHS"),
-            W("APP_NI_PATHS"),
-            W("NATIVE_DLL_SEARCH_DIRECTORIES"),
             W("AppDomainCompatSwitch"),
         };
         const char *property_values[] = {
             // TRUSTED_PLATFORM_ASSEMBLIES
             tpaList.c_str(),
             // APP_PATHS
-            appPath.c_str(),
-            // APP_NI_PATHS
-            appNiPath.c_str(),
-            // NATIVE_DLL_SEARCH_DIRECTORIES
-            nativeDllSearchDirs.c_str(),
+            libsRoot,
             // AppDomainCompatSwitch
             W("UseLatestBehaviorWhenTFMNotSpecified")
         };
