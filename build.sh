@@ -175,8 +175,13 @@ then
     cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
     ls  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/
-	
-    cat build/libs.txt | while read i; do
+  
+    libs_txt=libs_linux.txt
+    if [ "$(uname -s)" = "Darwin" ]
+    then 
+      libs_txt=libs_mac.txt
+    fi
+    cat build/${libs_txt} | while read i; do
         cp  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     done
 
@@ -185,7 +190,7 @@ then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}"/pybridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     fi
-	
+  
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 
