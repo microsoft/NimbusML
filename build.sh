@@ -182,13 +182,13 @@ then
       libs_txt=libs_mac.txt
     fi
     cat build/${libs_txt} | while read i; do
+	    echo "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     done
 
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        cp  "${BuildOutputDir}/${__configuration}"/pybridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     fi
   
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
