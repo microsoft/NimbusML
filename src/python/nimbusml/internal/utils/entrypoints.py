@@ -449,12 +449,15 @@ class Graph(EntryPoint):
             # Set paths to ML.NET binaries (in nimbusml) and to .NET Core CLR binaries
             nimbusml_path = os.path.abspath(os.path.join(
                 os.path.dirname(__file__), '..', 'libs'))
-            dotnet_module = pkg_resources.get_distribution('dotnetcore2')
-            dotnet_path = os.path.join(
-                dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
-                'Microsoft.NETCore.App', dotnet_module.version)
             call_parameters['nimbusmlPath'] = try_set(nimbusml_path, True, str)
-            call_parameters['dotnetClrPath'] = try_set(dotnet_path, True, str)
+            call_parameters['dotnetClrPath'] = try_set(nimbusml_path, True, str)
+            # dotnetcore2 package is available only for python 3.x
+            if six.PY3:
+                dotnet_module = pkg_resources.get_distribution('dotnetcore2')
+                dotnet_path = os.path.join(
+                    dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
+                    'Microsoft.NETCore.App', dotnet_module.version)
+                call_parameters['dotnetClrPath'] = try_set(dotnet_path, True, str)
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, int)
             ret = self._try_call_bridge(

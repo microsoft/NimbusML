@@ -24,12 +24,15 @@ with open(path.join(here, 'README.md')) as f:
     long_description = f.read()
 
 _install_requires = [
-        'dotnetcore2>=2.1.2',
         'numpy>=1.14.0',
         'pandas>=0.22',
         'scipy>=0.18',
         'scikit-learn>0.19.0',
     ]
+
+# dotnetcore2 package is available only for python 3.x
+if sys.version_info.major == 3:
+    _install_requires.append('dotnetcore2>=2.1.2')
 
 if sys.version_info[0:2] == (2,7):
     _install_requires.append('decorator')
