@@ -251,14 +251,12 @@ private:
         if (_host != nullptr)
             return _host;
 
-        // Set up paths.
-        std::string dirClr(coreclrDirRoot);
-
         std::string tpaList;
         AddDllsToList(libsRoot, tpaList);
+        AddDllsToList(coreclrDirRoot, tpaList);
 
         // Start the CoreCLR.
-        HMODULE hmodCore = EnsureCoreClrModule(dirClr.c_str());
+        HMODULE hmodCore = EnsureCoreClrModule(coreclrDirRoot);
 
         ICLRRuntimeHost2 *host = new ICLRRuntimeHost2(hmodCore, libsRoot);
         HRESULT hr;

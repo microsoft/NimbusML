@@ -169,8 +169,6 @@ private:
         // Set up paths.
         std::wstring tpaList;
         AddDllsToList(libsRoot, tpaList);
-
-        //std::wstring dirClr1(L"E:\\sources\\NimbusML\\dependencies\\Python3.6\\Lib\\site-packages\\dotnetcore2\\bin\\shared\\Microsoft.NETCore.App\\2.1.0\\");
         AddDllsToList(coreclrDirRoot, tpaList);
 
         // Start the CoreCLR.
