@@ -8,5 +8,5 @@ libMklImports.so
 libSymSgdNative.so
 lib_lightgbm.so
 libtensorflow.so
-Microsoft.ML.*
 libtensorflow_framework.so
+Microsoft.ML.*
