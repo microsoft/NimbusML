@@ -1,11 +1,11 @@
+Google.Protobuf.dll
+Newtonsoft.Json.dll
 CpuMathNative.dll
 FactorizationMachineNative.dll
 FastTreeNative.dll
-Google.Protobuf.dll
 LdaNative.dll
 lib_lightgbm.dll
 MklImports.dll
-Newtonsoft.Json.dll
 SymSgdNative.dll
 tensorflow.dll
 Microsoft.ML.*
