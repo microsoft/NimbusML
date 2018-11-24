@@ -11,6 +11,7 @@ phases:
       Py35:
         _configuration: RlsWinPy3.5
       Py27:
+        buildScript: build27.cmd
         _configuration: RlsWinPy2.7
     buildQueue:
       name: Hosted VS2017
@@ -26,6 +27,7 @@ phases:
       Py35:
         _configuration: RlsMacPy3.5
       Py27:
+        buildScript: ./build27.sh
         _configuration: RlsMacPy2.7
     buildQueue:
       name: Hosted macOS
@@ -43,6 +45,7 @@ phases:
       Py35:
         _configuration: RlsLinPy3.5
       Py27:
+        buildScript: ./build27.sh
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
@@ -58,6 +61,7 @@ phases:
       Py35:
         _configuration: RlsLinPy3.5
       Py27:
+        buildScript: ./build27.sh
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
@@ -73,6 +77,7 @@ phases:
       Py35:
         _configuration: RlsLinPy3.5
       Py27:
+        buildScript: ./build27.sh
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
