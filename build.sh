@@ -178,14 +178,14 @@ then
     then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		Ext = *.so
+		ext=*.so
 		if [ "$(uname -s)" = "Darwin" ]
 		then 
-            Ext = *.dylib
+            ext=*.dylib
 		fi	
-		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${Ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     else
 		libs_txt=libs_linux.txt
 		if [ "$(uname -s)" = "Darwin" ]
