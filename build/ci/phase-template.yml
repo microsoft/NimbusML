@@ -1,5 +1,6 @@
 parameters:
   name: ''
+  buildScript: ''
   buildMatrix: {}
   buildQueue: {}
   testDistro: ''
@@ -8,6 +9,7 @@ phases:
 
 - phase: ${{ parameters.name }}
   variables:
+    _buildScript: ${{ parameters.buildScript }}
     _dockerRun: docker run -e SYSTEM_TEAMFOUNDATIONCOLLECTIONURI="$(System.TeamFoundationCollectionUri)" -e BUILD_BUILDNUMBER="$(Build.BuildNumber)" -i -v $(Build.SourcesDirectory):/builddir -w="/builddir"
     _distro: ${{ parameters.testDistro }}
   queue:

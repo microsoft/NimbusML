@@ -4,15 +4,13 @@ phases:
 - template: /build/ci/phase-template.yml
   parameters:
     name: Windows
+    buildScript: build.cmd
     buildMatrix:
       Py36:
-        _buildScript: build.cmd
         _configuration: RlsWinPy3.6
       Py35:
-        _buildScript: build.cmd
         _configuration: RlsWinPy3.5
       Py27:
-        _buildScript: build27.cmd
         _configuration: RlsWinPy2.7
     buildQueue:
       name: Hosted VS2017
@@ -21,15 +19,13 @@ phases:
 - template: /build/ci/phase-template.yml
   parameters:
     name: Mac
+    buildScript: ./build.sh
     buildMatrix:
       Py36:
-        _buildScript: ./build.sh
         _configuration: RlsMacPy3.6
       Py35:
-        _buildScript: ./build.sh
         _configuration: RlsMacPy3.5
       Py27:
-        _buildScript: ./build27.sh
         _configuration: RlsMacPy2.7
     buildQueue:
       name: Hosted macOS
@@ -39,16 +35,14 @@ phases:
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_Ubuntu16
+    buildScript: ./build.sh
     testDistro: ubuntu16
     buildMatrix:
       Py36:
-        _buildScript: ./build.sh
         _configuration: RlsLinPy3.6
       Py35:
-        _buildScript: ./build.sh
         _configuration: RlsLinPy3.5
       Py27:
-        _buildScript: ./build27.sh
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
@@ -56,16 +50,14 @@ phases:
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_Ubuntu14
+    buildScript: ./build.sh
     testDistro: ubuntu14
     buildMatrix:
       Py36:
-        _buildScript: ./build.sh
         _configuration: RlsLinPy3.6
       Py35:
-        _buildScript: ./build.sh
         _configuration: RlsLinPy3.5
       Py27:
-        _buildScript: ./build27.sh
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
@@ -73,16 +65,14 @@ phases:
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_CentOS7
+    buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
       Py36:
-        _buildScript: ./build.sh
         _configuration: RlsLinPy3.6
       Py35:
-        _buildScript: ./build.sh
         _configuration: RlsLinPy3.5
       Py27:
-        _buildScript: ./build27.sh
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604

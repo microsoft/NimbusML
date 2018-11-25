@@ -152,7 +152,7 @@ then
     then 
         PublishDir=osx-x64
     fi
-    ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force -r ${PublishDir} -c ${__configuration}
+    ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force --self-contained -r ${PublishDir} -c ${__configuration}
     ${_dotnet} build -c ${__configuration} -o "${BuildOutputDir}/${__configuration}"  --force "${__currentScriptDir}/src/DotNetBridge/DotNetBridge.csproj"
 
     # Build nimbusml wheel
@@ -174,15 +174,30 @@ then
     cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
-    libs_txt=libs_linux.txt
-    if [ "$(uname -s)" = "Darwin" ]
-    then 
-      libs_txt=libs_mac.txt
+    if [ ${PythonVersion} = 2.7 ]
+    then
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		Ext = *.so
+		if [ "$(uname -s)" = "Darwin" ]
+		then 
+            Ext = *.dylib
+		fi	
+		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${Ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    else
+	then
+		libs_txt=libs_linux.txt
+		if [ "$(uname -s)" = "Darwin" ]
+		then 
+		    libs_txt=libs_mac.txt
+		fi
+		cat build/${libs_txt} | while read i; do
+			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		done
     fi
-    cat build/${libs_txt} | while read i; do
-        cp  "${BuildOutputDir}/${__configuration}"/Platform/${PublishDir}/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-    done
-
+	
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
