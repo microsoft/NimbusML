@@ -187,7 +187,6 @@ then
 		fi	
 		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${Ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     else
-	then
 		libs_txt=libs_linux.txt
 		if [ "$(uname -s)" = "Darwin" ]
 		then 
