@@ -453,6 +453,9 @@ class Graph(EntryPoint):
             call_parameters['dotnetClrPath'] = try_set(nimbusml_path, True, str)
             # dotnetcore2 package is available only for python 3.x
             if six.PY3:
+                # resolves dependencies, for ex. libunwind
+                from dotnetcore2 import runtime as clr_runtime
+                clr_runtime.ensure_dependencies()
                 dotnet_module = pkg_resources.get_distribution('dotnetcore2')
                 dotnet_path = os.path.join(
                     dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
