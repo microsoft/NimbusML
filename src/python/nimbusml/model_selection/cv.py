@@ -458,7 +458,7 @@ class CV:
                         str(groups) +
                         ' cannot be found in the origin data, please specify '
                         'groups in .fit() function.')
-            elif isinstance(X,DataFrame):
+            elif isinstance(X, DataFrame):
                 if groups not in X.columns:
                     raise Exception(
                         'Default stratification column: ' +
