@@ -454,11 +454,15 @@ class Graph(EntryPoint):
             # dotnetcore2 package is available only for python 3.x
             if six.PY3:
                 from dotnetcore2 import runtime as clr_runtime
+                dependencies_path = None
                 try: 
                     # try to resolve dependencies, for ex. libunwind
-                    clr_runtime.ensure_dependencies()
+                    dependencies_path = clr_runtime.ensure_dependencies()
                 except:
                     pass
+                os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
+                if dependencies_path is not None:
+                    env['LD_LIBRARY_PATH'] = dependencies_path
                 dotnet_module = pkg_resources.get_distribution('dotnetcore2')
                 dotnet_path = os.path.join(
                     dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
