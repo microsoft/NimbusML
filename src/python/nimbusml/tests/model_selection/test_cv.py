@@ -375,6 +375,12 @@ class TestCvRanker(unittest.TestCase):
             data._set_role(Role.Label, label_name)
         return data
 
+    def data_pandas(self):
+        simpleinput_file = get_dataset("gen_tickettrain").as_filepath()
+        data = pd.read_csv(simpleinput_file)
+        data['group'] = data['group'].astype(str)
+        return data
+
     def data_wt_rename(self, label_name, group_id, features):
         simpleinput_file = get_dataset("gen_tickettrain").as_filepath()
         file_schema = 'sep=, col={label}:R4:0 col={group_id}:TX:1 ' \
@@ -401,6 +407,29 @@ class TestCvRanker(unittest.TestCase):
                 Role.GroupId: group_id}]
         data = self.data_wt_rename(label_name, group_id, features)
         check_cv(pipeline=Pipeline(steps), X=data, **params)
+
+    @unittest.skipIf(os.name != "nt", "random crashes on linux")
+    def check_cv_with_defaults_df(
+            self,
+            label_name='rank',
+            group_id='group',
+            features=['price','Class','dep_day','nbr_stops','duration'],
+            **params):
+        steps = [
+            OneHotHashVectorizer(
+                output_kind='Key') << {
+                group_id: group_id},
+            LightGbmRanker(
+                min_data_per_leaf=1,
+                feature=features,
+                label='rank', group_id='group'
+            )]
+        data = self.data_pandas()
+        check_cv(pipeline=Pipeline(steps), X=data, **params)
+
+    @unittest.skipIf(os.name != "nt", "random crashes on linux")
+    def test_default_df(self):
+        self.check_cv_with_defaults_df()
 
     @unittest.skipIf(os.name != "nt", "random crashes on linux")
     def test_default_label2(self):
