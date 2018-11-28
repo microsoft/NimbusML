@@ -462,7 +462,7 @@ class Graph(EntryPoint):
                     pass
                 os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
                 if dependencies_path is not None:
-                    env['LD_LIBRARY_PATH'] = dependencies_path
+                    os.environ['LD_LIBRARY_PATH'] = dependencies_path
                 dotnet_module = pkg_resources.get_distribution('dotnetcore2')
                 dotnet_path = os.path.join(
                     dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
