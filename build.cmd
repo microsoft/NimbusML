@@ -240,6 +240,7 @@ echo "Building nimbusml wheel package ... "
 echo "#################################"
 echo Building nimbusml wheel package ...
 set PythonExe=%PythonRoot%\python.exe
+if not exist %PythonExe% set PythonExe=python
 echo Python executable: %PythonExe%
 :: Clean out build, dist, and libs from previous builds
 set build="%__currentScriptDir%src\python\build"
