@@ -39,7 +39,7 @@ class DataSourceBlock
 	// Fields that are visible to managed code come first and do not start with an underscore.
 	// Fields that are only visible to this code start with an underscore.
 
-public:
+private:
 	// *** These fields are known by managed code. It is critical that this struct not have a vtable.
 	//     It is also critical that the layout of this prefix NOT vary from release to release or build to build.
 
@@ -225,7 +225,7 @@ private:
 		bp::object s = pdata->_vtextdata[txCol][index];
 
 #ifdef BOOST_PYTHON
-		if (bp::extract_or_cast<const char*>(s).check())
+		if (bp::extract<const char*>(s).check())
 #else
 		if (bp::isinstance<bp::str>(s))
 #endif
@@ -233,7 +233,7 @@ private:
 			size = -1;
 			missing = -1;
 #ifdef BOOST_PYTHON
-			pch = bp::extract_or_cast<const char*>(s.ptr());
+			pch = bp::extract<const char*>(s.ptr());
 #else
             pch = (char*)PyUnicode_DATA(s.ptr());            
 #endif
@@ -267,14 +267,14 @@ private:
         auto s = pdata->_vtextdata[txCol][index];
 
 #ifdef BOOST_PYTHON
-		if (bp::extract_or_cast<const char*>(str(s).encode("utf_8")).check())
+		if (bp::extract<const char*>(str(s).encode("utf_8")).check())
 #else
         if (bp::isinstance<bp::str>(s))
 #endif
 		{
 			missing = -1;
 #ifdef BOOST_PYTHON
-			pch = bp::extract_or_cast<const char*>(str(s).encode("utf_8"));
+			pch = bp::extract<const char*>(str(s).encode("utf_8"));
 #else
             pch = (char*)PyUnicode_DATA(s.ptr());
 #endif
@@ -369,7 +369,7 @@ private:
 
         for (int i = 0; i < count; ++i, ++buffer)
 #ifdef BOOST_PYTHON
-            *buffer = bp::extract_or_cast<const char*>(names[i]);
+            *buffer = bp::extract<const char*>(names[i]);
 #else
             *buffer = (char*)PyUnicode_DATA(names[i].ptr());
 #endif

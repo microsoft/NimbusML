@@ -88,7 +88,6 @@ bp::dict pxCall(bp::dict& params)
         int seed = 42;
     #if BOOST_PYTHON
         if (params.has_key(PARAM_SEED))
-            seed = bp::extract<int>(params[PARAM_SEED]);
     #else
         if (params.has_key_or_contains(PARAM_SEED))
     #endif
