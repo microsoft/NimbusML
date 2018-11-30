@@ -8,6 +8,7 @@ definition of classes for the entities in the entrypoint manifest.json
 import functools
 import json
 import os
+import pkg_resources
 import tempfile
 from collections import OrderedDict
 from enum import Enum
@@ -462,13 +463,35 @@ class Graph(EntryPoint):
 
             nimbusml_path = os.path.join(os.path.dirname(__file__), "..", "libs")
             nimbusml_path = os.path.abspath(nimbusml_path)
-            call_parameters["verbose"] = try_set(verbose, False, int)
-            call_parameters["graph"] = try_set(
+            call_parameters['verbose'] = try_set(verbose, False, int)
+            call_parameters['graph'] = try_set(
                 'graph = {%s} %s' %
                 (str(self), code), False, str)
-            call_parameters["nimbusmlPath"] = try_set(nimbusml_path, True, str)
+            
+            # Set paths to ML.NET binaries (in nimbusml) and to .NET Core CLR binaries
+            nimbusml_path = os.path.abspath(os.path.join(
+                os.path.dirname(__file__), '..', 'libs'))
+            call_parameters['nimbusmlPath'] = try_set(nimbusml_path, True, str)
+            call_parameters['dotnetClrPath'] = try_set(nimbusml_path, True, str)
+            # dotnetcore2 package is available only for python 3.x
+            if six.PY3:
+                from dotnetcore2 import runtime as clr_runtime
+                dependencies_path = None
+                try: 
+                    # try to resolve dependencies, for ex. libunwind
+                    dependencies_path = clr_runtime.ensure_dependencies()
+                except:
+                    pass
+                os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
+                if dependencies_path is not None:
+                    os.environ['LD_LIBRARY_PATH'] = dependencies_path
+                dotnet_module = pkg_resources.get_distribution('dotnetcore2')
+                dotnet_path = os.path.join(
+                    dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
+                    'Microsoft.NETCore.App', dotnet_module.version)
+                call_parameters['dotnetClrPath'] = try_set(dotnet_path, True, str)
             if random_state:
-                call_parameters["seed"] = try_set(random_state, False, int)
+                call_parameters['seed'] = try_set(random_state, False, int)
             ret = self._try_call_bridge(
                 px_call,
                 call_parameters,

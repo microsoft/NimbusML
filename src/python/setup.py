@@ -30,6 +30,10 @@ _install_requires = [
         'scikit-learn>0.19.0',
     ]
 
+# dotnetcore2 package is available only for python 3.x
+if sys.version_info.major == 3:
+    _install_requires.append('dotnetcore2>=2.1.2')
+
 if sys.version_info[0:2] == (2,7):
     _install_requires.append('decorator')
     _install_requires.append('enum')
@@ -40,7 +44,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on
     # single-sourcing the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.6.2',
+    version='0.6.4',
 
     description='NimbusML',
     long_description=long_description,

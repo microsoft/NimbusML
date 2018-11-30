@@ -265,14 +265,20 @@ if %PythonVersion% == 3.7 (
 )
 
 echo Placing binaries in libs dir for wheel packaging
-echo dummy > excludedfileslist.txt
-echo .exe >> excludedfileslist.txt
-if "%DebugBuild%" == "False" (
-    echo .pdb >> excludedfileslist.txt
-    echo .ipdb >> excludedfileslist.txt
+copy  "%BuildOutputDir%%Configuration%\DotNetBridge.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+
+if %PythonVersion% == 2.7 (
+    copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )
-xcopy /E /I /exclude:excludedfileslist.txt "%BuildOutputDir%%Configuration%" "%__currentScriptDir%src\python\nimbusml\internal\libs"
-del excludedfileslist.txt
+else (
+    for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+)
+
+if "%DebugBuild%" == "True" (
+    copy  "%BuildOutputDir%%Configuration%\DotNetBridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+    copy  "%BuildOutputDir%%Configuration%\pybridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+)
 
 call "%PythonExe%" -m pip install --upgrade "wheel>=0.31.0"
 cd "%__currentScriptDir%src\python"
