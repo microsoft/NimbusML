@@ -159,7 +159,7 @@ class TestDTypes(unittest.TestCase):
                     "================ Testing sparse xtype %s, ytype %s "
                     "================" %
                     (str(xtype), str(ytype)))
-                if xtype == np.float16 or ytype == np.float16 or (xtype is None and ytype is None):
+                if xtype == np.float16 or ytype == np.float16:
                     assert_raises(
                         (TypeError, ValueError, RuntimeError), test_dtype,
                         xtype, ytype)
