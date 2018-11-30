@@ -82,16 +82,12 @@ bp::dict pxCall(bp::dict& params)
         throw std::invalid_argument("Failed to communicate with the managed library. Path searched: "
             + s_nimbusmlPath + " and " + s_dotnetClrPath);
 
-    // REVIEW: This is a hack to work around CNTK not finding it's own dependencies that are in
-    // the same folder as itself on Windows. On Linux, it should work without any hack.
-#if _MSC_VER
-    std::wstring dir = Utf8ToUtf16le(path);
-    dir.append(WIN_FOLDER);
-    ConvertToWinPath(dir);
-    SetDllDirectoryW(dir.c_str());
-#endif
     int seed = 42;            
+#if BOOST_PYTHON
+    if (params.has_key(PARAM_SEED))
+#else
     if (params.has_key_or_contains(PARAM_SEED))
+#endif
         seed = bp::extract_or_cast<int>(params[PARAM_SEED]);
 
     EnvironmentBlock env(i_verbose, 0, seed);
