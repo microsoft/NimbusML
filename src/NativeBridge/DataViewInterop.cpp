@@ -53,7 +53,6 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         const char* name = string_name.c_str();
         if (strcmp(name, PYTHON_DATA_KEY_INFO) == 0 || strcmp(name, PYTHON_DATA_COL_TYPES) == 0)
             continue;
-        this->_vname_cache.push_back(string_name);
 
         bp::object value = bp::cast<bp::object>(it->second);
         // now it should be a column names
@@ -328,13 +327,12 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                 pgetter = (void*)&GetR8Vector;
                 break;
             default:
-                throw std::invalid_argument("column '" + colName + "' has unsupported type");
+                throw std::invalid_argument("Column '" + colName + "' has unsupported type.");
             }
             vecCard = bp::extract_or_cast<int>(sparse["colCount"]);
-            std::string name = "Data";
+            name = "Data";
             if (std::find(_vname_cache.begin(), _vname_cache.end(), name) != _vname_cache.end())
                 throw std::runtime_error("Only one sparse column is allowed and is renamed into Data (reserved column name).");
-            this->_vname_cache.push_back(name);
 
             if (llTotalNumRows == -1)
                 llTotalNumRows = len(indptr) - 1;
@@ -344,6 +342,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         else
             throw std::invalid_argument("unsupported data type provided");
 
+        this->_vname_cache.push_back(name);
         this->_vgetter.push_back(pgetter);
         this->_vkind.push_back(kind);
         _vvecCard.push_back(vecCard);
