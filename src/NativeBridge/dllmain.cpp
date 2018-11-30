@@ -67,7 +67,6 @@ void translate_mlnet_exception(MlNetExecutionError const& exc)
 bp::dict pxCall(bp::dict& params)
 {
     bp::dict res = bp::dict();
-
     try
     {
         auto graph = bp::extract_or_cast<std::string>(params[PARAM_GRAPH]);
@@ -79,16 +78,17 @@ bp::dict pxCall(bp::dict& params)
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
         std::string s_graph = std::string(graph);
         const char *nimbuslibspath = s_nimbusmlPath.c_str();
-        const char *coreclrpath = s_nimbusmlPath.c_str();
-    
+        const char *coreclrpath = s_dotnetClrPath.c_str();
+
         GENERICEXEC exec = EnsureExec(nimbuslibspath, coreclrpath);
         if (exec == nullptr)
             throw std::invalid_argument("Failed to communicate with the managed library. Path searched: "
                 + s_nimbusmlPath + " and " + s_dotnetClrPath);
 
-        int seed = 42;            
+        int seed = 42;
     #if BOOST_PYTHON
         if (params.has_key(PARAM_SEED))
+            seed = bp::extract<int>(params[PARAM_SEED]);
     #else
         if (params.has_key_or_contains(PARAM_SEED))
     #endif
