@@ -146,7 +146,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
             }
 
             if (isNumeric) {
-#ifdef BOOT_PYTHON
+#ifdef BOOST_PYTHON
                 const char *data = val.get_data();
 #else
                 const char *data = (const char*)val.data();
