@@ -179,7 +179,7 @@ if not exist "%PythonRoot%\.done" (
 )
 
 :: Download & unzip Boost 
-if "%USE_PYBIND11%" eq "0" (
+if "%USE_PYBIND11%" == "0" (
     if not exist "%BoostRoot%\.done" ( 
         md "%BoostRoot%" 
         echo Downloading boost zip ...  
@@ -191,15 +191,13 @@ if "%USE_PYBIND11%" eq "0" (
     )
 )
 
-if "%USE_PYBIND11%" eq "0" (
-    if "%PythonVersion%" neq "2.7" (
-        echo ""
-        echo "#################################"
-        echo "Installing pybind11 "
-        echo "#################################"
-        echo Installing pybind11 ...
-        %PythonRoot%\python.exe -m pip install pybind11    
-    )
+if "%USE_PYBIND11%" == "1" (
+    echo ""
+    echo "#################################"
+    echo "Installing pybind11 "
+    echo "#################################"
+    echo Installing pybind11 ...
+    %PythonRoot%\python.exe -m pip install pybind11    
 )
 
 echo ""

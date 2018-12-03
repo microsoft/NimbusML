@@ -141,6 +141,7 @@ echo "Python executable: ${PythonExe}"
 
 # Download & unzip Boost or pybind11
 if [ ${USE_PYBIND11} = true ]
+then
     if [ ! -e "${BoostRoot}/.done" ]
     then
         echo "Instaling boost_python..."
