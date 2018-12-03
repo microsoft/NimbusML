@@ -69,10 +69,17 @@ bp::dict pxCall(bp::dict& params)
     bp::dict res = bp::dict();
     try
     {
+#ifdef BOOST_PYTHON
+        bp::extract<std::string> graph(params[PARAM_GRAPH]);
+        bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
+        bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
+        bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
+#else
         auto graph = bp::extract_or_cast<std::string>(params[PARAM_GRAPH]);
         auto nimbusmlPath = bp::extract_or_cast<std::string>(params[PARAM_NIMBUSML_PATH]);
         auto dotnetClrPath = bp::extract_or_cast<std::string>(params[PARAM_DOTNETCLR_PATH]);
         auto verbose = bp::extract_or_cast<std::int32_t>(params[PARAM_VERBOSE]);
+#endif
         std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_nimbusmlPath = std::string(nimbusmlPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
