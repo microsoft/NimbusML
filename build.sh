@@ -63,43 +63,53 @@ case $__configuration in
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.3.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
+    USE_PYBIND11=true
     ;;
 *LinPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
+    USE_PYBIND11=true
     ;;
 *LinPy3.5)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-4.2.0.v9.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.5-1.64.0.0.tar.gz 
     PythonVersion=3.5
     PythonTag=cp35
+    USE_PYBIND11=false
     ;;
 *LinPy2.7)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Linux-5.0.1.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-2.7-1.64.0.0.tar.gz
     PythonVersion=2.7
     PythonTag=cp27
+    USE_PYBIND11=false
     ;;
 *MacPy3.7)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.3.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
+    USE_PYBIND11=true
     ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
+    USE_PYBIND11=true
     ;;
 *MacPy3.5)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-4.2.0.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.5-1.64.0.0.tar.gz 
     PythonVersion=3.5
     PythonTag=cp35
+    USE_PYBIND11=false
     ;;
 *MacPy2.7)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Mac-5.0.2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-2.7-1.64.0.0.tar.gz
     PythonVersion=2.7
     PythonTag=cp27
+    USE_PYBIND11=false
     ;;
 esac
 
@@ -128,14 +138,21 @@ then
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
-# Download & unzip Boost
-if [ ! -e "${BoostRoot}/.done" ]
-then
-    mkdir -p "${BoostRoot}"
-    echo "Downloading and extracting Boost archive ... "
-    curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
-    touch "${BoostRoot}/.done"
-fi
+
+# Download & unzip Boost or pybind11
+if [ ${USE_PYBIND11} = true ]
+    if [ ! -e "${BoostRoot}/.done" ]
+    then
+        echo "Instaling boost_python..."
+        mkdir -p "${BoostRoot}"
+        echo "Downloading and extracting Boost archive ... "
+        curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
+        touch "${BoostRoot}/.done"
+    fi
+else
+    echo "Installing pybind11 ..." 
+    "${PythonExe}" -m pip install pybind11 
+fi    
 
 if [ ${__buildNativeBridge} = true ]
 then 

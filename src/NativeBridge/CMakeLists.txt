@@ -21,6 +21,13 @@ add_definitions(
 -DENABLE_DS_VIA_SQLSAT
 )
 
+if (${PYTHON_VER} STREQUAL "2.7")
+    add_definitions(-DBOOST_PYTHON)
+endif()
+if (${PYTHON_VER} STREQUAL "3.5")
+    add_definitions(-DBOOST_PYTHON)
+endif()
+
 set(CXX_STANDARD_FLAGS -std=c++14 -fpermissive -m64 -funit-at-a-time)
 set(CXX_PARAM_FLAGS --param inline-unit-growth=450
                     --param large-function-growth=1200
@@ -73,6 +80,9 @@ add_library(PyBridge SHARED $<TARGET_OBJECTS:PyBridge_objects>)
 # Define lib dependencies to be used as target link libraries
 if (${PYTHON_VER} STREQUAL "2.7")
     set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python.a ${BOOST_DIR}/lib/libboost_numpy.a)
+endif()
+if (${PYTHON_VER} STREQUAL "3.5")
+    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python.a ${BOOST_DIR}/lib/libboost_numpy3.a)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
