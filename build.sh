@@ -142,17 +142,17 @@ echo "Python executable: ${PythonExe}"
 # Download & unzip Boost or pybind11
 if [ ${USE_PYBIND11} = true ]
 then
+    echo "Installing pybind11 ..." 
+    "${PythonExe}" -m pip install pybind11 
+else
     if [ ! -e "${BoostRoot}/.done" ]
     then
-        echo "Instaling boost_python..."
+        echo "Installing boost_python..."
         mkdir -p "${BoostRoot}"
         echo "Downloading and extracting Boost archive ... "
         curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
         touch "${BoostRoot}/.done"
     fi
-else
-    echo "Installing pybind11 ..." 
-    "${PythonExe}" -m pip install pybind11 
 fi    
 
 if [ ${__buildNativeBridge} = true ]
