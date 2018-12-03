@@ -18,6 +18,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
     assert(data.contains(PYTHON_DATA_COL_TYPES));
     bp::list colTypes = bp::extract_or_cast<bp::list>(data[PYTHON_DATA_COL_TYPES]);
 #ifdef BOOST_PYTHON
+    bp::stl_input_iterator<bp::object> keys(data.keys()), end1;
     bp::stl_input_iterator<bp::object> values(data.values());
 #else
 #endif
@@ -161,8 +162,10 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                     assert(llTotalNumRows == val.shape(0));
             }
             else {
+#ifdef BOOST_PYTHON
+                throw std::invalid_argument("Column '" + colName + "' has unsupported type.");
+#else
                 const char *data = (const char*)val.data();
-
                 bp::list colText;
                 for (auto it = val.begin(); it != val.end(); ++it)
                     colText.append(*it);
@@ -175,6 +178,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                     llTotalNumRows = val.shape(0);
                 else
                     assert(llTotalNumRows == val.shape(0));
+#endif
             }
         }
 
