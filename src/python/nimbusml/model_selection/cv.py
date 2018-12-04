@@ -8,7 +8,7 @@ import time
 
 from pandas import DataFrame
 
-from .. import Pipeline
+from .. import Pipeline, FileDataStream
 from ..internal.entrypoints.models_crossvalidator import \
     models_crossvalidator
 from ..internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
@@ -450,13 +450,22 @@ class CV:
         # Need to infer from group_id, bug 284886
         groups = groups or group_id
         if groups is not None:
-            if groups not in cv_aux_info[0]['data_import'][0].inputs[
-                    'CustomSchema']:
-                raise Exception(
-                    'Default stratification column: ' +
-                    str(groups) +
-                    ' cannot be found in the origin data, please specify '
-                    'groups in .fit() function.')
+            if isinstance(X, FileDataStream):
+                if groups not in cv_aux_info[0]['data_import'][0].inputs[
+                        'CustomSchema']:
+                    raise Exception(
+                        'Default stratification column: ' +
+                        str(groups) +
+                        ' cannot be found in the origin data, please specify '
+                        'groups in .fit() function.')
+            elif isinstance(X, DataFrame):
+                if groups not in X.columns:
+                    raise Exception(
+                        'Default stratification column: ' +
+                        str(groups) +
+                        ' cannot be found in the origin data, please specify '
+                        'groups in .fit() function.')
+
 
         split_index = self._process_split_start(split_start)
         graph_sections = cv_aux_info.graph_sections
