@@ -296,7 +296,7 @@ def set_clr_environment_vars():
 
 def get_clr_path():
     """
-    Return path to coreclr.dll.
+    Return path to .NET CLR binaries.
     Python 3.x only, as dotnetcore2 is not available for Python 2.x.
     """
     from dotnetcore2 import runtime as clr_runtime
@@ -309,10 +309,11 @@ def get_clr_path():
         try:
             version_folder = os.listdir(partial_path)[0]
         except IndexError:
-            raise ImportError("Trouble importing dotnetcore2:"
+            raise ImportError("Trouble importing dotnetcore2: "
                               "{} had no version folder.".format(partial_path))
         clr_path = os.path.join(partial_path, version_folder)
-        if not os.path.exists(os.path.join(clr_path, 'coreclr.dll')):
-            raise ImportError("Trouble importing dotnetcore2: coreclr.dll"
-                                "was not found in {}.".format(clr_path))
+        if not os.path.exists(os.path.join(clr_path, 'Microsoft.CSharp.dll')):
+            raise ImportError(
+                "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
+                "found in {}.".format(clr_path))
     return clr_path
