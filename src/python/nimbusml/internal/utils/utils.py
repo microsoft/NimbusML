@@ -312,7 +312,8 @@ def get_clr_path():
             raise ImportError("Trouble importing dotnetcore2: "
                               "{} had no version folder.".format(partial_path))
         clr_path = os.path.join(partial_path, version_folder)
-        if not os.path.exists(os.path.join(clr_path, 'Microsoft.CSharp.dll')):
+    # Verify binaries are present
+    if not os.path.exists(os.path.join(clr_path, 'Microsoft.CSharp.dll')):
             raise ImportError(
                 "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
                 "found in {}.".format(clr_path))
