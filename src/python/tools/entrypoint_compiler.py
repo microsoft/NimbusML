@@ -20,7 +20,7 @@ from code_fixer import fix_code, fix_code_core, fix_code_entrypoint, \
     run_autopep
 from codegen_checker import check_codegen
 from compiler_utils import convert_name, module_to_path, \
-    COPYRIGHT_NOTICE, CODEGEN_WARNING, get_presteps, tabsize
+    COPYRIGHT_NOTICE, CODEGEN_WARNING, get_presteps, tabsize, load_json
 from doc_builder import DocBuilder, DocParameter
 from loss_processor import write_loss, get_loss_name
 from manifest_diff_parser import parse_manifest_diff_entrypoints, \
@@ -115,25 +115,32 @@ def decision_function(self, X, **params):
 """
 
 
-def parse_manifest(manifest_json, pkg_path=None, overwrite=False):
+def parse_manifest(manifest_json, manifest_diff_json, pkg_path=None, overwrite=False):
     """
+    Autogenerate python classes for all ML.NET entrypoints in manifest.json.
     """
     with open(manifest_json) as f:
         manifest = json.load(f)
 
+    manifest_diff = load_json(manifest_diff_json)
+
     entrypoints = manifest["EntryPoints"]  # list
+    excluded = manifest_diff["HiddenEntryPoints"] # list
+    if verbose:
+        print("Excluding the following entrypoints: " + ", ".join(excluded))
     nodes = []
     for e in entrypoints:
-        try:
-            nodes.append(
-                parse_entrypoint(
-                    e,
-                    pkg_path=pkg_path,
-                    overwrite=overwrite))
-        except TypeError as exp:
-            msg = '{} failed to generate. Reason: {}'.format(
-                e['Name'], str(exp))
-            print(msg)
+        if e['Name'] not in excluded:
+            try:
+                nodes.append(
+                    parse_entrypoint(
+                        e,
+                        pkg_path=pkg_path,
+                        overwrite=overwrite))
+            except TypeError as exp:
+                msg = '{} failed to generate. Reason: {}'.format(
+                    e['Name'], str(exp))
+                print(msg)
 
     Components = manifest["Components"]  # list
     for Component in Components:
@@ -1980,7 +1987,7 @@ def generate_code(pkg_path, generate_entrypoints, generate_api):
     if generate_entrypoints:
         if verbose:
             print("Generating entrypoint classes...")
-        parse_manifest(manifest_json, pkg_path=pkg_path, overwrite=True)
+        parse_manifest(manifest_json, manifest_diff_json, pkg_path=pkg_path, overwrite=True)
 
     if generate_api:
         if verbose:

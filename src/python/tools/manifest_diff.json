@@ -201,6 +201,8 @@
     "ModelOperations.CombineModels",
     "ModelOperations.CombineTransformModels",
     "ModelOperations.CombineTwoModels",
+    "Models.BinaryCrossValidator",
+    "Models.TrainTestBinaryEvaluator",
     "NAHandling.Drop",
     "NAHandling.Replace",
     "NeuralNetwork.TrainBinary",
