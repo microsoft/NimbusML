@@ -231,7 +231,6 @@
     <Compile Include="nimbusml\internal\entrypoints\models_anomalydetectionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_anomalypipelineensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_binaryclassificationevaluator.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_binarycrossvalidator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_binaryensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_binarypipelineensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_classificationevaluator.py" />
@@ -256,7 +255,6 @@
     <Compile Include="nimbusml\internal\entrypoints\models_regressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionpipelineensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_summarizer.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_traintestbinaryevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
