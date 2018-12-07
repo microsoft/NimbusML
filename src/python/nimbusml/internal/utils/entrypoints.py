@@ -8,7 +8,6 @@ definition of classes for the entities in the entrypoint manifest.json
 import functools
 import json
 import os
-import pkg_resources
 import tempfile
 from collections import OrderedDict
 from enum import Enum
@@ -23,7 +22,7 @@ from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
     resolve_output
-from .utils import try_set
+from .utils import try_set, set_clr_environment_vars, get_clr_path
 from ..libs.pybridge import px_call
 
 
@@ -453,21 +452,8 @@ class Graph(EntryPoint):
             call_parameters['dotnetClrPath'] = try_set(nimbusml_path, True, str)
             # dotnetcore2 package is available only for python 3.x
             if six.PY3:
-                from dotnetcore2 import runtime as clr_runtime
-                dependencies_path = None
-                try: 
-                    # try to resolve dependencies, for ex. libunwind
-                    dependencies_path = clr_runtime.ensure_dependencies()
-                except:
-                    pass
-                os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
-                if dependencies_path is not None:
-                    os.environ['LD_LIBRARY_PATH'] = dependencies_path
-                dotnet_module = pkg_resources.get_distribution('dotnetcore2')
-                dotnet_path = os.path.join(
-                    dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
-                    'Microsoft.NETCore.App', dotnet_module.version)
-                call_parameters['dotnetClrPath'] = try_set(dotnet_path, True, str)
+                set_clr_environment_vars()
+                call_parameters['dotnetClrPath'] = try_set(get_clr_path(), True, str)
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, int)
             ret = self._try_call_bridge(
