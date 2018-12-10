@@ -143,7 +143,8 @@ echo "Python executable: ${PythonExe}"
 if [ ${USE_PYBIND11} = true ]
 then
     echo "Installing pybind11 ..." 
-    "${PythonExe}" -m pip install pybind11 
+    "${PythonExe}" -m pip install pybind11
+    echo "Done."
 else
     if [ ! -e "${BoostRoot}/.done" ]
     then
@@ -152,6 +153,7 @@ else
         echo "Downloading and extracting Boost archive ... "
         curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
         touch "${BoostRoot}/.done"
+        echo "Done."
     fi
 fi    
 
