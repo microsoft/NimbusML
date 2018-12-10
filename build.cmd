@@ -222,7 +222,6 @@ if "%VisualStudioVersion%"=="15.0" (
 if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
 )
-goto :MissingVersion
 
 :MissingVersion
 :: Can't find VS 2015 or 2017
@@ -296,8 +295,7 @@ copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\py
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
-)
-else (
+) else (
     for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )
 
