@@ -300,21 +300,20 @@ def get_clr_path():
     Python 3.x only, as dotnetcore2 is not available for Python 2.x.
     """
     from dotnetcore2 import runtime as clr_runtime
-    clr_version = pkg_resources.get_distribution('dotnetcore2').version
-    partial_path = os.path.join(clr_runtime._get_bin_folder(), 'shared', 'Microsoft.NETCore.App')
-    clr_path = os.path.join(partial_path, clr_version)
-    if not os.path.exists(clr_path):
-        # If folder name does not match published version, use the folder that
-        # exists
-        try:
-            version_folder = os.listdir(partial_path)[0]
-        except IndexError:
-            raise ImportError("Trouble importing dotnetcore2: "
-                              "{} had no version folder.".format(partial_path))
-        clr_path = os.path.join(partial_path, version_folder)
-    # Verify binaries are present
-    if not os.path.exists(os.path.join(clr_path, 'Microsoft.CSharp.dll')):
-            raise ImportError(
-                "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
-                "found in {}.".format(clr_path))
+    bin_root = os.path.join(clr_runtime._get_bin_folder(), 'shared', 'Microsoft.NETCore.App')
+
+    # Search all bin folders to find which one contains the .NET CLR binaries
+    bin_folders = os.listdir(bin_root)
+    if len(bin_folders) == 0:
+        raise ImportError("Trouble importing dotnetcore2: "
+                            "{} had no bin folders.".format(bin_root))
+    clr_path = None
+    for folder in bin_folders:
+        if os.path.exists(os.path.join(bin_root, folder, 'Microsoft.CSharp.dll')):
+            clr_path = os.path.join(bin_root, folder)
+            break
+    if not clr_path:
+        raise ImportError(
+            "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
+            "found in {}.".format(bin_root))
     return clr_path
