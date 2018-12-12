@@ -8,6 +8,7 @@ general utility functions
 
 import logging
 import os
+import pkg_resources
 import tempfile
 from datetime import datetime
 
@@ -276,3 +277,44 @@ def set_shape(pred, X):
             pred.input_shape_ = (len(X), len(X[0]))
         else:
             pred.input_shape_ = (len(X), 1)
+
+def set_clr_environment_vars():
+    """
+    Set system environment variables required by the .NET CLR.
+    Python 3.x only, as dotnetcore2 is not available for Python 2.x.
+    """
+    from dotnetcore2 import runtime as clr_runtime
+    dependencies_path = None
+    try: 
+        # try to resolve dependencies, for ex. libunwind
+        dependencies_path = clr_runtime.ensure_dependencies()
+    except:
+        pass
+    os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
+    if dependencies_path is not None:
+        os.environ['LD_LIBRARY_PATH'] = dependencies_path
+
+def get_clr_path():
+    """
+    Return path to .NET CLR binaries.
+    Python 3.x only, as dotnetcore2 is not available for Python 2.x.
+    """
+    from dotnetcore2 import runtime as clr_runtime
+    clr_version = pkg_resources.get_distribution('dotnetcore2').version
+    partial_path = os.path.join(clr_runtime._get_bin_folder(), 'shared', 'Microsoft.NETCore.App')
+    clr_path = os.path.join(partial_path, clr_version)
+    if not os.path.exists(clr_path):
+        # If folder name does not match published version, use the folder that
+        # exists
+        try:
+            version_folder = os.listdir(partial_path)[0]
+        except IndexError:
+            raise ImportError("Trouble importing dotnetcore2: "
+                              "{} had no version folder.".format(partial_path))
+        clr_path = os.path.join(partial_path, version_folder)
+    # Verify binaries are present
+    if not os.path.exists(os.path.join(clr_path, 'Microsoft.CSharp.dll')):
+            raise ImportError(
+                "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
+                "found in {}.".format(clr_path))
+    return clr_path
