@@ -22,7 +22,7 @@ from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
     resolve_output
-from .utils import try_set
+from .utils import try_set, set_clr_environment_vars, get_clr_path
 from ..libs.pybridge import px_call
 
 
@@ -440,13 +440,22 @@ class Graph(EntryPoint):
 
             nimbusml_path = os.path.join(os.path.dirname(__file__), "..", "libs")
             nimbusml_path = os.path.abspath(nimbusml_path)
-            call_parameters["verbose"] = try_set(verbose, False, int)
-            call_parameters["graph"] = try_set(
+            call_parameters['verbose'] = try_set(verbose, False, int)
+            call_parameters['graph'] = try_set(
                 'graph = {%s} %s' %
                 (str(self), code), False, str)
-            call_parameters["nimbusmlPath"] = try_set(nimbusml_path, True, str)
+            
+            # Set paths to ML.NET binaries (in nimbusml) and to .NET Core CLR binaries
+            nimbusml_path = os.path.abspath(os.path.join(
+                os.path.dirname(__file__), '..', 'libs'))
+            call_parameters['nimbusmlPath'] = try_set(nimbusml_path, True, str)
+            call_parameters['dotnetClrPath'] = try_set(nimbusml_path, True, str)
+            # dotnetcore2 package is available only for python 3.x
+            if six.PY3:
+                set_clr_environment_vars()
+                call_parameters['dotnetClrPath'] = try_set(get_clr_path(), True, str)
             if random_state:
-                call_parameters["seed"] = try_set(random_state, False, int)
+                call_parameters['seed'] = try_set(random_state, False, int)
             ret = self._try_call_bridge(
                 px_call,
                 call_parameters,

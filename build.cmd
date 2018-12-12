@@ -40,8 +40,7 @@ if /i [%1] == [--buildDotNetBridgeOnly]     (
 if /i [%1] == [--skipDotNetBridge]     (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
-)
-else goto :Usage
+) else goto :Usage
 
 :Usage
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
@@ -187,8 +186,7 @@ if "%VisualStudioVersion%"=="15.0" (
     goto :VS2017
 ) else if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
-)
-else goto :MissingVersion
+) else goto :MissingVersion
 
 :MissingVersion
 :: Can't find VS 2015 or 2017
@@ -256,14 +254,19 @@ if %PythonVersion% == 3.6 (
 )
 
 echo Placing binaries in libs dir for wheel packaging
-echo dummy > excludedfileslist.txt
-echo .exe >> excludedfileslist.txt
-if "%DebugBuild%" == "False" (
-    echo .pdb >> excludedfileslist.txt
-    echo .ipdb >> excludedfileslist.txt
+copy  "%BuildOutputDir%%Configuration%\DotNetBridge.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+
+if %PythonVersion% == 2.7 (
+    copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+) else (
+    for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )
-xcopy /E /I /exclude:excludedfileslist.txt "%BuildOutputDir%%Configuration%" "%__currentScriptDir%src\python\nimbusml\internal\libs"
-del excludedfileslist.txt
+
+if "%DebugBuild%" == "True" (
+    copy  "%BuildOutputDir%%Configuration%\DotNetBridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+    copy  "%BuildOutputDir%%Configuration%\pybridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+)
 
 call "%PythonExe%" -m pip install --upgrade "wheel>=0.31.0"
 cd "%__currentScriptDir%src\python"

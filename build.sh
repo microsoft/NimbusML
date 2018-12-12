@@ -171,14 +171,37 @@ then
     touch "${__currentScriptDir}/src/python/nimbusml/internal/libs/__init__.py"
 
     echo "Placing binaries in libs dir for wheel packaging ... "
-    mv "${BuildOutputDir}/${__configuration}"/Platform "${__currentScriptDir}/src/python/nimbusml/internal/libs/Platform"
-    mv "${BuildOutputDir}/${__configuration}"/*.* "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-    find "${__currentScriptDir}/src/python/nimbusml/internal/libs/" \( -name "dummy*" -o -name "*.exe" \) -print | xargs rm
-    if [[ ! $__configuration = Dbg* ]]
-    then
-        find "${__currentScriptDir}/src/python/nimbusml/internal/libs/" \( -name "*.pdb" -o -name "*.ipdb" \) -print | xargs rm
-    fi
+    cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
+    if [ ${PythonVersion} = 2.7 ]
+    then
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		ext=*.so
+		if [ "$(uname -s)" = "Darwin" ]
+		then 
+            ext=*.dylib
+		fi	
+		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    else
+		libs_txt=libs_linux.txt
+		if [ "$(uname -s)" = "Darwin" ]
+		then 
+		    libs_txt=libs_mac.txt
+		fi
+		cat build/${libs_txt} | while read i; do
+			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		done
+    fi
+	
+    if [[ $__configuration = Dbg* ]]
+    then
+        cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    fi
+  
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 
