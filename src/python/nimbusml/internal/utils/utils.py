@@ -283,37 +283,53 @@ def set_clr_environment_vars():
     Set system environment variables required by the .NET CLR.
     Python 3.x only, as dotnetcore2 is not available for Python 2.x.
     """
-    from dotnetcore2 import runtime as clr_runtime
-    dependencies_path = None
-    try: 
-        # try to resolve dependencies, for ex. libunwind
-        dependencies_path = clr_runtime.ensure_dependencies()
-    except:
+    if six.PY2:
         pass
-    os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
-    if dependencies_path is not None:
-        os.environ['LD_LIBRARY_PATH'] = dependencies_path
+    else:
+        from dotnetcore2 import runtime as clr_runtime
+        dependencies_path = None
+        try: 
+            # try to resolve dependencies, for ex. libunwind
+            dependencies_path = clr_runtime.ensure_dependencies()
+        except:
+            pass
+        os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
+        if dependencies_path is not None:
+            os.environ['LD_LIBRARY_PATH'] = dependencies_path
 
 def get_clr_path():
     """
-    Return path to .NET CLR binaries.
-    Python 3.x only, as dotnetcore2 is not available for Python 2.x.
+    Return path to .NET CLR libs.
+    Use dotnetcore2 package if Python 3.x, otherwise look for libs bundled with
+    NimbusML.
     """
-    from dotnetcore2 import runtime as clr_runtime
-    bin_root = os.path.join(clr_runtime._get_bin_folder(), 'shared', 'Microsoft.NETCore.App')
+    if six.PY2:
+        return get_nimbusml_libs
+    else:
+        from dotnetcore2 import runtime as clr_runtime
+        libs_root = os.path.join(clr_runtime._get_bin_folder(), 'shared', 
+                                'Microsoft.NETCore.App')
 
-    # Search all bin folders to find which one contains the .NET CLR binaries
-    bin_folders = os.listdir(bin_root)
-    if len(bin_folders) == 0:
-        raise ImportError("Trouble importing dotnetcore2: "
-                            "{} had no bin folders.".format(bin_root))
-    clr_path = None
-    for folder in bin_folders:
-        if os.path.exists(os.path.join(bin_root, folder, 'Microsoft.CSharp.dll')):
-            clr_path = os.path.join(bin_root, folder)
-            break
-    if not clr_path:
-        raise ImportError(
-            "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
-            "found in {}.".format(bin_root))
-    return clr_path
+        # Search all libs folders to find which one contains the .NET CLR libs
+        libs_folders = os.listdir(libs_root)
+        if len(libs_folders) == 0:
+            raise ImportError("Trouble importing dotnetcore2: "
+                                "{} had no libs folders.".format(libs_root))
+        clr_path = None
+        for folder in libs_folders:
+            if os.path.exists(os.path.join(libs_root, folder, 
+                                           'Microsoft.CSharp.dll')):
+                clr_path = os.path.join(libs_root, folder)
+                break
+        if not clr_path:
+            raise ImportError(
+                "Trouble importing dotnetcore2: Microsoft.CSharp.dll was not "
+                "found in {}.".format(libs_root))
+        return clr_path
+
+def get_nimbusml_libs():
+    """
+    Return path to NimbusML libs (the ML.NET binaries).
+    """
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 
+                                        'libs'))
