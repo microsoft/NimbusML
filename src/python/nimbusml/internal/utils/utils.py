@@ -289,11 +289,13 @@ def set_clr_environment_vars():
         from dotnetcore2 import runtime as clr_runtime
         dependencies_path = None
         try: 
-            # try to resolve dependencies, for ex. libunwind
+            # try to resolve dependencies, specifically libunwind for Linux
             dependencies_path = clr_runtime.ensure_dependencies()
         except:
             pass
+        # Without this, Linux versions would require the ICU package
         os.environ['DOTNET_SYSTEM_GLOBALIZATION_INVARIANT'] = 'true'
+        # Will be None for Windows
         if dependencies_path is not None:
             os.environ['LD_LIBRARY_PATH'] = dependencies_path
 
