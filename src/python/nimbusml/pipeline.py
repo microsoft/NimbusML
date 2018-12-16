@@ -981,7 +981,7 @@ class Pipeline:
         for node, entrypoint in nodes:
             if 'ColumnDropper' in node.__class__.__name__:
                 schi = list(current_schema)
-                for co in entrypoint.inputs['Column']:
+                for co in entrypoint.inputs['DropColumns']:
                     if co in current_schema:
                         del current_schema[current_schema.index(co)]
                     else:
