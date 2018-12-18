@@ -181,7 +181,7 @@ INSTANCES = {
         word_feature_extractor=n_gram()), 'SkipFilter': SkipFilter(
         count=5),
     'TensorFlowScorer': TensorFlowScorer(
-        model=os.path.join(
+        model_location=os.path.join(
             this,
             '..',
             'nimbusml',
