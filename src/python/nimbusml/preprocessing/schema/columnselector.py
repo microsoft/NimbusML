@@ -35,6 +35,15 @@ class ColumnSelector(core, BaseTransform, TransformerMixin):
 
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
+    :param keep_columns: List of columns to keep.
+
+    :param drop_columns: List of columns to drop.
+
+    :param keep_hidden: Specifies whether to keep or remove hidden columns.
+
+    :param ignore_missing: Specifies whether to ignore columns that are missing
+        from the input.
+
     :param params: Additional arguments sent to compute engine.
 
     .. seealso::
@@ -53,6 +62,10 @@ class ColumnSelector(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
+            keep_columns=None,
+            drop_columns=None,
+            keep_hidden=False,
+            ignore_missing=False,
             columns=None,
             **params):
 
@@ -61,6 +74,10 @@ class ColumnSelector(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
+            keep_columns=keep_columns,
+            drop_columns=drop_columns,
+            keep_hidden=keep_hidden,
+            ignore_missing=ignore_missing,
             **params)
         self._columns = columns
 

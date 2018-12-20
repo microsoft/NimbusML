@@ -9,16 +9,17 @@ using System.Text;
 using System.Threading;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.FastTree;
 using Microsoft.ML.Runtime.ImageAnalytics;
-using Microsoft.ML.Runtime.KMeans;
 using Microsoft.ML.Runtime.Learners;
 using Microsoft.ML.Runtime.LightGBM;
 using Microsoft.ML.Runtime.Model.Onnx;
-using Microsoft.ML.Runtime.PCA;
 using Microsoft.ML.Runtime.PipelineInference;
-using Microsoft.ML.Runtime.SymSgd;
+using Microsoft.ML.Trainers.FastTree;
+using Microsoft.ML.Trainers.KMeans;
+using Microsoft.ML.Trainers.PCA;
+using Microsoft.ML.Trainers.SymSgd;
 using Microsoft.ML.Transforms;
+using Microsoft.ML.Transforms.Categorical;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -324,7 +325,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
-                //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // ML.Ensemble
+                //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // // ML.Ensemble BUG https://github.com/dotnet/machinelearning/issues/1078 Ensemble isn't in a NuGet package
 
                 using (var ch = host.Start("Executing"))
                 {
@@ -407,8 +408,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         else
                             ch.Trace("Elapsed time: {0}", sw.Elapsed);
                     }
-
-                    ch.Done();
                 }
             }
             return 0;

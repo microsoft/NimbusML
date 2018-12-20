@@ -221,6 +221,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_customtextloader.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_dataviewreference.py" />
@@ -258,6 +259,14 @@
     <Compile Include="nimbusml\internal\entrypoints\models_summarizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestbinaryevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestevaluator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_exponentialaverage.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_percentilethresholdtransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_pvaluetransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_slidingwindowtransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestregressor.py" />
@@ -294,7 +303,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_columndropper.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnselector.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columntypeconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_combinerbycontiguousgroupid.py" />
@@ -492,7 +500,6 @@
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnconcatenator.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnselector.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\typeconverter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\__init__.py" />

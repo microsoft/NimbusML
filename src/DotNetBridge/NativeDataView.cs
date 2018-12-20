@@ -79,7 +79,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
             }
 
-            private readonly SchemaImpl _schema;
             private readonly long _rowCount;
             private readonly Column[] _columns;
 
@@ -87,7 +86,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             public bool CanShuffle => false;
 
-            public ISchema Schema => _schema;
+            public Schema Schema { get; }
 
             public NativeDataView(IHostEnvironment env, DataSourceBlock* pdata)
             {
@@ -201,7 +200,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
 
                 _columns = columns.ToArray();
-                _schema = new SchemaImpl(_columns);
+                Schema = Schema.Create(new SchemaImpl(_columns));
             }
 
             public long? GetRowCount(bool lazy = true)
@@ -274,7 +273,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private bool _justLoaded;
                 private bool _disposed;
 
-                public ISchema Schema => _view.Schema;
+                public Schema Schema => _view.Schema;
 
                 public override long Batch => _batchId;
 

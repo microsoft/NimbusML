@@ -47,14 +47,44 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
         * The name of each output column should match one of the
             operations in the Tensorflow graph.
 
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param model: TensorFlow model used by the transform. Please see
+    :param model_location: TensorFlow model used by the transform. Please see
         https://www.tensorflow.org/mobile/prepare_models for more details.
 
     :param input_columns: The names of the model inputs.
 
     :param output_columns: The name of the outputs.
+
+    :param tensor_flow_label: TensorFlow label node.
+
+    :param optimization_operation: The name of the optimization operation in
+        the TensorFlow graph.
+
+    :param loss_operation: The name of the operation in the TensorFlow graph to
+        compute training loss (Optional).
+
+    :param metric_operation: The name of the operation in the TensorFlow graph
+        to compute performance metric during training (Optional).
+
+    :param batch_size: Number of samples to use for mini-batch training.
+
+    :param epoch: Number of training iterations.
+
+    :param learning_rate_operation: The name of the operation in the TensorFlow
+        graph which sets optimizer learning rate (Optional).
+
+    :param learning_rate: Learning rate to use during optimization.
+
+    :param save_location_operation: Name of the input in TensorFlow graph that
+        specifiy the location for saving/restoring models from disk.
+
+    :param save_operation: Name of the input in TensorFlow graph that specifiy
+        the location for saving/restoring models from disk.
+
+    :param re_train: Retrain TensorFlow model.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -68,12 +98,29 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            model,
+            model_location,
             input_columns=None,
             output_columns=None,
+            tensor_flow_label=None,
+            optimization_operation=None,
+            loss_operation=None,
+            metric_operation=None,
+            batch_size=64,
+            epoch=5,
+            learning_rate_operation=None,
+            learning_rate=0.01,
+            save_location_operation='save/Const',
+            save_operation='save/control_dependency',
+            re_train=False,
+            label=None,
             columns=None,
             **params):
 
+        if 'label_column' in params:
+            raise NameError(
+                "'label_column' must be renamed to 'label'")
+        if label:
+            params['label_column'] = label
         if columns:
             params['columns'] = columns
         if columns:
@@ -90,10 +137,22 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            model=model,
+            model_location=model_location,
             input_columns=input_columns,
             output_columns=output_columns,
+            tensor_flow_label=tensor_flow_label,
+            optimization_operation=optimization_operation,
+            loss_operation=loss_operation,
+            metric_operation=metric_operation,
+            batch_size=batch_size,
+            epoch=epoch,
+            learning_rate_operation=learning_rate_operation,
+            learning_rate=learning_rate,
+            save_location_operation=save_location_operation,
+            save_operation=save_operation,
+            re_train=re_train,
             **params)
+        self.label = label
         self._columns = columns
 
     def get_params(self, deep=False):
