@@ -259,6 +259,14 @@
     <Compile Include="nimbusml\internal\entrypoints\models_summarizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestbinaryevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestevaluator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_exponentialaverage.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_percentilethresholdtransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_pvaluetransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_slidingwindowtransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessing_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestregressor.py" />
