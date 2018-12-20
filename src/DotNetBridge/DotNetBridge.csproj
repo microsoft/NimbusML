@@ -9,7 +9,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\$(Platform)\$(Configuration)\</OutputPath>
     <Configurations>DbgWinPy3.6;DbgWinPy3.5;DbgWinPy2.7;RlsWinPy3.6;RlsWinPy3.5;RlsWinPy2.7;DbgLinPy3.6;DbgLinPy3.5;DbgLinPy2.7;RlsLinPy3.6;RlsLinPy3.5;RlsLinPy2.7;RlsMacPy3.6</Configurations>
-    <Version>0.6.0</Version>
+    <Version>0.9.0</Version>
     <Company>Microsoft Corporation</Company>
     <Copyright>(c) Microsoft Corporation. All rights reserved.</Copyright>
     <RepositoryUrl>https://github.com/Microsoft/NimbusML</RepositoryUrl>
@@ -29,12 +29,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.ML" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.Onnx" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.7.0" />
+    <PackageReference Include="Microsoft.ML" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.Onnx" Version="0.9.0-preview-27220-3" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.9.0-preview-27220-3" />
   </ItemGroup>
 </Project>
