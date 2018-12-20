@@ -398,9 +398,7 @@ class TestCvRanker(unittest.TestCase):
             group_id='GroupId',
             features='Features_1',
             **params):
-        steps = [
-            OneHotHashVectorizer(
-                output_kind='Key') << {
+        steps = [ToKey() << {
                 group_id: group_id}, ColumnConcatenator() << {
                 'Features': [features]}, LightGbmRanker(
                 min_data_per_leaf=1) << {
@@ -416,8 +414,7 @@ class TestCvRanker(unittest.TestCase):
             features=['price','Class','dep_day','nbr_stops','duration'],
             **params):
         steps = [
-            OneHotHashVectorizer(
-                output_kind='Key') << {
+            ToKey() << {
                 group_id: group_id},
             LightGbmRanker(
                 min_data_per_leaf=1,
@@ -467,8 +464,7 @@ class TestCvRanker(unittest.TestCase):
             group_id='GroupId',
             features='Features_1',
             **params):
-        steps = [OneHotHashVectorizer(
-                     output_kind='Key') << {
+        steps = [ToKey() << {
                      group_id: group_id},
                  # even specify all the roles neede in the following line, the
                  # roles are still not passed correctly
