@@ -22,7 +22,13 @@ usage()
     exit 1
 }
 
-__configuration=DbgLinPy3.6
+# Parameter defaults
+if [ "$(uname -s)" = "Darwin" ]
+then 
+    __configuration=DbgMacPy3.6
+else
+    __configuration=DbgLinPy3.6
+fi
 __runTests=false
 __buildNativeBridge=true
 __buildDotNetBridge=true
@@ -95,6 +101,8 @@ case $__configuration in
     PythonVersion=2.7
     PythonTag=cp27
     ;;
+*)
+echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
