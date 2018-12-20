@@ -137,6 +137,40 @@ dnnImageFeaturize_1_correct = """    def _get_node(self, **all_args):
             name=output_column,
             dnn_model=self.dnn_model)"""
 
+columnselector_1 = """    def _get_node(self, **all_args):
+        algo_args = dict(
+            keep_columns=self.keep_columns,
+            drop_columns=self.drop_columns,
+            keep_hidden=self.keep_hidden,
+            ignore_missing=self.ignore_missing)"""
+
+columnselector_1_correct = """    def _get_node(self, **all_args):
+        input_columns = self.input
+        if input_columns is None and 'input' in all_args:
+            input_columns = all_args['input']
+        if 'input' in all_args:
+            all_args.pop('input')
+
+        # validate input
+        if input_columns is None:
+            raise ValueError(
+                "'None' input passed when it cannot be none.")
+
+        if not isinstance(input_columns, list):
+            raise ValueError(
+                "input has to be a list of strings, instead got %s" %
+                type(input_columns))
+
+        keep_columns = self.keep_columns
+        if self.keep_columns is None and self.drop_columns is None:
+            keep_columns = input_columns
+        algo_args = dict(
+            column=input_columns,
+            keep_columns=keep_columns,
+            drop_columns=self.drop_columns,
+            keep_hidden=self.keep_hidden,
+            ignore_missing=self.ignore_missing)"""
+
 textTransform_1 = """        if not isinstance(output_column, str):
             raise ValueError("output has to be a string, instead got %s" \
 % type(
@@ -257,6 +291,7 @@ signature_fixes_core = {
     'CountSelector': ('count = 0,', 'count = 1.0,'),
     'ColumnConcatenator': [('output = None,', 'output = None,'),
                            (concatColumns_1, concatColumns_1_correct)],
+    'ColumnSelector': [(columnselector_1, columnselector_1_correct)],
     'RangeFilter': ('min = None,', 'min = -1,'),
     'Expression': [(expressionTransform_1, expressionTransform_1_correct),
                    (expressionTransform_2, expressionTransform_2_correct)],

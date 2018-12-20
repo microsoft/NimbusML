@@ -66,7 +66,6 @@ class ColumnSelector(BasePipelineItem, NoOutputSignature):
 
     @trace
     def _get_node(self, **all_args):
-
         input_columns = self.input
         if input_columns is None and 'input' in all_args:
             input_columns = all_args['input']
