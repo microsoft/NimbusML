@@ -8,7 +8,6 @@ definition of classes for the entities in the entrypoint manifest.json
 import functools
 import json
 import os
-import pkg_resources
 import tempfile
 from collections import OrderedDict
 from enum import Enum
@@ -23,7 +22,8 @@ from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
     resolve_output
-from .utils import try_set
+from .utils import try_set, set_clr_environment_vars, get_clr_path, \
+    get_nimbusml_libs
 from ..libs.pybridge import px_call
 
 
@@ -446,24 +446,11 @@ class Graph(EntryPoint):
                 'graph = {%s} %s' %
                 (str(self), code), False, str)
             
-            # Set paths to ML.NET binaries (in nimbusml) and to .NET Core CLR binaries
-            nimbusml_path = os.path.abspath(os.path.join(
-                os.path.dirname(__file__), '..', 'libs'))
-            call_parameters['nimbusmlPath'] = try_set(nimbusml_path, True, str)
-            call_parameters['dotnetClrPath'] = try_set(nimbusml_path, True, str)
-            # dotnetcore2 package is available only for python 3.x
-            if six.PY3:
-                from dotnetcore2 import runtime as clr_runtime
-                try: 
-                    # try to resolve dependencies, for ex. libunwind
-                    clr_runtime.ensure_dependencies()
-                except:
-                    pass
-                dotnet_module = pkg_resources.get_distribution('dotnetcore2')
-                dotnet_path = os.path.join(
-                    dotnet_module.module_path, 'dotnetcore2', 'bin', 'shared',
-                    'Microsoft.NETCore.App', dotnet_module.version)
-                call_parameters['dotnetClrPath'] = try_set(dotnet_path, True, str)
+            # Set paths to ML.NET libs (in nimbusml) and to .NET Core CLR libs
+            call_parameters['nimbusmlPath'] = try_set(get_nimbusml_libs(), True, str)
+            set_clr_environment_vars()
+            call_parameters['dotnetClrPath'] = try_set(get_clr_path(), True, str)
+
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, int)
             ret = self._try_call_bridge(

@@ -55,8 +55,8 @@ class ToKey(core, BaseTransform, TransformerMixin):
 
     :param sort: How items should be ordered when vectorized. By default, they
         will be in the order encountered. If by value items are sorted
-        according to their default comparison, e.g., text sorting will be case
-        sensitive (e.g., 'A' then 'Z' then 'a').
+        according to their default comparison, for example, text sorting will
+        be case sensitive (for example, 'A' then 'Z' then 'a').
 
     :param text_key_values: Whether key value metadata should be text,
         regardless of the actual input type.

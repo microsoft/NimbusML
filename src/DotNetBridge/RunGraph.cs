@@ -15,6 +15,7 @@ using Microsoft.ML.Runtime.Data.IO;
 using Microsoft.ML.Runtime.EntryPoints;
 using Microsoft.ML.Runtime.EntryPoints.JsonUtils;
 using Microsoft.ML.Runtime.Internal.Utilities;
+using Microsoft.ML.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -107,8 +108,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 throw host.Except(ex, "Failed to parse experiment graph: {0}", ex.Message);
             }
 
-            var mc = host.ComponentCatalog;
-            var runner = new GraphRunner(host, mc, graph["nodes"] as JArray);
+            var runner = new GraphRunner(host, graph["nodes"] as JArray);
 
             var dvNative = new IDataView[cdata];
             try
@@ -264,7 +264,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                     }
-                    ch.Done();
                 }
             }
             finally

@@ -568,12 +568,6 @@
       "Type": "Transform"
     },
     {
-      "Name": "Transforms.ColumnDropper",
-      "NewName": "ColumnDropper",
-      "Module": "preprocessing.schema",
-      "Type": "Transform"
-    },
-    {
       "Name": "Transforms.ColumnSelector",
       "NewName": "ColumnSelector",
       "Module": "preprocessing.schema",
