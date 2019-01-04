@@ -15,7 +15,7 @@ def transforms_textfeaturizer(
         output_data=None,
         model=None,
         language='English',
-        stop_words_remover=None,
+        use_predefined_stop_word_remover=False,
         text_case='Lower',
         keep_diacritics=False,
         keep_punctuations=True,
@@ -41,7 +41,8 @@ def transforms_textfeaturizer(
     :param data: Input dataset (inputs).
     :param language: Dataset language or 'AutoDetect' to detect
         language per row. (inputs).
-    :param stop_words_remover: Stopwords remover. (inputs).
+    :param use_predefined_stop_word_remover: Use stop remover or not.
+        (inputs).
     :param text_case: Casing text using the rules of the invariant
         culture. (inputs).
     :param keep_diacritics: Whether to keep diacritical marks or
@@ -94,11 +95,11 @@ def transforms_textfeaturizer(
                 'Italian',
                 'Spanish',
                 'Japanese'])
-    if stop_words_remover is not None:
-        inputs['StopWordsRemover'] = try_set(
-            obj=stop_words_remover,
+    if use_predefined_stop_word_remover is not None:
+        inputs['UsePredefinedStopWordRemover'] = try_set(
+            obj=use_predefined_stop_word_remover,
             none_acceptable=True,
-            is_of_type=dict)
+            is_of_type=bool)
     if text_case is not None:
         inputs['TextCase'] = try_set(
             obj=text_case,

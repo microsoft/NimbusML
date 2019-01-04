@@ -344,6 +344,7 @@ signature_fixes_entrypoint = {
         (tf_1_incorrect, tf_1_correct),
         (':param model: TensorFlow', ':param model_location: TensorFlow'),
         (tf_2_incorrect, tf_2_correct)],
+    'Transforms.LightLda' : ('num_threads = 0,', 'num_threads = None,'),
     'Trainers.GeneralizedAdditiveModelRegressor': ('Infinity', 'float("inf")'),
     'Trainers.GeneralizedAdditiveModelBinaryClassifier': (
         'Infinity', 'float("inf")'),
