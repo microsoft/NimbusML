@@ -5,6 +5,7 @@
 import os
 import tempfile
 import unittest
+import time
 
 from nimbusml import FileDataStream
 from nimbusml import Pipeline
@@ -13,7 +14,7 @@ from nimbusml.ensemble import FastTreesBinaryClassifier
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.utils import check_accuracy, get_X_y
-from sklearn.utils.testing import assert_raises_regex, assert_equal
+from sklearn.utils.testing import assert_raises_regex, assert_equal, assert_true
 
 train_file = get_dataset("uciadult_train").as_filepath()
 test_file = get_dataset("uciadult_test").as_filepath()
@@ -173,6 +174,18 @@ class TestUciAdult(unittest.TestCase):
             sum2,
             "model metrics don't match after loading model")
 
+    def test_parallel(self):
+        (train, label) = get_X_y(train_file, label_column, sep=',')
+        cat = OneHotVectorizer() << categorical_columns
+        ftree = FastTreesBinaryClassifier()
+        pipeline = Pipeline([cat, ftree])
+
+        t0 = time.time()
+        pipeline.fit(train, label, parallel=4)
+        t1 = time.time()
+        pipeline.fit(train, label, parallel=2)
+        t2 = time.time()
+        assert_true(t1-t0 > t2-t1)
 
 if __name__ == '__main__':
     unittest.main()
