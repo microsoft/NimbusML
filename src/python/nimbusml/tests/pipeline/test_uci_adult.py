@@ -185,7 +185,7 @@ class TestUciAdult(unittest.TestCase):
         t1 = time.time()
         pipeline.fit(train, label, parallel=1)
         t2 = time.time()
-        assert_true(t1-t0 > t2-t1)
+        assert_true(t1-t0 < t2-t1)
 
 if __name__ == '__main__':
     unittest.main()
