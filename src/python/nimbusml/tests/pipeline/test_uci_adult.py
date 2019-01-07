@@ -183,7 +183,7 @@ class TestUciAdult(unittest.TestCase):
         t0 = time.time()
         pipeline.fit(train, label, parallel=4)
         t1 = time.time()
-        pipeline.fit(train, label, parallel=2)
+        pipeline.fit(train, label, parallel=1)
         t2 = time.time()
         assert_true(t1-t0 > t2-t1)
 
