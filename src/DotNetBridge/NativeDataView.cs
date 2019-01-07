@@ -11,6 +11,7 @@ using System.Threading;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Runtime.Data;
 using Microsoft.ML.Runtime.Internal.Utilities;
+using Microsoft.ML.Data;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -20,66 +21,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
             private const int BatchSize = 64;
 
-            private sealed class SchemaImpl : ISchema
-            {
-                private readonly Column[] _cols;
-                private readonly Dictionary<string, int> _name2col;
-
-                public int ColumnCount => _cols.Length;
-
-                public SchemaImpl(Column[] cols)
-                {
-                    _cols = cols;
-                    _name2col = new Dictionary<string, int>();
-                    for (int i = 0; i < _cols.Length; ++i)
-                        _name2col[_cols[i].Name] = i;
-                }
-
-                public string GetColumnName(int col)
-                {
-                    Contracts.CheckParam(0 <= col & col < ColumnCount, nameof(col));
-                    return _cols[col].Name;
-                }
-
-                public ColumnType GetColumnType(int col)
-                {
-                    Contracts.CheckParam(0 <= col & col < ColumnCount, nameof(col));
-                    return _cols[col].Type;
-                }
-
-                public void GetMetadata<TValue>(string kind, int col, ref TValue value)
-                {
-                    Contracts.CheckNonEmpty(kind, nameof(kind));
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    _cols[col].GetMetadata(kind, ref value);
-                }
-
-                public ColumnType GetMetadataTypeOrNull(string kind, int col)
-                {
-                    Contracts.CheckNonEmpty(kind, nameof(kind));
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    return _cols[col].GetMetadataTypeOrNull(kind);
-                }
-
-                public IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes(int col)
-                {
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    return _cols[col].GetMetadataTypes();
-                }
-
-                public bool TryGetColumnIndex(string name, out int col)
-                {
-                    Contracts.CheckValueOrNull(name);
-                    if (name == null)
-                    {
-                        col = default(int);
-                        return false;
-                    }
-                    return _name2col.TryGetValue(name, out col);
-                }
-            }
-
-            private readonly long _rowCount;
+                        private readonly long _rowCount;
             private readonly Column[] _columns;
 
             private readonly IHost _host;
@@ -199,8 +141,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     }
                 }
 
-                _columns = columns.ToArray();
-                Schema = Schema.Create(new SchemaImpl(_columns));
+                var schemaBuilder = new SchemaBuilder();
+                foreach (var column in columns)
+                    schemaBuilder.AddColumn(column.Name, column.Type);
+                Schema = schemaBuilder.GetSchema();
             }
 
             public long? GetRowCount(bool lazy = true)
