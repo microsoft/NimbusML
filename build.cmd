@@ -292,7 +292,7 @@ echo ""
 echo "#################################"
 echo "Running tests ... "
 echo "#################################"
-call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov==2.6.0 "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
 call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
 call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
