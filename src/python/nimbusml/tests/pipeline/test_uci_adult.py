@@ -5,7 +5,6 @@
 import os
 import tempfile
 import unittest
-import time
 
 from nimbusml import FileDataStream
 from nimbusml import Pipeline
@@ -180,12 +179,9 @@ class TestUciAdult(unittest.TestCase):
         ftree = FastTreesBinaryClassifier()
         pipeline = Pipeline([cat, ftree])
 
-        t0 = time.time()
-        pipeline.fit(train, label, parallel=8)
-        t1 = time.time()
-        pipeline.fit(train, label, parallel=1)
-        t2 = time.time()
-        assert_true(t1-t0 < t2-t1)
+        result = pipeline.fit(train, label, parallel=8)
+        result2 = pipeline.fit(train, label, parallel=1)
+        assert_true(result == result2)
 
 if __name__ == '__main__':
     unittest.main()
