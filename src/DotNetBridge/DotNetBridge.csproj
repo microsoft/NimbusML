@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/Microsoft/NimbusML</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Microsoft/NimbusML</PackageProjectUrl>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>dotnetbridge.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>tmsn.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
