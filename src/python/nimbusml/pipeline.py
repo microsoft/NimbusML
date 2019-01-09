@@ -729,6 +729,7 @@ class Pipeline:
         params.pop('output_scores', False)
         output_binary_data_stream = params.pop(
             'output_binary_data_stream', False)
+        params.pop('parallel', None)
 
         X, y, columns_renamed, feature_columns, label_column, schema, \
             weights, weight_column = self._preprocess_X_y(X, y, weights)
@@ -1108,6 +1109,7 @@ class Pipeline:
         graph, X, y, weights, start_time, schema, telemetry_info, \
             learner_features, _, max_slots = self._fit_graph(
                 X, y, verbose, **params)
+        params.pop('max_slots', max_slots)
 
         def move_information_about_roles_once_used():
             last_node = self.last_node
@@ -1131,7 +1133,8 @@ class Pipeline:
                 w=weights,
                 verbose=verbose,
                 max_slots=max_slots,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             if hasattr(e, 'model'):
@@ -1785,7 +1788,8 @@ class Pipeline:
                 random_state=self.random_state,
                 model=self.model,
                 verbose=verbose,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
@@ -2104,7 +2108,8 @@ class Pipeline:
                 model=self.model,
                 verbose=verbose,
                 max_slots=max_slots,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
@@ -2175,7 +2180,8 @@ class Pipeline:
                 model=self.model,
                 verbose=verbose,
                 is_summary=True,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
