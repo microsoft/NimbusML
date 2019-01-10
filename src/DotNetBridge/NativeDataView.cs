@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.Internal.Utilities;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Internal.Utilities;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -203,29 +203,27 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 Schema = Schema.Create(new SchemaImpl(_columns));
             }
 
-            public long? GetRowCount(bool lazy = true)
+            public long? GetRowCount()
             {
                 return _rowCount;
             }
 
-            public IRowCursor GetRowCursor(Func<int, bool> needCol, IRandom rand = null)
+            public RowCursor GetRowCursor(Func<int, bool> needCol, Random rand = null)
             {
                 _host.CheckValue(needCol, nameof(needCol));
                 _host.CheckValueOrNull(rand);
 
-                IRowCursorConsolidator consolidator = null;
                 var active = Utils.BuildArray(_columns.Length, needCol);
-                return RowCursor.CreateSet(out consolidator, _host, this, active, 1, rand)[0];
+                return NativeRowCursor.CreateSet(_host, this, active, 1, rand)[0];
             }
 
-            public IRowCursor[] GetRowCursorSet(out IRowCursorConsolidator consolidator, Func<int, bool> needCol, int n, IRandom rand = null)
+            public RowCursor[] GetRowCursorSet(Func<int, bool> needCol, int n, Random rand = null)
             {
                 _host.CheckValue(needCol, nameof(needCol));
                 _host.CheckValueOrNull(rand);
 
-                consolidator = null;
                 var active = Utils.BuildArray(_columns.Length, needCol);
-                return RowCursor.CreateSet(out consolidator, _host, this, active, n, rand);
+                return NativeRowCursor.CreateSet(_host, this, active, n, rand);
             }
 
             public void Dispose()
@@ -263,7 +261,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 return true;
             }
 
-            private sealed class RowCursor : RootCursorBase, IRowCursor
+            private sealed class NativeRowCursor : RootCursorBase
             {
                 private readonly NativeDataView _view;
                 private readonly TextColumnReader _reader;
@@ -273,11 +271,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private bool _justLoaded;
                 private bool _disposed;
 
-                public Schema Schema => _view.Schema;
+                public override Schema Schema => _view.Schema;
 
                 public override long Batch => _batchId;
 
-                public RowCursor(IChannelProvider provider, NativeDataView view, bool[] active, IRandom rand, TextColumnReader reader)
+                public NativeRowCursor(IChannelProvider provider, NativeDataView view, bool[] active, Random rand, TextColumnReader reader)
                     : base(provider)
                 {
                     Contracts.AssertValue(provider);
@@ -312,11 +310,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                 public bool IsColumnActive(int col)
                 {
-                    Contracts.Check(0 <= col && col < Schema.ColumnCount);
+                    Contracts.Check(0 <= col && col < Schema.Count);
                     return _active[col];
                 }
 
-                public override void Dispose()
+                public new void Dispose()
                 {
                     if (_disposed)
                         return;
@@ -326,14 +324,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     base.Dispose();
                 }
 
-                public override ValueGetter<UInt128> GetIdGetter()
+                public override ValueGetter<RowId> GetIdGetter()
                 {
                     return
-                        (ref UInt128 val) =>
+                        (ref RowId val) =>
                         {
                             Ch.Check(IsGood, "Cannot call ID getter in current state");
                             long index = Position % BatchSize + _batchId * BatchSize;
-                            val = new UInt128((ulong)index, 0);
+                            val = new RowId((ulong)index, 0);
                         };
                 }
 
@@ -357,8 +355,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     return index < _view._rowCount;
                 }
 
-                public static IRowCursor[] CreateSet(out IRowCursorConsolidator consolidator,
-                IChannelProvider provider, NativeDataView view, bool[] active, int n, IRandom rand)
+                public static RowCursor[] CreateSet(IChannelProvider provider, NativeDataView view, bool[] active, int n, Random rand)
                 {
                     Contracts.AssertValue(provider);
                     provider.AssertValue(view);
@@ -368,16 +365,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     var reader = new TextColumnReader(BatchSize, view._rowCount, n, view._columns);
                     if (n <= 1)
                     {
-                        consolidator = null;
-                        return new IRowCursor[1] { new RowCursor(provider, view, active, rand, reader) };
+                        return new RowCursor[1] { new NativeRowCursor(provider, view, active, rand, reader) };
                     }
 
-                    consolidator = new Consolidator();
-                    var cursors = new IRowCursor[n];
+                    var cursors = new RowCursor[n];
                     try
                     {
                         for (int i = 0; i < cursors.Length; i++)
-                            cursors[i] = new RowCursor(provider, view, active, rand, reader);
+                            cursors[i] = new NativeRowCursor(provider, view, active, rand, reader);
                         var result = cursors;
                         cursors = null;
                         return result;
@@ -393,17 +388,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                     }
-                }
-            }
-
-            /// <summary>
-            /// Minimal consolidator.
-            /// </summary>
-            private sealed class Consolidator : IRowCursorConsolidator
-            {
-                public IRowCursor CreateCursor(IChannelProvider provider, IRowCursor[] inputs)
-                {
-                    return DataViewUtils.ConsolidateGeneric(provider, inputs, BatchSize);
                 }
             }
 
