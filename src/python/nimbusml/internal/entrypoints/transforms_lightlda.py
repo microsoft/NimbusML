@@ -15,8 +15,8 @@ def transforms_lightlda(
         output_data=None,
         model=None,
         num_topic=100,
-        num_max_doc_token=512,
         num_threads=None,
+        num_max_doc_token=512,
         alpha_sum=100.0,
         beta=0.01,
         mhstep=4,
@@ -35,11 +35,11 @@ def transforms_lightlda(
     :param data: Input dataset (inputs).
     :param column: New column definition(s) (optional form:
         name:srcs) (inputs).
-    :param num_topic: The number of topics in the LDA (inputs).
-    :param num_max_doc_token: The threshold of maximum count of
-        tokens per doc (inputs).
+    :param num_topic: The number of topics (inputs).
     :param num_threads: The number of training threads. Default value
         depends on number of logical processors. (inputs).
+    :param num_max_doc_token: The threshold of maximum count of
+        tokens per doc (inputs).
     :param alpha_sum: Dirichlet prior on document-topic vectors
         (inputs).
     :param beta: Dirichlet prior on vocab-topic vectors (inputs).
@@ -79,14 +79,14 @@ def transforms_lightlda(
             obj=num_topic,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_max_doc_token is not None:
-        inputs['NumMaxDocToken'] = try_set(
-            obj=num_max_doc_token,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if num_threads is not None:
         inputs['NumThreads'] = try_set(
             obj=num_threads,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if num_max_doc_token is not None:
+        inputs['NumMaxDocToken'] = try_set(
+            obj=num_max_doc_token,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if alpha_sum is not None:
