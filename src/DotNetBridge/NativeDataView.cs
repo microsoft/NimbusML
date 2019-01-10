@@ -237,7 +237,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 Contracts.Assert(count >= 0);
                 if (count <= 0)
                 {
-                    buffer = new VBuffer<ReadOnlyMemory<char>>(0, buffer.Values, buffer.Indices);
+                    buffer = VBufferEditor.Create(ref buffer, 0, 0).Commit();
                     return false;
                 }
 
@@ -248,15 +248,15 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 {
                     if (!keyNamesGetter(pdata, colIndex, count, p))
                     {
-                        buffer = new VBuffer<ReadOnlyMemory<char>>(0, buffer.Values, buffer.Indices);
+                        buffer = VBufferEditor.Create(ref buffer, 0, 0).Commit();
                         return false;
                     }
-                    var values = buffer.Values;
-                    if (Utils.Size(values) < count)
-                        values = new ReadOnlyMemory<char>[count];
+                    
+                    var editor = VBufferEditor.CreateFromBuffer(ref buffer);
+
                     for (int i = 0; i < count; i++)
-                        Bridge.BytesToText(p[i], ref values[i]);
-                    buffer = new VBuffer<ReadOnlyMemory<char>>(count, values, buffer.Indices);
+                        Bridge.BytesToText(p[i], ref editor.Values[i]);
+                    editor.Commit();
                 }
                 return true;
             }
