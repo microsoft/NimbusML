@@ -45,8 +45,8 @@ def trainers_poissonregressor(
     :param l2_weight: L2 regularization weight (inputs).
     :param l1_weight: L1 regularization weight (inputs).
     :param opt_tol: Tolerance parameter for optimization convergence.
-        Lower = slower, more accurate (inputs).
-    :param memory_size: Memory size for L-BFGS. Lower=faster, less
+        Low = slower, more accurate (inputs).
+    :param memory_size: Memory size for L-BFGS. Low=faster, less
         accurate (inputs).
     :param enforce_non_negativity: Enforce non-negative weights
         (inputs).

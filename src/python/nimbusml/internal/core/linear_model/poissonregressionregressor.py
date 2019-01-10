@@ -68,7 +68,7 @@ class PoissonRegressionRegressor(
 
     :param l1_weight: L1 regularization weight.
 
-    :param opt_tol: Tolerance parameter for optimization convergence. Lower =
+    :param opt_tol: Tolerance parameter for optimization convergence. Low =
         slower, more accurate.
 
     :param memory_size: Memory size for L-BFGS. Lower=faster, less accurate.

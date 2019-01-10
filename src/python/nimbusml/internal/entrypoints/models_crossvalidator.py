@@ -15,12 +15,11 @@ def models_crossvalidator(
         inputs_subgraph,
         outputs_subgraph,
         predictor_model,
-        transform_model,
         warnings=None,
         overall_metrics=None,
         per_instance_metrics=None,
         confusion_matrix=None,
-        transform_model_output=None,
+        transform_model=None,
         stratification_column=None,
         num_folds=2,
         kind='SignatureBinaryClassifierTrainer',
@@ -50,10 +49,7 @@ def models_crossvalidator(
     :param weight_column: Column to use for example weight (inputs).
     :param group_column: Column to use for grouping (inputs).
     :param name_column: Name column name (inputs).
-    :param predictor_model_output: The final model including the trained
-        predictor model and the model from the transforms, provided
-        as the Input.TransformModel. (outputs).
-    :param transform_model: The final model including the trained
+    :param predictor_model: The final model including the trained
         predictor model and the model from the transforms, provided
         as the Input.TransformModel. (outputs).
     :param warnings: Warning dataset (outputs).
@@ -93,9 +89,7 @@ def models_crossvalidator(
             obj=outputs_subgraph,
             none_acceptable=False,
             is_of_type=dict,
-            field_names=[
-                'PredictorModel',
-                'TransformModel'])
+            field_names=['PredictorModel'])
     if stratification_column is not None:
         inputs['StratificationColumn'] = try_set(
             obj=stratification_column,
@@ -147,11 +141,6 @@ def models_crossvalidator(
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(
             obj=predictor_model,
-            none_acceptable=False,
-            is_of_type=list)
-    if transform_model_output is not None:
-        outputs['TransformModel'] = try_set(
-            obj=transform_model_output,
             none_acceptable=False,
             is_of_type=list)
     if warnings is not None:

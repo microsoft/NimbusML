@@ -317,14 +317,6 @@ s_1_correct = """    if model is not None:
         outputs['PredictorModel'] = try_set(obj=model, \
 none_acceptable=False, is_of_type=str)"""
 
-cv_1_incorrect = """    if transform_model is not None:
-        outputs['TransformModel'] = try_set(obj=transform_model, \
-none_acceptable=False, is_of_type=list)"""
-
-cv_1_correct = """    if transform_model_output is not None:
-        outputs['TransformModel'] = try_set(obj=transform_model_output, \
-none_acceptable=False, is_of_type=list)"""
-
 tf_1_incorrect = """def transforms_tensorflowscorer(
         model,"""
 
@@ -352,19 +344,13 @@ signature_fixes_entrypoint = {
         (tf_1_incorrect, tf_1_correct),
         (':param model: TensorFlow', ':param model_location: TensorFlow'),
         (tf_2_incorrect, tf_2_correct)],
+    'Transforms.LightLda' : ('num_threads = 0,', 'num_threads = None,'),
     'Trainers.GeneralizedAdditiveModelRegressor': ('Infinity', 'float("inf")'),
     'Trainers.GeneralizedAdditiveModelBinaryClassifier': (
         'Infinity', 'float("inf")'),
     'Models.CrossValidator': [
         ('inputs_subgraph = 0,', 'inputs_subgraph,'),
-        ('outputs_subgraph = 0,', 'outputs_subgraph,'),
-        ('transform_model = None,', 'transform_model_output = None,'),
-        (':param predictor_model: The final model',
-         ':param predictor_model_output: The final model'),
-        (cv_1_incorrect, cv_1_correct)],
-    'Models.BinaryCrossValidator': [
-        ('inputs_subgraph = 0,', 'inputs_subgraph,'),
-        ('outputs_subgraph = 0,', 'outputs_subgraph,')]
+        ('outputs_subgraph = 0,', 'outputs_subgraph,')],
 }
 
 
@@ -382,15 +368,15 @@ def _fix_code(class_name, filename, fixes_dict):
             code = f.read()
             first = True
             for fix in fixes:
-                if fix[0] in code:
-                    if first:
-                        print("    [_fix_code]", os.path.abspath(filename))
-                        first = False
-                    print(
-                        "      '{0}' --> '{1}'".format(
-                            fix[0].replace(
-                                "\n", "\\n"), fix[1].replace(
-                                "\n", "\\n")))
+                #if fix[0] in code:
+                #    if first:
+                #        print("    [_fix_code]", os.path.abspath(filename))
+                #        first = False
+                #    print(
+                #        "      '{0}' --> '{1}'".format(
+                #            fix[0].replace(
+                #                "\n", "\\n"), fix[1].replace(
+                #                "\n", "\\n")))
                 code = code.replace(fix[0], fix[1])
             f.seek(0)
             f.write(code)
