@@ -291,7 +291,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     _justLoaded = false;
                 }
 
-                public ValueGetter<TValue> GetGetter<TValue>(int col)
+                public override ValueGetter<TValue> GetGetter<TValue>(int col)
                 {
                     Ch.CheckParam(_active[col], nameof(col), "column is not active");
                     var column = _view._columns[col] as Column<TValue>;
@@ -308,7 +308,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         };
                 }
 
-                public bool IsColumnActive(int col)
+                public override bool IsColumnActive(int col)
                 {
                     Contracts.Check(0 <= col && col < Schema.Count);
                     return _active[col];
