@@ -1066,10 +1066,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new bool[size];
 
@@ -1109,10 +1109,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new byte[size];
 
@@ -1152,10 +1152,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new ushort[size];
 
@@ -1195,10 +1195,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new uint[size];
 
@@ -1238,10 +1238,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new ulong[size];
 
@@ -1281,10 +1281,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new sbyte[size];
 
@@ -1324,10 +1324,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new short[size];
 
@@ -1367,10 +1367,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new int[size];
 
@@ -1410,10 +1410,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new long[size];
 
@@ -1454,10 +1454,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new float[size];
 
@@ -1497,10 +1497,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new double[size];
 
