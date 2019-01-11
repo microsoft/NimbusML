@@ -523,7 +523,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                         long batchId = -1;
                         long total = 0;
-                        var txtColumns = _columns.Where(c => c.Type.IsText).ToList();
+                        var txtColumns = _columns.Where(c => c.Type is TextType).ToList();
                         int index = 0;
                         var infos = new Row[_batchSize];
 
