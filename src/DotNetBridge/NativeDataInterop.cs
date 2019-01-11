@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {

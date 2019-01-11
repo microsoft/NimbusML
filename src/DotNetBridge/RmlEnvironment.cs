@@ -5,8 +5,8 @@
 
 using System;
 using System.Globalization;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
