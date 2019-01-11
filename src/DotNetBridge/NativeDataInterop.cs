@@ -115,14 +115,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
             var expandCols = new HashSet<int>();
             var allNames = new HashSet<string>();
 
-            for (int col = 0; col < schema.ColumnCount; col++)
+            for (int col = 0; col < schema.Count; col++)
             {
-                if (schema.IsHidden(col))
+                if (schema[col].IsHidden)
                     continue;
 
-                var fullType = schema.GetColumnType(col);
+                var fullType = schema[col].Type;
                 var itemType = fullType.ItemType;
-                var name = schema.GetColumnName(col);
+                var name = schema[col].Name;
 
                 DataKind kind = itemType.RawKind;
                 int keyCard;
@@ -157,10 +157,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     }
 
                     keyCard = itemType.KeyCount;
-                    if (!schema.HasKeyNames(col, keyCard))
+                    if (!schema[col].HasKeyValues(keyCard))
                         keyCard = -1;
                 }
-                else if (itemType.IsStandardScalar)
+                else if (itemType.IsStandardScalar())
                 {
                     switch (itemType.RawKind)
                     {
@@ -201,10 +201,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         for (int i = 0; i < nSlots; i++)
                             AddUniqueName(info.SlotNames[i], allNames, nameIndices, nameUtf8Bytes);
                     }
-                    else if (schema.HasSlotNames(col, nSlots))
+                    else if (schema[col].HasSlotNames(nSlots))
                     {
                         var romNames = default(VBuffer<ReadOnlyMemory<char>>);
-                        schema.GetMetadata(MetadataUtils.Kinds.SlotNames, col, ref romNames);
+                        schema[col].Metadata.GetValue(MetadataUtils.Kinds.SlotNames, ref romNames);
                         foreach (var kvp in romNames.Items(true))
                         {
                             // REVIEW: Add the proper number of zeros to the slot index to make them sort in the right order.
@@ -273,12 +273,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     var keyIndex = 0;
                     for (int i = 0; i < colIndices.Count; i++)
                     {
-                        var type = schema.GetColumnType(colIndices[i]);
-                        if (type.ItemType.IsKey && schema.HasKeyNames(colIndices[i], type.ItemType.KeyCount))
+                        var type = schema[colIndices[i]].Type;
+                        if (type.ItemType.IsKey && schema[colIndices[i]].HasKeyValues(type.ItemType.KeyCount))
                         {
-                            ch.Assert(schema.HasKeyNames(colIndices[i], type.ItemType.KeyCount));
+                            ch.Assert(schema[colIndices[i]].HasKeyValues(type.ItemType.KeyCount));
                             var keyValues = default(VBuffer<ReadOnlyMemory<char>>);
-                            schema.GetMetadata(MetadataUtils.Kinds.KeyValues, colIndices[i], ref keyValues);
+                            schema[colIndices[i]].Metadata.GetValue(MetadataUtils.Kinds.KeyValues, ref keyValues);
                             for (int slot = 0; slot < type.ValueCount; slot++)
                             {
                                 foreach (var kvp in keyValues.Items())
@@ -333,15 +333,15 @@ namespace Microsoft.MachineLearning.DotNetBridge
             public delegate void ValuePoker<T>(T value, int col, long index);
 
             protected readonly int _colIndex;
-            protected readonly IRow _input;
+            protected readonly Row _input;
 
-            protected BufferFillerBase(IRow input, int pyColIndex)
+            protected BufferFillerBase(Row input, int pyColIndex)
             {
                 _colIndex = pyColIndex;
                 _input = input;
             }
 
-            public static BufferFillerBase Create(EnvironmentBlock* penv, IRow input, int pyCol, int idvCol, DataKind dataKind, ColumnType type, void* setter)
+            public static BufferFillerBase Create(EnvironmentBlock* penv, Row input, int pyCol, int idvCol, DataKind dataKind, ColumnType type, void* setter)
             {
                 var itemType = type.ItemType;
                 // We convert the unsigned types to signed types, with -1 indicating missing in Python.
@@ -494,14 +494,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private readonly ValueGetter<TSrc> _get;
                 private readonly ValuePoker<TSrc> _poker;
 
-                public Impl(IRow input, int pyColIndex, int idvColIndex, ColumnType type, ValuePoker<TSrc> poker)
+                public Impl(Row input, int pyColIndex, int idvColIndex, ColumnType type, ValuePoker<TSrc> poker)
                     : base(input, pyColIndex)
                 {
                     Contracts.AssertValue(input);
-                    Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.ColumnCount);
+                    Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.Count);
 
                     if (type.IsVector)
-                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>(type.ItemType.AsPrimitive, input, idvColIndex);
+                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>((PrimitiveType)type.ItemType, input, idvColIndex);
                     else
                         _get = RowCursorUtils.GetGetterAs<TSrc>(type, input, idvColIndex);
 
@@ -516,7 +516,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         {
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                _poker(_buffer.Values[i], _colIndex + i, _input.Position);
+                                _poker(_buffer.GetValues()[i], _colIndex + i, _input.Position);
                             }
                         }
                         else
@@ -524,11 +524,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             int ii = 0;
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                while (ii < _buffer.Count && _buffer.Indices[ii] < i)
+                                while (ii < _buffer.GetValues().Length && _buffer.GetIndices()[ii] < i)
                                     ii++;
                                 TSrc val = default(TSrc);
-                                if (ii < _buffer.Count && _buffer.Indices[ii] == i)
-                                    val = _buffer.Values[ii];
+                                if (ii < _buffer.GetValues().Length && _buffer.GetIndices()[ii] == i)
+                                    val = _buffer.GetValues()[ii];
                                 _poker(val, _colIndex + i, _input.Position);
                             }
                         }
