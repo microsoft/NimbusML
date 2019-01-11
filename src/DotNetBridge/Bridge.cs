@@ -321,8 +321,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransform).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
-                //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly);
+                //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
+                env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly); // ML.Onnx
                 //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // // ML.Ensemble BUG https://github.com/dotnet/machinelearning/issues/1078 Ensemble isn't in a NuGet package
 
                 using (var ch = host.Start("Executing"))
