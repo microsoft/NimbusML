@@ -1454,10 +1454,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
+                    var indices = dst.GetIndices().ToArray();
                     if (Utils.Size(indices) < size)
                         indices = new int[size];
-                    var values = dst.Values;
+                    var values = dst.GetValues().ToArray();
                     if (Utils.Size(values) < size)
                         values = new float[size];
 
