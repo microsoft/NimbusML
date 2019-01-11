@@ -13,7 +13,6 @@ using Microsoft.ML.ImageAnalytics;
 using Microsoft.ML.Learners;
 using Microsoft.ML.LightGBM;
 using Microsoft.ML.Model.Onnx;
-using Microsoft.ML.PipelineInference;
 using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers.KMeans;
 using Microsoft.ML.Trainers.PCA;
