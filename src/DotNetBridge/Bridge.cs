@@ -313,13 +313,13 @@ namespace Microsoft.MachineLearning.DotNetBridge
             {
                 var host = env.Register("ML.NET_Execution");
                 env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
-                env.ComponentCatalog.RegisterAssembly(typeof(LinearPredictor).Assembly); // ML.StandardLearners
-                env.ComponentCatalog.RegisterAssembly(typeof(CategoricalTransform).Assembly); // ML.Transforms
-                env.ComponentCatalog.RegisterAssembly(typeof(FastTreeBinaryPredictor).Assembly); // ML.FastTree
-                env.ComponentCatalog.RegisterAssembly(typeof(KMeansPredictor).Assembly); // ML.KMeansClustering
-                env.ComponentCatalog.RegisterAssembly(typeof(PcaPredictor).Assembly); // ML.PCA
-                env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
-                env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryPredictor).Assembly);
+                env.ComponentCatalog.RegisterAssembly(typeof(StandardLearnersCatalog).Assembly); // ML.StandardLearners
+                env.ComponentCatalog.RegisterAssembly(typeof(CategoricalCatalog).Assembly); // ML.Transforms
+                env.ComponentCatalog.RegisterAssembly(typeof(FastTreeRegressionTrainer).Assembly); // ML.FastTree
+                env.ComponentCatalog.RegisterAssembly(typeof(KMeansPlusPlusTrainer).Assembly); // ML.KMeansClustering
+                env.ComponentCatalog.RegisterAssembly(typeof(PcaCatalog).Assembly); // ML.PCA
+                //env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
+                env.ComponentCatalog.RegisterAssembly(typeof(LightGbmRegressorTrainer).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransform).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
