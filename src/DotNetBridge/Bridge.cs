@@ -10,15 +10,14 @@ using System.Threading;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.ImageAnalytics;
-using Microsoft.ML.Learners;
 using Microsoft.ML.LightGBM;
 using Microsoft.ML.Model.Onnx;
+using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers.KMeans;
 using Microsoft.ML.Trainers.PCA;
 using Microsoft.ML.Trainers.SymSgd;
 using Microsoft.ML.Transforms;
-using Microsoft.ML.Transforms.Categorical;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -312,11 +311,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
             {
                 var host = env.Register("ML.NET_Execution");
                 env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
-                env.ComponentCatalog.RegisterAssembly(typeof(StandardLearnersCatalog).Assembly); // ML.StandardLearners
+                env.ComponentCatalog.RegisterAssembly(typeof(StochasticGradientDescentClassificationTrainer).Assembly); // ML.StandardLearners
                 env.ComponentCatalog.RegisterAssembly(typeof(CategoricalCatalog).Assembly); // ML.Transforms
                 env.ComponentCatalog.RegisterAssembly(typeof(FastTreeRegressionTrainer).Assembly); // ML.FastTree
                 env.ComponentCatalog.RegisterAssembly(typeof(KMeansPlusPlusTrainer).Assembly); // ML.KMeansClustering
-                env.ComponentCatalog.RegisterAssembly(typeof(PcaCatalog).Assembly); // ML.PCA
+                env.ComponentCatalog.RegisterAssembly(typeof(RandomizedPcaTrainer).Assembly); // ML.PCA
                 //env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
                 env.ComponentCatalog.RegisterAssembly(typeof(LightGbmRegressorTrainer).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
