@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using Microsoft.ML.EntryPoints;
 using Microsoft.ML.ImageAnalytics;
 using Microsoft.ML.LightGBM;
 using Microsoft.ML.Model.Onnx;
@@ -323,6 +324,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
                 //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
                 env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly); // ML.Onnx
+                env.ComponentCatalog.RegisterAssembly(typeof(DataViewReference).Assembly);
                 //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // // ML.Ensemble BUG https://github.com/dotnet/machinelearning/issues/1078 Ensemble isn't in a NuGet package
 
                 using (var ch = host.Start("Executing"))
