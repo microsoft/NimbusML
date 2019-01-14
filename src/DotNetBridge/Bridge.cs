@@ -319,8 +319,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 env.ComponentCatalog.RegisterAssembly(typeof(RandomizedPcaTrainer).Assembly); // ML.PCA
                 //env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
                 env.ComponentCatalog.RegisterAssembly(typeof(LightGbmRegressorTrainer).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransform).Assembly);
+                env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransformer).Assembly);
+                env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransformer).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
                 //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
                 env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly); // ML.Onnx

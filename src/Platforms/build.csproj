@@ -12,12 +12,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="0.10.0-preview-27310-10" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="0.10.0-preview-27310-10" />    
     <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.9.0" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.9.0" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.9.0" />
-    <PackageReference Include="Microsoft.ML.Onnx" Version="0.9.0" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.9.0" />
+    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.10.0-preview-27310-10" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.10.0-preview-27310-10" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.10.0-preview-27310-10" />
+    <PackageReference Include="Microsoft.ML.Onnx" Version="0.10.0-preview-27310-10" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.10.0-preview-27310-10" />
   </ItemGroup>
 
 </Project>
