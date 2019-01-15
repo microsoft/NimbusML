@@ -252,10 +252,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         return false;
                     }
 
-                    var editor = buffer.Length < count ?
-                        VBufferEditor.Create(ref buffer, count, count) :
-                        VBufferEditor.CreateFromBuffer(ref buffer);
-
+                    var editor = VBufferEditor.Create(ref buffer, count);
                     for (int i = 0; i < count; i++)
                         Bridge.BytesToText(p[i], ref editor.Values[i]);
 
@@ -1069,22 +1066,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new bool[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (bool* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (bool* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<bool>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1112,22 +1105,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new byte[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (byte* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (byte* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<byte>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1155,22 +1144,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new ushort[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (ushort* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (ushort* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<ushort>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1198,22 +1183,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new uint[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (uint* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (uint* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<uint>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1241,22 +1222,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new ulong[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (ulong* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (ulong* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<ulong>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1284,22 +1261,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new sbyte[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (sbyte* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (sbyte* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<sbyte>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1327,22 +1300,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new short[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (short* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (short* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<short>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1370,22 +1339,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new int[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (int* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (int* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<int>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1413,22 +1378,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new long[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (long* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (long* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<long>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 // REVIEW: remind me why we don’t do the standard Dispose pattern with protected override void Dispose(true)?
@@ -1457,22 +1418,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new float[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (float* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (float* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<float>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1500,22 +1457,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.GetIndices().ToArray();
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.GetValues().ToArray();
-                    if (Utils.Size(values) < size)
-                        values = new double[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (double* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (double* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<double>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
