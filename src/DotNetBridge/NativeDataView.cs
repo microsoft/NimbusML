@@ -251,12 +251,15 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         buffer = VBufferEditor.Create(ref buffer, 0, 0).Commit();
                         return false;
                     }
-                    
-                    var editor = VBufferEditor.CreateFromBuffer(ref buffer);
+
+                    var editor = buffer.Length < count ?
+                        VBufferEditor.Create(ref buffer, count, count) :
+                        VBufferEditor.CreateFromBuffer(ref buffer);
 
                     for (int i = 0; i < count; i++)
                         Bridge.BytesToText(p[i], ref editor.Values[i]);
-                    editor.Commit();
+
+                    buffer = editor.Commit();
                 }
                 return true;
             }
