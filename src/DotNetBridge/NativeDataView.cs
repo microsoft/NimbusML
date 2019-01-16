@@ -275,7 +275,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                 public override long Batch => _batchId;
 
-                public NativeRowCursor(IChannelProvider provider, NativeDataView view, bool[] active, Random rand, TextColumnReader reader)
+                private NativeRowCursor(IChannelProvider provider, NativeDataView view, bool[] active, Random rand, TextColumnReader reader)
                     : base(provider)
                 {
                     Contracts.AssertValue(provider);
@@ -314,14 +314,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     return _active[col];
                 }
 
-                public new void Dispose()
+                protected override void Dispose(bool disposing)
                 {
                     if (_disposed)
                         return;
 
                     _disposed = true;
                     _reader.Release();
-                    base.Dispose();
+                    base.Dispose(disposing);
                 }
 
                 public override ValueGetter<RowId> GetIdGetter()

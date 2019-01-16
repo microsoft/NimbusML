@@ -522,13 +522,15 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         else
                         {
                             int ii = 0;
+                            var values = _buffer.GetValues();
+                            var indices = _buffer.GetIndices();
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                while (ii < _buffer.GetValues().Length && _buffer.GetIndices()[ii] < i)
+                                while (ii < values.Length && indices[ii] < i)
                                     ii++;
                                 TSrc val = default(TSrc);
-                                if (ii < _buffer.GetValues().Length && _buffer.GetIndices()[ii] == i)
-                                    val = _buffer.GetValues()[ii];
+                                if (ii < values.Length && indices[ii] == i)
+                                    val = values[ii];
                                 _poker(val, _colIndex + i, _input.Position);
                             }
                         }
