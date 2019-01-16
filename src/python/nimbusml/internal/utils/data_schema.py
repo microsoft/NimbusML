@@ -610,8 +610,8 @@ class DataSchema:
                 df = read_csv(filepath_or_buffer, nrows=nrows, **pd_options)
 
             # We remove integers as column names.
-            df.columns = ['c' + str(_) if not isinstance(_, six.string_types)
-                          else _ for _ in df.columns]
+            df.columns = [_ if isinstance(_, six.string_types)
+                          else 'c' + str(_) for _ in df.columns]
 
             if isinstance(pd_options.get('dtype', None), dict):
                 # We overwrite types if specified.
