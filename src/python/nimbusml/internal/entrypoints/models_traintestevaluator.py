@@ -15,7 +15,6 @@ def models_traintestevaluator(
         inputs_subgraph=0,
         outputs_subgraph=0,
         predictor_model=None,
-        transform_model=None,
         warnings=None,
         overall_metrics=None,
         per_instance_metrics=None,
@@ -57,9 +56,6 @@ def models_traintestevaluator(
     :param group_column: Column to use for grouping (inputs).
     :param name_column: Name column name (inputs).
     :param predictor_model: The final model including the trained
-        predictor model and the model from the transforms, provided
-        as the Input.TransformModel. (outputs).
-    :param transform_model: The final model including the trained
         predictor model and the model from the transforms, provided
         as the Input.TransformModel. (outputs).
     :param warnings: Warning dataset (outputs).
@@ -111,9 +107,7 @@ def models_traintestevaluator(
             obj=outputs_subgraph,
             none_acceptable=False,
             is_of_type=dict,
-            field_names=[
-                'PredictorModel',
-                'TransformModel'])
+            field_names=['PredictorModel'])
     if kind is not None:
         inputs['Kind'] = try_set(
             obj=kind,
@@ -164,9 +158,6 @@ def models_traintestevaluator(
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(
             obj=predictor_model, none_acceptable=False, is_of_type=str)
-    if transform_model is not None:
-        outputs['TransformModel'] = try_set(
-            obj=transform_model, none_acceptable=False, is_of_type=str)
     if warnings is not None:
         outputs['Warnings'] = try_set(
             obj=warnings, none_acceptable=False, is_of_type=str)

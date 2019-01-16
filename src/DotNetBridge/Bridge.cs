@@ -7,19 +7,18 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.ImageAnalytics;
-using Microsoft.ML.Runtime.Learners;
-using Microsoft.ML.Runtime.LightGBM;
-using Microsoft.ML.Runtime.Model.Onnx;
-using Microsoft.ML.Runtime.PipelineInference;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.EntryPoints;
+using Microsoft.ML.ImageAnalytics;
+using Microsoft.ML.LightGBM;
+using Microsoft.ML.Model.Onnx;
+using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers.KMeans;
 using Microsoft.ML.Trainers.PCA;
 using Microsoft.ML.Trainers.SymSgd;
 using Microsoft.ML.Transforms;
-using Microsoft.ML.Transforms.Categorical;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -313,18 +312,19 @@ namespace Microsoft.MachineLearning.DotNetBridge
             {
                 var host = env.Register("ML.NET_Execution");
                 env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
-                env.ComponentCatalog.RegisterAssembly(typeof(LinearPredictor).Assembly); // ML.StandardLearners
-                env.ComponentCatalog.RegisterAssembly(typeof(CategoricalTransform).Assembly); // ML.Transforms
-                env.ComponentCatalog.RegisterAssembly(typeof(FastTreeBinaryPredictor).Assembly); // ML.FastTree
-                env.ComponentCatalog.RegisterAssembly(typeof(KMeansPredictor).Assembly); // ML.KMeansClustering
-                env.ComponentCatalog.RegisterAssembly(typeof(PcaPredictor).Assembly); // ML.PCA
-                env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
-                env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryPredictor).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransform).Assembly);
+                env.ComponentCatalog.RegisterAssembly(typeof(StochasticGradientDescentClassificationTrainer).Assembly); // ML.StandardLearners
+                env.ComponentCatalog.RegisterAssembly(typeof(CategoricalCatalog).Assembly); // ML.Transforms
+                env.ComponentCatalog.RegisterAssembly(typeof(FastTreeRegressionTrainer).Assembly); // ML.FastTree
+                env.ComponentCatalog.RegisterAssembly(typeof(KMeansPlusPlusTrainer).Assembly); // ML.KMeansClustering
+                env.ComponentCatalog.RegisterAssembly(typeof(RandomizedPcaTrainer).Assembly); // ML.PCA
+                //env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
+                env.ComponentCatalog.RegisterAssembly(typeof(LightGbmRegressorTrainer).Assembly);
+                env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransformer).Assembly);
+                env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransformer).Assembly);
                 env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
+                //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
+                env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly); // ML.Onnx
+                env.ComponentCatalog.RegisterAssembly(typeof(DataViewReference).Assembly);
                 //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // // ML.Ensemble BUG https://github.com/dotnet/machinelearning/issues/1078 Ensemble isn't in a NuGet package
 
                 using (var ch = host.Start("Executing"))

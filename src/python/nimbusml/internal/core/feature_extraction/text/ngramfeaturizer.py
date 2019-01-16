@@ -79,22 +79,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
         * ``"Spanish"``
         * ``"Japanese"``.
 
-    :param stop_words_remover: Specifies the stopwords remover to use. There
-        are
-        three options supported:
-
-        * `None`: No stopwords remover is used.
-        * :py:class:`PredefinedStopWordsRemover
-          <nimbusml.feature_extraction.text.stopwords.PredefinedStopWordsRemover>` :
-          A precompiled language-specific lists
-          of stop words is used that includes the most common words from
-          Microsoft Office.
-        * :py:class:`CustomStopWordsRemover
-          <nimbusml.feature_extraction.text.stopwords.CustomStopWordsRemover>` : A
-          user-defined list of stopwords. It accepts
-          the following option: ``stopword``.
-
-        The default value is `None`.
+    :param use_predefined_stop_word_remover: Use stop remover or not.
 
     :param text_case: Text casing using the rules of the invariant culture.
         Takes the
@@ -197,7 +182,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
     def __init__(
             self,
             language='English',
-            stop_words_remover=None,
+            use_predefined_stop_word_remover=False,
             text_case='Lower',
             keep_diacritics=False,
             keep_punctuations=True,
@@ -216,7 +201,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
             self, type='transform', **params)
 
         self.language = language
-        self.stop_words_remover = stop_words_remover
+        self.use_predefined_stop_word_remover = use_predefined_stop_word_remover
         self.text_case = text_case
         self.keep_diacritics = keep_diacritics
         self.keep_punctuations = keep_punctuations
@@ -278,7 +263,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
         algo_args = dict(
             column=column,
             language=self.language,
-            stop_words_remover=self.stop_words_remover,
+            use_predefined_stop_word_remover=self.use_predefined_stop_word_remover,
             text_case=self.text_case,
             keep_diacritics=self.keep_diacritics,
             keep_punctuations=self.keep_punctuations,

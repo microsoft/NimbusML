@@ -14,7 +14,7 @@ def data_predictormodelarrayconverter(
         **params):
     """
     **Description**
-        Create an array variable of IPredictorModel
+        Create an array variable of PredictorModel
 
     :param model: The models (inputs).
     :param output_model: The model array (outputs).

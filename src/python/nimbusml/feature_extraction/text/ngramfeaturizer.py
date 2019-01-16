@@ -100,22 +100,7 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
         * ``"Spanish"``
         * ``"Japanese"``.
 
-    :param stop_words_remover: Specifies the stopwords remover to use. There
-        are
-        three options supported:
-
-        * `None`: No stopwords remover is used.
-        * :py:class:`PredefinedStopWordsRemover
-          <nimbusml.feature_extraction.text.stopwords.PredefinedStopWordsRemover>` :
-          A precompiled language-specific lists
-          of stop words is used that includes the most common words from
-          Microsoft Office.
-        * :py:class:`CustomStopWordsRemover
-          <nimbusml.feature_extraction.text.stopwords.CustomStopWordsRemover>` : A
-          user-defined list of stopwords. It accepts
-          the following option: ``stopword``.
-
-        The default value is `None`.
+    :param use_predefined_stop_word_remover: Use stop remover or not.
 
     :param text_case: Text casing using the rules of the invariant culture.
         Takes the
@@ -218,7 +203,7 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             language='English',
-            stop_words_remover=None,
+            use_predefined_stop_word_remover=False,
             text_case='Lower',
             keep_diacritics=False,
             keep_punctuations=True,
@@ -241,7 +226,7 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             language=language,
-            stop_words_remover=stop_words_remover,
+            use_predefined_stop_word_remover=use_predefined_stop_word_remover,
             text_case=text_case,
             keep_diacritics=keep_diacritics,
             keep_punctuations=keep_punctuations,
