@@ -75,8 +75,8 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
 
     :param init_algorithm: Cluster initialization algorithm.
 
-    :param opt_tol: Tolerance parameter for trainer convergence. Lower =
-        slower, more accurate.
+    :param opt_tol: Tolerance parameter for trainer convergence. Low = slower,
+        more accurate.
 
     :param max_iterations: Maximum number of iterations.
 

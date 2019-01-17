@@ -42,8 +42,8 @@ def trainers_kmeansplusplusclusterer(
     :param num_threads: Degree of lock-free parallelism. Defaults to
         automatic. Determinism not guaranteed. (inputs).
     :param init_algorithm: Cluster initialization algorithm (inputs).
-    :param opt_tol: Tolerance parameter for trainer convergence.
-        Lower = slower, more accurate (inputs).
+    :param opt_tol: Tolerance parameter for trainer convergence. Low
+        = slower, more accurate (inputs).
     :param max_iterations: Maximum number of iterations. (inputs).
     :param accel_mem_budget_mb: Memory budget (in MBs) to use for
         KMeans acceleration (inputs).
