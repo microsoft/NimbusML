@@ -141,8 +141,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                 _columns = columns.ToArray();
                 var schemaBuilder = new SchemaBuilder();
-                foreach (var col in columns)
-                    schemaBuilder.AddColumn(col.Name, col.Type, col.Metadata);
+                schemaBuilder.AddColumns(columns.Select(c => c.DetachedColumn));
                 Schema = schemaBuilder.GetSchema();
             }
 
@@ -466,7 +465,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                         long batchId = -1;
                         long total = 0;
-                        var txtColumns = _columns.Where(c => c.Type is TextType).ToList();
+                        var txtColumns = _columns.Where(c => c.DetachedColumn.Type is TextType).ToList();
                         int index = 0;
                         var infos = new Row[_batchSize];
 
@@ -549,9 +548,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
             {
                 protected DataSourceBlock* Data;
                 public readonly int ColIndex;
-                public readonly string Name;
-                public readonly ColumnType Type;
-
                 protected const string AlreadyDisposed = "Native wrapped column has been disposed";
 
                 protected Column(DataSourceBlock* data, int colIndex, string name, ColumnType type)
@@ -560,8 +556,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.AssertValue(type);
                     Data = data;
                     ColIndex = colIndex;
-                    Name = name;
-                    Type = type;
+                    DetachedColumn = new Schema.DetachedColumn(name, type);
                 }
 
                 public virtual void Dispose()
@@ -569,7 +564,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Data = null;
                 }
 
-                public virtual Schema.Metadata Metadata => null;
+                public Schema.DetachedColumn DetachedColumn { get; protected set; }
             }
 
             private abstract class Column<TOut> : Column
@@ -906,11 +901,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             // Find out if we need other kinds of keys.
             private sealed class KeyColumn : Column<uint>
             {
-                private readonly int _keyCount;
-                private readonly ColumnType _keyValuesType;
-                private readonly ValueGetter<VBuffer<ReadOnlyMemory<char>>> _getKeyValues;
                 private VBuffer<ReadOnlyMemory<char>> _keyValues;
-
                 private U4Getter _getter;
 
                 public KeyColumn(DataSourceBlock* data, void* getter, int colIndex, string name, int keyCount, ref VBuffer<ReadOnlyMemory<char>> keyValues)
@@ -921,19 +912,16 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                     _getter = MarshalDelegate<U4Getter>(getter);
 
-                    _keyCount = keyCount;
-                    if (_keyCount > 0 && _keyCount == keyValues.Length)
+                    if (keyCount > 0 && keyCount == keyValues.Length)
                     {
-                        _keyValuesType = new VectorType(TextType.Instance, _keyCount);
-                        _getKeyValues = GetKeyValues;
                         keyValues.CopyTo(ref _keyValues);
+                        ValueGetter<VBuffer<ReadOnlyMemory<char>>> getKeyValues =
+                            (ref VBuffer<ReadOnlyMemory<char>> dst) => _keyValues.CopyTo(ref dst);
+                        var metadataBuilder = new MetadataBuilder();
+                        metadataBuilder.AddKeyValues(keyCount, TextType.Instance, getKeyValues);
+                        DetachedColumn = new Schema.DetachedColumn(
+                            name, new KeyType(DataKind.U4, 0, keyCount), metadataBuilder.GetMetadata());
                     }
-                }
-
-                private void GetKeyValues(ref VBuffer<ReadOnlyMemory<char>> dst)
-                {
-                    Contracts.Assert(_keyValuesType != null);
-                    _keyValues.CopyTo(ref dst);
                 }
 
                 public override void CopyOut(long index, Batch batch, ref uint value)
@@ -941,22 +929,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Check(Data != null, AlreadyDisposed);
                     Contracts.Assert(0 <= index);
                     _getter(Data, ColIndex, index, out value);
-                }
-
-                public override Schema.Metadata Metadata
-                {
-                    get
-                    {
-                        if (_keyValuesType != null)
-                        {
-                            var kvPair = _keyValuesType.GetPair(MetadataUtils.Kinds.KeyValues);
-                            var metadataBuilder = new MetadataBuilder();
-                            metadataBuilder.Add(kvPair.Key, kvPair.Value, _getKeyValues);
-                            return metadataBuilder.GetMetadata();
-                        }
-
-                        return null;
-                    }
                 }
 
                 public override void Dispose()
