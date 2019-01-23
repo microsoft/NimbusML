@@ -20,65 +20,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
             private const int BatchSize = 64;
 
-            private sealed class SchemaImpl : ISchema
-            {
-                private readonly Column[] _cols;
-                private readonly Dictionary<string, int> _name2col;
-
-                public int ColumnCount => _cols.Length;
-
-                public SchemaImpl(Column[] cols)
-                {
-                    _cols = cols;
-                    _name2col = new Dictionary<string, int>();
-                    for (int i = 0; i < _cols.Length; ++i)
-                        _name2col[_cols[i].Name] = i;
-                }
-
-                public string GetColumnName(int col)
-                {
-                    Contracts.CheckParam(0 <= col & col < ColumnCount, nameof(col));
-                    return _cols[col].Name;
-                }
-
-                public ColumnType GetColumnType(int col)
-                {
-                    Contracts.CheckParam(0 <= col & col < ColumnCount, nameof(col));
-                    return _cols[col].Type;
-                }
-
-                public void GetMetadata<TValue>(string kind, int col, ref TValue value)
-                {
-                    Contracts.CheckNonEmpty(kind, nameof(kind));
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    _cols[col].GetMetadata(kind, ref value);
-                }
-
-                public ColumnType GetMetadataTypeOrNull(string kind, int col)
-                {
-                    Contracts.CheckNonEmpty(kind, nameof(kind));
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    return _cols[col].GetMetadataTypeOrNull(kind);
-                }
-
-                public IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes(int col)
-                {
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    return _cols[col].GetMetadataTypes();
-                }
-
-                public bool TryGetColumnIndex(string name, out int col)
-                {
-                    Contracts.CheckValueOrNull(name);
-                    if (name == null)
-                    {
-                        col = default(int);
-                        return false;
-                    }
-                    return _name2col.TryGetValue(name, out col);
-                }
-            }
-
             private readonly long _rowCount;
             private readonly Column[] _columns;
 
@@ -98,7 +39,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 var columns = new List<Column>();
                 for (int c = 0; c < pdata->ccol; c++)
                 {
-
                     string name = Bridge.BytesToString(pdata->names[c]);
                     // Names must be non-null && non-empty unique.
                     Contracts.CheckParam(!string.IsNullOrWhiteSpace(name), "name");
@@ -200,7 +140,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
 
                 _columns = columns.ToArray();
-                Schema = Schema.Create(new SchemaImpl(_columns));
+                var schemaBuilder = new SchemaBuilder();
+                foreach (var col in columns)
+                    schemaBuilder.AddColumn(col.Name, col.Type, col.Metadata);
+                Schema = schemaBuilder.GetSchema();
             }
 
             public long? GetRowCount()
@@ -626,22 +569,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Data = null;
                 }
 
-                public virtual IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes()
-                {
-                    return Enumerable.Empty<KeyValuePair<string, ColumnType>>();
-                }
-
-                public virtual ColumnType GetMetadataTypeOrNull(string kind)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    return null;
-                }
-
-                public virtual void GetMetadata<TValue>(string kind, ref TValue value)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    throw MetadataUtils.ExceptGetMetadata();
-                }
+                public virtual Schema.Metadata Metadata => null;
             }
 
             private abstract class Column<TOut> : Column
@@ -1015,30 +943,19 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     _getter(Data, ColIndex, index, out value);
                 }
 
-                public override IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes()
+                public override Schema.Metadata Metadata
                 {
-                    var res = base.GetMetadataTypes();
-                    if (_keyValuesType != null)
-                        res = res.Prepend(_keyValuesType.GetPair(MetadataUtils.Kinds.KeyValues));
-                    return res;
-                }
+                    get
+                    {
+                        if (_keyValuesType != null)
+                        {
+                            var metadataBuilder = new MetadataBuilder();
+                            metadataBuilder.Add(MetadataUtils.Kinds.KeyValues, Type, _getKeyValues);
+                            return metadataBuilder.GetMetadata();
+                        }
 
-                public override ColumnType GetMetadataTypeOrNull(string kind)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    if (kind == MetadataUtils.Kinds.KeyValues && _keyValuesType != null)
-                        return _keyValuesType;
-                    return base.GetMetadataTypeOrNull(kind);
-                }
-
-                public override void GetMetadata<TValue>(string kind, ref TValue value)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    ValueGetter<TValue> getter;
-                    if (kind == MetadataUtils.Kinds.KeyValues && (getter = _getKeyValues as ValueGetter<TValue>) != null)
-                        getter(ref value);
-                    else
-                        base.GetMetadata<TValue>(kind, ref value);
+                        return null;
+                    }
                 }
 
                 public override void Dispose()
