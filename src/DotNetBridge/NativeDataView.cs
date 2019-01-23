@@ -949,8 +949,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     {
                         if (_keyValuesType != null)
                         {
+                            var kvPair = _keyValuesType.GetPair(MetadataUtils.Kinds.KeyValues);
                             var metadataBuilder = new MetadataBuilder();
-                            metadataBuilder.Add(MetadataUtils.Kinds.KeyValues, Type, _getKeyValues);
+                            metadataBuilder.Add(kvPair.Key, kvPair.Value, _getKeyValues);
                             return metadataBuilder.GetMetadata();
                         }
 
