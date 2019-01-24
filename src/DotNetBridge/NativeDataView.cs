@@ -27,6 +27,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             public bool CanShuffle => false;
 
+            /// This field contains some information copied from <see cref="_columns">.
+            /// For example, <see cref="Schema">[i].Name is the same to <see cref="_columns">[i].DetachedColumn.Name.
+            /// This is a by-product of using the new <see cref="ML.Data.Schema"/> API. As a compromise, 
+            /// instead of changing all <see cref="Column"/> derived classes,
+            /// we decided to keep this duplicate piece of data as a quick solution.
             public Schema Schema { get; }
 
             public NativeDataView(IHostEnvironment env, DataSourceBlock* pdata)
@@ -564,6 +569,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Data = null;
                 }
 
+                /// This field contains some duplicate information with <see cref="Schema">.
+                /// For more information please see the remarks on <see cref="Schema">.
                 public Schema.DetachedColumn DetachedColumn { get; protected set; }
             }
 
