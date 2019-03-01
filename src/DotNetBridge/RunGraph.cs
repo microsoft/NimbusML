@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Microsoft.Data.DataView;
 using Microsoft.ML;
 using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
@@ -293,10 +294,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                 var columnName = view.Schema[i].Name;
                 var columnType = view.Schema[i].Type;
-                if (columnType.IsKnownSizeVector)
+                if (columnType.IsKnownSizeVector())
                 {
                     Utils.Add(ref result, columnName, new ColumnMetadataInfo(true, null, null));
-                    if (maxSlots > 0 && columnType.ValueCount > maxSlots)
+                    if (maxSlots > 0 && columnType.GetValueCount() > maxSlots)
                     {
                         Utils.Add(ref drop,
                             new SlotsDroppingTransformer.ColumnInfo(
@@ -307,7 +308,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 else if (columnType.IsKey)
                 {
                     Dictionary<uint, ReadOnlyMemory<char>> map = null;
-                    if (columnType.KeyCount > 0 && view.Schema[i].HasKeyValues(columnType.KeyCount))
+                    if (columnType.GetKeyCount() > 0 && view.Schema[i].HasKeyValues(columnType.GetKeyCount()))
                     {
                         var keyNames = default(VBuffer<ReadOnlyMemory<char>>);
                         view.Schema[i].Metadata.GetValue(MetadataUtils.Kinds.KeyValues, ref keyNames);

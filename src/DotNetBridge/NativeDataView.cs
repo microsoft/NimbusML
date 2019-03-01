@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
+using Microsoft.Data.DataView;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Internal.Utilities;
@@ -912,7 +913,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private U4Getter _getter;
 
                 public KeyColumn(DataSourceBlock* data, void* getter, int colIndex, string name, int keyCount, ref VBuffer<ReadOnlyMemory<char>> keyValues)
-                    : base(data, colIndex, name, new KeyType(DataKind.U4, 0, keyCount))
+                    : base(data, colIndex, name, new KeyType(DataKind.U4, keyCount))
                 {
                     Contracts.Assert(keyCount >= 0);
                     Contracts.Assert(keyValues.Length == 0 || keyValues.Length == keyCount);
@@ -927,7 +928,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         var metadataBuilder = new MetadataBuilder();
                         metadataBuilder.AddKeyValues(keyCount, TextType.Instance, getKeyValues);
                         DetachedColumn = new Schema.DetachedColumn(
-                            name, new KeyType(DataKind.U4, 0, keyCount), metadataBuilder.GetMetadata());
+                            name, new KeyType(DataKind.U4, keyCount), metadataBuilder.GetMetadata());
                     }
                 }
 
@@ -954,7 +955,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<BLVectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<bool> dst)
@@ -993,7 +994,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<U1VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<byte> dst)
@@ -1032,7 +1033,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<U2VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<ushort> dst)
@@ -1071,7 +1072,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<U4VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<uint> dst)
@@ -1110,7 +1111,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<U8VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<ulong> dst)
@@ -1149,7 +1150,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<I1VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<sbyte> dst)
@@ -1188,7 +1189,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<I2VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<short> dst)
@@ -1227,7 +1228,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<I4VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<int> dst)
@@ -1266,7 +1267,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<I8VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<long> dst)
@@ -1306,7 +1307,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<R4VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<float> dst)
@@ -1345,7 +1346,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     : base(data, colIndex, name, type)
                 {
                     _getter = MarshalDelegate<R8VectorGetter>(getter);
-                    _length = type.VectorSize;
+                    _length = type.GetVectorSize();
                 }
 
                 public override void CopyOut(long index, Batch batch, ref VBuffer<double> dst)

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Data.DataView;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -121,13 +122,13 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     continue;
 
                 var fullType = schema[col].Type;
-                var itemType = fullType.ItemType;
+                var itemType = fullType.GetItemType();
                 var name = schema[col].Name;
 
-                DataKind kind = itemType.RawKind;
+                DataKind kind = itemType.GetRawKind();
                 int keyCard;
 
-                if (fullType.ValueCount == 0)
+                if (fullType.GetValueCount() == 0)
                 {
                     throw ch.ExceptNotSupp("Column has variable length vector: " + 
                         name + ". Not supported in python. Drop column before sending to Python");
@@ -148,24 +149,24 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         break;
                     case DataKind.U4:
                         // We convert known-cardinality U4 key types to I4.
-                        kind = itemType.KeyCount > 0 ? DataKind.I4 : DataKind.I8;
+                        kind = itemType.GetKeyCount() > 0 ? DataKind.I4 : DataKind.I8;
                         break;
                     case DataKind.U8:
                         // We convert known-cardinality U8 key types to I4.
-                        kind = itemType.KeyCount > 0 ? DataKind.I4 : DataKind.I8;
+                        kind = itemType.GetKeyCount() > 0 ? DataKind.I4 : DataKind.I8;
                         break;
                     }
 
-                    keyCard = itemType.KeyCount;
+                    keyCard = itemType.GetKeyCountAsInt32();
                     if (!schema[col].HasKeyValues(keyCard))
                         keyCard = -1;
                 }
                 else if (itemType.IsStandardScalar())
                 {
-                    switch (itemType.RawKind)
+                    switch (itemType.GetRawKind())
                     {
                     default:
-                        throw Contracts.Except("Data type {0} not handled", itemType.RawKind);
+                        throw Contracts.Except("Data type {0} not handled", itemType.GetRawKind());
 
                     case DataKind.I1:
                     case DataKind.I2:
@@ -185,7 +186,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
                 else
                 {
-                    throw Contracts.Except("Data type {0} not handled", itemType.RawKind);
+                    throw Contracts.Except("Data type {0} not handled", itemType.GetRawKind());
                 }
 
                 int nSlots;
@@ -193,8 +194,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 if (infos != null && infos.TryGetValue(name, out info) && info.Expand)
                 {
                     expandCols.Add(col);
-                    Contracts.Assert(fullType.IsKnownSizeVector);
-                    nSlots = fullType.VectorSize;
+                    Contracts.Assert(fullType.IsKnownSizeVector());
+                    nSlots = fullType.GetVectorSize();
                     if (info.SlotNames != null)
                     {
                         Contracts.Assert(info.SlotNames.Length == nSlots);
@@ -276,10 +277,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         var type = schema[colIndices[i]].Type;
                         if (type.ItemType.IsKey && schema[colIndices[i]].HasKeyValues(type.ItemType.KeyCount))
                         {
-                            ch.Assert(schema[colIndices[i]].HasKeyValues(type.ItemType.KeyCount));
+                            ch.Assert(schema[colIndices[i]].HasKeyValues(type.GetItemType().GetKeyCount()));
                             var keyValues = default(VBuffer<ReadOnlyMemory<char>>);
                             schema[colIndices[i]].Metadata.GetValue(MetadataUtils.Kinds.KeyValues, ref keyValues);
-                            for (int slot = 0; slot < type.ValueCount; slot++)
+                            for (int slot = 0; slot < type.GetValueCount(); slot++)
                             {
                                 foreach (var kvp in keyValues.Items())
                                 {
@@ -296,7 +297,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                         fillers[i] = BufferFillerBase.Create(penv, cursor, pyColumn, colIndices[i], kinds[pyColumn], type, setters[pyColumn]);
-                        pyColumn += type.IsVector ? type.VectorSize : 1;
+                        pyColumn += type.IsVector ? type.GetVectorSize() : 1;
                     }
                     for (int crow = 0; ; crow++)
                     {
@@ -343,13 +344,13 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             public static BufferFillerBase Create(EnvironmentBlock* penv, Row input, int pyCol, int idvCol, DataKind dataKind, ColumnType type, void* setter)
             {
-                var itemType = type.ItemType;
+                var itemType = type.GetItemType();
                 // We convert the unsigned types to signed types, with -1 indicating missing in Python.
-                if (itemType.KeyCount > 0)
+                if (itemType.GetKeyCount() > 0)
                 {
-                    var keyCount = itemType.KeyCount;
+                    var keyCount = itemType.GetKeyCount();
                     uint keyMax = (uint)keyCount;
-                    switch (itemType.RawKind)
+                    switch (itemType.GetRawKind())
                     {
                     case DataKind.U1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
@@ -377,7 +378,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 // Key type with count=0
                 else if (itemType.IsKey)
                 {
-                    switch (itemType.RawKind)
+                    switch (itemType.GetRawKind())
                     {
                     case DataKind.U1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
@@ -501,7 +502,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.Count);
 
                     if (type.IsVector)
-                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>((PrimitiveType)type.ItemType, input, idvColIndex);
+                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>((PrimitiveType)type.GetItemType(), input, idvColIndex);
                     else
                         _get = RowCursorUtils.GetGetterAs<TSrc>(type, input, idvColIndex);
 
