@@ -33,7 +33,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             /// This is a by-product of using the new <see cref="ML.Data.Schema"/> API. As a compromise, 
             /// instead of changing all <see cref="Column"/> derived classes,
             /// we decided to keep this duplicate piece of data as a quick solution.
-            public Schema Schema { get; }
+            public DataViewSchema Schema { get; }
 
             public NativeDataView(IHostEnvironment env, DataSourceBlock* pdata)
             {
@@ -156,21 +156,21 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 return _rowCount;
             }
 
-            public RowCursor GetRowCursor(Func<int, bool> needCol, Random rand = null)
+            public DataViewRowCursor GetRowCursor(IEnumerable<DataViewSchema.Column> columnsNeeded, Random rand = null)
             {
-                _host.CheckValue(needCol, nameof(needCol));
+                _host.CheckValue(columnsNeeded, nameof(columnsNeeded));
                 _host.CheckValueOrNull(rand);
 
-                var active = Utils.BuildArray(_columns.Length, needCol);
+                var active = Utils.BuildArray(_columns.Length, columnsNeeded);
                 return NativeRowCursor.CreateSet(_host, this, active, 1, rand)[0];
             }
 
-            public RowCursor[] GetRowCursorSet(Func<int, bool> needCol, int n, Random rand = null)
+            public DataViewRowCursor[] GetRowCursorSet(IEnumerable<DataViewSchema.Column> columnsNeeded, int n, Random rand = null)
             {
-                _host.CheckValue(needCol, nameof(needCol));
+                _host.CheckValue(columnsNeeded, nameof(columnsNeeded));
                 _host.CheckValueOrNull(rand);
 
-                var active = Utils.BuildArray(_columns.Length, needCol);
+                var active = Utils.BuildArray(_columns.Length, columnsNeeded);
                 return NativeRowCursor.CreateSet(_host, this, active, n, rand);
             }
 
@@ -219,7 +219,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private bool _justLoaded;
                 private bool _disposed;
 
-                public override Schema Schema => _view.Schema;
+                public override DataViewSchema Schema => _view.Schema;
 
                 public override long Batch => _batchId;
 
@@ -303,7 +303,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     return index < _view._rowCount;
                 }
 
-                public static RowCursor[] CreateSet(IChannelProvider provider, NativeDataView view, bool[] active, int n, Random rand)
+                public static DataViewRowCursor[] CreateSet(IChannelProvider provider, NativeDataView view, bool[] active, int n, Random rand)
                 {
                     Contracts.AssertValue(provider);
                     provider.AssertValue(view);
@@ -313,10 +313,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     var reader = new TextColumnReader(BatchSize, view._rowCount, n, view._columns);
                     if (n <= 1)
                     {
-                        return new RowCursor[1] { new NativeRowCursor(provider, view, active, rand, reader) };
+                        return new DataViewRowCursor[1] { new NativeRowCursor(provider, view, active, rand, reader) };
                     }
 
-                    var cursors = new RowCursor[n];
+                    var cursors = new DataViewRowCursor[n];
                     try
                     {
                         for (int i = 0; i < cursors.Length; i++)
