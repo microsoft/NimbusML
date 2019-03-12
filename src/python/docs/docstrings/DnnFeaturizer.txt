@@ -36,7 +36,7 @@
         * ``"Alexnet"``
 
         The default value is ``"Resnet18"``.
-        See `Deep Residual Learning for Image Recognition <http://www.cv-
+        See `Deep Residual Learning for Image Recognition <https://www.cv-
         foundation.org/openaccess/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html>`_
         for details about ResNet.
 

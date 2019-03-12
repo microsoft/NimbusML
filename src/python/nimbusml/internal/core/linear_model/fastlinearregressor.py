@@ -78,7 +78,7 @@ class FastLinearRegressor(
             content/uploads/2016/06/main-3.pdf>`_
 
             `Stochastic Dual Coordinate Ascent Methods for Regularized Loss
-            Minimization <http://www.jmlr.org/papers/volume14/shalev-
+            Minimization <https://www.jmlr.org/papers/volume14/shalev-
             shwartz13a/shalev-shwartz13a.pdf>`_
 
 

@@ -39,7 +39,7 @@ This corresponds to evaltype='binary'.
 
 **Negative Recall** -  see  `Precision and Recall <https://en.wikipedia.org/wiki/Precision_and_recall>`_
 
-**Log-loss** - see `Log Loss <http://wiki.fast.ai/index.php/Log_Loss>`_
+**Log-loss** - see `Log Loss <https://wiki.fast.ai/index.php/Log_Loss>`_
 
 **Log-loss reduction** - RIG(Y|X) * 100 = (H(Y) - H(Y|X)) / H(Y) * 100. Ranges from [-inf, 100], where
 100 is perfect predictions and 0 indicates mean predictions.
@@ -48,7 +48,7 @@ This corresponds to evaltype='binary'.
 
 **F1 Score** - see `Precision and Recall <https://en.wikipedia.org/wiki/Precision_and_recall>`_
 
-**AUPRC** - see `Area under Precision-Recall Curve <http://pages.cs.wisc.edu/~boyd/aucpr_final.pdf>`_
+**AUPRC** - see `Area under Precision-Recall Curve <https://pages.cs.wisc.edu/~boyd/aucpr_final.pdf>`_
 
 .. note:: Note about ROC
 
@@ -74,7 +74,7 @@ This corresponds to evaltype='multiclass'.
 **Accuracy(macro-avg)** - Every class contributes equally to the accuracy metric. Minority classes are
 given equal weight as the larger classes.
 
-**Log-loss** - see `Log Loss <http://wiki.fast.ai/index.php/Log_Loss>`_
+**Log-loss** - see `Log Loss <https://wiki.fast.ai/index.php/Log_Loss>`_
 
 **Log-loss reduction** - RIG(Y|X) * 100 = (H(Y) - H(Y|X)) / H(Y) * 100. Ranges from [-inf, 100], where
 100 is perfect predictions and 0 indicates mean predictions.

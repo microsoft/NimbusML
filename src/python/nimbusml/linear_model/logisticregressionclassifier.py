@@ -92,14 +92,14 @@ class LogisticRegressionClassifier(
 
         **Reference**
 
-            `Wikipedia: L-BFGS <http://en.wikipedia.org/wiki/L-BFGS>`_
+            `Wikipedia: L-BFGS <https://en.wikipedia.org/wiki/L-BFGS>`_
 
             `Wikipedia: Logistic
-            regression <http://en.wikipedia.org/wiki/Logistic_regression>`_
+            regression <https://en.wikipedia.org/wiki/Logistic_regression>`_
 
             `Scalable
             Training of L1-Regularized Log-Linear Models
-            <http://research.microsoft.com/apps/pubs/default.aspx?id=78900>`_
+            <https://research.microsoft.com/apps/pubs/default.aspx?id=78900>`_
 
             `Test Run - L1
             and L2 Regularization for Machine Learning

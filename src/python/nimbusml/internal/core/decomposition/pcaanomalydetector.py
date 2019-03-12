@@ -57,12 +57,12 @@ class PcaAnomalyDetector(
 
             `Randomized Methods for Computing the Singular Value Decomposition
             (SVD) of very large matrices
-            <http://web.stanford.edu/group/mmds/slides2010/Martinsson.pdf>`_
+            <https://web.stanford.edu/group/mmds/slides2010/Martinsson.pdf>`_
             `A randomized algorithm for principal component analysis
             <https://arxiv.org/abs/0809.2274>`_,
             `Finding Structure with Randomness: Probabilistic Algorithms for
             Constructing Approximate Matrix Decompositions
-            <http://users.cms.caltech.edu/~jtropp/papers/HMT11-Finding-Structure-
+            <https://users.cms.caltech.edu/~jtropp/papers/HMT11-Finding-Structure-
             SIREV.pdf>`_
 
 
