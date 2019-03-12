@@ -12,6 +12,7 @@ using Microsoft.Data.DataView;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Internal.Utilities;
+using System.Threading.Tasks;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -58,29 +59,29 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         default:
                             _host.Assert(false);
                             break;
-                        case DataKind.BL:
+                        case InternalDataKind.BL:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new BoolColumn(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorBoolColumn(pdata, pdata->getters[c], c, name, new VectorType(BoolType.Instance, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorBoolColumn(pdata, pdata->getters[c], c, name, new VectorType(BooleanDataViewType.Instance, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.U1:
+                        case InternalDataKind.U1:
                             // catch if categoricals are passed by other than U4 types
                             Contracts.Assert(pdata->keyCards[c] <= 0);
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new U1Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorUInt1Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.U1, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorUInt1Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Byte, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.U2:
+                        case InternalDataKind.U2:
                             // catch if categoricals are passed by other than U4 types
                             Contracts.Assert(pdata->keyCards[c] <= 0);
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new U2Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorUInt2Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.U2, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorUInt2Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.UInt16, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.U4:
+                        case InternalDataKind.U4:
                             if (pdata->keyCards[c] > 0)
                             {
                                 // Categoricals from python are passed as U4 type
@@ -93,62 +94,62 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             else if (pdata->vecCards[c] == -1)
                                 columns.Add(new U4Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorUInt4Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.U4, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorUInt4Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.UInt32, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.U8:
+                        case InternalDataKind.U8:
                             // catch if categoricals are passed by other than U4 types
                             Contracts.Assert(pdata->keyCards[c] <= 0);
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new U8Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorUInt8Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.U8, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorUInt8Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Double, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.I1:
+                        case InternalDataKind.I1:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new I1Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorInt1Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.I1, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorInt1Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.SByte, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.I2:
+                        case InternalDataKind.I2:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new I2Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorInt2Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.I2, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorInt2Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Int16, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.I4:
+                        case InternalDataKind.I4:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new I4Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorInt4Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.I4, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorInt4Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Int32, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.I8:
+                        case InternalDataKind.I8:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new I8Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorInt8Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.I8, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorInt8Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Int64, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.R8:
+                        case InternalDataKind.R8:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new R8Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorR8Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.R8, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorR8Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Double, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.R4:
+                        case InternalDataKind.R4:
                             if (pdata->vecCards[c] == -1)
                                 columns.Add(new R4Column(pdata, pdata->getters[c], c, name));
                             else
-                                columns.Add(new VectorR4Column(pdata, pdata->getters[c], c, name, new VectorType(NumberType.R4, (int)pdata->vecCards[c])));
+                                columns.Add(new VectorR4Column(pdata, pdata->getters[c], c, name, new VectorType(NumberDataViewType.Single, (int)pdata->vecCards[c])));
                             break;
-                        case DataKind.Text:
+                        case InternalDataKind.Text:
                             columns.Add(new TextColumn(pdata, pdata->getters[c], c, name));
                             break;
                     }
                 }
 
                 _columns = columns.ToArray();
-                var schemaBuilder = new SchemaBuilder();
+                var schemaBuilder = new DataViewSchema.Builder();
                 schemaBuilder.AddColumns(columns.Select(c => c.DetachedColumn));
-                Schema = schemaBuilder.GetSchema();
+                Schema = schemaBuilder.ToSchema();
             }
 
             public long? GetRowCount()
@@ -272,20 +273,19 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     base.Dispose(disposing);
                 }
 
-                public override ValueGetter<RowId> GetIdGetter()
+                public override ValueGetter<DataViewRowId> GetIdGetter()
                 {
                     return
-                        (ref RowId val) =>
+                        (ref DataViewRowId val) =>
                         {
                             Ch.Check(IsGood, "Cannot call ID getter in current state");
                             long index = Position % BatchSize + _batchId * BatchSize;
-                            val = new RowId((ulong)index, 0);
+                            val = new DataViewRowId((ulong)index, 0);
                         };
                 }
 
                 protected override bool MoveNextCore()
                 {
-                    Ch.Assert(State != CursorState.Done);
                     long index = Position % BatchSize + _batchId * BatchSize;
                     Ch.Assert(index < _view._rowCount);
                     if ((Position + 1) % BatchSize == 0 && !_justLoaded)
@@ -396,7 +396,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 // The reader can be referenced by multiple workers. This is the reference count.
                 private int _cref;
                 private BlockingCollection<Batch> _queue;
-                private Thread _thdRead;
+                private Task _thdRead;
                 private volatile bool _abort;
 
                 public TextColumnReader(int batchSize, long rowsCount, int cref, Column[] columns)
@@ -413,8 +413,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     _waiterPublish = new OrderedWaiter(firstCleared: true);
 
                     _queue = new BlockingCollection<Batch>(QueueSize);
-                    _thdRead = Utils.CreateBackgroundThread(ThreadProc);
-                    _thdRead.Start();
+                    _thdRead = Utils.RunOnBackgroundThread(ThreadProc);
                 }
 
                 public void Release()
@@ -429,7 +428,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     {
                         _abort = true;
                         _waiterPublish.IncrementAll();
-                        _thdRead.Join();
+                        _thdRead.Wait();
                         _thdRead = null;
                     }
 
@@ -471,7 +470,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                         long batchId = -1;
                         long total = 0;
-                        var txtColumns = _columns.Where(c => c.DetachedColumn.Type is TextType).ToList();
+                        var txtColumns = _columns.Where(c => c.DetachedColumn.Type is TextDataViewType).ToList();
                         int index = 0;
                         var infos = new Row[_batchSize];
 
@@ -556,13 +555,13 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 public readonly int ColIndex;
                 protected const string AlreadyDisposed = "Native wrapped column has been disposed";
 
-                protected Column(DataSourceBlock* data, int colIndex, string name, ColumnType type)
+                protected Column(DataSourceBlock* data, int colIndex, string name, DataViewType type)
                 {
                     Contracts.AssertNonWhiteSpace(name);
                     Contracts.AssertValue(type);
                     Data = data;
                     ColIndex = colIndex;
-                    DetachedColumn = new Schema.DetachedColumn(name, type);
+                    DetachedColumn = new DataViewSchema.DetachedColumn(name, type);
                 }
 
                 public virtual void Dispose()
@@ -572,12 +571,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                 /// This field contains some duplicate information with <see cref="Schema">.
                 /// For more information please see the remarks on <see cref="Schema">.
-                public Schema.DetachedColumn DetachedColumn { get; protected set; }
+                public DataViewSchema.DetachedColumn DetachedColumn { get; protected set; }
             }
 
             private abstract class Column<TOut> : Column
             {
-                protected Column(DataSourceBlock* data, int colIndex, string name, ColumnType type)
+                protected Column(DataSourceBlock* data, int colIndex, string name, DataViewType type)
                     : base(data, colIndex, name, type)
                 {
                     Contracts.Assert(typeof(TOut) == type.RawType);
@@ -594,7 +593,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private BLGetter _getter;
 
                 public BoolColumn(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, BoolType.Instance)
+                    : base(data, colIndex, name, BooleanDataViewType.Instance)
                 {
                     _getter = MarshalDelegate<BLGetter>(getter);
                 }
@@ -623,7 +622,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private I1Getter _getter;
 
                 public I1Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.I1)
+                    : base(data, colIndex, name, NumberDataViewType.SByte)
                 {
                     _getter = MarshalDelegate<I1Getter>(getter);
                 }
@@ -648,7 +647,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private I2Getter _getter;
 
                 public I2Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.I2)
+                    : base(data, colIndex, name, NumberDataViewType.Int16)
                 {
                     _getter = MarshalDelegate<I2Getter>(getter);
                 }
@@ -673,7 +672,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private I4Getter _getter;
 
                 public I4Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.I4)
+                    : base(data, colIndex, name, NumberDataViewType.Int32)
                 {
                     _getter = MarshalDelegate<I4Getter>(getter);
                 }
@@ -698,7 +697,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private I8Getter _getter;
 
                 public I8Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.I8)
+                    : base(data, colIndex, name, NumberDataViewType.Int64)
                 {
                     _getter = MarshalDelegate<I8Getter>(getter);
                 }
@@ -725,7 +724,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private U1Getter _getter;
 
                 public U1Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.U1)
+                    : base(data, colIndex, name, NumberDataViewType.Byte)
                 {
                     _getter = MarshalDelegate<U1Getter>(getter);
                 }
@@ -749,7 +748,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private U2Getter _getter;
 
                 public U2Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.U2)
+                    : base(data, colIndex, name, NumberDataViewType.UInt16)
                 {
                     _getter = MarshalDelegate<U2Getter>(getter);
                 }
@@ -773,7 +772,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private U4Getter _getter;
 
                 public U4Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.U4)
+                    : base(data, colIndex, name, NumberDataViewType.UInt32)
                 {
                     _getter = MarshalDelegate<U4Getter>(getter);
                 }
@@ -797,7 +796,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private U8Getter _getter;
 
                 public U8Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.U8)
+                    : base(data, colIndex, name, NumberDataViewType.UInt64)
                 {
                     _getter = MarshalDelegate<U8Getter>(getter);
                 }
@@ -823,7 +822,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private R8Getter _getter;
 
                 public R8Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.R8)
+                    : base(data, colIndex, name, NumberDataViewType.Double)
                 {
                     _getter = MarshalDelegate<R8Getter>(getter);
                 }
@@ -849,7 +848,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private R4Getter _getter;
 
                 public R4Column(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, NumberType.R4)
+                    : base(data, colIndex, name, NumberDataViewType.Single)
                 {
                     _getter = MarshalDelegate<R4Getter>(getter);
                 }
@@ -873,7 +872,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private TXGetter _getter;
 
                 public TextColumn(DataSourceBlock* data, void* getter, int colIndex, string name)
-                    : base(data, colIndex, name, TextType.Instance)
+                    : base(data, colIndex, name, TextDataViewType.Instance)
                 {
                     _getter = MarshalDelegate<TXGetter>(getter);
                 }
@@ -913,7 +912,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private U4Getter _getter;
 
                 public KeyColumn(DataSourceBlock* data, void* getter, int colIndex, string name, int keyCount, ref VBuffer<ReadOnlyMemory<char>> keyValues)
-                    : base(data, colIndex, name, new KeyType(DataKind.U4, keyCount))
+                    : base(data, colIndex, name, new KeyType(typeof(uint), keyCount))
                 {
                     Contracts.Assert(keyCount >= 0);
                     Contracts.Assert(keyValues.Length == 0 || keyValues.Length == keyCount);
@@ -925,10 +924,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         keyValues.CopyTo(ref _keyValues);
                         ValueGetter<VBuffer<ReadOnlyMemory<char>>> getKeyValues =
                             (ref VBuffer<ReadOnlyMemory<char>> dst) => _keyValues.CopyTo(ref dst);
-                        var metadataBuilder = new MetadataBuilder();
-                        metadataBuilder.AddKeyValues(keyCount, TextType.Instance, getKeyValues);
-                        DetachedColumn = new Schema.DetachedColumn(
-                            name, new KeyType(DataKind.U4, keyCount), metadataBuilder.GetMetadata());
+                        var metadataBuilder = new DataViewSchema.Annotations.Builder();
+                        metadataBuilder.AddKeyValues(keyCount, TextDataViewType.Instance, getKeyValues);
+                        DetachedColumn = new DataViewSchema.DetachedColumn(
+                            name, new KeyType(typeof(uint), keyCount), metadataBuilder.ToAnnotations());
                     }
                 }
 

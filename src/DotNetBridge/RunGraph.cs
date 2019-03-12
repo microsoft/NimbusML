@@ -146,7 +146,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 {
                                     var extension = Path.GetExtension(path);
                                     if (extension == ".txt")
-                                        dv = TextLoader.ReadFile(host, new TextLoader.Arguments(), new MultiFileSource(path));
+                                        dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
 
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
@@ -285,7 +285,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
         private static Dictionary<string, ColumnMetadataInfo> ProcessColumns(ref IDataView view, int maxSlots, IHostEnvironment env)
         {
             Dictionary<string, ColumnMetadataInfo> result = null;
-            List<SlotsDroppingTransformer.ColumnInfo> drop = null;
+            List<SlotsDroppingTransformer.ColumnOptions> drop = null;
             for (int i = 0; i < view.Schema.Count; i++)
             {
                 if (view.Schema[i].IsHidden)
@@ -299,18 +299,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     if (maxSlots > 0 && columnType.GetValueCount() > maxSlots)
                     {
                         Utils.Add(ref drop,
-                            new SlotsDroppingTransformer.ColumnInfo(
-                                input: columnName,
+                            new SlotsDroppingTransformer.ColumnOptions(
+                                name: columnName,
                                 slots: (maxSlots, null)));
                     }
                 }
-                else if (columnType.IsKey)
+                else if (columnType is KeyType)
                 {
                     Dictionary<uint, ReadOnlyMemory<char>> map = null;
-                    if (columnType.GetKeyCount() > 0 && view.Schema[i].HasKeyValues(columnType.GetKeyCount()))
+                    if (columnType.GetKeyCount() > 0 && view.Schema[i].HasKeyValues())
                     {
                         var keyNames = default(VBuffer<ReadOnlyMemory<char>>);
-                        view.Schema[i].Metadata.GetValue(MetadataUtils.Kinds.KeyValues, ref keyNames);
+                        view.Schema[i].Annotations.GetValue(AnnotationUtils.Kinds.KeyValues, ref keyNames);
                         map = keyNames.Items().ToDictionary(kv => (uint)kv.Key, kv => kv.Value);
                     }
                     Utils.Add(ref result, columnName, new ColumnMetadataInfo(false, null, map));
