@@ -9,4 +9,5 @@ libSymSgdNative.dylib
 lib_lightgbm.dylib
 libtensorflow.dylib
 libtensorflow_framework.dylib
+Microsoft.Data.DataView
 Microsoft.ML.*

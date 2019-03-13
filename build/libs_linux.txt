@@ -9,4 +9,5 @@ libSymSgdNative.so
 lib_lightgbm.so
 libtensorflow.so
 libtensorflow_framework.so
+Microsoft.Data.DataView
 Microsoft.ML.*
