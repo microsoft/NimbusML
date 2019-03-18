@@ -31,8 +31,8 @@ from .internal.entrypoints.models_clusterevaluator import \
     models_clusterevaluator
 from .internal.entrypoints.models_datasettransformer import \
     models_datasettransformer
-from .internal.entrypoints.models_rankerevaluator import \
-    models_rankerevaluator
+from .internal.entrypoints.models_rankingevaluator import \
+    models_rankingevaluator
 from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
@@ -1463,7 +1463,7 @@ class Pipeline:
             column = [OrderedDict(Source=group_id, Name=group_id)]
             algo_args = dict(data=svd, output_data=svd, column=column)
             key_node = transforms_texttokeyconverter(**algo_args)
-            evaluate_node = models_rankerevaluator(
+            evaluate_node = models_rankingevaluator(
                 group_id_column=group_id, **params)
             all_nodes.extend([
                 key_node,

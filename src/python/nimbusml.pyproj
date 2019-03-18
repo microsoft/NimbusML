@@ -12,7 +12,7 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|Py3.6</InterpreterId>
+    <InterpreterId>Global|VisualStudio|Mine</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.6\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
@@ -250,7 +250,7 @@
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_quantileregressionevaluator.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_rankerevaluator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_rankingevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionpipelineensemble.py" />
@@ -1095,7 +1095,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Py3.6" />
+    <InterpreterReference Include="Global|VisualStudio|Mine" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
