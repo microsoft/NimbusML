@@ -101,8 +101,8 @@ def trainers_fasttreeregressor(
         column (inputs).
     :param caching: Whether learner should cache input training data
         (inputs).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (inputs).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (inputs).
     :param use_line_search: Should we use line search for a step size
         (inputs).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -292,7 +292,6 @@ def trainers_fasttreeregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if best_step_ranking_regression_trees is not None:
         inputs['BestStepRankingRegressionTrees'] = try_set(

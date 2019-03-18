@@ -113,14 +113,9 @@ class AveragedPerceptronBinaryClassifier(
 
     :param l2_regularizer_weight: L2 Regularization Weight.
 
-    :param num_iterations: Number of iterations.
+    :param number_of_iterations: Number of iterations.
 
-    :param init_wts_diameter: Sets the initial weights diameter that specifies
-        the range from which values are drawn for the initial weights. These
-        weights are initialized randomly from within this range. For example,
-        if the diameter is specified to be ``d``, then the weights are
-        uniformly distributed between ``-d/2`` and ``d/2``. The default value
-        is ``0``, which specifies that all the  weights are set to zero.
+    :param initial_weights_diameter: Init weights diameter.
 
     :param reset_weights_after_x_examples: Number of examples after which
         weights will be reset to the current average.
@@ -140,8 +135,6 @@ class AveragedPerceptronBinaryClassifier(
     :param initial_weights: Initial Weights and bias, comma-separated.
 
     :param shuffle: Whether to shuffle for each training iteration.
-
-    :param streaming_cache_size: Size of cache when trained in Scope.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -166,8 +159,8 @@ class AveragedPerceptronBinaryClassifier(
             learning_rate=1.0,
             decrease_learning_rate=False,
             l2_regularizer_weight=0.0,
-            num_iterations=1,
-            init_wts_diameter=0.0,
+            number_of_iterations=1,
+            initial_weights_diameter=0.0,
             reset_weights_after_x_examples=None,
             do_lazy_updates=True,
             recency_gain=0.0,
@@ -176,7 +169,6 @@ class AveragedPerceptronBinaryClassifier(
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
-            streaming_cache_size=1000000,
             feature=None,
             label=None,
             **params):
@@ -200,8 +192,8 @@ class AveragedPerceptronBinaryClassifier(
             learning_rate=learning_rate,
             decrease_learning_rate=decrease_learning_rate,
             l2_regularizer_weight=l2_regularizer_weight,
-            num_iterations=num_iterations,
-            init_wts_diameter=init_wts_diameter,
+            number_of_iterations=number_of_iterations,
+            initial_weights_diameter=initial_weights_diameter,
             reset_weights_after_x_examples=reset_weights_after_x_examples,
             do_lazy_updates=do_lazy_updates,
             recency_gain=recency_gain,
@@ -210,7 +202,6 @@ class AveragedPerceptronBinaryClassifier(
             averaged_tolerance=averaged_tolerance,
             initial_weights=initial_weights,
             shuffle=shuffle,
-            streaming_cache_size=streaming_cache_size,
             **params)
         self.feature = feature
         self.label = label

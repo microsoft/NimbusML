@@ -13,15 +13,17 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
         training_data,
         predictor_model=None,
         learning_rate=0.1,
-        iters=5,
+        number_of_iterations=5,
         feature_column='Features',
-        latent_dim=20,
+        latent_dimension=20,
         label_column='Label',
         lambda_linear=0.0001,
+        weight_column=None,
         lambda_latent=0.0001,
         normalize_features='Auto',
-        norm=True,
+        normalize=True,
         caching='Auto',
+        extra_feature_columns=None,
         shuffle=True,
         verbose=True,
         radius=0.5,
@@ -32,20 +34,27 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
 
     :param learning_rate: Initial learning rate (inputs).
     :param training_data: The data to be used for training (inputs).
-    :param iters: Number of training iterations (inputs).
+    :param number_of_iterations: Number of training iterations
+        (inputs).
     :param feature_column: Column to use for features (inputs).
-    :param latent_dim: Latent space dimension (inputs).
+    :param latent_dimension: Latent space dimension (inputs).
     :param label_column: Column to use for labels (inputs).
     :param lambda_linear: Regularization coefficient of linear
         weights (inputs).
+    :param weight_column: Column to use for example weight (inputs).
     :param lambda_latent: Regularization coefficient of latent
         weights (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param norm: Whether to normalize the input vectors so that the
-        concatenation of all fields' feature vectors is unit-length
-        (inputs).
+    :param normalize: Whether to normalize the input vectors so that
+        the concatenation of all fields' feature vectors is unit-
+        length (inputs).
     :param caching: Whether learner should cache input training data
+        (inputs).
+    :param extra_feature_columns: Extra columns to use for feature
+        vectors. The i-th specified string denotes the column
+        containing features form the (i+1)-th field. Note that the
+        first field is specified by "feat" instead of "exfeat".
         (inputs).
     :param shuffle: Whether to shuffle for each training iteration
         (inputs).
@@ -68,9 +77,9 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if iters is not None:
-        inputs['Iters'] = try_set(
-            obj=iters,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if feature_column is not None:
@@ -79,9 +88,9 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if latent_dim is not None:
-        inputs['LatentDim'] = try_set(
-            obj=latent_dim,
+    if latent_dimension is not None:
+        inputs['LatentDimension'] = try_set(
+            obj=latent_dimension,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if label_column is not None:
@@ -95,6 +104,12 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             obj=lambda_linear,
             none_acceptable=True,
             is_of_type=numbers.Real)
+    if weight_column is not None:
+        inputs['WeightColumn'] = try_set(
+            obj=weight_column,
+            none_acceptable=True,
+            is_of_type=str,
+            is_column=True)
     if lambda_latent is not None:
         inputs['LambdaLatent'] = try_set(
             obj=lambda_latent,
@@ -110,9 +125,9 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
                 'Warn',
                 'Auto',
                 'Yes'])
-    if norm is not None:
-        inputs['Norm'] = try_set(
-            obj=norm,
+    if normalize is not None:
+        inputs['Normalize'] = try_set(
+            obj=normalize,
             none_acceptable=True,
             is_of_type=bool)
     if caching is not None:
@@ -123,8 +138,13 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
+    if extra_feature_columns is not None:
+        inputs['ExtraFeatureColumns'] = try_set(
+            obj=extra_feature_columns,
+            none_acceptable=True,
+            is_of_type=list,
+            is_column=True)
     if shuffle is not None:
         inputs['Shuffle'] = try_set(
             obj=shuffle,

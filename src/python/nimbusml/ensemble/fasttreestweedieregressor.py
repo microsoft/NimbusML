@@ -97,7 +97,7 @@ class FastTreesTweedieRegressor(
         [1, 2]. 1 is Poisson loss, 2 is gamma loss, and intermediate values are
         compound Poisson loss.
 
-    :param best_step_trees: Use best regression step trees?.
+    :param best_step_trees: Option for using best regression step trees.
 
     :param use_line_search: Should we use line search for a step size.
 

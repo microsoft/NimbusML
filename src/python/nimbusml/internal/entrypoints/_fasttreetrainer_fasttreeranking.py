@@ -125,8 +125,8 @@ def fast_tree_ranking(
         (settings).
     :param normalize_query_lambdas: Normalize query lambdas
         (settings).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (settings).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (settings).
     :param use_line_search: Should we use line search for a step size
         (settings).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -312,7 +312,6 @@ def fast_tree_ranking(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if custom_gains is not None:
         settings['CustomGains'] = try_set(

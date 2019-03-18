@@ -80,7 +80,6 @@ def trainers_pcaanomalydetector(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if rank is not None:
         inputs['Rank'] = try_set(

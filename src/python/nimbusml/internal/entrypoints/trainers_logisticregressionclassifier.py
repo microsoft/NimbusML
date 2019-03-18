@@ -116,7 +116,6 @@ def trainers_logisticregressionclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if show_training_stats is not None:
         inputs['ShowTrainingStats'] = try_set(

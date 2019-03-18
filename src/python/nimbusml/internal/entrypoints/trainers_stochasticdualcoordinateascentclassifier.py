@@ -112,7 +112,6 @@ def trainers_stochasticdualcoordinateascentclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(

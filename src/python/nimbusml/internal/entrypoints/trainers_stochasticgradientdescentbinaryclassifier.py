@@ -20,14 +20,14 @@ def trainers_stochasticgradientdescentbinaryclassifier(
         loss_function=None,
         l2_weight=1e-06,
         num_threads=None,
+        calibrator=None,
+        max_calibration_examples=1000000,
         convergence_tolerance=0.0001,
         max_iterations=20,
         init_learning_rate=0.01,
         shuffle=True,
         positive_instance_weight=1.0,
         check_frequency=None,
-        calibrator=None,
-        max_calibration_examples=1000000,
         **params):
     """
     **Description**
@@ -46,6 +46,10 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     :param num_threads: Degree of lock-free parallelism. Defaults to
         automatic depending on data sparseness. Determinism not
         guaranteed. (inputs).
+    :param calibrator: The calibrator kind to apply to the predictor.
+        Specify null for no calibration (inputs).
+    :param max_calibration_examples: The maximum number of examples
+        to use when training the calibrator (inputs).
     :param convergence_tolerance: Exponential moving averaged
         improvement tolerance for convergence (inputs).
     :param max_iterations: Maximum number of iterations; set to 1 to
@@ -58,10 +62,6 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     :param check_frequency: Convergence check frequency (in terms of
         number of iterations). Default equals number of threads
         (inputs).
-    :param calibrator: The calibrator kind to apply to the predictor.
-        Specify null for no calibration (inputs).
-    :param max_calibration_examples: The maximum number of examples
-        to use when training the calibrator (inputs).
     :param predictor_model: The trained model (outputs).
     """
 
@@ -110,7 +110,6 @@ def trainers_stochasticgradientdescentbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(
@@ -125,6 +124,16 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     if num_threads is not None:
         inputs['NumThreads'] = try_set(
             obj=num_threads,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if calibrator is not None:
+        inputs['Calibrator'] = try_set(
+            obj=calibrator,
+            none_acceptable=True,
+            is_of_type=dict)
+    if max_calibration_examples is not None:
+        inputs['MaxCalibrationExamples'] = try_set(
+            obj=max_calibration_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if convergence_tolerance is not None:
@@ -155,16 +164,6 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     if check_frequency is not None:
         inputs['CheckFrequency'] = try_set(
             obj=check_frequency,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
-    if calibrator is not None:
-        inputs['Calibrator'] = try_set(
-            obj=calibrator,
-            none_acceptable=True,
-            is_of_type=dict)
-    if max_calibration_examples is not None:
-        inputs['MaxCalibrationExamples'] = try_set(
-            obj=max_calibration_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if predictor_model is not None:

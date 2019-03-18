@@ -20,8 +20,8 @@ def trainers_onlinegradientdescentregressor(
         learning_rate=0.1,
         decrease_learning_rate=True,
         l2_regularizer_weight=0.0,
-        num_iterations=1,
-        init_wts_diameter=0.0,
+        number_of_iterations=1,
+        initial_weights_diameter=0.0,
         reset_weights_after_x_examples=None,
         do_lazy_updates=True,
         recency_gain=0.0,
@@ -30,7 +30,6 @@ def trainers_onlinegradientdescentregressor(
         averaged_tolerance=0.01,
         initial_weights=None,
         shuffle=True,
-        streaming_cache_size=1000000,
         **params):
     """
     **Description**
@@ -47,8 +46,8 @@ def trainers_onlinegradientdescentregressor(
     :param learning_rate: Learning rate (inputs).
     :param decrease_learning_rate: Decrease learning rate (inputs).
     :param l2_regularizer_weight: L2 Regularization Weight (inputs).
-    :param num_iterations: Number of iterations (inputs).
-    :param init_wts_diameter: Init weights diameter (inputs).
+    :param number_of_iterations: Number of iterations (inputs).
+    :param initial_weights_diameter: Init weights diameter (inputs).
     :param reset_weights_after_x_examples: Number of examples after
         which weights will be reset to the current average (inputs).
     :param do_lazy_updates: Instead of updating averaged weights on
@@ -63,8 +62,6 @@ def trainers_onlinegradientdescentregressor(
     :param initial_weights: Initial Weights and bias, comma-separated
         (inputs).
     :param shuffle: Whether to shuffle for each training iteration
-        (inputs).
-    :param streaming_cache_size: Size of cache when trained in Scope
         (inputs).
     :param predictor_model: The trained model (outputs).
     """
@@ -108,7 +105,6 @@ def trainers_onlinegradientdescentregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(
@@ -128,14 +124,14 @@ def trainers_onlinegradientdescentregressor(
             obj=l2_regularizer_weight,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_iterations is not None:
-        inputs['NumIterations'] = try_set(
-            obj=num_iterations,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if init_wts_diameter is not None:
-        inputs['InitWtsDiameter'] = try_set(
-            obj=init_wts_diameter,
+    if initial_weights_diameter is not None:
+        inputs['InitialWeightsDiameter'] = try_set(
+            obj=initial_weights_diameter,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if reset_weights_after_x_examples is not None:
@@ -178,11 +174,6 @@ def trainers_onlinegradientdescentregressor(
             obj=shuffle,
             none_acceptable=True,
             is_of_type=bool)
-    if streaming_cache_size is not None:
-        inputs['StreamingCacheSize'] = try_set(
-            obj=streaming_cache_size,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(
             obj=predictor_model, none_acceptable=False, is_of_type=str)

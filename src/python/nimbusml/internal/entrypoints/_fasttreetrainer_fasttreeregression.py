@@ -102,8 +102,8 @@ def fast_tree_regression(
         column (settings).
     :param caching: Whether learner should cache input training data
         (settings).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (settings).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (settings).
     :param use_line_search: Should we use line search for a step size
         (settings).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -289,7 +289,6 @@ def fast_tree_regression(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if best_step_ranking_regression_trees is not None:
         settings['BestStepRankingRegressionTrees'] = try_set(

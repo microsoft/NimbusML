@@ -107,8 +107,8 @@ def fast_tree_tweedie_regression(
     :param index: Index parameter for the Tweedie distribution, in
         the range [1, 2]. 1 is Poisson loss, 2 is gamma loss, and
         intermediate values are compound Poisson loss. (settings).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (settings).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (settings).
     :param use_line_search: Should we use line search for a step size
         (settings).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -294,7 +294,6 @@ def fast_tree_tweedie_regression(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if index is not None:
         settings['Index'] = try_set(

@@ -103,7 +103,6 @@ def models_oneversusall(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(

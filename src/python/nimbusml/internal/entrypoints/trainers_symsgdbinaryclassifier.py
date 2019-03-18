@@ -97,7 +97,6 @@ def trainers_symsgdbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if number_of_iterations is not None:
         inputs['NumberOfIterations'] = try_set(

@@ -136,7 +136,6 @@ def trainers_generalizedadditivemodelregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if pruning_metrics is not None:
         inputs['PruningMetrics'] = try_set(

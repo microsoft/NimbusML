@@ -20,9 +20,9 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
         caching='Auto',
         loss_function=None,
         num_threads=None,
-        positive_instance_weight=1.0,
         calibrator=None,
         max_calibration_examples=1000000,
+        positive_instance_weight=1.0,
         convergence_tolerance=0.1,
         max_iterations=None,
         shuffle=True,
@@ -51,12 +51,12 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
     :param loss_function: Loss Function (inputs).
     :param num_threads: Degree of lock-free parallelism. Defaults to
         automatic. Determinism not guaranteed. (inputs).
-    :param positive_instance_weight: Apply weight to the positive
-        class, for imbalanced data (inputs).
     :param calibrator: The calibrator kind to apply to the predictor.
         Specify null for no calibration (inputs).
     :param max_calibration_examples: The maximum number of examples
         to use when training the calibrator (inputs).
+    :param positive_instance_weight: Apply weight to the positive
+        class, for imbalanced data (inputs).
     :param convergence_tolerance: The tolerance for the ratio between
         duality gap and primal loss for convergence checking.
         (inputs).
@@ -121,7 +121,6 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(
@@ -133,11 +132,6 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
             obj=num_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if positive_instance_weight is not None:
-        inputs['PositiveInstanceWeight'] = try_set(
-            obj=positive_instance_weight,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if calibrator is not None:
         inputs['Calibrator'] = try_set(
             obj=calibrator,
@@ -146,6 +140,11 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
     if max_calibration_examples is not None:
         inputs['MaxCalibrationExamples'] = try_set(
             obj=max_calibration_examples,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if positive_instance_weight is not None:
+        inputs['PositiveInstanceWeight'] = try_set(
+            obj=positive_instance_weight,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if convergence_tolerance is not None:

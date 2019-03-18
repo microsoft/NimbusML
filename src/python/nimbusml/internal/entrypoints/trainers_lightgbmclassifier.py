@@ -39,6 +39,7 @@ def trainers_lightgbmclassifier(
         max_cat_threshold=32,
         cat_smooth=10.0,
         cat_l2=10.0,
+        seed=None,
         parallel_trainer=None,
         **params):
     """
@@ -91,6 +92,7 @@ def trainers_lightgbmclassifier(
     :param cat_smooth: Lapalace smooth term in categorical feature
         spilt. Avoid the bias of small categories. (inputs).
     :param cat_l2: L2 Regularization for categorical split. (inputs).
+    :param seed: Sets the random seed for LightGBM to use. (inputs).
     :param parallel_trainer: Parallel LightGBM Learning Algorithm
         (inputs).
     :param predictor_model: The trained model (outputs).
@@ -172,7 +174,6 @@ def trainers_lightgbmclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if max_bin is not None:
         inputs['MaxBin'] = try_set(
@@ -271,6 +272,11 @@ def trainers_lightgbmclassifier(
             obj=cat_l2,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
+    if seed is not None:
+        inputs['Seed'] = try_set(
+            obj=seed,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
     if parallel_trainer is not None:
         inputs['ParallelTrainer'] = try_set(
             obj=parallel_trainer,

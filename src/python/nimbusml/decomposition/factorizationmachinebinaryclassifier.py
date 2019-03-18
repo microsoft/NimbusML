@@ -54,42 +54,27 @@ class FactorizationMachineBinaryClassifier(
 
     :param label: see `Columns </nimbusml/concepts/columns>`_.
 
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+
     :param learning_rate: Initial learning rate.
 
-    :param iters: Number of training iterations.
+    :param number_of_iterations: Number of training iterations.
 
-    :param latent_dim: Latent space dimension.
+    :param latent_dimension: Latent space dimension.
 
     :param lambda_linear: Regularization coefficient of linear weights.
 
     :param lambda_latent: Regularization coefficient of latent weights.
 
-    :param normalize: Specifies the type of automatic normalization used:
-
-        * ``"Auto"``: if normalization is needed, it is performed
-          automatically. This is the default choice.
-        * ``"No"``: no normalization is performed.
-        * ``"Yes"``: normalization is performed.
-        * ``"Warn"``: if normalization is needed, a warning
-          message is displayed, but normalization is not performed.
-
-        Normalization rescales disparate data ranges to a standard scale.
-        Feature
-        scaling insures the distances between data points are proportional
-        and
-        enables various optimization methods such as gradient descent to
-        converge
-        much faster. If normalization is performed, a ``MaxMin`` normalizer
-        is
-        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
-        0``
-        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
-        sparsity by mapping zero to zero.
-
-    :param norm: Whether to normalize the input vectors so that the
+    :param normalize: Whether to normalize the input vectors so that the
         concatenation of all fields' feature vectors is unit-length.
 
     :param caching: Whether learner should cache input training data.
+
+    :param extra_feature_columns: Extra columns to use for feature vectors. The
+        i-th specified string denotes the column containing features form the
+        (i+1)-th field. Note that the first field is specified by "feat"
+        instead of "exfeat".
 
     :param shuffle: Whether to shuffle for each training iteration.
 
@@ -119,18 +104,19 @@ class FactorizationMachineBinaryClassifier(
     def __init__(
             self,
             learning_rate=0.1,
-            iters=5,
-            latent_dim=20,
+            number_of_iterations=5,
+            latent_dimension=20,
             lambda_linear=0.0001,
             lambda_latent=0.0001,
-            normalize='Auto',
-            norm=True,
+            normalize=True,
             caching='Auto',
+            extra_feature_columns=None,
             shuffle=True,
             verbose=True,
             radius=0.5,
             feature=None,
             label=None,
+            weight=None,
             **params):
 
         if 'feature_column' in params:
@@ -143,23 +129,29 @@ class FactorizationMachineBinaryClassifier(
                 "'label_column' must be renamed to 'label'")
         if label:
             params['label_column'] = label
+        if 'weight_column' in params:
+            raise NameError(
+                "'weight_column' must be renamed to 'weight'")
+        if weight:
+            params['weight_column'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
             learning_rate=learning_rate,
-            iters=iters,
-            latent_dim=latent_dim,
+            number_of_iterations=number_of_iterations,
+            latent_dimension=latent_dimension,
             lambda_linear=lambda_linear,
             lambda_latent=lambda_latent,
             normalize=normalize,
-            norm=norm,
             caching=caching,
+            extra_feature_columns=extra_feature_columns,
             shuffle=shuffle,
             verbose=verbose,
             radius=radius,
             **params)
         self.feature = feature
         self.label = label
+        self.weight = weight
 
     @trace
     def predict_proba(self, X, **params):

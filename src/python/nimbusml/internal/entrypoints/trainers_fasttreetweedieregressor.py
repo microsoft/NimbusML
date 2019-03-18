@@ -106,8 +106,8 @@ def trainers_fasttreetweedieregressor(
     :param index: Index parameter for the Tweedie distribution, in
         the range [1, 2]. 1 is Poisson loss, 2 is gamma loss, and
         intermediate values are compound Poisson loss. (inputs).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (inputs).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (inputs).
     :param use_line_search: Should we use line search for a step size
         (inputs).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -297,7 +297,6 @@ def trainers_fasttreetweedieregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if index is not None:
         inputs['Index'] = try_set(

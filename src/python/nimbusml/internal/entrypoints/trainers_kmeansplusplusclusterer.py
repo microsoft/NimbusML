@@ -89,7 +89,6 @@ def trainers_kmeansplusplusclusterer(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if k is not None:
         inputs['K'] = try_set(

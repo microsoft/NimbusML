@@ -103,10 +103,10 @@ def fast_tree_binary_classification(
         column (settings).
     :param caching: Whether learner should cache input training data
         (settings).
-    :param unbalanced_sets: Should we use derivatives optimized for
-        unbalanced sets (settings).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (settings).
+    :param unbalanced_sets: Option for using derivatives optimized
+        for unbalanced sets (settings).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (settings).
     :param use_line_search: Should we use line search for a step size
         (settings).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -292,7 +292,6 @@ def fast_tree_binary_classification(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if unbalanced_sets is not None:
         settings['UnbalancedSets'] = try_set(

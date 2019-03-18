@@ -20,8 +20,8 @@ def trainers_averagedperceptronbinaryclassifier(
         learning_rate=1.0,
         decrease_learning_rate=False,
         l2_regularizer_weight=0.0,
-        num_iterations=1,
-        init_wts_diameter=0.0,
+        number_of_iterations=1,
+        initial_weights_diameter=0.0,
         calibrator=None,
         max_calibration_examples=1000000,
         reset_weights_after_x_examples=None,
@@ -32,7 +32,6 @@ def trainers_averagedperceptronbinaryclassifier(
         averaged_tolerance=0.01,
         initial_weights=None,
         shuffle=True,
-        streaming_cache_size=1000000,
         **params):
     """
     **Description**
@@ -49,8 +48,8 @@ def trainers_averagedperceptronbinaryclassifier(
     :param learning_rate: Learning rate (inputs).
     :param decrease_learning_rate: Decrease learning rate (inputs).
     :param l2_regularizer_weight: L2 Regularization Weight (inputs).
-    :param num_iterations: Number of iterations (inputs).
-    :param init_wts_diameter: Init weights diameter (inputs).
+    :param number_of_iterations: Number of iterations (inputs).
+    :param initial_weights_diameter: Init weights diameter (inputs).
     :param calibrator: The calibrator kind to apply to the predictor.
         Specify null for no calibration (inputs).
     :param max_calibration_examples: The maximum number of examples
@@ -69,8 +68,6 @@ def trainers_averagedperceptronbinaryclassifier(
     :param initial_weights: Initial Weights and bias, comma-separated
         (inputs).
     :param shuffle: Whether to shuffle for each training iteration
-        (inputs).
-    :param streaming_cache_size: Size of cache when trained in Scope
         (inputs).
     :param predictor_model: The trained model (outputs).
     """
@@ -114,7 +111,6 @@ def trainers_averagedperceptronbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(
@@ -134,14 +130,14 @@ def trainers_averagedperceptronbinaryclassifier(
             obj=l2_regularizer_weight,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_iterations is not None:
-        inputs['NumIterations'] = try_set(
-            obj=num_iterations,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if init_wts_diameter is not None:
-        inputs['InitWtsDiameter'] = try_set(
-            obj=init_wts_diameter,
+    if initial_weights_diameter is not None:
+        inputs['InitialWeightsDiameter'] = try_set(
+            obj=initial_weights_diameter,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if calibrator is not None:
@@ -194,11 +190,6 @@ def trainers_averagedperceptronbinaryclassifier(
             obj=shuffle,
             none_acceptable=True,
             is_of_type=bool)
-    if streaming_cache_size is not None:
-        inputs['StreamingCacheSize'] = try_set(
-            obj=streaming_cache_size,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(
             obj=predictor_model, none_acceptable=False, is_of_type=str)

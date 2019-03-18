@@ -136,7 +136,6 @@ def trainers_generalizedadditivemodelbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if unbalanced_sets is not None:
         inputs['UnbalancedSets'] = try_set(

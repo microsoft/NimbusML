@@ -116,7 +116,7 @@ class FastTreesRegressor(
 
     :param caching: Whether learner should cache input training data.
 
-    :param best_step_trees: Use best regression step trees?.
+    :param best_step_trees: Option for using best regression step trees.
 
     :param use_line_search: Should we use line search for a step size.
 

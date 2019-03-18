@@ -109,7 +109,6 @@ def trainers_poissonregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if l2_weight is not None:
         inputs['L2Weight'] = try_set(

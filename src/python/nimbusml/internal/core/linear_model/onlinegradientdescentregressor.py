@@ -81,14 +81,9 @@ class OnlineGradientDescentRegressor(
 
     :param l2_regularizer_weight: L2 Regularization Weight.
 
-    :param num_iterations: Number of iterations.
+    :param number_of_iterations: Number of iterations.
 
-    :param init_wts_diameter: Sets the initial weights diameter that specifies
-        the range from which values are drawn for the initial weights. These
-        weights are initialized randomly from within this range. For example,
-        if the diameter is specified to be ``d``, then the weights are
-        uniformly distributed between ``-d/2`` and ``d/2``. The default value
-        is ``0``, which specifies that all the  weights are set to zero.
+    :param initial_weights_diameter: Init weights diameter.
 
     :param reset_weights_after_x_examples: Number of examples after which
         weights will be reset to the current average.
@@ -109,8 +104,6 @@ class OnlineGradientDescentRegressor(
     :param initial_weights: Initial Weights and bias, comma-separated.
 
     :param shuffle: Whether to shuffle for each training iteration.
-
-    :param streaming_cache_size: Size of cache when trained in Scope.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -138,8 +131,8 @@ class OnlineGradientDescentRegressor(
             learning_rate=0.1,
             decrease_learning_rate=True,
             l2_regularizer_weight=0.0,
-            num_iterations=1,
-            init_wts_diameter=0.0,
+            number_of_iterations=1,
+            initial_weights_diameter=0.0,
             reset_weights_after_x_examples=None,
             do_lazy_updates=True,
             recency_gain=0.0,
@@ -148,7 +141,6 @@ class OnlineGradientDescentRegressor(
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
-            streaming_cache_size=1000000,
             **params):
         BasePipelineItem.__init__(
             self, type='regressor', **params)
@@ -163,8 +155,8 @@ class OnlineGradientDescentRegressor(
         self.learning_rate = learning_rate
         self.decrease_learning_rate = decrease_learning_rate
         self.l2_regularizer_weight = l2_regularizer_weight
-        self.num_iterations = num_iterations
-        self.init_wts_diameter = init_wts_diameter
+        self.number_of_iterations = number_of_iterations
+        self.initial_weights_diameter = initial_weights_diameter
         self.reset_weights_after_x_examples = reset_weights_after_x_examples
         self.do_lazy_updates = do_lazy_updates
         self.recency_gain = recency_gain
@@ -173,7 +165,6 @@ class OnlineGradientDescentRegressor(
         self.averaged_tolerance = averaged_tolerance
         self.initial_weights = initial_weights
         self.shuffle = shuffle
-        self.streaming_cache_size = streaming_cache_size
 
     @property
     def _entrypoint(self):
@@ -197,8 +188,8 @@ class OnlineGradientDescentRegressor(
             learning_rate=self.learning_rate,
             decrease_learning_rate=self.decrease_learning_rate,
             l2_regularizer_weight=self.l2_regularizer_weight,
-            num_iterations=self.num_iterations,
-            init_wts_diameter=self.init_wts_diameter,
+            number_of_iterations=self.number_of_iterations,
+            initial_weights_diameter=self.initial_weights_diameter,
             reset_weights_after_x_examples=self.reset_weights_after_x_examples,
             do_lazy_updates=self.do_lazy_updates,
             recency_gain=self.recency_gain,
@@ -206,8 +197,7 @@ class OnlineGradientDescentRegressor(
             averaged=self.averaged,
             averaged_tolerance=self.averaged_tolerance,
             initial_weights=self.initial_weights,
-            shuffle=self.shuffle,
-            streaming_cache_size=self.streaming_cache_size)
+            shuffle=self.shuffle)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

@@ -298,8 +298,14 @@
       "NewName": "FactorizationMachineBinaryClassifier",
       "Module": "decomposition",
       "Type": "Classifier",
-      "Predict_Proba" : true,
-      "Decision_Function" : true
+      "Predict_Proba": true,
+      "Decision_Function": true,
+      "Inputs": [
+        {
+          "Name": "NormalizeFeatures",
+          "Hidden": true
+        }
+      ]
     },
     {
       "Name": "Trainers.FastForestBinaryClassifier",

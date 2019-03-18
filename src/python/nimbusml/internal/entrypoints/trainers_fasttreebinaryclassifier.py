@@ -102,10 +102,10 @@ def trainers_fasttreebinaryclassifier(
         column (inputs).
     :param caching: Whether learner should cache input training data
         (inputs).
-    :param unbalanced_sets: Should we use derivatives optimized for
-        unbalanced sets (inputs).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (inputs).
+    :param unbalanced_sets: Option for using derivatives optimized
+        for unbalanced sets (inputs).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (inputs).
     :param use_line_search: Should we use line search for a step size
         (inputs).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -295,7 +295,6 @@ def trainers_fasttreebinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if unbalanced_sets is not None:
         inputs['UnbalancedSets'] = try_set(

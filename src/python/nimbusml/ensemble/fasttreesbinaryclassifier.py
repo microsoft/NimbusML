@@ -122,10 +122,10 @@ class FastTreesBinaryClassifier(
 
     :param caching: Whether learner should cache input training data.
 
-    :param unbalanced_sets: Should we use derivatives optimized for unbalanced
-        sets.
+    :param unbalanced_sets: Option for using derivatives optimized for
+        unbalanced sets.
 
-    :param best_step_trees: Use best regression step trees?.
+    :param best_step_trees: Option for using best regression step trees.
 
     :param use_line_search: Should we use line search for a step size.
 

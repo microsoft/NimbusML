@@ -98,6 +98,8 @@ class LightGbmBinaryClassifier(
 
     :param cat_l2: L2 Regularization for categorical split.
 
+    :param random_state: Sets the random seed for LightGBM to use.
+
     :param parallel_trainer: Parallel LightGBM Learning Algorithm.
 
     :param params: Additional arguments sent to compute engine.
@@ -143,6 +145,7 @@ class LightGbmBinaryClassifier(
             max_cat_threshold=32,
             cat_smooth=10.0,
             cat_l2=10.0,
+            random_state=None,
             parallel_trainer=None,
             **params):
         BasePipelineItem.__init__(
@@ -171,6 +174,7 @@ class LightGbmBinaryClassifier(
         self.max_cat_threshold = max_cat_threshold
         self.cat_smooth = cat_smooth
         self.cat_l2 = cat_l2
+        self.random_state = random_state
         self.parallel_trainer = parallel_trainer
 
     @property
@@ -207,6 +211,7 @@ class LightGbmBinaryClassifier(
             max_cat_threshold=self.max_cat_threshold,
             cat_smooth=self.cat_smooth,
             cat_l2=self.cat_l2,
+            seed=self.random_state,
             parallel_trainer=self.parallel_trainer)
 
         all_args.update(algo_args)

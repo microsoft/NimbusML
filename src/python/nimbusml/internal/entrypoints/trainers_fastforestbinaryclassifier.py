@@ -232,7 +232,6 @@ def trainers_fastforestbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if max_tree_output is not None:
         inputs['MaxTreeOutput'] = try_set(

@@ -227,7 +227,6 @@ def trainers_fastforestregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if shuffle_labels is not None:
         inputs['ShuffleLabels'] = try_set(
