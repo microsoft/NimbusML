@@ -9,9 +9,9 @@ using System.Linq;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Data.DataView;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using Microsoft.ML.Runtime;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -135,7 +135,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         name + ". Not supported in python. Drop column before sending to Python");
                 }
 
-                if (itemType is KeyType)
+                if (itemType is KeyDataViewType)
                 {
                     // Key types are returned as their signed counterparts in Python, so that -1 can be the missing value.
                     // For U1 and U2 kinds, we convert to a larger type to prevent overflow. For U4 and U8 kinds, we convert
@@ -277,7 +277,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     {
                         var type = schema[colIndices[i]].Type;
                         var itemType = type.GetItemType();
-                        if ((itemType is KeyType) && schema[colIndices[i]].HasKeyValues())
+                        if ((itemType is KeyDataViewType) && schema[colIndices[i]].HasKeyValues())
                         {
                             ch.Assert(schema[colIndices[i]].HasKeyValues());
                             var keyValues = default(VBuffer<ReadOnlyMemory<char>>);
@@ -299,7 +299,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                         fillers[i] = BufferFillerBase.Create(penv, cursor, pyColumn, colIndices[i], kinds[pyColumn], type, setters[pyColumn]);
-                        pyColumn += type is VectorType ? type.GetVectorSize() : 1;
+                        pyColumn += type is VectorDataViewType ? type.GetVectorSize() : 1;
                     }
                     for (int crow = 0; ; crow++)
                     {
@@ -378,7 +378,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     }
                 }
                 // Key type with count=0
-                else if (itemType is KeyType)
+                else if (itemType is KeyDataViewType)
                 {
                     switch (itemType.GetRawKind())
                     {
@@ -503,7 +503,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.AssertValue(input);
                     Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.Count);
 
-                    if (type is VectorType)
+                    if (type is VectorDataViewType)
                         _getVec = RowCursorUtils.GetVecGetterAs<TSrc>((PrimitiveDataViewType)type.GetItemType(), input, idvColIndex);
                     else
                         _get = RowCursorUtils.GetGetterAs<TSrc>(type, input, idvColIndex);

@@ -8,15 +8,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Microsoft.Data.DataView;
 using Microsoft.ML;
 using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
 using Microsoft.ML.Data.IO;
 using Microsoft.ML.EntryPoints;
 using Microsoft.ML.Internal.Utilities;
+using Microsoft.ML.Runtime;
 using Microsoft.ML.Transforms;
-using Microsoft.ML.Transforms.FeatureSelection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -97,7 +96,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             int? maxThreadsAllowed = Math.Min(args.parallel > 0 ? args.parallel.Value : penv->maxThreadsAllowed, penv->maxThreadsAllowed);
             maxThreadsAllowed = penv->maxThreadsAllowed > 0 ? maxThreadsAllowed : args.parallel;
-            var host = env.Register("RunGraph", args.randomSeed, null, maxThreadsAllowed);
+            var host = env.Register("RunGraph", args.randomSeed, null);
 
             JObject graph;
             try
@@ -304,7 +303,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 slots: (maxSlots, null)));
                     }
                 }
-                else if (columnType is KeyType)
+                else if (columnType is KeyDataViewType)
                 {
                     Dictionary<uint, ReadOnlyMemory<char>> map = null;
                     if (columnType.GetKeyCount() > 0 && view.Schema[i].HasKeyValues())
