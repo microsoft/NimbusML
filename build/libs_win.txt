@@ -8,5 +8,4 @@ lib_lightgbm.dll
 MklImports.dll
 SymSgdNative.dll
 tensorflow.dll
-Microsoft.Data.DataView.dll
 Microsoft.ML.*
