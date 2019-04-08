@@ -19,6 +19,17 @@ phases:
    ${{ insert }}: ${{ parameters.buildQueue }}
   steps:
 
+  - task: CondaEnvironment@1
+    inputs:
+      createCustomEnvironment: true
+      environmentName: 'py$(python.version)'
+      packageSpecs: 'python=$(python.version)'
+
+  - script: |
+      conda config --set always_yes yes --set changeps1 no
+      conda install numpy pandas scikit-learn matplotlib
+    displayName: 'Install environment'
+    
   # Windows phases
   - ${{ if eq(parameters.name, 'Windows') }}:
     - script: $(_buildScript) --configuration $(_configuration) --runTests

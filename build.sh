@@ -66,49 +66,41 @@ done
 
 case $__configuration in
 *LinPy3.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.7-1.64.0.0.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
     ;;
 *LinPy3.6)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.6-1.64.0.0.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
     ;;
 *LinPy3.5)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-4.2.0.v9.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.5-1.64.0.0.tar.gz
     PythonVersion=3.5
     PythonTag=cp35
     ;;
 *LinPy2.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Linux-5.0.1.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-2.7-1.64.0.0.tar.gz
     PythonVersion=2.7
     PythonTag=cp27
     ;;
 *MacPy3.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.4.1.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.64.0.0.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
     ;;
 *MacPy3.6)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.6-1.64.0.0.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
     ;;
 *MacPy3.5)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-4.2.0.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.5-1.64.0.0.tar.gz
     PythonVersion=3.5
     PythonTag=cp35
     ;;
 *MacPy2.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Mac-5.0.2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-2.7-1.64.0.0.tar.gz
     PythonVersion=2.7
     PythonTag=cp27
@@ -130,17 +122,7 @@ echo ""
 echo "#################################"
 echo "Downloading Dependencies "
 echo "#################################"
-# Download & unzip Python
-if [ ! -e "${PythonRoot}/.done" ]
-then
-    mkdir -p "${PythonRoot}"
-    echo "Downloading and extracting Python archive ... "
-    curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-    # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-    mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-    touch "${PythonRoot}/.done"
-fi
-PythonExe="${PythonRoot}/bin/python"
+PythonExe="python"
 echo "Python executable: ${PythonExe}"
 # Download & unzip Boost
 if [ ! -e "${BoostRoot}/.done" ]

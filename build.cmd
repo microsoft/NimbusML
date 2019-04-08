@@ -14,8 +14,6 @@ set __VCBuildArch=x86_amd64
 set Configuration=DbgWinPy3.7
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.2-mohoov-amd64.zip
-set PythonRoot=%DependenciesDir%Python3.7
 set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.64.0.0.zip
 set BoostRoot=%DependenciesDir%BoostDbg3.7
 set PythonVersion=3.7
@@ -56,8 +54,6 @@ goto :Exit_Success
 if /i [%1] == [RlsWinPy3.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.2-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.7
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls3.7
     set PythonVersion=3.7
@@ -67,8 +63,6 @@ if /i [%1] == [RlsWinPy3.7]     (
 if /i [%1] == [RlsWinPy3.6]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.6
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.6
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.6-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls3.6
     set PythonVersion=3.6
@@ -78,8 +72,6 @@ if /i [%1] == [RlsWinPy3.6]     (
 if /i [%1] == [RlsWinPy3.5]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.5
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.5
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.5-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls3.5
     set PythonVersion=3.5
@@ -89,8 +81,6 @@ if /i [%1] == [RlsWinPy3.5]     (
 if /i [%1] == [RlsWinPy2.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls2.7
     set PythonVersion=2.7
@@ -100,8 +90,6 @@ if /i [%1] == [RlsWinPy2.7]     (
 if /i [%1] == [DbgWinPy3.7]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.2-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.7
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg3.7
     set PythonVersion=3.7
@@ -111,8 +99,6 @@ if /i [%1] == [DbgWinPy3.7]     (
 if /i [%1] == [DbgWinPy3.6]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.6
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.6
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg3.6
     set PythonVersion=3.6
@@ -122,8 +108,6 @@ if /i [%1] == [DbgWinPy3.6]     (
 if /i [%1] == [DbgWinPy3.5]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.5
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.5
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.5-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg3.5
     set PythonVersion=3.5
@@ -133,8 +117,6 @@ if /i [%1] == [DbgWinPy3.5]     (
 if /i [%1] == [DbgWinPy2.7]     (
     set DebugBuild=True
     set Configuration=DbgWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
     set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg2.7
     set PythonVersion=2.7
@@ -167,16 +149,6 @@ echo ""
 echo "#################################"
 echo "Downloading Dependencies "
 echo "#################################"
-:: Download & unzip Python
-if not exist "%PythonRoot%\.done" (
-    md "%PythonRoot%"
-    echo Downloading python zip ... 
-    powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
-    echo Extracting python zip ... 
-    powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
-    echo.>"%PythonRoot%\.done"
-    del %DependenciesDir%python.zip
-)
 :: Download & unzip Boost
 if not exist "%BoostRoot%\.done" (
     md "%BoostRoot%"
@@ -250,7 +222,7 @@ echo "#################################"
 echo "Building nimbusml wheel package ... "
 echo "#################################"
 echo Building nimbusml wheel package ...
-set PythonExe=%PythonRoot%\python.exe
+set PythonExe=python.exe
 echo Python executable: %PythonExe%
 :: Clean out build, dist, and libs from previous builds
 set build="%__currentScriptDir%src\python\build"

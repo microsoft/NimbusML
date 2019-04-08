@@ -8,12 +8,16 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsWinPy3.7
+        python.version: '3.7'
       Py36:
         _configuration: RlsWinPy3.6
+        python.version: '3.6'
       Py35:
         _configuration: RlsWinPy3.5
+        python.version: '3.5'
       Py27:
         _configuration: RlsWinPy2.7
+        python.version: '2.7'
     buildQueue:
       name: Hosted VS2017
 
@@ -25,6 +29,7 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsMacPy3.7
+        python.version: '3.7'
     buildQueue:
       name: Hosted macOS
 
@@ -38,6 +43,7 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsLinPy3.7
+        python.version: '3.7'
     buildQueue:
       name: Hosted Ubuntu 1604
   # Run tests on CentOS7
@@ -49,5 +55,6 @@ phases:
     buildMatrix:
       Py27:
         _configuration: RlsLinPy2.7
+        python.version: '2.7'
     buildQueue:
       name: Hosted Ubuntu 1604
