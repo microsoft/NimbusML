@@ -30,6 +30,11 @@ phases:
       conda install numpy pandas scikit-learn matplotlib
     displayName: 'Install environment'
     
+  - script: |
+      python -c "import sys;print(sys.prefix)"
+      python -c "import numpy;print(numpy.__file__)"
+    displayName: 'Display python location'
+    
   # Windows phases
   - ${{ if eq(parameters.name, 'Windows') }}:
     - script: $(_buildScript) --configuration $(_configuration) --runTests
