@@ -111,7 +111,7 @@ esac
 
 if [ "$(CustomPythonRoot)" = "" ]
 then
-    PythonRoot="/home/vsts/.conda/envs/py3.7${PythonVersion}"
+    PythonRoot="/home/vsts/.conda/envs/py${PythonVersion}"
 else
     PythonRoot="${CustomPythonRoot}"
 fi
