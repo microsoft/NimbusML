@@ -109,7 +109,13 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-PythonRoot=Python${PythonVersion}
+if [ "$(CustomPythonRoot)" = "" ]
+then
+    PythonRoot="/home/vsts/.conda/envs/py3.7${PythonVersion}"
+else
+    PythonRoot="${CustomPythonRoot}"
+fi
+
 BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 # Platform name for python wheel based on OS
 PlatName=manylinux1_x86_64
@@ -117,6 +123,8 @@ if [ "$(uname -s)" = "Darwin" ]
 then 
     PlatName=macosx_10_11_x86_64
 fi
+
+echo "PythonRoot=${PythonRoot}"
 
 echo ""
 echo "#################################"

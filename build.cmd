@@ -129,6 +129,20 @@ if /i [%1] == [DbgWinPy2.7]     (
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
 
+:: Set PythonRoot
+if "%CustomPythonRoot%" == "" goto SetCustomPythonRoot:
+set PythonRoot=%CustomPythonRoot%
+goto AfterPythonRoot:
+:SetCustomPythonRoot:
+set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
+rem set PythonRoot=%DependenciesDir%Python3.6
+
+:AfterPythonRoot:
+echo PythonRoot="%PythonRoot%"
+
+:: Check PythonRoot
+%PythonRoot%\python -c "import sys;print(sys.version)"
+
 :: Build managed code
 echo ""
 echo "#################################"
@@ -222,7 +236,7 @@ echo "#################################"
 echo "Building nimbusml wheel package ... "
 echo "#################################"
 echo Building nimbusml wheel package ...
-set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
+
 set PythonExe=%PythonRoot%\python.exe
 echo Python executable: %PythonExe%
 :: Clean out build, dist, and libs from previous builds

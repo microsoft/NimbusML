@@ -30,35 +30,35 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy2.7'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostRls2.7</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python2.7</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy2.7'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostDbg2.7</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python2.7</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.5'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostRls3.5</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.5</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.5'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostDbg3.5</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.5</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.6'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostRls3.6</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.6</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.7'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostRls3.7</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.7</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.6'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostDbg3.6</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.6</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.7'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostDbg3.7</BoostRoot>
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.7</PythonRoot>
+    <PythonRoot>$(PythonRoot)</PythonRoot>
   </PropertyGroup>
   <PropertyGroup>
     <ConfigurationOutputPath>$(SolutionDir)\bin\$(Configuration)\Win\</ConfigurationOutputPath>
