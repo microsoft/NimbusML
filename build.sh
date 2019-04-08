@@ -14,20 +14,20 @@ usage()
     echo "Usage: $0 --configuration <Configuration> [--runTests]"
     echo ""
     echo "Options:"
-    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
+    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
     echo "  --runTests                        Run tests after build"
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
     echo "  --buildNativeBridgeOnly           Build only the native bridge code"
-    echo "  --skipNativeBridge                Build the DotNet bridge and python wheel but use existing native bridge binaries (e.g. <repo>/x64/DbgLinPy3.6/pybridge.so)"
+    echo "  --skipNativeBridge                Build the DotNet bridge and python wheel but use existing native bridge binaries (e.g. <repo>/x64/DbgLinPy3.7/pybridge.so)"
     exit 1
 }
 
 # Parameter defaults
 if [ "$(uname -s)" = "Darwin" ]
 then 
-    __configuration=DbgMacPy3.6
+    __configuration=DbgMacPy3.7
 else
-    __configuration=DbgLinPy3.6
+    __configuration=DbgLinPy3.7
 fi
 __runTests=false
 __buildNativeBridge=true
@@ -65,6 +65,12 @@ while [ "$1" != "" ]; do
 done
 
 case $__configuration in
+*LinPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.4.1.v2.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.7-1.64.0.0.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
+    ;;
 *LinPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.6-1.64.0.0.tar.gz
@@ -82,6 +88,12 @@ case $__configuration in
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-2.7-1.64.0.0.tar.gz
     PythonVersion=2.7
     PythonTag=cp27
+    ;;
+*MacPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.4.1.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.64.0.0.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
     ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz

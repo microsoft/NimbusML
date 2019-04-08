@@ -1,6 +1,10 @@
 phases:
 - template: signed_build_phase.yml
   parameters:
+    name: Build_windows_RlsWinPy3_7
+    config: RlsWinPy3.7
+- template: signed_build_phase.yml
+  parameters:
     name: Build_windows_RlsWinPy3_6
     config: RlsWinPy3.6
 - template: signed_build_phase.yml
@@ -20,6 +24,8 @@ phases:
     buildScript: ./build.sh
     testDistro: noTests
     buildMatrix:
+      Py37:
+        _configuration: RlsMacPy3.7
       Py36:
         _configuration: RlsMacPy3.6
       Py35:
@@ -34,6 +40,8 @@ phases:
     buildScript: ./build.sh
     testDistro: noTests
     buildMatrix:
+      Py37:
+        _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
       Py35:
