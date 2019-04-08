@@ -222,7 +222,8 @@ echo "#################################"
 echo "Building nimbusml wheel package ... "
 echo "#################################"
 echo Building nimbusml wheel package ...
-set PythonExe=python.exe
+set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
+set PythonExe=%PythonRoot%\python.exe
 echo Python executable: %PythonExe%
 :: Clean out build, dist, and libs from previous builds
 set build="%__currentScriptDir%src\python\build"
@@ -304,7 +305,6 @@ if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
 call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
 call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 
-set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
 set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests

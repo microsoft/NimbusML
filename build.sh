@@ -109,7 +109,7 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-PythonRoot=${DependenciesDir}/Python${PythonVersion}
+PythonRoot=Python${PythonVersion}
 BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 # Platform name for python wheel based on OS
 PlatName=manylinux1_x86_64
@@ -122,7 +122,7 @@ echo ""
 echo "#################################"
 echo "Downloading Dependencies "
 echo "#################################"
-PythonExe="python"
+PythonExe="${PythonRoot}/python"
 echo "Python executable: ${PythonExe}"
 # Download & unzip Boost
 if [ ! -e "${BoostRoot}/.done" ]
