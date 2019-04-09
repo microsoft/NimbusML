@@ -201,7 +201,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>libboost_numpy3-vc140-mt-gd-1_64.lib;libboost_python3-vc140-mt-gd-1_64.lib</AdditionalDependencies>
+      <AdditionalDependencies>libboost_numpy37-vc140-mt-gd-1_69.lib;libboost_python37-vc140-mt-gd-1_69.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Boostroot)\lib;$(PythonRoot)\libs;$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -303,7 +303,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>libboost_python3-vc140-mt-1_64.lib;libboost_numpy3-vc140-mt-1_64.lib</AdditionalDependencies>
+      <AdditionalDependencies>libboost_python37-vc140-mt-1_69.lib;libboost_numpy37-vc140-mt-1_69.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Boostroot)\lib;$(PythonRoot)\libs;$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

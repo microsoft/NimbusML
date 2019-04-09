@@ -14,9 +14,9 @@ set __VCBuildArch=x86_amd64
 set Configuration=DbgWinPy3.7
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.2-mohoov-amd64.zip
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
 set PythonRoot=%DependenciesDir%Python3.7
-set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.64.0.0.zip
+set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
 set BoostRoot=%DependenciesDir%BoostDbg3.7
 set PythonVersion=3.7
 set PythonTag=cp37
@@ -56,9 +56,9 @@ goto :Exit_Success
 if /i [%1] == [RlsWinPy3.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.2-mohoov-amd64.zip
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.64.0.0.zip
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.69.0.0.zip
     set BoostRoot=%DependenciesDir%BoostRls3.7
     set PythonVersion=3.7
     set PythonTag=cp37
@@ -100,9 +100,9 @@ if /i [%1] == [RlsWinPy2.7]     (
 if /i [%1] == [DbgWinPy3.7]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.2-mohoov-amd64.zip
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.64.0.0.zip
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
     set BoostRoot=%DependenciesDir%BoostDbg3.7
     set PythonVersion=3.7
     set PythonTag=cp37
@@ -261,19 +261,6 @@ if exist %dist% rd %dist% /S /Q
 if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
-
-if %PythonVersion% == 3.7 (
-    :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
-    echo Generating low-level Python API from mainifest.json ...
-    call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2
-    cd "%__currentScriptDir%src\python"
-    call "%PythonExe%" tools\entrypoint_compiler.py --check_manual_changes 
-    if errorlevel 1 (
-        echo Codegen check failed. Try running tools/entrypoint_compiler.py --check_manual_changes to find the problem.
-        goto :Exit_Error
-    )
-    cd "%__currentScriptDir%"
-)
 
 if %PythonVersion% == 3.6 (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
