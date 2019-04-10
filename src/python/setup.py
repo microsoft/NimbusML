@@ -111,7 +111,7 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'tests': [
-            'nose>=1.3', 'pytest',
+            'nose>=1.3', 'pytest>=4.4.0',
             'graphviz', 'imageio',
         ],
         'utils': ['graphviz', 'imageio'],
@@ -131,7 +131,7 @@ setup(
         'jupyter_client>=4.4.0',
         'nbconvert>=4.2.0',
         'nose>=1.3',
-        'pytest',
+        'pytest>=4.4.0',
     ],
 
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.8.*',
