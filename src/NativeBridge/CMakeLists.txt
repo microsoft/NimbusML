@@ -73,6 +73,8 @@ add_library(PyBridge SHARED $<TARGET_OBJECTS:PyBridge_objects>)
 # Define lib dependencies to be used as target link libraries
 if (${PYTHON_VER} STREQUAL "2.7")
     set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python.a ${BOOST_DIR}/lib/libboost_numpy.a)
+elseif (${PYTHON_VER} STREQUAL "3.7")
+    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python37.a ${BOOST_DIR}/lib/libboost_numpy37.a)
 else()
     set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python3.a ${BOOST_DIR}/lib/libboost_numpy3.a)
 endif()
