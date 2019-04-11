@@ -125,19 +125,13 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-if [ "$(PythonUrl)" = "" ]
+if [ "$(BoostUrl)" = "" ]
 then
-    if [ "$(uname -s)" = "Darwin" ]
-    then
-        PythonRoot="/Users/vsts/hostedtoolcache/Python/${PythonVersion}.0/x64"
-    else
-        PythonRoot="/opt/hostedtoolcache/Python/${PythonVersion}.2/x64"
-    fi
+    BoostRoot=
 else
-    PythonRoot=${DependenciesDir}/Python${PythonVersion}
+    BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 fi
 
-BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 # Platform name for python wheel based on OS
 PlatName=manylinux1_x86_64
 if [ "$(uname -s)" = "Darwin" ]
@@ -152,8 +146,15 @@ echo "#################################"
 # Download & unzip Python
 if [ "$(PythonUrl)" = "" ]
 then
+    if [ "$(uname -s)" = "Darwin" ]
+    then
+        PythonRoot="/Users/vsts/hostedtoolcache/Python/${PythonVersion}.0/x64"
+    else
+        PythonRoot="/opt/hostedtoolcache/Python/${PythonVersion}.2/x64"
+    fi
     PythonExe="${PythonRoot}/python"
 else
+    PythonRoot=${DependenciesDir}/Python${PythonVersion}
     if [ ! -e "${PythonRoot}/.done" ]
     then
         mkdir -p "${PythonRoot}"
@@ -165,7 +166,10 @@ else
     fi
     PythonExe="${PythonRoot}/bin/python"
 fi
-echo "Python executable: ${PythonExe}"
+
+echo "PythonRoot: ${PythonRoot}"
+echo "PythonExe: ${PythonExe}"
+echo "BoostRoot: ${BoostRoot}"
 
 # Download & unzip Boost or pybind11
 if [ ${USE_PYBIND11} = true ]
