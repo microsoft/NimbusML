@@ -48,7 +48,7 @@ phases:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
   # Linux phases
   - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_Ubuntu16_PyBind11'), eq(parameters.name, 'Linux_CentOS7')) }}:
-    - script: apt-get update && apt-get install clang cmake libunwind8 curl liblttng-ust0 libcurl3 libssl1.0.0 libuuid1 libkrb5-3 zlib1g libicu52
+    - script: sudo apt-get update && sudo apt-get install clang cmake libunwind8 curl liblttng-ust0 libcurl3 libssl1.0.0 libuuid1 libkrb5-3 zlib1g libicu52
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
