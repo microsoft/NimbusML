@@ -16,7 +16,9 @@ from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter
-from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
+from sklearn.utils.estimator_checks import _yield_all_checks
+
+MULTI_OUTPUT = []
 
 this = os.path.abspath(os.path.dirname(__file__))
 OMITTED_CHECKS = {
@@ -152,7 +154,7 @@ OMITTED_CHECKS_TUPLE = (
                        check_estimator_sparse_data, '
     'check_estimators_pickle')
 
-OMITTED_CHECKS_ALWAYS = 'check_estimators_nan_inf'
+OMITTED_CHECKS_ALWAYS = ['check_estimators_nan_inf']
 
 NOBINARY_CHECKS = [
     'check_estimator_sparse_data',
@@ -266,7 +268,11 @@ for e in epoints:
         estimator = estimator << 'F0'
 
     for check in _yield_all_checks(class_name, estimator):
-        if check.__name__ in OMITTED_CHECKS_ALWAYS:
+        try:
+            name = check.__name__
+        except AttributeError:
+            continue
+        if name in OMITTED_CHECKS_ALWAYS:
             continue
         if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
             continue
