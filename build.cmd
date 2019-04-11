@@ -157,10 +157,7 @@ echo Installing dotnet SDK ...
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
 
 :: Set PythonRoot
-if "%PythonRoot%" == "" goto SetCustomPythonRoot:
-set PythonRoot=%CustomPythonRoot%
-goto AfterPythonRoot:
-:SetCustomPythonRoot:
+if "%PythonRoot%" != "" goto AfterPythonRoot:
 set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
 :AfterPythonRoot:
 echo PythonRoot="%PythonRoot%"
@@ -188,8 +185,8 @@ echo "#################################"
 echo "Downloading Dependencies "
 echo "#################################"
 :: Download & unzip Python
-if "%PythonRoot%" != "" (
-    if not exist "%PythonRoot%\.done" (
+if not exist "%PythonRoot%\.done" (
+    if exist "%PythonRoot%\python.exe" (
         md "%PythonRoot%"
         echo Downloading python zip ... 
         powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"

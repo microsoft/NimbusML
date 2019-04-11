@@ -18,7 +18,7 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
-      Py36:
+      Py37:
         _configuration: RlsMacPy3.7
         _installpython: 1
     buildQueue:

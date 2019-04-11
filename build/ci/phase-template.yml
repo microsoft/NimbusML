@@ -27,6 +27,9 @@ phases:
         environmentName: 'py$(python.version)'
         packageSpecs: 'python=$(python.version)'
 
+  - ${{ if eq(parameters._installpython, '0') }}:
+    - script: "echo will download Python '$(_installpython)'."
+
   - ${{ if eq(parameters._installpython, '1') }}:
      - script: conda config --set always_yes yes --set changeps1 no && conda install numpy pandas scikit-learn matplotlib
     

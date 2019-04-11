@@ -125,7 +125,7 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-if [ "$(PythonRoot)" = "" ]
+if [ "$(PythonUrl)" = "" ]
 then
     PythonRoot="/home/vsts/.conda/envs/py${PythonVersion}"
 else
