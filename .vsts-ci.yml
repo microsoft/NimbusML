@@ -30,7 +30,7 @@ phases:
   # Run tests on Ubuntu16
 - template: /build/ci/phase-template.yml
   parameters:
-    name: Linux_Ubuntu16
+    name: Linux_Ubuntu16-PyBind11
     buildScript: ./build.sh
     testDistro: ubuntu16
     installPython: 1
