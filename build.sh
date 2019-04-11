@@ -129,7 +129,7 @@ if [ "$(BoostUrl)" = "" ]
 then
     BoostRoot=
 else
-    BoostRoot=${DependenciesDir}/Boost${PythonVersion}
+    BoostRoot="${DependenciesDir}/Boost${PythonVersion}"
 fi
 
 # Platform name for python wheel based on OS
