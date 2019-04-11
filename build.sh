@@ -161,10 +161,12 @@ then
         mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
         touch "${PythonRoot}/.done"
     fi
+    PythonExe="${PythonRoot}/bin/python"
+    echo "Python executable: ${PythonExe}"
+else
+    PythonExe="${PythonRoot}/python"
+    echo "Python executable: ${PythonExe}"
 fi
-PythonExe="${PythonRoot}/bin/python"
-echo "Python executable: ${PythonExe}"
-ls "${PythonRoot}"
 
 # Download & unzip Boost or pybind11
 if [ ${USE_PYBIND11} = true ]
