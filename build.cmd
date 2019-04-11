@@ -29,6 +29,9 @@ if [%1] == [] goto :Build
 if /i [%1] == [--configuration] (
     shift && goto :Configuration
 )
+if /i [%1] == [--python] (
+    shift && goto :Setpythonroot
+)
 if /i [%1] == [--runTests] (
     set RunTests=True
     shift && goto :Arg_Loop
@@ -43,15 +46,21 @@ if /i [%1] == [--skipDotNetBridge] (
 ) else goto :Usage
 
 :Usage
-echo "Usage: build.cmd --configuration <Configuration> [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
+echo "Usage: build.cmd --configuration <Configuration> [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--python <path>]"
 echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "  --python <path>                   Set Python Path"
 echo "
 goto :Exit_Success
+
+:Setpythonroot
+echo Set PythonRoot="%1"
+set PythonRoot=%1
+shift && goto :Arg_Loop
 
 :Configuration
 if /i [%1] == [RlsWinPy3.7]     (
@@ -157,7 +166,7 @@ echo Installing dotnet SDK ...
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
 
 :: Set PythonRoot
-if "%PythonRoot%" != "" goto AfterPythonRoot:
+if "%PythonRoot%" neq "" goto AfterPythonRoot:
 set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
 :AfterPythonRoot:
 echo PythonRoot="%PythonRoot%"
@@ -186,7 +195,7 @@ echo "Downloading Dependencies "
 echo "#################################"
 :: Download & unzip Python
 if not exist "%PythonRoot%\.done" (
-    if exist "%PythonRoot%\python.exe" (
+    if not exist "%PythonRoot%\python.exe" (
         md "%PythonRoot%"
         echo Downloading python zip ... 
         powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
