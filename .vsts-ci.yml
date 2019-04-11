@@ -41,12 +41,13 @@ phases:
     buildQueue:
       name: Hosted Ubuntu 1604
 
-  # Run tests on CentOS7
+# Build all configurations for Linux
+  # Run tests on Ubuntu16
 - template: /build/ci/phase-template.yml
   parameters:
-    name: Linux_CentOS7
+    name: Linux_Ubuntu16
     buildScript: ./build.sh
-    testDistro: centos7
+    testDistro: ubuntu16
     installPython: 0
     buildMatrix:
       Py36:
@@ -55,6 +56,17 @@ phases:
       Py35:
         _configuration: RlsLinPy3.5
         python.version: '3.5'
+    buildQueue:
+      name: Hosted Ubuntu 1604
+
+  # Run tests on CentOS7
+- template: /build/ci/phase-template.yml
+  parameters:
+    name: Linux_CentOS7
+    buildScript: ./build.sh
+    testDistro: centos7
+    installPython: 0
+    buildMatrix:
       Py27:
         _configuration: RlsLinPy2.7
         python.version: '2.7'

@@ -127,7 +127,12 @@ esac
 
 if [ "$(PythonUrl)" = "" ]
 then
-    PythonRoot="/home/vsts/.conda/envs/py${PythonVersion}"
+    if [ "$(uname -s)" = "Darwin" ]
+    then
+        PythonRoot="/Users/vsts/.conda/envs/py${PythonVersion}"
+    else
+        PythonRoot="/home/vsts/.conda/envs/py${PythonVersion}"
+    fi
 else
     PythonRoot=${DependenciesDir}/Python${PythonVersion}
 fi
@@ -159,6 +164,7 @@ then
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
+ls "${PythonRoot}"
 
 # Download & unzip Boost or pybind11
 if [ ${USE_PYBIND11} = true ]
@@ -287,7 +293,7 @@ then
         "${PythonExe}" -m pip install --upgrade pyzmq
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
-    "${PythonExe}" -m pip install "scikit-learn==0.19.2"
+    "${PythonExe}" -m pip install "scikit-learn>=0.19.2"
 
     PackagePath=${PythonRoot}/lib/python${PythonVersion}/site-packages/nimbusml
     TestsPath1=${PackagePath}/tests
