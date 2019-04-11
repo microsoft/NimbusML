@@ -129,9 +129,9 @@ if [ "$(PythonUrl)" = "" ]
 then
     if [ "$(uname -s)" = "Darwin" ]
     then
-        PythonRoot="/Users/vsts/.conda/envs/py${PythonVersion}"
+        PythonRoot="/Users/vsts/hostedtoolcache/Python/${PythonVersion}.0/x64"
     else
-        PythonRoot="/home/vsts/.conda/envs/py${PythonVersion}"
+        PythonRoot="/opt/hostedtoolcache/Python/${PythonVersion}.2/x64"
     fi
 else
     PythonRoot=${DependenciesDir}/Python${PythonVersion}

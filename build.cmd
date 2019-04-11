@@ -167,7 +167,7 @@ powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointM
 
 :: Set PythonRoot
 if "%PythonRoot%" neq "" goto AfterPythonRoot:
-set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
+set PythonRoot=C:\hostedtoolcache\windows\Python\%PythonVersion%.2\x64
 :AfterPythonRoot:
 echo PythonRoot="%PythonRoot%"
 
