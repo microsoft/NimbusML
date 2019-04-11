@@ -5,10 +5,10 @@ phases:
   parameters:
     name: Windows
     buildScript: build.cmd
+    installPython: 1
     buildMatrix:
       Py37:
         _configuration: RlsWinPy3.7
-        _installpython: 1
     buildQueue:
       name: Hosted VS2017
 
@@ -34,10 +34,10 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsLinPy3.7
-        _installpython: 1
+        installPython: 1
       Py35:
         _configuration: RlsLinPy3.5
-        _installpython: 0
+        installPython: 0
     buildQueue:
       name: Hosted Ubuntu 1604
   # Run tests on CentOS7
@@ -49,12 +49,12 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsLinPy3.7
-        _installpython: 1
+        installPython: 1
       Py36:
         _configuration: RlsLinPy3.6
-        _installpython: 0
+        installPython: 0
       Py27:
         _configuration: RlsLinPy2.7
-        _installpython: 0
+        installPython: 0
     buildQueue:
       name: Hosted Ubuntu 1604

@@ -12,6 +12,7 @@ phases:
     _buildScript: ${{ parameters.buildScript }}
     _dockerRun: docker run -e SYSTEM_TEAMFOUNDATIONCOLLECTIONURI="$(System.TeamFoundationCollectionUri)" -e BUILD_BUILDNUMBER="$(Build.BuildNumber)" -i -v $(Build.SourcesDirectory):/builddir -w="/builddir"
     _distro: ${{ parameters.testDistro }}
+    _installPython: ${{ parameters.installPython }}
   queue:
    parallel: 99
    matrix:
@@ -19,24 +20,24 @@ phases:
    ${{ insert }}: ${{ parameters.buildQueue }}
   steps:
 
-# Install python
-  - ${{ if eq(parameters._installpython, '1') }}:
+  # Install python
+  - ${{ if eq(parameters.installPython, '1') }}:
     - task: CondaEnvironment@1
       inputs:
         createCustomEnvironment: true
         environmentName: 'py$(python.version)'
         packageSpecs: 'python=$(python.version)'
-
-  - ${{ if eq(parameters._installpython, '0') }}:
-    - script: "echo will download Python '$(_installpython)'."
-
-  - ${{ if eq(parameters._installpython, '1') }}:
-     - script: conda config --set always_yes yes --set changeps1 no && conda install numpy pandas scikit-learn matplotlib
-    
-  - ${{ if eq(parameters._installpython, '1') }}:
+      displayName: Install Python
+    - script: conda config --set always_yes yes --set changeps1 no && conda install numpy pandas scikit-learn matplotlib
+      displayName: Install numpy, pandas, scikit-learn
     - script: python -c "import sys;print(sys.prefix)" && python -c "import numpy;print(numpy.__file__)"
+      displayName: Display verions
 
-# Windows phases
+  - ${{ if eq(parameters.installPython, '0') }}:
+    - script: "echo will download Python '$(installPython)'."
+      displayName: Will Download python.
+
+  # Windows phases
   - ${{ if eq(parameters.name, 'Windows') }}:
     - script: $(_buildScript) --configuration $(_configuration) --runTests
   # Mac phases
