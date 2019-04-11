@@ -27,6 +27,12 @@ endif()
 if (${PYTHON_VER} STREQUAL "3.5")
     add_definitions(-DBOOST_PYTHON)
 endif()
+if (${PYTHON_VER} STREQUAL "3.6")
+    add_definitions(-DBOOST_PYTHON)
+endif()
+if (${PYTHON_VER} STREQUAL "3.7")
+    add_definitions(-DBOOST_PYTHON)
+endif()
 
 set(CXX_STANDARD_FLAGS -std=c++14 -fpermissive -m64 -funit-at-a-time)
 set(CXX_PARAM_FLAGS --param inline-unit-growth=450
