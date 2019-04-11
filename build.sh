@@ -81,7 +81,7 @@ case $__configuration in
     ;;
 *LinPy3.5)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-4.2.0.v9.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.5-1.64.0.0.tar.gz 
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.5-1.64.0.0.tar.gz
     PythonVersion=3.5
     PythonTag=cp35
     USE_PYBIND11=false
@@ -109,7 +109,7 @@ case $__configuration in
     ;;
 *MacPy3.5)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-4.2.0.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.5-1.64.0.0.tar.gz 
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.5-1.64.0.0.tar.gz
     PythonVersion=3.5
     PythonTag=cp35
     USE_PYBIND11=false

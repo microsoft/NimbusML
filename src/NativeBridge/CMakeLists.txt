@@ -64,7 +64,7 @@ include_directories(${PYTHON_DIR}/include/python2.7 ${PYTHON_DIR}/include/python
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=unused-variable -Wno-error=attributes -Wno-error=unused-value")
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'/Library/Frameworks/Python.framework/Versions/3.7/lib'" )
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'/Library/Frameworks/Python.framework/Versions/${PYTHON_VER}/lib'" )
 else ()
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'\${ORIGIN}'" )
 endif()

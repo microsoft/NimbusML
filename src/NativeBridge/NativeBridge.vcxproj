@@ -54,7 +54,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgWinPy3.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.6|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.5|x64'" Label="Configuration">
@@ -81,7 +81,7 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DbgWinPy3.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.6|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy2.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.5|x64'" Label="PropertySheets">
@@ -118,7 +118,7 @@
     <TargetName>pybridge</TargetName>
     <OutDir>..\..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy3.6|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RlsWinPy2.7|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <TargetName>pybridge</TargetName>

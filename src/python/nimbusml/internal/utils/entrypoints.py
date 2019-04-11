@@ -16,7 +16,10 @@ import pandas as pd
 import six
 from pandas import DataFrame
 from scipy.sparse import csr_matrix
-from sklearn.utils.fixes import signature
+try:
+    from sklearn.utils.fixes import signature
+except ImportError:
+    from inspect import signature
 
 from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
@@ -347,12 +350,16 @@ class Graph(EntryPoint):
                     od = call_parameters["data"]
                     vars = "type={0} keys={1}".format(
                         type(od), ','.join(od))
-            import pprint
-            pprint.pprint(call_parameters)
+            if verbose:
+                import pprint
+                text_params = "\nPARAMS\n" + pprint.pformat(call_parameters)
+            else:
+                text_params = ""
             raise SystemError(
                 "{0}.\n--CODE--\n{1}\n--GRAPH--\n{2}\n--DATA--\n{3}"
-                "\n--\nconcatenated={4}".format(
-                    str(es), code, str(self), vars, concatenated))
+                "\n--\nconcatenated={4}{5}".format(
+                    str(es), code, str(self), vars, concatenated,
+                    text_params))
         return ret
 
     def _get_separator(self):

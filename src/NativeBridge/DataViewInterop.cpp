@@ -33,9 +33,9 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 #ifdef BOOST_PYTHON
         bp::object key = *keys;
         char* name = bp::extract_or_cast<char*>(key);
+        bp::object value = *values++;
         if (strcmp(name, PYTHON_DATA_KEY_INFO) == 0 || strcmp(name, PYTHON_DATA_COL_TYPES) == 0)
             continue;
-        bp::object value = *values++;
         // now it should be a column names
         std::string colName = bp::extract_or_cast<std::string>(key);
         dataframeColCount++;
