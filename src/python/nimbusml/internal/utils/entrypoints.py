@@ -267,22 +267,22 @@ class Graph(EntryPoint):
         """
         code = ""
         if parallel is not None:
-            if isinstance(parallel, int):
+            if isinstance(parallel, six.integer_types):
                 code += "parallel = {} ".format(parallel)
             else:
                 raise TypeError("parallel is not of 'int' type.")
         if seed is not None:
-            if isinstance(seed, int):
+            if isinstance(seed, six.integer_types):
                 code += "seed = {} ".format(seed)
             else:
                 raise TypeError("seed is not of 'int' type.")
         if parallel is not None:
-            if isinstance(parallel, int):
+            if isinstance(parallel, six.integer_types):
                 code += "parallel = {} ".format(parallel)
             else:
                 raise TypeError("parallel is not of 'int' type.")
         if max_slots is not None:
-            if isinstance(max_slots, int):
+            if isinstance(max_slots, six.integer_types):
                 code += "maxSlots = {} ".format(max_slots)
             else:
                 raise TypeError("max_slots is not of 'int' type.")
@@ -320,7 +320,7 @@ class Graph(EntryPoint):
                         od = call_parameters["data"]
                         vars = "type={0} keys={1}".format(
                             type(od), ','.join(od))
-                if isinstance(verbose, int) and verbose >= 2:
+                if isinstance(verbose, six.integer_types) and verbose >= 2:
                     raise BridgeRuntimeError(
                         "{0}.\n--CODE--\n{1}\n--GRAPH--\n{2}\n--DATA--\n{3}"
                         "\n--\nconcatenated={4}".format(
@@ -441,7 +441,7 @@ class Graph(EntryPoint):
 
             nimbusml_path = os.path.join(os.path.dirname(__file__), "..", "libs")
             nimbusml_path = os.path.abspath(nimbusml_path)
-            call_parameters['verbose'] = try_set(verbose, False, int)
+            call_parameters['verbose'] = try_set(verbose, False, six.integer_types)
             call_parameters['graph'] = try_set(
                 'graph = {%s} %s' %
                 (str(self), code), False, str)
@@ -452,7 +452,7 @@ class Graph(EntryPoint):
             call_parameters['dotnetClrPath'] = try_set(get_clr_path(), True, str)
 
             if random_state:
-                call_parameters['seed'] = try_set(random_state, False, int)
+                call_parameters['seed'] = try_set(random_state, False, six.integer_types)
             ret = self._try_call_bridge(
                 px_call,
                 call_parameters,
