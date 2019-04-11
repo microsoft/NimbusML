@@ -150,8 +150,10 @@ echo "#################################"
 echo "Downloading Dependencies "
 echo "#################################"
 # Download & unzip Python
-if [ "${PythonUrl}" != "" ]
+if [ "$(PythonUrl)" = "" ]
 then
+    PythonExe="${PythonRoot}/python"
+else
     if [ ! -e "${PythonRoot}/.done" ]
     then
         mkdir -p "${PythonRoot}"
@@ -162,11 +164,8 @@ then
         touch "${PythonRoot}/.done"
     fi
     PythonExe="${PythonRoot}/bin/python"
-    echo "Python executable: ${PythonExe}"
-else
-    PythonExe="${PythonRoot}/python"
-    echo "Python executable: ${PythonExe}"
 fi
+echo "Python executable: ${PythonExe}"
 
 # Download & unzip Boost or pybind11
 if [ ${USE_PYBIND11} = true ]
