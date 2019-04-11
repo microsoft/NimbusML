@@ -90,8 +90,8 @@ case $__configuration in
     PythonTag=cp27
     ;;
 *MacPy3.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.4.1.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.64.0.0.tar.gz
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2019.03.v1.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.69.0.0.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
     ;;
