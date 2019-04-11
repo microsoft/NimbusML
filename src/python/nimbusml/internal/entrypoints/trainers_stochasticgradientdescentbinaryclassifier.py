@@ -18,7 +18,7 @@ def trainers_stochasticgradientdescentbinaryclassifier(
         normalize_features='Auto',
         caching='Auto',
         loss_function=None,
-        l2_const=1e-06,
+        l2_weight=1e-06,
         num_threads=None,
         convergence_tolerance=0.0001,
         max_iterations=20,
@@ -42,7 +42,7 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     :param caching: Whether learner should cache input training data
         (inputs).
     :param loss_function: Loss Function (inputs).
-    :param l2_const: L2 regularizer constant (inputs).
+    :param l2_weight: L2 Regularization constant (inputs).
     :param num_threads: Degree of lock-free parallelism. Defaults to
         automatic depending on data sparseness. Determinism not
         guaranteed. (inputs).
@@ -117,9 +117,9 @@ def trainers_stochasticgradientdescentbinaryclassifier(
             obj=loss_function,
             none_acceptable=True,
             is_of_type=dict)
-    if l2_const is not None:
-        inputs['L2Const'] = try_set(
-            obj=l2_const,
+    if l2_weight is not None:
+        inputs['L2Weight'] = try_set(
+            obj=l2_weight,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if num_threads is not None:

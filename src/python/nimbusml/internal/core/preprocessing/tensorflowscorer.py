@@ -13,10 +13,12 @@ __all__ = ["TensorFlowScorer"]
 from ...entrypoints.transforms_tensorflowscorer import \
     transforms_tensorflowscorer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class TensorFlowScorer(BasePipelineItem, DefaultSignature):
+class TensorFlowScorer(
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Transforms the data using the
@@ -45,12 +47,40 @@ class TensorFlowScorer(BasePipelineItem, DefaultSignature):
         * The name of each output column should match one of the
             operations in the Tensorflow graph.
 
-    :param model: TensorFlow model used by the transform. Please see
+    :param model_location: TensorFlow model used by the transform. Please see
         https://www.tensorflow.org/mobile/prepare_models for more details.
 
     :param input_columns: The names of the model inputs.
 
     :param output_columns: The name of the outputs.
+
+    :param tensor_flow_label: TensorFlow label node.
+
+    :param optimization_operation: The name of the optimization operation in
+        the TensorFlow graph.
+
+    :param loss_operation: The name of the operation in the TensorFlow graph to
+        compute training loss (Optional).
+
+    :param metric_operation: The name of the operation in the TensorFlow graph
+        to compute performance metric during training (Optional).
+
+    :param batch_size: Number of samples to use for mini-batch training.
+
+    :param epoch: Number of training iterations.
+
+    :param learning_rate_operation: The name of the operation in the TensorFlow
+        graph which sets optimizer learning rate (Optional).
+
+    :param learning_rate: Learning rate to use during optimization.
+
+    :param save_location_operation: Name of the input in TensorFlow graph that
+        specifiy the location for saving/restoring models from disk.
+
+    :param save_operation: Name of the input in TensorFlow graph that specifiy
+        the location for saving/restoring models from disk.
+
+    :param re_train: Retrain TensorFlow model.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -64,16 +94,38 @@ class TensorFlowScorer(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            model,
+            model_location,
             input_columns=None,
             output_columns=None,
+            tensor_flow_label=None,
+            optimization_operation=None,
+            loss_operation=None,
+            metric_operation=None,
+            batch_size=64,
+            epoch=5,
+            learning_rate_operation=None,
+            learning_rate=0.01,
+            save_location_operation='save/Const',
+            save_operation='save/control_dependency',
+            re_train=False,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
-        self.model = model
+        self.model_location = model_location
         self.input_columns = input_columns
         self.output_columns = output_columns
+        self.tensor_flow_label = tensor_flow_label
+        self.optimization_operation = optimization_operation
+        self.loss_operation = loss_operation
+        self.metric_operation = metric_operation
+        self.batch_size = batch_size
+        self.epoch = epoch
+        self.learning_rate_operation = learning_rate_operation
+        self.learning_rate = learning_rate
+        self.save_location_operation = save_location_operation
+        self.save_operation = save_operation
+        self.re_train = re_train
 
     @property
     def _entrypoint(self):
@@ -82,9 +134,21 @@ class TensorFlowScorer(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            model_location=self.model,
+            label_column=self._getattr_role('label_column', all_args),
+            model_location=self.model_location,
             input_columns=self.input_columns,
-            output_columns=self.output_columns)
+            output_columns=self.output_columns,
+            tensor_flow_label=self.tensor_flow_label,
+            optimization_operation=self.optimization_operation,
+            loss_operation=self.loss_operation,
+            metric_operation=self.metric_operation,
+            batch_size=self.batch_size,
+            epoch=self.epoch,
+            learning_rate_operation=self.learning_rate_operation,
+            learning_rate=self.learning_rate,
+            save_location_operation=self.save_location_operation,
+            save_operation=self.save_operation,
+            re_train=self.re_train)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

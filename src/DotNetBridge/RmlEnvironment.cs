@@ -5,8 +5,8 @@
 
 using System;
 using System.Globalization;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -25,7 +25,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
         private sealed class Host : HostBase
         {
 
-            public Host(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, IRandom rand, bool verbose, int? conc)
+            public Host(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, Random rand, bool verbose, int? conc)
                 : base(source, shortName, parentFullName, rand, verbose, conc)
             {
             }
@@ -47,11 +47,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 return new Pipe<TMessage>(parent, name, GetDispatchDelegate<TMessage>());
             }
 
-            protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, IRandom rand, bool verbose, int? conc)
+            protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, Random rand, bool verbose, int? conc)
             {
                 return new Host(source, shortName, parentFullName, rand, verbose, conc);
             }
-
         }
 
         public new bool IsCancelled { get { return CheckCancelled(); } }
@@ -63,7 +62,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             CheckCancelled = checkDelegate;
         }
 
-        public RmlEnvironment(IRandom rand, bool verbose = false, int conc = 0)
+        public RmlEnvironment(Random rand, bool verbose = false, int conc = 0)
             : base(rand, verbose, conc)
         {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
@@ -75,14 +74,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
         }
 
-        public RmlEnvironment(RmlEnvironment source, IRandom rand, bool verbose = false, int conc = 0)
+        public RmlEnvironment(RmlEnvironment source, Random rand, bool verbose = false, int conc = 0)
             : base(source, rand, verbose, conc)
         {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             EnsureDispatcher<ChannelMessage>();
         }
 
-        protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, IRandom rand, bool verbose, int? conc)
+        protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, Random rand, bool verbose, int? conc)
         {
             Contracts.AssertValue(rand);
             Contracts.AssertValueOrNull(parentFullName);

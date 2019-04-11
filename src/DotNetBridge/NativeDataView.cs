@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.Internal.Utilities;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Internal.Utilities;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -20,66 +20,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
             private const int BatchSize = 64;
 
-            private sealed class SchemaImpl : ISchema
-            {
-                private readonly Column[] _cols;
-                private readonly Dictionary<string, int> _name2col;
-
-                public int ColumnCount => _cols.Length;
-
-                public SchemaImpl(Column[] cols)
-                {
-                    _cols = cols;
-                    _name2col = new Dictionary<string, int>();
-                    for (int i = 0; i < _cols.Length; ++i)
-                        _name2col[_cols[i].Name] = i;
-                }
-
-                public string GetColumnName(int col)
-                {
-                    Contracts.CheckParam(0 <= col & col < ColumnCount, nameof(col));
-                    return _cols[col].Name;
-                }
-
-                public ColumnType GetColumnType(int col)
-                {
-                    Contracts.CheckParam(0 <= col & col < ColumnCount, nameof(col));
-                    return _cols[col].Type;
-                }
-
-                public void GetMetadata<TValue>(string kind, int col, ref TValue value)
-                {
-                    Contracts.CheckNonEmpty(kind, nameof(kind));
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    _cols[col].GetMetadata(kind, ref value);
-                }
-
-                public ColumnType GetMetadataTypeOrNull(string kind, int col)
-                {
-                    Contracts.CheckNonEmpty(kind, nameof(kind));
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    return _cols[col].GetMetadataTypeOrNull(kind);
-                }
-
-                public IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes(int col)
-                {
-                    Contracts.CheckParam(0 <= col && col < ColumnCount, nameof(col));
-                    return _cols[col].GetMetadataTypes();
-                }
-
-                public bool TryGetColumnIndex(string name, out int col)
-                {
-                    Contracts.CheckValueOrNull(name);
-                    if (name == null)
-                    {
-                        col = default(int);
-                        return false;
-                    }
-                    return _name2col.TryGetValue(name, out col);
-                }
-            }
-
-            private readonly SchemaImpl _schema;
             private readonly long _rowCount;
             private readonly Column[] _columns;
 
@@ -87,7 +27,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             public bool CanShuffle => false;
 
-            public ISchema Schema => _schema;
+            /// This field contains some information copied from <see cref="_columns">.
+            /// For example, <see cref="Schema">[i].Name is the same to <see cref="_columns">[i].DetachedColumn.Name.
+            /// This is a by-product of using the new <see cref="ML.Data.Schema"/> API. As a compromise, 
+            /// instead of changing all <see cref="Column"/> derived classes,
+            /// we decided to keep this duplicate piece of data as a quick solution.
+            public Schema Schema { get; }
 
             public NativeDataView(IHostEnvironment env, DataSourceBlock* pdata)
             {
@@ -99,7 +44,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 var columns = new List<Column>();
                 for (int c = 0; c < pdata->ccol; c++)
                 {
-
                     string name = Bridge.BytesToString(pdata->names[c]);
                     // Names must be non-null && non-empty unique.
                     Contracts.CheckParam(!string.IsNullOrWhiteSpace(name), "name");
@@ -201,32 +145,32 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
 
                 _columns = columns.ToArray();
-                _schema = new SchemaImpl(_columns);
+                var schemaBuilder = new SchemaBuilder();
+                schemaBuilder.AddColumns(columns.Select(c => c.DetachedColumn));
+                Schema = schemaBuilder.GetSchema();
             }
 
-            public long? GetRowCount(bool lazy = true)
+            public long? GetRowCount()
             {
                 return _rowCount;
             }
 
-            public IRowCursor GetRowCursor(Func<int, bool> needCol, IRandom rand = null)
+            public RowCursor GetRowCursor(Func<int, bool> needCol, Random rand = null)
             {
                 _host.CheckValue(needCol, nameof(needCol));
                 _host.CheckValueOrNull(rand);
 
-                IRowCursorConsolidator consolidator = null;
                 var active = Utils.BuildArray(_columns.Length, needCol);
-                return RowCursor.CreateSet(out consolidator, _host, this, active, 1, rand)[0];
+                return NativeRowCursor.CreateSet(_host, this, active, 1, rand)[0];
             }
 
-            public IRowCursor[] GetRowCursorSet(out IRowCursorConsolidator consolidator, Func<int, bool> needCol, int n, IRandom rand = null)
+            public RowCursor[] GetRowCursorSet(Func<int, bool> needCol, int n, Random rand = null)
             {
                 _host.CheckValue(needCol, nameof(needCol));
                 _host.CheckValueOrNull(rand);
 
-                consolidator = null;
                 var active = Utils.BuildArray(_columns.Length, needCol);
-                return RowCursor.CreateSet(out consolidator, _host, this, active, n, rand);
+                return NativeRowCursor.CreateSet(_host, this, active, n, rand);
             }
 
             public void Dispose()
@@ -240,7 +184,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 Contracts.Assert(count >= 0);
                 if (count <= 0)
                 {
-                    buffer = new VBuffer<ReadOnlyMemory<char>>(0, buffer.Values, buffer.Indices);
+                    buffer = VBufferEditor.Create(ref buffer, 0, 0).Commit();
                     return false;
                 }
 
@@ -251,20 +195,20 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 {
                     if (!keyNamesGetter(pdata, colIndex, count, p))
                     {
-                        buffer = new VBuffer<ReadOnlyMemory<char>>(0, buffer.Values, buffer.Indices);
+                        buffer = VBufferEditor.Create(ref buffer, 0, 0).Commit();
                         return false;
                     }
-                    var values = buffer.Values;
-                    if (Utils.Size(values) < count)
-                        values = new ReadOnlyMemory<char>[count];
+
+                    var editor = VBufferEditor.Create(ref buffer, count);
                     for (int i = 0; i < count; i++)
-                        Bridge.BytesToText(p[i], ref values[i]);
-                    buffer = new VBuffer<ReadOnlyMemory<char>>(count, values, buffer.Indices);
+                        Bridge.BytesToText(p[i], ref editor.Values[i]);
+
+                    buffer = editor.Commit();
                 }
                 return true;
             }
 
-            private sealed class RowCursor : RootCursorBase, IRowCursor
+            private sealed class NativeRowCursor : RootCursorBase
             {
                 private readonly NativeDataView _view;
                 private readonly TextColumnReader _reader;
@@ -274,11 +218,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private bool _justLoaded;
                 private bool _disposed;
 
-                public ISchema Schema => _view.Schema;
+                public override Schema Schema => _view.Schema;
 
                 public override long Batch => _batchId;
 
-                public RowCursor(IChannelProvider provider, NativeDataView view, bool[] active, IRandom rand, TextColumnReader reader)
+                private NativeRowCursor(IChannelProvider provider, NativeDataView view, bool[] active, Random rand, TextColumnReader reader)
                     : base(provider)
                 {
                     Contracts.AssertValue(provider);
@@ -294,7 +238,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     _justLoaded = false;
                 }
 
-                public ValueGetter<TValue> GetGetter<TValue>(int col)
+                public override ValueGetter<TValue> GetGetter<TValue>(int col)
                 {
                     Ch.CheckParam(_active[col], nameof(col), "column is not active");
                     var column = _view._columns[col] as Column<TValue>;
@@ -311,30 +255,30 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         };
                 }
 
-                public bool IsColumnActive(int col)
+                public override bool IsColumnActive(int col)
                 {
-                    Contracts.Check(0 <= col && col < Schema.ColumnCount);
+                    Contracts.Check(0 <= col && col < Schema.Count);
                     return _active[col];
                 }
 
-                public override void Dispose()
+                protected override void Dispose(bool disposing)
                 {
                     if (_disposed)
                         return;
 
                     _disposed = true;
                     _reader.Release();
-                    base.Dispose();
+                    base.Dispose(disposing);
                 }
 
-                public override ValueGetter<UInt128> GetIdGetter()
+                public override ValueGetter<RowId> GetIdGetter()
                 {
                     return
-                        (ref UInt128 val) =>
+                        (ref RowId val) =>
                         {
                             Ch.Check(IsGood, "Cannot call ID getter in current state");
                             long index = Position % BatchSize + _batchId * BatchSize;
-                            val = new UInt128((ulong)index, 0);
+                            val = new RowId((ulong)index, 0);
                         };
                 }
 
@@ -358,8 +302,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     return index < _view._rowCount;
                 }
 
-                public static IRowCursor[] CreateSet(out IRowCursorConsolidator consolidator,
-                IChannelProvider provider, NativeDataView view, bool[] active, int n, IRandom rand)
+                public static RowCursor[] CreateSet(IChannelProvider provider, NativeDataView view, bool[] active, int n, Random rand)
                 {
                     Contracts.AssertValue(provider);
                     provider.AssertValue(view);
@@ -369,16 +312,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     var reader = new TextColumnReader(BatchSize, view._rowCount, n, view._columns);
                     if (n <= 1)
                     {
-                        consolidator = null;
-                        return new IRowCursor[1] { new RowCursor(provider, view, active, rand, reader) };
+                        return new RowCursor[1] { new NativeRowCursor(provider, view, active, rand, reader) };
                     }
 
-                    consolidator = new Consolidator();
-                    var cursors = new IRowCursor[n];
+                    var cursors = new RowCursor[n];
                     try
                     {
                         for (int i = 0; i < cursors.Length; i++)
-                            cursors[i] = new RowCursor(provider, view, active, rand, reader);
+                            cursors[i] = new NativeRowCursor(provider, view, active, rand, reader);
                         var result = cursors;
                         cursors = null;
                         return result;
@@ -394,17 +335,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                     }
-                }
-            }
-
-            /// <summary>
-            /// Minimal consolidator.
-            /// </summary>
-            private sealed class Consolidator : IRowCursorConsolidator
-            {
-                public IRowCursor CreateCursor(IChannelProvider provider, IRowCursor[] inputs)
-                {
-                    return DataViewUtils.ConsolidateGeneric(provider, inputs, BatchSize);
                 }
             }
 
@@ -540,7 +470,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                         long batchId = -1;
                         long total = 0;
-                        var txtColumns = _columns.Where(c => c.Type.IsText).ToList();
+                        var txtColumns = _columns.Where(c => c.DetachedColumn.Type is TextType).ToList();
                         int index = 0;
                         var infos = new Row[_batchSize];
 
@@ -623,9 +553,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
             {
                 protected DataSourceBlock* Data;
                 public readonly int ColIndex;
-                public readonly string Name;
-                public readonly ColumnType Type;
-
                 protected const string AlreadyDisposed = "Native wrapped column has been disposed";
 
                 protected Column(DataSourceBlock* data, int colIndex, string name, ColumnType type)
@@ -634,8 +561,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.AssertValue(type);
                     Data = data;
                     ColIndex = colIndex;
-                    Name = name;
-                    Type = type;
+                    DetachedColumn = new Schema.DetachedColumn(name, type);
                 }
 
                 public virtual void Dispose()
@@ -643,22 +569,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Data = null;
                 }
 
-                public virtual IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes()
-                {
-                    return Enumerable.Empty<KeyValuePair<string, ColumnType>>();
-                }
-
-                public virtual ColumnType GetMetadataTypeOrNull(string kind)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    return null;
-                }
-
-                public virtual void GetMetadata<TValue>(string kind, ref TValue value)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    throw MetadataUtils.ExceptGetMetadata();
-                }
+                /// This field contains some duplicate information with <see cref="Schema">.
+                /// For more information please see the remarks on <see cref="Schema">.
+                public Schema.DetachedColumn DetachedColumn { get; protected set; }
             }
 
             private abstract class Column<TOut> : Column
@@ -995,11 +908,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             // Find out if we need other kinds of keys.
             private sealed class KeyColumn : Column<uint>
             {
-                private readonly int _keyCount;
-                private readonly ColumnType _keyValuesType;
-                private readonly ValueGetter<VBuffer<ReadOnlyMemory<char>>> _getKeyValues;
                 private VBuffer<ReadOnlyMemory<char>> _keyValues;
-
                 private U4Getter _getter;
 
                 public KeyColumn(DataSourceBlock* data, void* getter, int colIndex, string name, int keyCount, ref VBuffer<ReadOnlyMemory<char>> keyValues)
@@ -1010,19 +919,16 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                     _getter = MarshalDelegate<U4Getter>(getter);
 
-                    _keyCount = keyCount;
-                    if (_keyCount > 0 && _keyCount == keyValues.Length)
+                    if (keyCount > 0 && keyCount == keyValues.Length)
                     {
-                        _keyValuesType = new VectorType(TextType.Instance, _keyCount);
-                        _getKeyValues = GetKeyValues;
                         keyValues.CopyTo(ref _keyValues);
+                        ValueGetter<VBuffer<ReadOnlyMemory<char>>> getKeyValues =
+                            (ref VBuffer<ReadOnlyMemory<char>> dst) => _keyValues.CopyTo(ref dst);
+                        var metadataBuilder = new MetadataBuilder();
+                        metadataBuilder.AddKeyValues(keyCount, TextType.Instance, getKeyValues);
+                        DetachedColumn = new Schema.DetachedColumn(
+                            name, new KeyType(DataKind.U4, 0, keyCount), metadataBuilder.GetMetadata());
                     }
-                }
-
-                private void GetKeyValues(ref VBuffer<ReadOnlyMemory<char>> dst)
-                {
-                    Contracts.Assert(_keyValuesType != null);
-                    _keyValues.CopyTo(ref dst);
                 }
 
                 public override void CopyOut(long index, Batch batch, ref uint value)
@@ -1030,32 +936,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Check(Data != null, AlreadyDisposed);
                     Contracts.Assert(0 <= index);
                     _getter(Data, ColIndex, index, out value);
-                }
-
-                public override IEnumerable<KeyValuePair<string, ColumnType>> GetMetadataTypes()
-                {
-                    var res = base.GetMetadataTypes();
-                    if (_keyValuesType != null)
-                        res = res.Prepend(_keyValuesType.GetPair(MetadataUtils.Kinds.KeyValues));
-                    return res;
-                }
-
-                public override ColumnType GetMetadataTypeOrNull(string kind)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    if (kind == MetadataUtils.Kinds.KeyValues && _keyValuesType != null)
-                        return _keyValuesType;
-                    return base.GetMetadataTypeOrNull(kind);
-                }
-
-                public override void GetMetadata<TValue>(string kind, ref TValue value)
-                {
-                    Contracts.AssertNonEmpty(kind);
-                    ValueGetter<TValue> getter;
-                    if (kind == MetadataUtils.Kinds.KeyValues && (getter = _getKeyValues as ValueGetter<TValue>) != null)
-                        getter(ref value);
-                    else
-                        base.GetMetadata<TValue>(kind, ref value);
                 }
 
                 public override void Dispose()
@@ -1083,22 +963,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new bool[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (bool* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (bool* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<bool>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1126,22 +1002,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new byte[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (byte* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (byte* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<byte>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1169,22 +1041,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new ushort[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (ushort* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (ushort* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<ushort>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1212,22 +1080,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new uint[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (uint* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (uint* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<uint>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1255,22 +1119,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new ulong[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (ulong* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (ulong* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<ulong>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1298,22 +1158,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new sbyte[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (sbyte* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (sbyte* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<sbyte>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1341,22 +1197,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new short[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (short* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (short* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<short>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1384,22 +1236,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new int[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (int* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (int* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<int>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1427,22 +1275,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new long[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (long* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (long* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<long>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 // REVIEW: remind me why we don’t do the standard Dispose pattern with protected override void Dispose(true)?
@@ -1471,22 +1315,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new float[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (float* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (float* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<float>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()
@@ -1514,22 +1354,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Assert(0 <= index);
 
                     _getter(Data, ColIndex, index, null, null, true, out var size);
-                    var indices = dst.Indices;
-                    if (Utils.Size(indices) < size)
-                        indices = new int[size];
-                    var values = dst.Values;
-                    if (Utils.Size(values) < size)
-                        values = new double[size];
+                    var dstEditor = VBufferEditor.Create(ref dst, _length, size, requireIndicesOnDense: true);
 
                     if (size > 0)
                     {
-                        fixed (int* pIndices = &indices[0])
-                        fixed (double* pValues = &values[0])
+                        fixed (int* pIndices = &dstEditor.Indices[0])
+                        fixed (double* pValues = &dstEditor.Values[0])
                         {
                             _getter(Data, ColIndex, index, pIndices, pValues, false, out size);
                         }
                     }
-                    dst = new VBuffer<double>(_length, size, values, indices);
+
+                    dst = dstEditor.Commit();
                 }
 
                 public override void Dispose()

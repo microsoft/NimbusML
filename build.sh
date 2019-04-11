@@ -22,7 +22,13 @@ usage()
     exit 1
 }
 
-__configuration=DbgLinPy3.6
+# Parameter defaults
+if [ "$(uname -s)" = "Darwin" ]
+then 
+    __configuration=DbgMacPy3.6
+else
+    __configuration=DbgLinPy3.6
+fi
 __runTests=false
 __buildNativeBridge=true
 __buildDotNetBridge=true
@@ -111,6 +117,8 @@ case $__configuration in
     PythonTag=cp27
     USE_PYBIND11=false
     ;;
+*)
+echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
@@ -260,7 +268,7 @@ then
         exit 1
     fi
     # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-    "${PythonExe}" -m pip install nose pytest graphviz pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    "${PythonExe}" -m pip install nose pytest graphviz pytest-cov==2.6.0 "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq

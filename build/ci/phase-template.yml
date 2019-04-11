@@ -24,7 +24,7 @@ phases:
     - script: $(_buildScript) --configuration $(_configuration) --runTests
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
-    - script: brew install gcc
+    - script: brew update && brew install libomp mono-libgdiplus gettext && brew link gettext --force
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:

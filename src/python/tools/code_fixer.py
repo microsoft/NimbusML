@@ -137,6 +137,40 @@ dnnImageFeaturize_1_correct = """    def _get_node(self, **all_args):
             name=output_column,
             dnn_model=self.dnn_model)"""
 
+columnselector_1 = """    def _get_node(self, **all_args):
+        algo_args = dict(
+            keep_columns=self.keep_columns,
+            drop_columns=self.drop_columns,
+            keep_hidden=self.keep_hidden,
+            ignore_missing=self.ignore_missing)"""
+
+columnselector_1_correct = """    def _get_node(self, **all_args):
+        input_columns = self.input
+        if input_columns is None and 'input' in all_args:
+            input_columns = all_args['input']
+        if 'input' in all_args:
+            all_args.pop('input')
+
+        # validate input
+        if input_columns is None:
+            raise ValueError(
+                "'None' input passed when it cannot be none.")
+
+        if not isinstance(input_columns, list):
+            raise ValueError(
+                "input has to be a list of strings, instead got %s" %
+                type(input_columns))
+
+        keep_columns = self.keep_columns
+        if self.keep_columns is None and self.drop_columns is None:
+            keep_columns = input_columns
+        algo_args = dict(
+            column=input_columns,
+            keep_columns=keep_columns,
+            drop_columns=self.drop_columns,
+            keep_hidden=self.keep_hidden,
+            ignore_missing=self.ignore_missing)"""
+
 textTransform_1 = """        if not isinstance(output_column, str):
             raise ValueError("output has to be a string, instead got %s" \
 % type(
@@ -257,6 +291,7 @@ signature_fixes_core = {
     'CountSelector': ('count = 0,', 'count = 1.0,'),
     'ColumnConcatenator': [('output = None,', 'output = None,'),
                            (concatColumns_1, concatColumns_1_correct)],
+    'ColumnSelector': [(columnselector_1, columnselector_1_correct)],
     'RangeFilter': ('min = None,', 'min = -1,'),
     'Expression': [(expressionTransform_1, expressionTransform_1_correct),
                    (expressionTransform_2, expressionTransform_2_correct)],
@@ -281,14 +316,6 @@ none_acceptable=False, is_of_type=str)"""
 s_1_correct = """    if model is not None:
         outputs['PredictorModel'] = try_set(obj=model, \
 none_acceptable=False, is_of_type=str)"""
-
-cv_1_incorrect = """    if transform_model is not None:
-        outputs['TransformModel'] = try_set(obj=transform_model, \
-none_acceptable=False, is_of_type=list)"""
-
-cv_1_correct = """    if transform_model_output is not None:
-        outputs['TransformModel'] = try_set(obj=transform_model_output, \
-none_acceptable=False, is_of_type=list)"""
 
 tf_1_incorrect = """def transforms_tensorflowscorer(
         model,"""
@@ -317,19 +344,13 @@ signature_fixes_entrypoint = {
         (tf_1_incorrect, tf_1_correct),
         (':param model: TensorFlow', ':param model_location: TensorFlow'),
         (tf_2_incorrect, tf_2_correct)],
+    'Transforms.LightLda' : ('num_threads = 0,', 'num_threads = None,'),
     'Trainers.GeneralizedAdditiveModelRegressor': ('Infinity', 'float("inf")'),
     'Trainers.GeneralizedAdditiveModelBinaryClassifier': (
         'Infinity', 'float("inf")'),
     'Models.CrossValidator': [
         ('inputs_subgraph = 0,', 'inputs_subgraph,'),
-        ('outputs_subgraph = 0,', 'outputs_subgraph,'),
-        ('transform_model = None,', 'transform_model_output = None,'),
-        (':param predictor_model: The final model',
-         ':param predictor_model_output: The final model'),
-        (cv_1_incorrect, cv_1_correct)],
-    'Models.BinaryCrossValidator': [
-        ('inputs_subgraph = 0,', 'inputs_subgraph,'),
-        ('outputs_subgraph = 0,', 'outputs_subgraph,')]
+        ('outputs_subgraph = 0,', 'outputs_subgraph,')],
 }
 
 
@@ -347,15 +368,15 @@ def _fix_code(class_name, filename, fixes_dict):
             code = f.read()
             first = True
             for fix in fixes:
-                if fix[0] in code:
-                    if first:
-                        print("    [_fix_code]", os.path.abspath(filename))
-                        first = False
-                    print(
-                        "      '{0}' --> '{1}'".format(
-                            fix[0].replace(
-                                "\n", "\\n"), fix[1].replace(
-                                "\n", "\\n")))
+                #if fix[0] in code:
+                #    if first:
+                #        print("    [_fix_code]", os.path.abspath(filename))
+                #        first = False
+                #    print(
+                #        "      '{0}' --> '{1}'".format(
+                #            fix[0].replace(
+                #                "\n", "\\n"), fix[1].replace(
+                #                "\n", "\\n")))
                 code = code.replace(fix[0], fix[1])
             f.seek(0)
             f.write(code)
