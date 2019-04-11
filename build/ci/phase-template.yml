@@ -20,17 +20,17 @@ phases:
   steps:
 
 # Install python
-  - ${{ if eq(python.version, '3.7') }}:
+  - ${{ if eq(parameters._installpython, "1") }}:
     - task: CondaEnvironment@1
       inputs:
         createCustomEnvironment: true
         environmentName: 'py$(python.version)'
         packageSpecs: 'python=$(python.version)'
 
-  - ${{ if eq(python.version, '3.7') }}:
+  - ${{ if eq(parameters._installpython, "1") }}:
      - script: conda config --set always_yes yes --set changeps1 no && conda install numpy pandas scikit-learn matplotlib
     
-  - ${{ if eq(python.version, '3.7') }}:
+  - ${{ if eq(parameters._installpython, "1") }}:
     - script: python -c "import sys;print(sys.prefix)" && python -c "import numpy;print(numpy.__file__)"
 
 # Windows phases
