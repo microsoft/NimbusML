@@ -82,7 +82,7 @@ else
 fi
 
 if [ "$__pythonver" != "2.7" ]; then
-__cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath}"
+__cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath} -DBOOST_DIR=${__boostpath} -DBOOST_PYTHON=1"
 else
 __cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath} -DBOOST_DIR=${__boostpath} -DBOOST_PYTHON=1"
 fi;
