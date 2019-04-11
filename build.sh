@@ -66,11 +66,11 @@ done
 
 case $__configuration in
 *LinPy3.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-2019.03.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.7-1.69.0.0.tar.gz
+    PythonUrl=
+    BoostUrl=
     PythonVersion=3.7
     PythonTag=cp37
-    USE_PYBIND11=false
+    USE_PYBIND11=true
     ;;
 *LinPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
@@ -94,11 +94,11 @@ case $__configuration in
     USE_PYBIND11=false
     ;;
 *MacPy3.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.3.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.64.0.0.tar.gz
+    PythonUrl=
+    BoostUrl=
     PythonVersion=3.7
     PythonTag=cp37
-    USE_PYBIND11=false
+    USE_PYBIND11=true
     ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
@@ -125,7 +125,13 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-PythonRoot=${DependenciesDir}/Python${PythonVersion}
+if [ "$(PythonRoot)" = "" ]
+then
+    PythonRoot="/home/vsts/.conda/envs/py${PythonVersion}"
+else
+    PythonRoot=${DependenciesDir}/Python${PythonVersion}
+fi
+
 BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 # Platform name for python wheel based on OS
 PlatName=manylinux1_x86_64
@@ -141,12 +147,15 @@ echo "#################################"
 # Download & unzip Python
 if [ ! -e "${PythonRoot}/.done" ]
 then
-    mkdir -p "${PythonRoot}"
-    echo "Downloading and extracting Python archive ... "
-    curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-    # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-    mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-    touch "${PythonRoot}/.done"
+    if [ ! -e "${PythonRoot}/python" ]
+    then
+        mkdir -p "${PythonRoot}"
+        echo "Downloading and extracting Python archive ... "
+        curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
+        # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
+        mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
+        touch "${PythonRoot}/.done"
+    fi
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"

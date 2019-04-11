@@ -81,10 +81,10 @@ else
     echo "Using default system compiler ... "	
 fi
 
-if [ "$__pythonver" != "2.7" ]; then
+if [ "__boostpath" != "" ]; then
 __cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath} -DBOOST_DIR=${__boostpath} -DBOOST_PYTHON=1"
 else
-__cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath} -DBOOST_DIR=${__boostpath} -DBOOST_PYTHON=1"
+__cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath}"
 fi;
 
 __IntermediatesDir="$__rootBinPath/$__configuration/obj"

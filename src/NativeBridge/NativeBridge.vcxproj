@@ -211,7 +211,7 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;BOOST_PYTHON;_HAS_ITERATOR_DEBUGGING;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;_HAS_ITERATOR_DEBUGGING;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(PythonRoot)\include</AdditionalIncludeDirectories>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -293,8 +293,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;BOOST_PYTHON;BOOST_USE_STATIC_LIBS;BOOST_PYTHON_STATIC_LIB;BOOST_ALL_NO_LIB;BOOST_NUMPY_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BoostRoot)\Include;$(PythonRoot)\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORECLR;NDEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;BOOST_USE_STATIC_LIBS;BOOST_PYTHON_STATIC_LIB;BOOST_ALL_NO_LIB;BOOST_NUMPY_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(PythonRoot)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -303,7 +303,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>libboost_python37-vc140-mt-1_69.lib;libboost_numpy37-vc140-mt-1_69.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(Boostroot)\lib;$(PythonRoot)\libs;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PythonRoot)\libs;$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

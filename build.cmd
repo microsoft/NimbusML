@@ -57,13 +57,13 @@ goto :Exit_Success
 if /i [%1] == [RlsWinPy3.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.7
+    set PythonUrl=
+    set PythonRoot=
+    set BoostUrl=
+    set BoostRoot=
     set PythonVersion=3.7
     set PythonTag=cp37
-    set USE_PYBIND11=0
+    set USE_PYBIND11=1
     shift && goto :Arg_Loop
 )
 if /i [%1] == [RlsWinPy3.6]     (
@@ -105,13 +105,13 @@ if /i [%1] == [RlsWinPy2.7] (
 if /i [%1] == [DbgWinPy3.7]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.7
+    set PythonUrl=
+    set PythonRoot=
+    set BoostUrl=
+    set BoostRoot=
     set PythonVersion=3.7
     set PythonTag=cp37
-    set USE_PYBIND11=0
+    set USE_PYBIND11=1
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.6]     (
@@ -156,6 +156,17 @@ if /i [%1] == [DbgWinPy2.7] (
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
 
+:: Set PythonRoot
+if "%PythonRoot%" == "" goto SetCustomPythonRoot:
+set PythonRoot=%CustomPythonRoot%
+goto AfterPythonRoot:
+:SetCustomPythonRoot:
+set PythonRoot=C:\Users\VssAdministrator\.conda\envs\py%PythonVersion%
+:AfterPythonRoot:
+echo PythonRoot="%PythonRoot%"
+
+ :: Check PythonRoot
+%PythonRoot%\python -c "import sys;print(sys.version)"
 :: Build managed code
 echo ""
 echo "#################################"
@@ -177,14 +188,16 @@ echo "#################################"
 echo "Downloading Dependencies "
 echo "#################################"
 :: Download & unzip Python
-if not exist "%PythonRoot%\.done" (
-    md "%PythonRoot%"
-    echo Downloading python zip ... 
-    powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
-    echo Extracting python zip ... 
-    powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
-    echo.>"%PythonRoot%\.done"
-    del %DependenciesDir%python.zip
+if "%PythonRoot%" != "" (
+    if not exist "%PythonRoot%\.done" (
+        md "%PythonRoot%"
+        echo Downloading python zip ... 
+        powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
+        echo Extracting python zip ... 
+        powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
+        echo.>"%PythonRoot%\.done"
+        del %DependenciesDir%python.zip
+    )
 )
 
 :: Download & unzip Boost 
@@ -284,6 +297,19 @@ if exist %dist% rd %dist% /S /Q
 if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
+
+if %PythonVersion% == 3.7 (
+    :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
+    echo Generating low-level Python API from mainifest.json ...
+    call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2 pybind11
+    cd "%__currentScriptDir%src\python"
+    call "%PythonExe%" tools\entrypoint_compiler.py --check_manual_changes 
+    if errorlevel 1 (
+        echo Codegen check failed. Try running tools/entrypoint_compiler.py --check_manual_changes to find the problem.
+        goto :Exit_Error
+    )
+    cd "%__currentScriptDir%"
+)
 
 if %PythonVersion% == 3.6 (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
