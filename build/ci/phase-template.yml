@@ -21,16 +21,17 @@ phases:
 
   # Install python
   - ${{ if eq(parameters.installPython, '1') }}:
-    - task: CondaEnvironment@1
+    - task: UsePythonVersion@0
       inputs:
-        createCustomEnvironment: true
-        environmentName: 'py$(python.version)'
-        packageSpecs: 'python=$(python.version)'
-      displayName: Install Python
-    - script: conda config --set always_yes yes --set changeps1 no && conda install pytest>=4.4.0 pytest-cov>=2.6.1 numpy>=1.16.2 pandas>=0.24.2 scikit-learn>=0.20.3 matplotlib
+        versionSpec: '$(python.version)'
+        architecture: 'x64'
+    - script: |
+      pip install pytest>=4.4.0 pytest-cov>=2.6.1 numpy>=1.16.2 pandas>=0.24.2 scikit-learn>=0.20.3 matplotlib
       displayName: Install numpy, pandas, scikit-learn
-    - script: python -c "import sys;print(sys.prefix, sys.base_prefix, sys.executable, sys.base_exec_prefix)"
-      displayName: Display verions
+    - script: |
+      python -c "import sys;print(sys.prefix, sys.base_prefix, sys.executable, sys.base_exec_prefix)"
+      python -c "import numpy;print(numpy.__version__, numpy.__file__)"
+      displayName: Display versions
 
   - ${{ if eq(parameters.installPython, '0') }}:
     - script: "echo will download Python '$(installPython)'."
