@@ -32,7 +32,6 @@ phases:
   parameters:
     name: Linux_Ubuntu16_PyBind11
     buildScript: ./build.sh
-    testDistro: ubuntu16
     installPython: 1
     buildMatrix:
       Py37:
@@ -47,7 +46,6 @@ phases:
   parameters:
     name: Linux_Ubuntu16
     buildScript: ./build.sh
-    testDistro: ubuntu16
     installPython: 0
     buildMatrix:
       Py36:
@@ -64,7 +62,6 @@ phases:
   parameters:
     name: Linux_CentOS7
     buildScript: ./build.sh
-    testDistro: centos7
     installPython: 0
     buildMatrix:
       Py27:
