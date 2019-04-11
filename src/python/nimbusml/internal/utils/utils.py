@@ -160,7 +160,7 @@ if six.PY2:
         verbose = 0
         if 'verbose' in kwargs:
             verbose = kwargs['verbose']
-        if not isinstance(verbose, int):
+        if not isinstance(verbose, six.integer_types):
             raise TypeError(
                 "Misaligned parameters. verbose must be int "
                 "not '{0}': {1}".format(
@@ -203,7 +203,7 @@ else:
             verbose = 0
             if 'verbose' in kwargs:
                 verbose = kwargs['verbose']
-            if not isinstance(verbose, int):
+            if not isinstance(verbose, six.integer_types):
                 raise TypeError(
                     "Misaligned parameters. verbose must be int "
                     "not '{0}': {1}".format(

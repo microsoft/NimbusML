@@ -25,8 +25,6 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsMacPy3.7
-      Py36:
-        _configuration: RlsMacPy3.6
     buildQueue:
       name: Hosted macOS
 
@@ -40,29 +38,6 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsLinPy3.7
-      Py36:
-        _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
-    buildQueue:
-      name: Hosted Ubuntu 1604
-  # Run tests on Ubuntu14
-- template: /build/ci/phase-template.yml
-  parameters:
-    name: Linux_Ubuntu14
-    buildScript: ./build.sh
-    testDistro: ubuntu14
-    buildMatrix:
-      Py37:
-        _configuration: RlsLinPy3.7
-      Py36:
-        _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
   # Run tests on CentOS7

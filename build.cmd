@@ -8,16 +8,18 @@ set __currentScriptDir=%~dp0
 set DependenciesDir=%__currentScriptDir%dependencies\
 if not exist "%DependenciesDir%" (md "%DependenciesDir%")
 
-:: Default configuration: fails if no arguments passed to build.cmd (RlsWinPy3.7)
+:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.7)
 set __BuildArch=x64
 set __VCBuildArch=x86_amd64
-set Configuration=DbgWinPyX.X
+set Configuration=DbgWinPy3.7
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-X.X.X-mohoov-amd64.zip
-set PythonRoot=%DependenciesDir%PythonX.X
-set PythonVersion=X.X
-set PythonTag=cpXX
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
+set PythonRoot=%DependenciesDir%Python3.7
+set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
+set BoostRoot=%DependenciesDir%BoostDbg3.7
+set PythonVersion=3.7
+set PythonTag=cp37
 set RunTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
@@ -52,17 +54,18 @@ echo "
 goto :Exit_Success
 
 :Configuration
-if /i [%1] == [RlsWinPy3.7] (
+if /i [%1] == [RlsWinPy3.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostRls3.7
     set PythonVersion=3.7
     set PythonTag=cp37
-    set USE_PYBIND11=1
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy3.6] (
+if /i [%1] == [RlsWinPy3.6]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
@@ -106,7 +109,18 @@ if /i [%1] == [DbgWinPy3.7] (
     set USE_PYBIND11=1
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.6] (
+if /i [%1] == [DbgWinPy3.7]     (
+    set DebugBuild=True
+    set Configuration=DbgWinPy3.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.7
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostDbg3.7
+    set PythonVersion=3.7
+    set PythonTag=cp37
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [DbgWinPy3.6]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip

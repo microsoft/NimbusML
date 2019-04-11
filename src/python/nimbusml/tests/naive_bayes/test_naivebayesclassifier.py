@@ -42,7 +42,7 @@ class TestNaiveBayesClassifier(unittest.TestCase):
         mymodel.fit(X_train, y_train)
 
         scores = mymodel.predict(X_test)
-        accuracy = np.mean(y_test == [i for i in scores])[0]
+        accuracy = np.mean(y_test.values.ravel() == scores.values)
         assert_greater(
             accuracy,
             0.5,

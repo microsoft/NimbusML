@@ -23,8 +23,8 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 RootRepo="$DIR/../.."
 
-__configuration=DbgLinPy3.6
-__pythonver=3.6
+__configuration=DbgLinPy3.7
+__pythonver=3.7
 __rootBinPath="$RootRepo/x64"
 __pythonpath=""
 __boostpath=""

@@ -1,6 +1,6 @@
 parameters:
   name: 'default_placeholder_for_name'
-  config: 'RlsWinPy3.6'
+  config: 'RlsWinPy3.7'
 
 phases:
 ######### Only Windows binaries need to be signed ##############################

@@ -1,7 +1,7 @@
 @ECHO OFF
 
 pushd %~dp0
-set PYTHONINTERPRETER=%~dp0..\..\..\..\dependencies\Python3.6\python.exe
+set PYTHONINTERPRETER=%~dp0..\..\..\..\dependencies\Python3.7\python.exe
 set PYTHONPATH=%~dp0..\..\..\..\Python\
 set SPHINXOPTS=-j 4
 

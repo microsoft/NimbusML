@@ -58,7 +58,7 @@ include_directories(${PYTHON_DIR}/include/python2.7 ${PYTHON_DIR}/include/python
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=unused-variable -Wno-error=attributes -Wno-error=unused-value")
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'/Library/Frameworks/Python.framework/Versions/3.6/lib'" )
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'/Library/Frameworks/Python.framework/Versions/3.7/lib'" )
 else ()
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'\${ORIGIN}'" )
 endif()
@@ -80,9 +80,10 @@ add_library(PyBridge SHARED $<TARGET_OBJECTS:PyBridge_objects>)
 # Define lib dependencies to be used as target link libraries
 if (${PYTHON_VER} STREQUAL "2.7")
     set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python.a ${BOOST_DIR}/lib/libboost_numpy.a)
-endif()
-if (${PYTHON_VER} STREQUAL "3.5")
-    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python.a ${BOOST_DIR}/lib/libboost_numpy3.a)
+elseif (${PYTHON_VER} STREQUAL "3.7")
+    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python37.a ${BOOST_DIR}/lib/libboost_numpy37.a)
+else()
+    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python3.a ${BOOST_DIR}/lib/libboost_numpy3.a)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")

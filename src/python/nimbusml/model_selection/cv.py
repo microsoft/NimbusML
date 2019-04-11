@@ -5,6 +5,7 @@
 
 import inspect
 import time
+import six
 
 from pandas import DataFrame
 
@@ -319,7 +320,7 @@ class CV:
                     'String value for split_start should be either '
                     '"before_transforms" or "after_transforms"')
 
-        if isinstance(split_start, int):
+        if isinstance(split_start, six.integer_types):
             try:
                 nodes[split_start]
             except IndexError:
