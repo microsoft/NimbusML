@@ -26,7 +26,7 @@ class TestPcaAnomalyDetector(unittest.TestCase):
         assert_almost_equal(
             scores.sum().sum(),
             4.181632,
-            decimal=7,
+            decimal=1,
             err_msg="Sum should be %s" %
                     4.181632)
 

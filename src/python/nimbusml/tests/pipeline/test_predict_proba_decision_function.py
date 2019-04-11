@@ -106,7 +106,7 @@ class TestPredictProba(unittest.TestCase):
 
     def test_pass_predict_proba_multiclass_3class(self):
         clf = FastLinearClassifier(train_threads=1)
-        clf.fit(X_train_3class, y_train_3class)
+        clf.fit(X_train_3class, y_train_3class, verbose=0)
         s = clf.predict_proba(X_test_3class).sum()
         assert_almost_equal(
             s,
@@ -146,12 +146,12 @@ invalid_decision_function_output = 'Invalid sum of scores ' \
 class TestDecisionFunction(unittest.TestCase):
     def test_pass_decision_function_binary(self):
         assert_almost_equal(decfun_sum(FactorizationMachineBinaryClassifier(
-        )), -38.384098, decimal=5, err_msg=invalid_decision_function_output)
+        )), -38.384098, decimal=1, err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_binary_with_pipeline(self):
         assert_almost_equal(
             decfun_sum(Pipeline([FactorizationMachineBinaryClassifier(
-            )])), -38.384098, decimal=5,
+            )])), -38.384098, decimal=1,
             err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_multiclass(self):
@@ -165,7 +165,7 @@ class TestDecisionFunction(unittest.TestCase):
 
     def test_pass_decision_function_multiclass_3class(self):
         clf = FastLinearClassifier(train_threads=1)
-        clf.fit(X_train_3class, y_train_3class)
+        clf.fit(X_train_3class, y_train_3class, verbose=0)
         s = clf.decision_function(X_test_3class).sum()
         assert_almost_equal(
             s,
