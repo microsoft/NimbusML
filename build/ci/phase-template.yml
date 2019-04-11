@@ -29,7 +29,7 @@ phases:
       displayName: Install Python
     - script: conda config --set always_yes yes --set changeps1 no && conda install numpy pandas scikit-learn matplotlib
       displayName: Install numpy, pandas, scikit-learn
-    - script: python -c "import sys;print(sys.prefix)" && python -c "import numpy;print(numpy.__file__)"
+    - script: python -c "import sys;print(sys.prefix)"
       displayName: Display verions
 
   - ${{ if eq(parameters.installPython, '0') }}:
@@ -47,7 +47,7 @@ phases:
     - ${{ if eq(parameters.testDistro, '') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
   # Linux phases
-  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7')) }}:
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_Ubuntu16_PyBind11'), eq(parameters.name, 'Linux_CentOS7')) }}:
     - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
       displayName: Build native bridge
     - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
