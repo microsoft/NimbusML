@@ -280,6 +280,8 @@ then
     echo "#################################"
     echo "Running tests ... "
     echo "#################################"
+    echo "PythonRoot=${PythonRoot}"
+    echo "PythonExe=${PythonExe}"
     Wheel=${__currentScriptDir}/target/nimbusml-${ProductVersion}-${PythonTag}-none-${PlatName}.whl
     if [ ! -f ${Wheel} ]
     then

@@ -25,13 +25,12 @@ phases:
       inputs:
         versionSpec: '$(python.version)'
         architecture: 'x64'
-    - script: |
-      pip install pytest>=4.4.0 pytest-cov>=2.6.1 numpy>=1.16.2 pandas>=0.24.2 scikit-learn>=0.20.3 matplotlib
+    - script: pip install pytest>=4.4.0 pytest-cov>=2.6.1 numpy>=1.16.2 pandas>=0.24.2 scikit-learn>=0.20.3 matplotlib
       displayName: Install numpy, pandas, scikit-learn
-    - script: |
-      python -c "import sys;print(sys.prefix, sys.base_prefix, sys.executable, sys.base_exec_prefix)"
-      python -c "import numpy;print(numpy.__version__, numpy.__file__)"
-      displayName: Display versions
+    - script: python -c "import sys;print(sys.prefix, sys.base_prefix, sys.executable, sys.base_exec_prefix)"
+      displayName: Display python versions
+    - script: python -c "import numpy;print(numpy.__version__, numpy.__file__)"
+      displayName: Display numpy versions
 
   - ${{ if eq(parameters.installPython, '0') }}:
     - script: "echo will download Python '$(installPython)'."
