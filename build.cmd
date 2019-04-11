@@ -40,7 +40,7 @@ if /i [%1] == [--buildDotNetBridgeOnly] (
 if /i [%1] == [--skipDotNetBridge] (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
-)
+) else goto :Usage
 
 :Usage
 echo "Usage: build.cmd --configuration <Configuration> [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
@@ -63,6 +63,7 @@ if /i [%1] == [RlsWinPy3.7]     (
     set BoostRoot=%DependenciesDir%BoostRls3.7
     set PythonVersion=3.7
     set PythonTag=cp37
+    set USE_PYBIND11=0
     shift && goto :Arg_Loop
 )
 if /i [%1] == [RlsWinPy3.6]     (
@@ -70,9 +71,11 @@ if /i [%1] == [RlsWinPy3.6]     (
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.6-1.64.0.0.zip	
+    set BoostRoot=%DependenciesDir%BoostRls3.6
     set PythonVersion=3.6
     set PythonTag=cp36
-    set USE_PYBIND11=1
+    set USE_PYBIND11=0
     shift && goto :Arg_Loop
 )
 if /i [%1] == [RlsWinPy3.5] (
@@ -99,16 +102,6 @@ if /i [%1] == [RlsWinPy2.7] (
     set USE_PYBIND11=0
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy3.7] (
-    set DebugBuild=True
-    set Configuration=DbgWinPy3.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.0-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.7
-    set PythonVersion=3.7
-    set PythonTag=cp37
-    set USE_PYBIND11=1
-    shift && goto :Arg_Loop
-)
 if /i [%1] == [DbgWinPy3.7]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
@@ -118,6 +111,7 @@ if /i [%1] == [DbgWinPy3.7]     (
     set BoostRoot=%DependenciesDir%BoostDbg3.7
     set PythonVersion=3.7
     set PythonTag=cp37
+    set USE_PYBIND11=0
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.6]     (
@@ -125,9 +119,11 @@ if /i [%1] == [DbgWinPy3.6]     (
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip	
+    set BoostRoot=%DependenciesDir%BoostDbg3.6
     set PythonVersion=3.6
     set PythonTag=cp36
-    set USE_PYBIND11=1
+    set USE_PYBIND11=0
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.5] (
@@ -156,7 +152,6 @@ if /i [%1] == [DbgWinPy2.7] (
 )
 
 :Build
-if "%Configuration%" == "DbgWinPyX.X" goto :Usage
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
