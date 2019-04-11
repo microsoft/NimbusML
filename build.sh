@@ -254,7 +254,7 @@ then
         exit 1
     fi
     # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-    "${PythonExe}" -m pip install nose pytest==4.4.0 graphviz pytest-cov==2.6.1 "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    "${PythonExe}" -m pip install nose "pytest>=4.4.0" graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq

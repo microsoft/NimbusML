@@ -38,6 +38,8 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsLinPy3.7
+      Py36:
+        _configuration: RlsLinPy3.6
     buildQueue:
       name: Hosted Ubuntu 1604
   # Run tests on CentOS7
