@@ -28,16 +28,10 @@ phases:
         packageSpecs: 'python=$(python.version)'
 
   - ${{ if eq(python.version, '3.7') }}:
-     - script: |
-        conda config --set always_yes yes --set changeps1 no
-        conda install numpy pandas scikit-learn matplotlib
-      displayName: 'Install environment'
+     - script: conda config --set always_yes yes --set changeps1 no && conda install numpy pandas scikit-learn matplotlib
     
   - ${{ if eq(python.version, '3.7') }}:
-    - script: |
-        python -c "import sys;print(sys.prefix)"
-        python -c "import numpy;print(numpy.__file__)"
-      displayName: 'Display python location'
+    - script: python -c "import sys;print(sys.prefix)" && python -c "import numpy;print(numpy.__file__)"
 
 # Windows phases
   - ${{ if eq(parameters.name, 'Windows') }}:
