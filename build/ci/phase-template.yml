@@ -12,7 +12,6 @@ phases:
     _buildScript: ${{ parameters.buildScript }}
     _dockerRun: docker run -e SYSTEM_TEAMFOUNDATIONCOLLECTIONURI="$(System.TeamFoundationCollectionUri)" -e BUILD_BUILDNUMBER="$(Build.BuildNumber)" -i -v $(Build.SourcesDirectory):/builddir -w="/builddir"
     _distro: ${{ parameters.testDistro }}
-    _installPython: ${{ parameters.installPython }}
   queue:
    parallel: 99
    matrix:
