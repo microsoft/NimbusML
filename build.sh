@@ -19,6 +19,7 @@ usage()
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
     echo "  --buildNativeBridgeOnly           Build only the native bridge code"
     echo "  --skipNativeBridge                Build the DotNet bridge and python wheel but use existing native bridge binaries (e.g. <repo>/x64/DbgLinPy3.7/pybridge.so)"
+    echo "  --python                          path to python"
     exit 1
 }
 
@@ -32,6 +33,7 @@ fi
 __runTests=false
 __buildNativeBridge=true
 __buildDotNetBridge=true
+__python=
 
 while [ "$1" != "" ]; do
     lowerI="$(echo $1 | awk '{print tolower($0)}')"
@@ -46,6 +48,9 @@ while [ "$1" != "" ]; do
             ;;
         --runtests)
             __runTests=true
+            ;;
+        --python)
+            __python=$1
             ;;
         --runtestsonly)
             __buildNativeBridge=false
