@@ -1589,7 +1589,7 @@ class Pipeline:
                 "clone it and then modify.")
         if len(self) == 0:
             raise IndexError("Pipeline is empty.")
-        if isinstance(index, int):
+        if isinstance(index, six.integer_types):
             del self.steps[index]
         elif isinstance(index, str):
             res = []
@@ -1660,7 +1660,7 @@ class Pipeline:
         """
         if len(self) == 0:
             raise IndexError("Pipeline is empty.")
-        if isinstance(index, int):
+        if isinstance(index, six.integer_types):
             return self.steps[index]
         elif isinstance(index, str):
             res = []

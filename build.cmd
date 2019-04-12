@@ -8,18 +8,18 @@ set __currentScriptDir=%~dp0
 set DependenciesDir=%__currentScriptDir%dependencies\
 if not exist "%DependenciesDir%" (md "%DependenciesDir%")
 
-:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.6)
+:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.7)
 set __BuildArch=x64
 set __VCBuildArch=x86_amd64
-set Configuration=DbgWinPy3.6
+set Configuration=DbgWinPy3.7
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
-set PythonRoot=%DependenciesDir%Python3.6
-set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip
-set BoostRoot=%DependenciesDir%BoostDbg3.6
-set PythonVersion=3.6
-set PythonTag=cp36
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
+set PythonRoot=%DependenciesDir%Python3.7
+set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
+set BoostRoot=%DependenciesDir%BoostDbg3.7
+set PythonVersion=3.7
+set PythonTag=cp37
 set RunTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
@@ -53,6 +53,17 @@ echo "  --skipDotNetBridge                Build everything except DotNetBridge"
 goto :Exit_Success
 
 :Configuration
+if /i [%1] == [RlsWinPy3.7]     (
+    set DebugBuild=False
+    set Configuration=RlsWinPy3.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.7
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostRls3.7
+    set PythonVersion=3.7
+    set PythonTag=cp37
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [RlsWinPy3.6]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.6
@@ -84,6 +95,17 @@ if /i [%1] == [RlsWinPy2.7]     (
     set BoostRoot=%DependenciesDir%BoostRls2.7
     set PythonVersion=2.7
     set PythonTag=cp27
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [DbgWinPy3.7]     (
+    set DebugBuild=True
+    set Configuration=DbgWinPy3.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.7
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostDbg3.7
+    set PythonVersion=3.7
+    set PythonTag=cp37
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.6]     (
@@ -240,7 +262,7 @@ if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
-if %PythonVersion% == 3.6 (
+if %PythonVersion% == 3.7 (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2
