@@ -105,6 +105,12 @@ case $__configuration in
     PythonTag=cp37
     USE_PYBIND11=true
     ;;
+*MacPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2019.03.v2.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.69.0.0.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
+    ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.6-1.64.0.0.tar.gz

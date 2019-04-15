@@ -123,6 +123,17 @@ if /i [%1] == [DbgWinPy3.7]     (
     set USE_PYBIND11=1
     shift && goto :Arg_Loop
 )
+if /i [%1] == [DbgWinPy3.7]     (
+    set DebugBuild=True
+    set Configuration=DbgWinPy3.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.7
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostDbg3.7
+    set PythonVersion=3.7
+    set PythonTag=cp37
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [DbgWinPy3.6]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.6
