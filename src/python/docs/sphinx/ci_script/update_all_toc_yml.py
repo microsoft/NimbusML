@@ -415,7 +415,8 @@ for root, subdirs, files in os.walk(rootdir):
 |:-------------------------:|:-------:|:-----:|:-----:|
 |            2.7            |   Yes   |  Yes  |  Yes  |
 |            3.5            |   Yes   |  Yes  |  Yes  |
-|            3.6            |   Yes   |  Yes  |  Yes  |"""
+|            3.6            |   Yes   |  Yes  |  Yes  |
+|            3.7            |   Yes   |  Yes  |  Yes  |"""
                             file_w.write(version_table)
                             writeline = 0
                         if "../modules/data/FileDataStream.md#readcsv" in line:
