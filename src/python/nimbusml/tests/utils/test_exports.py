@@ -76,7 +76,7 @@ class TestExports(unittest.TestCase):
                'l2_weight': None,
                'label': 'new_y',
                'loss': 'squared',
-               'max_iterations': None,
+               'maximum_number_of_iterations': None,
                'normalize': 'Auto',
                'shuffle': True,
                'train_threads': None}

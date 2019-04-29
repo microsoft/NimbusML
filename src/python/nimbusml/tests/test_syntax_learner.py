@@ -46,7 +46,7 @@ class TestSyntaxLearner(unittest.TestCase):
             OneHotVectorizer() << 'y',
             OneHotVectorizer() << ['workclass', 'education'],
             TypeConverter(result_type='R4') << 'y',
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
@@ -83,7 +83,7 @@ class TestSyntaxLearner(unittest.TestCase):
             OneHotVectorizer() << ['workclass', 'education'],
             TypeConverter(result_type='R4') << {'yi': 'y'},
             Drop() << 'y',
-            FastLinearBinaryClassifier(max_iterations=1) << 'yi'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'yi'
         ])
         exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)

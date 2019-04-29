@@ -113,7 +113,7 @@ def test_dtype(xtype=None, ytype=None, dense=False):
         ydata = ydata.astype(ytype)
         assert ydata.dtype == ytype
 
-    algo = FastLinearBinaryClassifier(max_iterations=2)
+    algo = FastLinearBinaryClassifier(maximum_number_of_iterations=2)
     algo.fit(xdata, ydata)
     assert algo.model_ is not None
 

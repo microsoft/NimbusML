@@ -180,11 +180,11 @@ class TestSweep(unittest.TestCase):
                      train_threads=1,
                      shuffle=False))])
 
-        param_grid = dict(lr__max_iterations=[1, 20])
+        param_grid = dict(lr__maximum_number_of_iterations=[1, 20])
         grid = GridSearchCV(pipeline, param_grid)
 
         grid.fit(data['review'], 1 * (data['sentiment'] == 'pos'))
-        assert grid.best_params_['lr__max_iterations'] == 1
+        assert grid.best_params_['lr__maximum_number_of_iterations'] == 1
 
     # Problem with the SSL CA cert (path? access rights?) for the build
     # machines to download resources for wordembedding transform
@@ -227,11 +227,11 @@ class TestSweep(unittest.TestCase):
                      train_threads=1,
                      shuffle=False))])
 
-        param_grid = dict(lr__max_iterations=[1, 100, 20])
+        param_grid = dict(lr__maximum_number_of_iterations=[1, 100, 20])
         grid = GridSearchCV(pipeline, param_grid)
 
         grid.fit(data['review'], 1 * (data['sentiment'] == 'pos'))
-        assert grid.best_params_['lr__max_iterations'] == 1
+        assert grid.best_params_['lr__maximum_number_of_iterations'] == 1
 
     def test_clone_sweep(self):
         # grid search, then clone pipeline and grid search again
