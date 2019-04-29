@@ -11,24 +11,24 @@ from ..utils.utils import try_set
 
 def fast_tree_binary_classification(
         training_data,
-        num_trees=100,
-        num_leaves=20,
-        feature_column='Features',
-        min_documents_in_leafs=10,
-        label_column='Label',
-        learning_rates=0.2,
-        weight_column=None,
-        group_id_column=None,
+        number_of_trees=100,
+        number_of_leaves=20,
+        feature_column_name='Features',
+        minimum_example_count_per_leaf=10,
+        label_column_name='Label',
+        learning_rate=0.2,
+        example_weight_column_name=None,
+        row_group_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         unbalanced_sets=False,
         best_step_ranking_regression_trees=False,
         use_line_search=False,
-        num_post_bracket_steps=0,
-        min_step_size=0.0,
+        maximum_number_of_line_search_steps=0,
+        minimum_step_size=0.0,
         optimization_algorithm='GradientDescent',
         early_stopping_rule=None,
-        early_stopping_metrics=0,
+        early_stopping_metrics=1,
         enable_pruning=False,
         use_tolerant_pruning=False,
         pruning_threshold=0.004,
@@ -37,43 +37,42 @@ def fast_tree_binary_classification(
         dropout_rate=0.0,
         get_derivatives_sample_rate=1,
         write_last_ensemble=False,
-        max_tree_output=100.0,
+        maximum_tree_output=100.0,
         random_start=False,
         filter_zero_lambdas=False,
         baseline_scores_formula=None,
         baseline_alpha_risk=None,
         position_discount_freeform=None,
         parallel_trainer=None,
-        num_threads=None,
-        rng_seed=123,
-        feature_select_seed=123,
+        number_of_threads=None,
+        seed=123,
+        feature_selection_seed=123,
         entropy_coefficient=0.0,
         histogram_pool_size=-1,
         disk_transpose=None,
         feature_flocks=True,
         categorical_split=False,
-        max_categorical_groups_per_node=64,
-        max_categorical_split_points=64,
-        min_docs_percentage_for_categorical_split=0.001,
-        min_docs_for_categorical_split=100,
+        maximum_categorical_group_count_per_node=64,
+        maximum_categorical_split_point_count=64,
+        minimum_example_fraction_for_categorical_split=0.001,
+        minimum_examples_for_categorical_split=100,
         bias=0.0,
         bundling='None',
-        max_bins=255,
+        maximum_bin_count_per_feature=255,
         sparsify_threshold=0.7,
         feature_first_use_penalty=0.0,
         feature_reuse_penalty=0.0,
         gain_confidence_level=0.0,
         softmax_temperature=0.0,
-        execution_times=False,
+        execution_time=False,
         feature_fraction=1.0,
         bagging_size=0,
-        bagging_train_fraction=0.7,
-        split_fraction=1.0,
+        bagging_example_fraction=0.7,
+        feature_fraction_per_split=1.0,
         smoothing=0.0,
         allow_empty_trees=True,
         feature_compression_level=1,
         compress_ensemble=False,
-        max_trees_after_compression=-1,
         print_test_graph=False,
         print_train_valid_graph=False,
         test_frequency=2147483647,
@@ -83,25 +82,26 @@ def fast_tree_binary_classification(
         Uses a logit-boost boosted tree learner to perform binary
         classification.
 
-    :param num_trees: Total number of decision trees to create in the
-        ensemble (settings).
+    :param number_of_trees: Total number of decision trees to create
+        in the ensemble (settings).
     :param training_data: The data to be used for training
         (settings).
-    :param num_leaves: The max number of leaves in each regression
-        tree (settings).
-    :param feature_column: Column to use for features (settings).
-    :param min_documents_in_leafs: The minimal number of documents
-        allowed in a leaf of a regression tree, out of the subsampled
-        data (settings).
-    :param label_column: Column to use for labels (settings).
-    :param learning_rates: The learning rate (settings).
-    :param weight_column: Column to use for example weight
+    :param number_of_leaves: The max number of leaves in each
+        regression tree (settings).
+    :param feature_column_name: Column to use for features
         (settings).
-    :param group_id_column: Column to use for example groupId
+    :param minimum_example_count_per_leaf: The minimal number of
+        examples allowed in a leaf of a regression tree, out of the
+        subsampled data (settings).
+    :param label_column_name: Column to use for labels (settings).
+    :param learning_rate: The learning rate (settings).
+    :param example_weight_column_name: Column to use for example
+        weight (settings).
+    :param row_group_column_name: Column to use for example groupId
         (settings).
     :param normalize_features: Normalize option for the feature
         column (settings).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (settings).
     :param unbalanced_sets: Option for using derivatives optimized
         for unbalanced sets (settings).
@@ -109,9 +109,10 @@ def fast_tree_binary_classification(
         regression step trees (settings).
     :param use_line_search: Should we use line search for a step size
         (settings).
-    :param num_post_bracket_steps: Number of post-bracket line search
-        steps (settings).
-    :param min_step_size: Minimum line search step size (settings).
+    :param maximum_number_of_line_search_steps: Number of post-
+        bracket line search steps (settings).
+    :param minimum_step_size: Minimum line search step size
+        (settings).
     :param optimization_algorithm: Optimization algorithm to be used
         (GradientDescent, AcceleratedGradientDescent) (settings).
     :param early_stopping_rule: Early stopping rule. (Validation set
@@ -134,8 +135,8 @@ def fast_tree_binary_classification(
         times in the GetDerivatives function (settings).
     :param write_last_ensemble: Write the last ensemble instead of
         the one determined by early stopping (settings).
-    :param max_tree_output: Upper bound on absolute value of single
-        tree output (settings).
+    :param maximum_tree_output: Upper bound on absolute value of
+        single tree output (settings).
     :param random_start: Training starts from random ordering
         (determined by /r1) (settings).
     :param filter_zero_lambdas: Filter zero lambdas during training
@@ -145,15 +146,15 @@ def fast_tree_binary_classification(
     :param baseline_alpha_risk: Baseline alpha for tradeoffs of risk
         (0 is normal training) (settings).
     :param position_discount_freeform: The discount freeform which
-        specifies the per position discounts of documents in a query
+        specifies the per position discounts of examples in a query
         (uses a single variable P for position where P=0 is first
         position) (settings).
     :param parallel_trainer: Allows to choose Parallel FastTree
         Learning Algorithm (settings).
-    :param num_threads: The number of threads to use (settings).
-    :param rng_seed: The seed of the random number generator
+    :param number_of_threads: The number of threads to use
         (settings).
-    :param feature_select_seed: The seed of the active feature
+    :param seed: The seed of the random number generator (settings).
+    :param feature_selection_seed: The seed of the active feature
         selection (settings).
     :param entropy_coefficient: The entropy (regularization)
         coefficient between 0 and 1 (settings).
@@ -166,27 +167,28 @@ def fast_tree_binary_classification(
         dataset preparation to speed up training (settings).
     :param categorical_split: Whether to do split based on multiple
         categorical feature values. (settings).
-    :param max_categorical_groups_per_node: Maximum categorical split
-        groups to consider when splitting on a categorical feature.
-        Split groups are a collection of split points. This is used
-        to reduce overfitting when there many categorical features.
+    :param maximum_categorical_group_count_per_node: Maximum
+        categorical split groups to consider when splitting on a
+        categorical feature. Split groups are a collection of split
+        points. This is used to reduce overfitting when there many
+        categorical features. (settings).
+    :param maximum_categorical_split_point_count: Maximum categorical
+        split points to consider when splitting on a categorical
+        feature. (settings).
+    :param minimum_example_fraction_for_categorical_split: Minimum
+        categorical example percentage in a bin to consider for a
+        split. (settings).
+    :param minimum_examples_for_categorical_split: Minimum
+        categorical example count in a bin to consider for a split.
         (settings).
-    :param max_categorical_split_points: Maximum categorical split
-        points to consider when splitting on a categorical feature.
-        (settings).
-    :param min_docs_percentage_for_categorical_split: Minimum
-        categorical docs percentage in a bin to consider for a split.
-        (settings).
-    :param min_docs_for_categorical_split: Minimum categorical doc
-        count in a bin to consider for a split. (settings).
     :param bias: Bias for calculating gradient for each feature bin
         for a categorical feature. (settings).
     :param bundling: Bundle low population bins. Bundle.None(0): no
         bundling, Bundle.AggregateLowPopulation(1): Bundle low
         population, Bundle.Adjacent(2): Neighbor low population
         bundle. (settings).
-    :param max_bins: Maximum number of distinct values (bins) per
-        feature (settings).
+    :param maximum_bin_count_per_feature: Maximum number of distinct
+        values (bins) per feature (settings).
     :param sparsify_threshold: Sparsity level needed to use sparse
         feature representation (settings).
     :param feature_first_use_penalty: The feature first use penalty
@@ -197,16 +199,16 @@ def fast_tree_binary_classification(
         requirement (should be in the range [0,1) ). (settings).
     :param softmax_temperature: The temperature of the randomized
         softmax distribution for choosing the feature (settings).
-    :param execution_times: Print execution time breakdown to stdout
+    :param execution_time: Print execution time breakdown to stdout
         (settings).
     :param feature_fraction: The fraction of features (chosen
         randomly) to use on each iteration (settings).
     :param bagging_size: Number of trees in each bag (0 for disabling
         bagging) (settings).
-    :param bagging_train_fraction: Percentage of training examples
+    :param bagging_example_fraction: Percentage of training examples
         used in each bag (settings).
-    :param split_fraction: The fraction of features (chosen randomly)
-        to use on each split (settings).
+    :param feature_fraction_per_split: The fraction of features
+        (chosen randomly) to use on each split (settings).
     :param smoothing: Smoothing paramter for tree regularization
         (settings).
     :param allow_empty_trees: When a root split is impossible, allow
@@ -214,8 +216,6 @@ def fast_tree_binary_classification(
     :param feature_compression_level: The level of feature
         compression to use (settings).
     :param compress_ensemble: Compress the tree Ensemble (settings).
-    :param max_trees_after_compression: Maximum Number of trees after
-        compression (settings).
     :param print_test_graph: Print metrics graph for the first test
         set (settings).
     :param print_train_valid_graph: Print Train and Validation
@@ -227,50 +227,50 @@ def fast_tree_binary_classification(
     entrypoint_name = 'FastTreeBinaryClassification'
     settings = {}
 
-    if num_trees is not None:
-        settings['NumTrees'] = try_set(
-            obj=num_trees,
+    if number_of_trees is not None:
+        settings['NumberOfTrees'] = try_set(
+            obj=number_of_trees,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
         settings['TrainingData'] = try_set(
             obj=training_data, none_acceptable=False, is_of_type=str)
-    if num_leaves is not None:
-        settings['NumLeaves'] = try_set(
-            obj=num_leaves,
+    if number_of_leaves is not None:
+        settings['NumberOfLeaves'] = try_set(
+            obj=number_of_leaves,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_column is not None:
-        settings['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        settings['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if min_documents_in_leafs is not None:
-        settings['MinDocumentsInLeafs'] = try_set(
-            obj=min_documents_in_leafs,
+    if minimum_example_count_per_leaf is not None:
+        settings['MinimumExampleCountPerLeaf'] = try_set(
+            obj=minimum_example_count_per_leaf,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if label_column is not None:
-        settings['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        settings['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if learning_rates is not None:
-        settings['LearningRates'] = try_set(
-            obj=learning_rates,
+    if learning_rate is not None:
+        settings['LearningRate'] = try_set(
+            obj=learning_rate,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if weight_column is not None:
-        settings['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        settings['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if group_id_column is not None:
-        settings['GroupIdColumn'] = try_set(
-            obj=group_id_column,
+    if row_group_column_name is not None:
+        settings['RowGroupColumnName'] = try_set(
+            obj=row_group_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -304,14 +304,14 @@ def fast_tree_binary_classification(
     if use_line_search is not None:
         settings['UseLineSearch'] = try_set(
             obj=use_line_search, none_acceptable=True, is_of_type=bool)
-    if num_post_bracket_steps is not None:
-        settings['NumPostBracketSteps'] = try_set(
-            obj=num_post_bracket_steps,
+    if maximum_number_of_line_search_steps is not None:
+        settings['MaximumNumberOfLineSearchSteps'] = try_set(
+            obj=maximum_number_of_line_search_steps,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_step_size is not None:
-        settings['MinStepSize'] = try_set(
-            obj=min_step_size,
+    if minimum_step_size is not None:
+        settings['MinimumStepSize'] = try_set(
+            obj=minimum_step_size,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if optimization_algorithm is not None:
@@ -365,9 +365,9 @@ def fast_tree_binary_classification(
     if write_last_ensemble is not None:
         settings['WriteLastEnsemble'] = try_set(
             obj=write_last_ensemble, none_acceptable=True, is_of_type=bool)
-    if max_tree_output is not None:
-        settings['MaxTreeOutput'] = try_set(
-            obj=max_tree_output,
+    if maximum_tree_output is not None:
+        settings['MaximumTreeOutput'] = try_set(
+            obj=maximum_tree_output,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if random_start is not None:
@@ -390,19 +390,19 @@ def fast_tree_binary_classification(
     if parallel_trainer is not None:
         settings['ParallelTrainer'] = try_set(
             obj=parallel_trainer, none_acceptable=True, is_of_type=dict)
-    if num_threads is not None:
-        settings['NumThreads'] = try_set(
-            obj=num_threads,
+    if number_of_threads is not None:
+        settings['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if rng_seed is not None:
-        settings['RngSeed'] = try_set(
-            obj=rng_seed,
+    if seed is not None:
+        settings['Seed'] = try_set(
+            obj=seed,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_select_seed is not None:
-        settings['FeatureSelectSeed'] = try_set(
-            obj=feature_select_seed,
+    if feature_selection_seed is not None:
+        settings['FeatureSelectionSeed'] = try_set(
+            obj=feature_selection_seed,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if entropy_coefficient is not None:
@@ -424,24 +424,24 @@ def fast_tree_binary_classification(
     if categorical_split is not None:
         settings['CategoricalSplit'] = try_set(
             obj=categorical_split, none_acceptable=True, is_of_type=bool)
-    if max_categorical_groups_per_node is not None:
-        settings['MaxCategoricalGroupsPerNode'] = try_set(
-            obj=max_categorical_groups_per_node,
+    if maximum_categorical_group_count_per_node is not None:
+        settings['MaximumCategoricalGroupCountPerNode'] = try_set(
+            obj=maximum_categorical_group_count_per_node,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_categorical_split_points is not None:
-        settings['MaxCategoricalSplitPoints'] = try_set(
-            obj=max_categorical_split_points,
+    if maximum_categorical_split_point_count is not None:
+        settings['MaximumCategoricalSplitPointCount'] = try_set(
+            obj=maximum_categorical_split_point_count,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_docs_percentage_for_categorical_split is not None:
-        settings['MinDocsPercentageForCategoricalSplit'] = try_set(
-            obj=min_docs_percentage_for_categorical_split,
+    if minimum_example_fraction_for_categorical_split is not None:
+        settings['MinimumExampleFractionForCategoricalSplit'] = try_set(
+            obj=minimum_example_fraction_for_categorical_split,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_docs_for_categorical_split is not None:
-        settings['MinDocsForCategoricalSplit'] = try_set(
-            obj=min_docs_for_categorical_split,
+    if minimum_examples_for_categorical_split is not None:
+        settings['MinimumExamplesForCategoricalSplit'] = try_set(
+            obj=minimum_examples_for_categorical_split,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if bias is not None:
@@ -453,9 +453,9 @@ def fast_tree_binary_classification(
         settings['Bundling'] = try_set(
             obj=bundling, none_acceptable=True, is_of_type=str, values=[
                 'None', 'AggregateLowPopulation', 'Adjacent'])
-    if max_bins is not None:
-        settings['MaxBins'] = try_set(
-            obj=max_bins,
+    if maximum_bin_count_per_feature is not None:
+        settings['MaximumBinCountPerFeature'] = try_set(
+            obj=maximum_bin_count_per_feature,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if sparsify_threshold is not None:
@@ -483,9 +483,9 @@ def fast_tree_binary_classification(
             obj=softmax_temperature,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if execution_times is not None:
-        settings['ExecutionTimes'] = try_set(
-            obj=execution_times, none_acceptable=True, is_of_type=bool)
+    if execution_time is not None:
+        settings['ExecutionTime'] = try_set(
+            obj=execution_time, none_acceptable=True, is_of_type=bool)
     if feature_fraction is not None:
         settings['FeatureFraction'] = try_set(
             obj=feature_fraction,
@@ -496,14 +496,14 @@ def fast_tree_binary_classification(
             obj=bagging_size,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if bagging_train_fraction is not None:
-        settings['BaggingTrainFraction'] = try_set(
-            obj=bagging_train_fraction,
+    if bagging_example_fraction is not None:
+        settings['BaggingExampleFraction'] = try_set(
+            obj=bagging_example_fraction,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if split_fraction is not None:
-        settings['SplitFraction'] = try_set(
-            obj=split_fraction,
+    if feature_fraction_per_split is not None:
+        settings['FeatureFractionPerSplit'] = try_set(
+            obj=feature_fraction_per_split,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if smoothing is not None:
@@ -522,11 +522,6 @@ def fast_tree_binary_classification(
     if compress_ensemble is not None:
         settings['CompressEnsemble'] = try_set(
             obj=compress_ensemble, none_acceptable=True, is_of_type=bool)
-    if max_trees_after_compression is not None:
-        settings['MaxTreesAfterCompression'] = try_set(
-            obj=max_trees_after_compression,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if print_test_graph is not None:
         settings['PrintTestGraph'] = try_set(
             obj=print_test_graph, none_acceptable=True, is_of_type=bool)

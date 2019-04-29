@@ -34,18 +34,18 @@ class OneVsRestClassifier(core, BasePredictor, ClassifierMixin):
         class). OneVsRestClassifier
         predicts the label with the highest score from the basic learners.
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
-
     :param classifier: The subgraph for the binary trainer used to construct
         the OVA learner. This should be a TrainBinary node.
 
     :param output_for_sub_graph: The training subgraph output.
 
+    :param feature: Column to use for features.
+
     :param use_probabilities: Use probabilities in OVA combiner.
+
+    :param label: Column to use for labels.
+
+    :param weight: Column to use for example weight.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -55,7 +55,7 @@ class OneVsRestClassifier(core, BasePredictor, ClassifierMixin):
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -102,41 +102,26 @@ class OneVsRestClassifier(core, BasePredictor, ClassifierMixin):
             self,
             classifier,
             output_for_sub_graph=0,
+            feature='Features',
             use_probabilities=True,
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
-            feature=None,
-            label=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
             classifier=classifier,
             output_for_sub_graph=output_for_sub_graph,
+            feature=feature,
             use_probabilities=use_probabilities,
+            label=label,
+            weight=weight,
             normalize=normalize,
             caching=caching,
             **params)
-        self.feature = feature
-        self.label = label
-        self.weight = weight
 
     @trace
     def predict_proba(self, X, **params):

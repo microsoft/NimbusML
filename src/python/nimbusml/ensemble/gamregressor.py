@@ -80,23 +80,18 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
             <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+    :param number_of_iterations: Total number of iterations over all features.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
+    :param feature: Column to use for features.
 
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+    :param minimum_example_count_per_leaf: Minimum number of training instances
+        required to form a partition.
 
-    :param num_iterations: Total number of iterations over all features.
+    :param label: Column to use for labels.
 
-    :param min_documents: Minimum number of training instances required to form
-        a partition.
+    :param learning_rate: The learning rate.
 
-    :param learning_rate: Determines the size of the step taken in the
-        direction of the gradient in each step of the learning process.  This
-        determines how fast or slow the learner converges on the optimal
-        solution. If the step size is too big, you might overshoot the optimal
-        solution.  If the step size is too small, training takes longer to
-        converge to the best solution.
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -120,7 +115,7 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param pruning_metrics: Metric for pruning. (For regression, 1: L1, 2:L2;
         default L2).
@@ -131,15 +126,16 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
     :param gain_conf_level: Tree fitting gain confidence requirement (should be
         in the range [0,1) ).
 
-    :param train_threads: The number of threads to use.
+    :param number_of_threads: The number of threads to use.
 
     :param disk_transpose: Whether to utilize the disk or the data's native
         transposition facilities (where applicable) when performing the
         transpose.
 
-    :param num_bins: Maximum number of distinct values (bins) per feature.
+    :param maximum_bin_count_per_feature: Maximum number of distinct values
+        (bins) per feature.
 
-    :param max_output: Upper bound on absolute value of single output.
+    :param maximum_tree_output: Upper bound on absolute value of single output.
 
     :param get_derivatives_sample_rate: Sample each query 1 in k times in the
         GetDerivatives function.
@@ -171,65 +167,50 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
     @trace
     def __init__(
             self,
-            num_iterations=9500,
-            min_documents=10,
+            number_of_iterations=9500,
+            feature='Features',
+            minimum_example_count_per_leaf=10,
+            label='Label',
             learning_rate=0.002,
+            weight=None,
             normalize='Auto',
             caching='Auto',
             pruning_metrics=2,
             entropy_coefficient=0.0,
             gain_conf_level=0,
-            train_threads=None,
+            number_of_threads=None,
             disk_transpose=None,
-            num_bins=255,
-            max_output=float('inf'),
+            maximum_bin_count_per_feature=255,
+            maximum_tree_output=float('inf'),
             get_derivatives_sample_rate=1,
             random_state=123,
             feature_flocks=True,
             enable_pruning=True,
-            feature=None,
-            label=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
-            num_iterations=num_iterations,
-            min_documents=min_documents,
+            number_of_iterations=number_of_iterations,
+            feature=feature,
+            minimum_example_count_per_leaf=minimum_example_count_per_leaf,
+            label=label,
             learning_rate=learning_rate,
+            weight=weight,
             normalize=normalize,
             caching=caching,
             pruning_metrics=pruning_metrics,
             entropy_coefficient=entropy_coefficient,
             gain_conf_level=gain_conf_level,
-            train_threads=train_threads,
+            number_of_threads=number_of_threads,
             disk_transpose=disk_transpose,
-            num_bins=num_bins,
-            max_output=max_output,
+            maximum_bin_count_per_feature=maximum_bin_count_per_feature,
+            maximum_tree_output=maximum_tree_output,
             get_derivatives_sample_rate=get_derivatives_sample_rate,
             random_state=random_state,
             feature_flocks=feature_flocks,
             enable_pruning=enable_pruning,
             **params)
-        self.feature = feature
-        self.label = label
-        self.weight = weight
 
     def get_params(self, deep=False):
         """

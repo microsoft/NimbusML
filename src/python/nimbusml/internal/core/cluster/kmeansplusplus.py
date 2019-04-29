@@ -13,10 +13,10 @@ __all__ = ["KMeansPlusPlus"]
 from ...entrypoints.trainers_kmeansplusplusclusterer import \
     trainers_kmeansplusplusclusterer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
+class KMeansPlusPlus(BasePipelineItem, DefaultSignature):
     """
 
     Machine Learning KMeans clustering algorithm
@@ -38,6 +38,10 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
             content/uploads/2016/02/ding15.pdf <https://www.microsoft.com/en-
             us/research/wp-content/uploads/2016/02/ding15.pdf>`_
 
+
+    :param feature: Column to use for features.
+
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -61,19 +65,19 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param n_clusters: The number of clusters.
 
-    :param train_threads: Degree of lock-free parallelism. Defaults to
+    :param number_of_threads: Degree of lock-free parallelism. Defaults to
         automatic. Determinism not guaranteed.
 
-    :param init_algorithm: Cluster initialization algorithm.
+    :param initialization_algorithm: Cluster initialization algorithm.
 
     :param opt_tol: Tolerance parameter for trainer convergence. Low = slower,
         more accurate.
 
-    :param max_iterations: Maximum number of iterations.
+    :param maximum_number_of_iterations: Maximum number of iterations.
 
     :param accel_mem_budget_mb: Memory budget (in MBs) to use for KMeans
         acceleration.
@@ -96,25 +100,29 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
     @trace
     def __init__(
             self,
+            feature='Features',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             n_clusters=5,
-            train_threads=None,
-            init_algorithm='KMeansParallel',
+            number_of_threads=None,
+            initialization_algorithm='KMeansYinyang',
             opt_tol=1e-07,
-            max_iterations=1000,
+            maximum_number_of_iterations=1000,
             accel_mem_budget_mb=4096,
             **params):
         BasePipelineItem.__init__(
             self, type='clusterer', **params)
 
+        self.feature = feature
+        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.n_clusters = n_clusters
-        self.train_threads = train_threads
-        self.init_algorithm = init_algorithm
+        self.number_of_threads = number_of_threads
+        self.initialization_algorithm = initialization_algorithm
         self.opt_tol = opt_tol
-        self.max_iterations = max_iterations
+        self.maximum_number_of_iterations = maximum_number_of_iterations
         self.accel_mem_budget_mb = accel_mem_budget_mb
 
     @property
@@ -124,19 +132,15 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
-                all_args),
-            weight_column=self._getattr_role(
-                'weight_column',
-                all_args),
+            feature_column_name=self.feature,
+            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching,
             k=self.n_clusters,
-            num_threads=self.train_threads,
-            init_algorithm=self.init_algorithm,
+            number_of_threads=self.number_of_threads,
+            initialization_algorithm=self.initialization_algorithm,
             opt_tol=self.opt_tol,
-            max_iterations=self.max_iterations,
+            maximum_number_of_iterations=self.maximum_number_of_iterations,
             accel_mem_budget_mb=self.accel_mem_budget_mb)
 
         all_args.update(algo_args)

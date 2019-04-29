@@ -42,11 +42,11 @@ class PoissonRegressionRegressor(
             <https://en.wikipedia.org/wiki/Poisson_regression>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+    :param feature: Column to use for features.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
+    :param label: Column to use for labels.
 
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -70,43 +70,33 @@ class PoissonRegressionRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
-    :param l2_weight: L2 regularization weight.
+    :param l2_regularization: L2 regularization weight.
 
-    :param l1_weight: L1 regularization weight.
+    :param l1_regularization: L1 regularization weight.
 
-    :param opt_tol: Tolerance parameter for optimization convergence. Low =
-        slower, more accurate.
+    :param optmization_tolerance: Tolerance parameter for optimization
+        convergence. Low = slower, more accurate.
 
-    :param memory_size: Memory size for L-BFGS. Lower=faster, less accurate.
-        The technique used for optimization here is L-BFGS, which uses only a
-        limited amount of memory to compute the next step direction. This
-        parameter indicates the number of past positions and gradients to store
-        for the computation of the next step. Must be greater than or equal to
-        ``1``.
+    :param history_size: Memory size for L-BFGS. Low=faster, less accurate.
 
     :param enforce_non_negativity: Enforce non-negative weights. This flag,
         however, does not put any constraint on the bias term; that is, the
         bias term can be still a negtaive number.
 
-    :param init_wts_diameter: Sets the initial weights diameter that specifies
-        the range from which values are drawn for the initial weights. These
-        weights are initialized randomly from within this range. For example,
-        if the diameter is specified to be ``d``, then the weights are
-        uniformly distributed between ``-d/2`` and ``d/2``. The default value
-        is ``0``, which specifies that all the  weights are set to zero.
+    :param initial_weights_diameter: Init weights diameter.
 
-    :param max_iterations: Maximum iterations.
+    :param maximum_number_of_iterations: Maximum iterations.
 
-    :param sgd_init_tol: Run SGD to initialize LR weights, converging to this
-        tolerance.
+    :param stochastic_gradient_descent_initilaization_tolerance: Run SGD to
+        initialize LR weights, converging to this tolerance.
 
     :param quiet: If set to true, produce no output during training.
 
     :param use_threads: Whether or not to use threads. Default is true.
 
-    :param train_threads: Number of threads.
+    :param number_of_threads: Number of threads.
 
     :param dense_optimizer: If ``True``, forces densification of the internal
         optimization vectors. If ``False``, enables the logistic regression
@@ -137,61 +127,46 @@ class PoissonRegressionRegressor(
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
-            l2_weight=1.0,
-            l1_weight=1.0,
-            opt_tol=1e-07,
-            memory_size=20,
+            l2_regularization=1.0,
+            l1_regularization=1.0,
+            optmization_tolerance=1e-07,
+            history_size=20,
             enforce_non_negativity=False,
-            init_wts_diameter=0.0,
-            max_iterations=2147483647,
-            sgd_init_tol=0.0,
+            initial_weights_diameter=0.0,
+            maximum_number_of_iterations=2147483647,
+            stochastic_gradient_descent_initilaization_tolerance=0.0,
             quiet=False,
             use_threads=True,
-            train_threads=None,
+            number_of_threads=None,
             dense_optimizer=False,
-            feature=None,
-            label=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
+            feature=feature,
+            label=label,
+            weight=weight,
             normalize=normalize,
             caching=caching,
-            l2_weight=l2_weight,
-            l1_weight=l1_weight,
-            opt_tol=opt_tol,
-            memory_size=memory_size,
+            l2_regularization=l2_regularization,
+            l1_regularization=l1_regularization,
+            optmization_tolerance=optmization_tolerance,
+            history_size=history_size,
             enforce_non_negativity=enforce_non_negativity,
-            init_wts_diameter=init_wts_diameter,
-            max_iterations=max_iterations,
-            sgd_init_tol=sgd_init_tol,
+            initial_weights_diameter=initial_weights_diameter,
+            maximum_number_of_iterations=maximum_number_of_iterations,
+            stochastic_gradient_descent_initilaization_tolerance=stochastic_gradient_descent_initilaization_tolerance,
             quiet=quiet,
             use_threads=use_threads,
-            train_threads=train_threads,
+            number_of_threads=number_of_threads,
             dense_optimizer=dense_optimizer,
             **params)
-        self.feature = feature
-        self.label = label
-        self.weight = weight
 
     def get_params(self, deep=False):
         """

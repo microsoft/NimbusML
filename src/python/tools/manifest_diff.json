@@ -2,6 +2,18 @@
   "GlobalChanges": {
     "Inputs": [
       {
+        "Name": "FeatureColumnName",
+        "NewName": "Feature"
+      },
+      {
+        "Name": "LabelColumnName",
+        "NewName": "Label"
+      },
+      {
+        "Name": "ExampleWeightColumnName",
+        "NewName": "Weight"
+      },
+      {
         "Name": "Acceleration",
         "Desc": "Specifies the type of hardware acceleration to use. Possible values are ``sse_math``, ``avx_math``, ``mkl_math``, ``clr_math`` and ``gpu_math``. To use GPU acceleration, download NVidia CUDA toolkit 6.5 and NVidia cuDNN v2 and copy all DLL files to the ``mxLibs`` directory of the microsoft_scikit package"
       },
@@ -313,23 +325,13 @@
       "Module": "ensemble",
       "Type": "Classifier",
       "Predict_Proba" : true,
-      "Decision_Function" : true,
-      "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      }
-      ]
+      "Decision_Function" : true
     },
     {
       "Name": "Trainers.FastForestRegressor",
       "NewName": "FastForestRegressor",
       "Module": "ensemble",
-      "Type": "Regressor",
-      "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      }
-      ]
+      "Type": "Regressor"
     },
     {
       "Name": "Trainers.FastTreeBinaryClassifier",
@@ -339,10 +341,6 @@
       "Predict_Proba" : true,
       "Decision_Function" : true,
       "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      },
-      {
         "Name": "BestStepRankingRegressionTrees",
         "NewName": "best_step_trees"
       }
@@ -354,10 +352,6 @@
       "Module": "ensemble",
       "Type": "Regressor",
       "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      },
-      {
         "Name": "BestStepRankingRegressionTrees",
         "NewName": "best_step_trees"
       }
@@ -372,7 +366,7 @@
       "Decision_Function" : true,
       "Inputs": [
         {
-          "Name": "MaxOutput",
+          "Name": "MaximumTreeOutput",
           "Default": "float('inf')"
         }
       ]
@@ -384,7 +378,7 @@
       "Type": "Regressor",
       "Inputs": [
         {
-          "Name": "MaxOutput",
+          "Name": "MaximumTreeOutput",
           "Default": "float('inf')"
         }
       ]
@@ -702,10 +696,6 @@
       "Module": "ensemble",
       "Type": "Regressor",
       "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      },
-      {
         "Name": "BestStepRankingRegressionTrees",
         "NewName": "best_step_trees"
       }

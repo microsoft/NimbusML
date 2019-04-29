@@ -13,10 +13,10 @@ __all__ = ["GamRegressor"]
 from ...entrypoints.trainers_generalizedadditivemodelregressor import \
     trainers_generalizedadditivemodelregressor
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
+class GamRegressor(BasePipelineItem, DefaultSignature):
     """
 
     Generalized Additive Models
@@ -79,17 +79,18 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
             <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
 
 
-    :param num_iterations: Total number of iterations over all features.
+    :param number_of_iterations: Total number of iterations over all features.
 
-    :param min_documents: Minimum number of training instances required to form
-        a partition.
+    :param feature: Column to use for features.
 
-    :param learning_rate: Determines the size of the step taken in the
-        direction of the gradient in each step of the learning process.  This
-        determines how fast or slow the learner converges on the optimal
-        solution. If the step size is too big, you might overshoot the optimal
-        solution.  If the step size is too small, training takes longer to
-        converge to the best solution.
+    :param minimum_example_count_per_leaf: Minimum number of training instances
+        required to form a partition.
+
+    :param label: Column to use for labels.
+
+    :param learning_rate: The learning rate.
+
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -113,7 +114,7 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param pruning_metrics: Metric for pruning. (For regression, 1: L1, 2:L2;
         default L2).
@@ -124,15 +125,16 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
     :param gain_conf_level: Tree fitting gain confidence requirement (should be
         in the range [0,1) ).
 
-    :param train_threads: The number of threads to use.
+    :param number_of_threads: The number of threads to use.
 
     :param disk_transpose: Whether to utilize the disk or the data's native
         transposition facilities (where applicable) when performing the
         transpose.
 
-    :param num_bins: Maximum number of distinct values (bins) per feature.
+    :param maximum_bin_count_per_feature: Maximum number of distinct values
+        (bins) per feature.
 
-    :param max_output: Upper bound on absolute value of single output.
+    :param maximum_tree_output: Upper bound on absolute value of single output.
 
     :param get_derivatives_sample_rate: Sample each query 1 in k times in the
         GetDerivatives function.
@@ -164,18 +166,21 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
     @trace
     def __init__(
             self,
-            num_iterations=9500,
-            min_documents=10,
+            number_of_iterations=9500,
+            feature='Features',
+            minimum_example_count_per_leaf=10,
+            label='Label',
             learning_rate=0.002,
+            weight=None,
             normalize='Auto',
             caching='Auto',
             pruning_metrics=2,
             entropy_coefficient=0.0,
             gain_conf_level=0,
-            train_threads=None,
+            number_of_threads=None,
             disk_transpose=None,
-            num_bins=255,
-            max_output=float('inf'),
+            maximum_bin_count_per_feature=255,
+            maximum_tree_output=float('inf'),
             get_derivatives_sample_rate=1,
             random_state=123,
             feature_flocks=True,
@@ -184,18 +189,21 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
         BasePipelineItem.__init__(
             self, type='regressor', **params)
 
-        self.num_iterations = num_iterations
-        self.min_documents = min_documents
+        self.number_of_iterations = number_of_iterations
+        self.feature = feature
+        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
+        self.label = label
         self.learning_rate = learning_rate
+        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.pruning_metrics = pruning_metrics
         self.entropy_coefficient = entropy_coefficient
         self.gain_conf_level = gain_conf_level
-        self.train_threads = train_threads
+        self.number_of_threads = number_of_threads
         self.disk_transpose = disk_transpose
-        self.num_bins = num_bins
-        self.max_output = max_output
+        self.maximum_bin_count_per_feature = maximum_bin_count_per_feature
+        self.maximum_tree_output = maximum_tree_output
         self.get_derivatives_sample_rate = get_derivatives_sample_rate
         self.random_state = random_state
         self.feature_flocks = feature_flocks
@@ -208,23 +216,23 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role('feature_column', all_args),
-            label_column=self._getattr_role('label_column', all_args),
-            weight_column=self._getattr_role('weight_column', all_args),
-            num_iterations=self.num_iterations,
-            min_documents=self.min_documents,
-            learning_rates=self.learning_rate,
+            number_of_iterations=self.number_of_iterations,
+            feature_column_name=self.feature,
+            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
+            label_column_name=self.label,
+            learning_rate=self.learning_rate,
+            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching,
             pruning_metrics=self.pruning_metrics,
             entropy_coefficient=self.entropy_coefficient,
             gain_confidence_level=self.gain_conf_level,
-            num_threads=self.train_threads,
+            number_of_threads=self.number_of_threads,
             disk_transpose=self.disk_transpose,
-            max_bins=self.num_bins,
-            max_output=self.max_output,
+            maximum_bin_count_per_feature=self.maximum_bin_count_per_feature,
+            maximum_tree_output=self.maximum_tree_output,
             get_derivatives_sample_rate=self.get_derivatives_sample_rate,
-            rng_seed=self.random_state,
+            seed=self.random_state,
             feature_flocks=self.feature_flocks,
             enable_pruning=self.enable_pruning)
 

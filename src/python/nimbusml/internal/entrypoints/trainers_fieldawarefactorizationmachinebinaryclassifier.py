@@ -14,14 +14,13 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
         predictor_model=None,
         learning_rate=0.1,
         number_of_iterations=5,
-        feature_column='Features',
+        feature_column_name='Features',
         latent_dimension=20,
-        label_column='Label',
+        label_column_name='Label',
         lambda_linear=0.0001,
-        weight_column=None,
+        example_weight_column_name=None,
         lambda_latent=0.0001,
-        normalize_features='Auto',
-        normalize=True,
+        normalize_features=True,
         caching='Auto',
         extra_feature_columns=None,
         shuffle=True,
@@ -36,20 +35,19 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
     :param training_data: The data to be used for training (inputs).
     :param number_of_iterations: Number of training iterations
         (inputs).
-    :param feature_column: Column to use for features (inputs).
+    :param feature_column_name: Column to use for features (inputs).
     :param latent_dimension: Latent space dimension (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param label_column_name: Column to use for labels (inputs).
     :param lambda_linear: Regularization coefficient of linear
         weights (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param lambda_latent: Regularization coefficient of latent
         weights (inputs).
-    :param normalize_features: Normalize option for the feature
-        column (inputs).
-    :param normalize: Whether to normalize the input vectors so that
-        the concatenation of all fields' feature vectors is unit-
-        length (inputs).
-    :param caching: Whether learner should cache input training data
+    :param normalize_features: Whether to normalize the input vectors
+        so that the concatenation of all fields' feature vectors is
+        unit-length (inputs).
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param extra_feature_columns: Extra columns to use for feature
         vectors. The i-th specified string denotes the column
@@ -82,9 +80,9 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -93,9 +91,9 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             obj=latent_dimension,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -104,9 +102,9 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             obj=lambda_linear,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -117,19 +115,7 @@ def trainers_fieldawarefactorizationmachinebinaryclassifier(
             is_of_type=numbers.Real)
     if normalize_features is not None:
         inputs['NormalizeFeatures'] = try_set(
-            obj=normalize_features,
-            none_acceptable=True,
-            is_of_type=str,
-            values=[
-                'No',
-                'Warn',
-                'Auto',
-                'Yes'])
-    if normalize is not None:
-        inputs['Normalize'] = try_set(
-            obj=normalize,
-            none_acceptable=True,
-            is_of_type=bool)
+            obj=normalize_features, none_acceptable=True, is_of_type=bool)
     if caching is not None:
         inputs['Caching'] = try_set(
             obj=caching,

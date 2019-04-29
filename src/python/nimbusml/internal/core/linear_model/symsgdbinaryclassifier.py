@@ -13,12 +13,10 @@ __all__ = ["SymSgdBinaryClassifier"]
 from ...entrypoints.trainers_symsgdbinaryclassifier import \
     trainers_symsgdbinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class SymSgdBinaryClassifier(
-        BasePipelineItem,
-        DefaultSignatureWithRoles):
+class SymSgdBinaryClassifier(BasePipelineItem, DefaultSignature):
     """
 
     Train an symbolic SGD model.
@@ -44,6 +42,10 @@ class SymSgdBinaryClassifier(
             <https://arxiv.org/pdf/1705.08030.pdf>`_
 
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
     :param normalize: Specifies the type of automatic normalization used:
 
         * ``"Auto"``: if normalization is needed, it is performed
@@ -66,7 +68,7 @@ class SymSgdBinaryClassifier(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param number_of_iterations: Number of passes over the data.
 
@@ -117,6 +119,8 @@ class SymSgdBinaryClassifier(
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
             normalize='Auto',
             caching='Auto',
             number_of_iterations=50,
@@ -132,6 +136,8 @@ class SymSgdBinaryClassifier(
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
+        self.feature = feature
+        self.label = label
         self.normalize = normalize
         self.caching = caching
         self.number_of_iterations = number_of_iterations
@@ -151,8 +157,8 @@ class SymSgdBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role('feature_column', all_args),
-            label_column=self._getattr_role('label_column', all_args),
+            feature_column_name=self.feature,
+            label_column_name=self.label,
             normalize_features=self.normalize,
             caching=self.caching,
             number_of_iterations=self.number_of_iterations,

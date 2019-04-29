@@ -13,12 +13,12 @@ __all__ = ["FastTreesBinaryClassifier"]
 from ...entrypoints.trainers_fasttreebinaryclassifier import \
     trainers_fasttreebinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
 class FastTreesBinaryClassifier(
         BasePipelineItem,
-        DefaultSignatureWithRoles):
+        DefaultSignature):
     """
 
     Machine Learning Fast Tree
@@ -80,26 +80,23 @@ class FastTreesBinaryClassifier(
             `Greedy function approximation: A gradient boosting machine.
             <http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
 
-    :param num_trees: Specifies the total number of decision trees to create in
-        the ensemble. By creating more decision trees, you can potentially get
-        better coverage, but the training time increases.
+    :param number_of_trees: Total number of decision trees to create in the
+        ensemble.
 
-    :param num_leaves: The maximum number of leaves (terminal nodes) that can
-        be created in any tree. Higher values potentially increase the size of
-        the tree and get better precision, but risk overfitting and requiring
-        longer training times.
+    :param number_of_leaves: The max number of leaves in each regression tree.
 
-    :param min_split: Minimum number of training instances required to form a
-        leaf. That is, the minimal number of documents allowed in a leaf of
-        regression tree, out of the sub-sampled data. A 'split' means that
-        features in each level of the tree (node) are randomly divided.
+    :param feature: Column to use for features.
 
-    :param learning_rate: Determines the size of the step taken in the
-        direction of the gradient in each step of the learning process.  This
-        determines how fast or slow the learner converges on the optimal
-        solution. If the step size is too big, you might overshoot the optimal
-        solution.  If the step size is too small, training takes longer to
-        converge to the best solution.
+    :param minimum_example_count_per_leaf: The minimal number of examples
+        allowed in a leaf of a regression tree, out of the subsampled data.
+
+    :param label: Column to use for labels.
+
+    :param learning_rate: The learning rate.
+
+    :param weight: Column to use for example weight.
+
+    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -109,7 +106,7 @@ class FastTreesBinaryClassifier(
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param unbalanced_sets: Option for using derivatives optimized for
         unbalanced sets.
@@ -118,9 +115,10 @@ class FastTreesBinaryClassifier(
 
     :param use_line_search: Should we use line search for a step size.
 
-    :param num_post_bracket_steps: Number of post-bracket line search steps.
+    :param maximum_number_of_line_search_steps: Number of post-bracket line
+        search steps.
 
-    :param min_step_size: Minimum line search step size.
+    :param minimum_step_size: Minimum line search step size.
 
     :param optimizer: Default is ``sgd``.
 
@@ -149,7 +147,7 @@ class FastTreesBinaryClassifier(
     :param write_last_ensemble: Write the last ensemble instead of the one
         determined by early stopping.
 
-    :param max_tree_output: Upper bound on absolute value of single tree
+    :param maximum_tree_output: Upper bound on absolute value of single tree
         output.
 
     :param random_start: Training starts from random ordering (determined by
@@ -164,17 +162,17 @@ class FastTreesBinaryClassifier(
         normal training).
 
     :param position_discount_freeform: The discount freeform which specifies
-        the per position discounts of documents in a query (uses a single
+        the per position discounts of examples in a query (uses a single
         variable P for position where P=0 is first position).
 
     :param parallel_trainer: Allows to choose Parallel FastTree Learning
         Algorithm.
 
-    :param train_threads: The number of threads to use.
+    :param number_of_threads: The number of threads to use.
 
     :param random_state: The seed of the random number generator.
 
-    :param feature_select_seed: The seed of the active feature selection.
+    :param feature_selection_seed: The seed of the active feature selection.
 
     :param entropy_coefficient: The entropy (regularization) coefficient
         between 0 and 1.
@@ -192,19 +190,19 @@ class FastTreesBinaryClassifier(
     :param categorical_split: Whether to do split based on multiple categorical
         feature values.
 
-    :param max_categorical_groups_per_node: Maximum categorical split groups to
-        consider when splitting on a categorical feature. Split groups are a
-        collection of split points. This is used to reduce overfitting when
-        there many categorical features.
+    :param maximum_categorical_group_count_per_node: Maximum categorical split
+        groups to consider when splitting on a categorical feature. Split
+        groups are a collection of split points. This is used to reduce
+        overfitting when there many categorical features.
 
-    :param max_categorical_split_points: Maximum categorical split points to
-        consider when splitting on a categorical feature.
+    :param maximum_categorical_split_point_count: Maximum categorical split
+        points to consider when splitting on a categorical feature.
 
-    :param min_docs_percentage_split: Minimum categorical docs percentage in a
-        bin to consider for a split.
+    :param minimum_example_fraction_for_categorical_split: Minimum categorical
+        example percentage in a bin to consider for a split.
 
-    :param min_docs_for_categorical_split: Minimum categorical doc count in a
-        bin to consider for a split.
+    :param minimum_examples_for_categorical_split: Minimum categorical example
+        count in a bin to consider for a split.
 
     :param bias: Bias for calculating gradient for each feature bin for a
         categorical feature.
@@ -213,7 +211,8 @@ class FastTreesBinaryClassifier(
         Bundle.AggregateLowPopulation(1): Bundle low population,
         Bundle.Adjacent(2): Neighbor low population bundle.
 
-    :param num_bins: Maximum number of distinct values (bins) per feature.
+    :param maximum_bin_count_per_feature: Maximum number of distinct values
+        (bins) per feature.
 
     :param sparsify_threshold: Sparsity level needed to use sparse feature
         representation.
@@ -232,17 +231,18 @@ class FastTreesBinaryClassifier(
     :param softmax_temperature: The temperature of the randomized softmax
         distribution for choosing the feature.
 
-    :param execution_times: Print execution time breakdown to stdout.
+    :param execution_time: Print execution time breakdown to stdout.
 
     :param feature_fraction: The fraction of features (chosen randomly) to use
         on each iteration.
 
     :param bagging_size: Number of trees in each bag (0 for disabling bagging).
 
-    :param example_fraction: Percentage of training examples used in each bag.
+    :param bagging_example_fraction: Percentage of training examples used in
+        each bag.
 
-    :param split_fraction: The fraction of features (chosen randomly) to use on
-        each split.
+    :param feature_fraction_per_split: The fraction of features (chosen
+        randomly) to use on each split.
 
     :param smoothing: Smoothing paramter for tree regularization.
 
@@ -252,9 +252,6 @@ class FastTreesBinaryClassifier(
     :param feature_compression_level: The level of feature compression to use.
 
     :param compress_ensemble: Compress the tree Ensemble.
-
-    :param max_trees_after_compression: Maximum Number of trees after
-        compression.
 
     :param test_frequency: Calculate metric values for train/valid/test every k
         rounds.
@@ -277,20 +274,24 @@ class FastTreesBinaryClassifier(
     @trace
     def __init__(
             self,
-            num_trees=100,
-            num_leaves=20,
-            min_split=10,
+            number_of_trees=100,
+            number_of_leaves=20,
+            feature='Features',
+            minimum_example_count_per_leaf=10,
+            label='Label',
             learning_rate=0.2,
+            weight=None,
+            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             unbalanced_sets=False,
             best_step_trees=False,
             use_line_search=False,
-            num_post_bracket_steps=0,
-            min_step_size=0.0,
+            maximum_number_of_line_search_steps=0,
+            minimum_step_size=0.0,
             optimizer='GradientDescent',
             early_stopping_rule=None,
-            early_stopping_metrics=0,
+            early_stopping_metrics=1,
             enable_pruning=False,
             use_tolerant_pruning=False,
             pruning_threshold=0.004,
@@ -299,59 +300,62 @@ class FastTreesBinaryClassifier(
             dropout_rate=0.0,
             get_derivatives_sample_rate=1,
             write_last_ensemble=False,
-            max_tree_output=100.0,
+            maximum_tree_output=100.0,
             random_start=False,
             filter_zero_lambdas=False,
             baseline_scores_formula=None,
             baseline_alpha_risk=None,
             position_discount_freeform=None,
             parallel_trainer=None,
-            train_threads=None,
+            number_of_threads=None,
             random_state=123,
-            feature_select_seed=123,
+            feature_selection_seed=123,
             entropy_coefficient=0.0,
             histogram_pool_size=-1,
             disk_transpose=None,
             feature_flocks=True,
             categorical_split=False,
-            max_categorical_groups_per_node=64,
-            max_categorical_split_points=64,
-            min_docs_percentage_split=0.001,
-            min_docs_for_categorical_split=100,
+            maximum_categorical_group_count_per_node=64,
+            maximum_categorical_split_point_count=64,
+            minimum_example_fraction_for_categorical_split=0.001,
+            minimum_examples_for_categorical_split=100,
             bias=0.0,
             bundling='None',
-            num_bins=255,
+            maximum_bin_count_per_feature=255,
             sparsify_threshold=0.7,
             first_use_penalty=0.0,
             feature_reuse_penalty=0.0,
             gain_conf_level=0.0,
             softmax_temperature=0.0,
-            execution_times=False,
+            execution_time=False,
             feature_fraction=1.0,
             bagging_size=0,
-            example_fraction=0.7,
-            split_fraction=1.0,
+            bagging_example_fraction=0.7,
+            feature_fraction_per_split=1.0,
             smoothing=0.0,
             allow_empty_trees=True,
             feature_compression_level=1,
             compress_ensemble=False,
-            max_trees_after_compression=-1,
             test_frequency=2147483647,
             **params):
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
-        self.num_trees = num_trees
-        self.num_leaves = num_leaves
-        self.min_split = min_split
+        self.number_of_trees = number_of_trees
+        self.number_of_leaves = number_of_leaves
+        self.feature = feature
+        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
+        self.label = label
         self.learning_rate = learning_rate
+        self.weight = weight
+        self.row_group_column_name = row_group_column_name
         self.normalize = normalize
         self.caching = caching
         self.unbalanced_sets = unbalanced_sets
         self.best_step_trees = best_step_trees
         self.use_line_search = use_line_search
-        self.num_post_bracket_steps = num_post_bracket_steps
-        self.min_step_size = min_step_size
+        self.maximum_number_of_line_search_steps = maximum_number_of_line_search_steps
+        self.minimum_step_size = minimum_step_size
         self.optimizer = optimizer
         self.early_stopping_rule = early_stopping_rule
         self.early_stopping_metrics = early_stopping_metrics
@@ -363,43 +367,42 @@ class FastTreesBinaryClassifier(
         self.dropout_rate = dropout_rate
         self.get_derivatives_sample_rate = get_derivatives_sample_rate
         self.write_last_ensemble = write_last_ensemble
-        self.max_tree_output = max_tree_output
+        self.maximum_tree_output = maximum_tree_output
         self.random_start = random_start
         self.filter_zero_lambdas = filter_zero_lambdas
         self.baseline_scores_formula = baseline_scores_formula
         self.baseline_alpha_risk = baseline_alpha_risk
         self.position_discount_freeform = position_discount_freeform
         self.parallel_trainer = parallel_trainer
-        self.train_threads = train_threads
+        self.number_of_threads = number_of_threads
         self.random_state = random_state
-        self.feature_select_seed = feature_select_seed
+        self.feature_selection_seed = feature_selection_seed
         self.entropy_coefficient = entropy_coefficient
         self.histogram_pool_size = histogram_pool_size
         self.disk_transpose = disk_transpose
         self.feature_flocks = feature_flocks
         self.categorical_split = categorical_split
-        self.max_categorical_groups_per_node = max_categorical_groups_per_node
-        self.max_categorical_split_points = max_categorical_split_points
-        self.min_docs_percentage_split = min_docs_percentage_split
-        self.min_docs_for_categorical_split = min_docs_for_categorical_split
+        self.maximum_categorical_group_count_per_node = maximum_categorical_group_count_per_node
+        self.maximum_categorical_split_point_count = maximum_categorical_split_point_count
+        self.minimum_example_fraction_for_categorical_split = minimum_example_fraction_for_categorical_split
+        self.minimum_examples_for_categorical_split = minimum_examples_for_categorical_split
         self.bias = bias
         self.bundling = bundling
-        self.num_bins = num_bins
+        self.maximum_bin_count_per_feature = maximum_bin_count_per_feature
         self.sparsify_threshold = sparsify_threshold
         self.first_use_penalty = first_use_penalty
         self.feature_reuse_penalty = feature_reuse_penalty
         self.gain_conf_level = gain_conf_level
         self.softmax_temperature = softmax_temperature
-        self.execution_times = execution_times
+        self.execution_time = execution_time
         self.feature_fraction = feature_fraction
         self.bagging_size = bagging_size
-        self.example_fraction = example_fraction
-        self.split_fraction = split_fraction
+        self.bagging_example_fraction = bagging_example_fraction
+        self.feature_fraction_per_split = feature_fraction_per_split
         self.smoothing = smoothing
         self.allow_empty_trees = allow_empty_trees
         self.feature_compression_level = feature_compression_level
         self.compress_ensemble = compress_ensemble
-        self.max_trees_after_compression = max_trees_after_compression
         self.test_frequency = test_frequency
 
     @property
@@ -409,21 +412,21 @@ class FastTreesBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role('feature_column', all_args),
-            label_column=self._getattr_role('label_column', all_args),
-            weight_column=self._getattr_role('weight_column', all_args),
-            group_id_column=self._getattr_role('group_id_column', all_args),
-            num_trees=self.num_trees,
-            num_leaves=self.num_leaves,
-            min_documents_in_leafs=self.min_split,
-            learning_rates=self.learning_rate,
+            number_of_trees=self.number_of_trees,
+            number_of_leaves=self.number_of_leaves,
+            feature_column_name=self.feature,
+            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
+            label_column_name=self.label,
+            learning_rate=self.learning_rate,
+            example_weight_column_name=self.weight,
+            row_group_column_name=self.row_group_column_name,
             normalize_features=self.normalize,
             caching=self.caching,
             unbalanced_sets=self.unbalanced_sets,
             best_step_ranking_regression_trees=self.best_step_trees,
             use_line_search=self.use_line_search,
-            num_post_bracket_steps=self.num_post_bracket_steps,
-            min_step_size=self.min_step_size,
+            maximum_number_of_line_search_steps=self.maximum_number_of_line_search_steps,
+            minimum_step_size=self.minimum_step_size,
             optimization_algorithm=self.optimizer,
             early_stopping_rule=self.early_stopping_rule,
             early_stopping_metrics=self.early_stopping_metrics,
@@ -435,43 +438,42 @@ class FastTreesBinaryClassifier(
             dropout_rate=self.dropout_rate,
             get_derivatives_sample_rate=self.get_derivatives_sample_rate,
             write_last_ensemble=self.write_last_ensemble,
-            max_tree_output=self.max_tree_output,
+            maximum_tree_output=self.maximum_tree_output,
             random_start=self.random_start,
             filter_zero_lambdas=self.filter_zero_lambdas,
             baseline_scores_formula=self.baseline_scores_formula,
             baseline_alpha_risk=self.baseline_alpha_risk,
             position_discount_freeform=self.position_discount_freeform,
             parallel_trainer=self.parallel_trainer,
-            num_threads=self.train_threads,
-            rng_seed=self.random_state,
-            feature_select_seed=self.feature_select_seed,
+            number_of_threads=self.number_of_threads,
+            seed=self.random_state,
+            feature_selection_seed=self.feature_selection_seed,
             entropy_coefficient=self.entropy_coefficient,
             histogram_pool_size=self.histogram_pool_size,
             disk_transpose=self.disk_transpose,
             feature_flocks=self.feature_flocks,
             categorical_split=self.categorical_split,
-            max_categorical_groups_per_node=self.max_categorical_groups_per_node,
-            max_categorical_split_points=self.max_categorical_split_points,
-            min_docs_percentage_for_categorical_split=self.min_docs_percentage_split,
-            min_docs_for_categorical_split=self.min_docs_for_categorical_split,
+            maximum_categorical_group_count_per_node=self.maximum_categorical_group_count_per_node,
+            maximum_categorical_split_point_count=self.maximum_categorical_split_point_count,
+            minimum_example_fraction_for_categorical_split=self.minimum_example_fraction_for_categorical_split,
+            minimum_examples_for_categorical_split=self.minimum_examples_for_categorical_split,
             bias=self.bias,
             bundling=self.bundling,
-            max_bins=self.num_bins,
+            maximum_bin_count_per_feature=self.maximum_bin_count_per_feature,
             sparsify_threshold=self.sparsify_threshold,
             feature_first_use_penalty=self.first_use_penalty,
             feature_reuse_penalty=self.feature_reuse_penalty,
             gain_confidence_level=self.gain_conf_level,
             softmax_temperature=self.softmax_temperature,
-            execution_times=self.execution_times,
+            execution_time=self.execution_time,
             feature_fraction=self.feature_fraction,
             bagging_size=self.bagging_size,
-            bagging_train_fraction=self.example_fraction,
-            split_fraction=self.split_fraction,
+            bagging_example_fraction=self.bagging_example_fraction,
+            feature_fraction_per_split=self.feature_fraction_per_split,
             smoothing=self.smoothing,
             allow_empty_trees=self.allow_empty_trees,
             feature_compression_level=self.feature_compression_level,
             compress_ensemble=self.compress_ensemble,
-            max_trees_after_compression=self.max_trees_after_compression,
             test_frequency=self.test_frequency)
 
         all_args.update(algo_args)

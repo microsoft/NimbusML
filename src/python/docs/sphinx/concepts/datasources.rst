@@ -126,7 +126,7 @@ are used inside a `sklearn.pipeline.Pipeline
 or when they are used individually.
 
 However, when used inside a :py:class:`nimbusml.Pipeline`, the outputs are often stored in
-a more optimized :ref:`VectorType`, which minimizes data conversion to
+a more optimized :ref:`VectorDataViewType`, which minimizes data conversion to
 dataframes. When several transforms are combined inside an :py:class:`nimbusml.Pipeline`,
 the intermediate transforms will store the data in the optimized format and only
 the last transform will return a ``pandas.DataFrame``.

@@ -12,33 +12,33 @@ from ..utils.utils import try_set, unlist
 def trainers_lightgbmbinaryclassifier(
         training_data,
         predictor_model=None,
-        num_boost_round=100,
+        number_of_iterations=100,
         learning_rate=None,
-        num_leaves=None,
-        min_data_per_leaf=None,
-        feature_column='Features',
+        number_of_leaves=None,
+        minimum_example_count_per_leaf=None,
+        feature_column_name='Features',
         booster=None,
-        label_column='Label',
-        weight_column=None,
-        group_id_column=None,
+        label_column_name='Label',
+        example_weight_column_name=None,
+        row_group_column_name=None,
         normalize_features='Auto',
         caching='Auto',
-        max_bin=255,
-        verbose_eval=False,
-        silent=True,
-        n_thread=None,
-        eval_metric='DefaultMetric',
-        use_softmax=None,
-        early_stopping_round=0,
-        custom_gains='0,3,7,15,31,63,127,255,511,1023,2047,4095',
+        unbalanced_sets=False,
+        weight_of_positive_examples=1.0,
         sigmoid=0.5,
+        evaluation_metric='Logloss',
+        maximum_bin_count_per_feature=255,
+        verbose=False,
+        silent=True,
+        number_of_threads=None,
+        early_stopping_round=0,
         batch_size=1048576,
-        use_cat=None,
-        use_missing=False,
-        min_data_per_group=100,
-        max_cat_threshold=32,
-        cat_smooth=10.0,
-        cat_l2=10.0,
+        use_categorical_split=None,
+        handle_missing_value=True,
+        minimum_example_count_per_group=100,
+        maximum_categorical_split_point_count=32,
+        categorical_smoothing=10.0,
+        l2_categorical_regularization=10.0,
         seed=None,
         parallel_trainer=None,
         **params):
@@ -46,52 +46,56 @@ def trainers_lightgbmbinaryclassifier(
     **Description**
         Train a LightGBM binary classification model.
 
-    :param num_boost_round: Number of iterations. (inputs).
+    :param number_of_iterations: Number of iterations. (inputs).
     :param training_data: The data to be used for training (inputs).
     :param learning_rate: Shrinkage rate for trees, used to prevent
         over-fitting. Range: (0,1]. (inputs).
-    :param num_leaves: Maximum leaves for trees. (inputs).
-    :param min_data_per_leaf: Minimum number of instances needed in a
-        child. (inputs).
-    :param feature_column: Column to use for features (inputs).
+    :param number_of_leaves: Maximum leaves for trees. (inputs).
+    :param minimum_example_count_per_leaf: Minimum number of
+        instances needed in a child. (inputs).
+    :param feature_column_name: Column to use for features (inputs).
     :param booster: Which booster to use, can be gbtree, gblinear or
         dart. gbtree and dart use tree based model while gblinear
         uses linear function. (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param weight_column: Column to use for example weight (inputs).
-    :param group_id_column: Column to use for example groupId
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
+    :param row_group_column_name: Column to use for example groupId
         (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
-    :param max_bin: Max number of bucket bin for features. (inputs).
-    :param verbose_eval: Verbose (inputs).
+    :param unbalanced_sets: Use for binary classification when
+        training data is not balanced. (inputs).
+    :param weight_of_positive_examples: Control the balance of
+        positive and negative weights, useful for unbalanced classes.
+        A typical value to consider: sum(negative cases) /
+        sum(positive cases). (inputs).
+    :param sigmoid: Parameter for the sigmoid function. (inputs).
+    :param evaluation_metric: Evaluation metrics. (inputs).
+    :param maximum_bin_count_per_feature: Maximum number of bucket
+        bin for features. (inputs).
+    :param verbose: Verbose (inputs).
     :param silent: Printing running messages. (inputs).
-    :param n_thread: Number of parallel threads used to run LightGBM.
-        (inputs).
-    :param eval_metric: Evaluation metrics. (inputs).
-    :param use_softmax: Use softmax loss for the multi
-        classification. (inputs).
+    :param number_of_threads: Number of parallel threads used to run
+        LightGBM. (inputs).
     :param early_stopping_round: Rounds of early stopping, 0 will
         disable it. (inputs).
-    :param custom_gains: Comma seperated list of gains associated to
-        each relevance label. (inputs).
-    :param sigmoid: Parameter for the sigmoid function. Used only in
-        LightGbmBinaryTrainer, LightGbmMulticlassTrainer and in
-        LightGbmRankingTrainer. (inputs).
     :param batch_size: Number of entries in a batch when loading
         data. (inputs).
-    :param use_cat: Enable categorical split or not. (inputs).
-    :param use_missing: Enable missing value auto infer or not.
+    :param use_categorical_split: Enable categorical split or not.
         (inputs).
-    :param min_data_per_group: Min number of instances per
-        categorical group. (inputs).
-    :param max_cat_threshold: Max number of categorical thresholds.
-        (inputs).
-    :param cat_smooth: Lapalace smooth term in categorical feature
-        spilt. Avoid the bias of small categories. (inputs).
-    :param cat_l2: L2 Regularization for categorical split. (inputs).
+    :param handle_missing_value: Enable special handling of missing
+        value or not. (inputs).
+    :param minimum_example_count_per_group: Minimum number of
+        instances per categorical group. (inputs).
+    :param maximum_categorical_split_point_count: Max number of
+        categorical thresholds. (inputs).
+    :param categorical_smoothing: Lapalace smooth term in categorical
+        feature spilt. Avoid the bias of small categories. (inputs).
+    :param l2_categorical_regularization: L2 Regularization for
+        categorical split. (inputs).
     :param seed: Sets the random seed for LightGBM to use. (inputs).
     :param parallel_trainer: Parallel LightGBM Learning Algorithm
         (inputs).
@@ -102,9 +106,9 @@ def trainers_lightgbmbinaryclassifier(
     inputs = {}
     outputs = {}
 
-    if num_boost_round is not None:
-        inputs['NumBoostRound'] = try_set(
-            obj=num_boost_round,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
@@ -117,19 +121,19 @@ def trainers_lightgbmbinaryclassifier(
             obj=learning_rate,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_leaves is not None:
-        inputs['NumLeaves'] = try_set(
-            obj=num_leaves,
+    if number_of_leaves is not None:
+        inputs['NumberOfLeaves'] = try_set(
+            obj=number_of_leaves,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_data_per_leaf is not None:
-        inputs['MinDataPerLeaf'] = try_set(
-            obj=min_data_per_leaf,
+    if minimum_example_count_per_leaf is not None:
+        inputs['MinimumExampleCountPerLeaf'] = try_set(
+            obj=minimum_example_count_per_leaf,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -138,21 +142,21 @@ def trainers_lightgbmbinaryclassifier(
             obj=booster,
             none_acceptable=True,
             is_of_type=dict)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if group_id_column is not None:
-        inputs['GroupIdColumn'] = try_set(
-            obj=group_id_column,
+    if row_group_column_name is not None:
+        inputs['RowGroupColumnName'] = try_set(
+            obj=row_group_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -175,14 +179,40 @@ def trainers_lightgbmbinaryclassifier(
                 'Auto',
                 'Memory',
                 'None'])
-    if max_bin is not None:
-        inputs['MaxBin'] = try_set(
-            obj=max_bin,
+    if unbalanced_sets is not None:
+        inputs['UnbalancedSets'] = try_set(
+            obj=unbalanced_sets,
+            none_acceptable=True,
+            is_of_type=bool)
+    if weight_of_positive_examples is not None:
+        inputs['WeightOfPositiveExamples'] = try_set(
+            obj=weight_of_positive_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if verbose_eval is not None:
-        inputs['VerboseEval'] = try_set(
-            obj=verbose_eval,
+    if sigmoid is not None:
+        inputs['Sigmoid'] = try_set(
+            obj=sigmoid,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if evaluation_metric is not None:
+        inputs['EvaluationMetric'] = try_set(
+            obj=evaluation_metric,
+            none_acceptable=True,
+            is_of_type=str,
+            values=[
+                'None',
+                'Default',
+                'Logloss',
+                'Error',
+                'AreaUnderCurve'])
+    if maximum_bin_count_per_feature is not None:
+        inputs['MaximumBinCountPerFeature'] = try_set(
+            obj=maximum_bin_count_per_feature,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if verbose is not None:
+        inputs['Verbose'] = try_set(
+            obj=verbose,
             none_acceptable=True,
             is_of_type=bool)
     if silent is not None:
@@ -190,45 +220,14 @@ def trainers_lightgbmbinaryclassifier(
             obj=silent,
             none_acceptable=True,
             is_of_type=bool)
-    if n_thread is not None:
-        inputs['NThread'] = try_set(
-            obj=n_thread,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if eval_metric is not None:
-        inputs['EvalMetric'] = try_set(
-            obj=eval_metric,
-            none_acceptable=True,
-            is_of_type=str,
-            values=[
-                'DefaultMetric',
-                'Rmse',
-                'Mae',
-                'Logloss',
-                'Error',
-                'Merror',
-                'Mlogloss',
-                'Auc',
-                'Ndcg',
-                'Map'])
-    if use_softmax is not None:
-        inputs['UseSoftmax'] = try_set(
-            obj=use_softmax,
-            none_acceptable=True,
-            is_of_type=bool)
     if early_stopping_round is not None:
         inputs['EarlyStoppingRound'] = try_set(
             obj=early_stopping_round,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
-    if custom_gains is not None:
-        inputs['CustomGains'] = try_set(
-            obj=custom_gains,
-            none_acceptable=True,
-            is_of_type=str)
-    if sigmoid is not None:
-        inputs['Sigmoid'] = try_set(
-            obj=sigmoid,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if batch_size is not None:
@@ -236,40 +235,38 @@ def trainers_lightgbmbinaryclassifier(
             obj=batch_size,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if use_cat is not None:
-        inputs['UseCat'] = try_set(
-            obj=use_cat,
+    if use_categorical_split is not None:
+        inputs['UseCategoricalSplit'] = try_set(
+            obj=use_categorical_split, none_acceptable=True, is_of_type=bool)
+    if handle_missing_value is not None:
+        inputs['HandleMissingValue'] = try_set(
+            obj=handle_missing_value,
             none_acceptable=True,
             is_of_type=bool)
-    if use_missing is not None:
-        inputs['UseMissing'] = try_set(
-            obj=use_missing,
-            none_acceptable=True,
-            is_of_type=bool)
-    if min_data_per_group is not None:
-        inputs['MinDataPerGroup'] = try_set(
-            obj=min_data_per_group,
+    if minimum_example_count_per_group is not None:
+        inputs['MinimumExampleCountPerGroup'] = try_set(
+            obj=minimum_example_count_per_group,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
                 'Inf': 0,
                 'Max': 2147483647})
-    if max_cat_threshold is not None:
-        inputs['MaxCatThreshold'] = try_set(
-            obj=max_cat_threshold,
+    if maximum_categorical_split_point_count is not None:
+        inputs['MaximumCategoricalSplitPointCount'] = try_set(
+            obj=maximum_categorical_split_point_count,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
                 'Inf': 0,
                 'Max': 2147483647})
-    if cat_smooth is not None:
-        inputs['CatSmooth'] = try_set(
-            obj=cat_smooth,
+    if categorical_smoothing is not None:
+        inputs['CategoricalSmoothing'] = try_set(
+            obj=categorical_smoothing,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
-    if cat_l2 is not None:
-        inputs['CatL2'] = try_set(
-            obj=cat_l2,
+    if l2_categorical_regularization is not None:
+        inputs['L2CategoricalRegularization'] = try_set(
+            obj=l2_categorical_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
     if seed is not None:

@@ -46,7 +46,7 @@ if /i [%1] == [--skipDotNetBridge]     (
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
@@ -262,7 +262,7 @@ if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
-if %PythonVersion% == 3.7 (
+if %PythonVersion% == 3.6 (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2

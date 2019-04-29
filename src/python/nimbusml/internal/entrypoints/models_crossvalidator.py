@@ -108,7 +108,7 @@ def models_crossvalidator(
             is_of_type=str,
             values=[
                 'SignatureBinaryClassifierTrainer',
-                'SignatureMultiClassClassifierTrainer',
+                'SignatureMulticlassClassificationTrainer',
                 'SignatureRankerTrainer',
                 'SignatureRegressorTrainer',
                 'SignatureMultiOutputRegressorTrainer',

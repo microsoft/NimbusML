@@ -16,7 +16,7 @@ def transforms_texttokeyconverter(
         column=None,
         max_num_terms=1000000,
         term=None,
-        sort='Occurrence',
+        sort='ByOccurrence',
         text_key_values=False,
         **params):
     """
@@ -27,7 +27,7 @@ def transforms_texttokeyconverter(
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
-    :param max_num_terms: Maximum number of terms to keep per column
+    :param max_num_terms: Maximum number of keys to keep per column
         when auto-training (inputs).
     :param term: List of terms (inputs).
     :param sort: How items should be ordered when vectorized. By
@@ -72,8 +72,8 @@ def transforms_texttokeyconverter(
             none_acceptable=True,
             is_of_type=str,
             values=[
-                'Occurrence',
-                'Value'])
+                'ByOccurrence',
+                'ByValue'])
     if text_key_values is not None:
         inputs['TextKeyValues'] = try_set(
             obj=text_key_values,

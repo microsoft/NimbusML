@@ -411,8 +411,10 @@ def run_autoflake(filename):
     parser.add_argument('--remove-all-unused-imports', action='store_true')
     cmd_args = ['--in-place', '--remove-all-unused-imports']
     args = parser.parse_args(cmd_args)
+    args.check = None
     args.imports = None
     args.expand_star_imports = None
     args.remove_duplicate_keys = None
     args.remove_unused_variables = None
+    args.ignore_init_module_imports = False
     autoflake.fix_file(filename, args=args, standard_out=sys.stdout)

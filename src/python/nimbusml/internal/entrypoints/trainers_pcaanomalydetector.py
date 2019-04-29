@@ -12,8 +12,8 @@ from ..utils.utils import try_set, unlist
 def trainers_pcaanomalydetector(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        weight_column=None,
+        feature_column_name='Features',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         rank=20,
@@ -26,11 +26,12 @@ def trainers_pcaanomalydetector(
         Train an PCA Anomaly model.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param rank: The number of components in the PCA (inputs).
     :param oversampling: Oversampling parameter for randomized PCA
@@ -50,15 +51,15 @@ def trainers_pcaanomalydetector(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)

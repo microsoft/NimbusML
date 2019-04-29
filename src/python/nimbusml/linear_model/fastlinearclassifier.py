@@ -81,17 +81,19 @@ class FastLinearClassifier(core, BasePredictor, ClassifierMixin):
             shwartz13a/shalev-shwartz13a.pdf>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param l2_weight: L2 regularizer constant. By default the l2 constant is
-        automatically inferred based on data set.
+    :param l2_regularization: L2 regularizer constant. By default the l2
+        constant is automatically inferred based on data set.
 
     :param l1_threshold: L1 soft threshold (L1/L2). Note that it is easier to
         control and sweep using the threshold parameter than the raw
         L1-regularizer constant. By default the l1 threshold is automatically
         inferred based on data set.
+
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -115,7 +117,7 @@ class FastLinearClassifier(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'log' <nimbusml.loss.Log>`. Other
         choices are
@@ -125,20 +127,21 @@ class FastLinearClassifier(core, BasePredictor, ClassifierMixin):
         documentation
         page about losses, [Loss](xref:nimbusml.loss).
 
-    :param train_threads: Degree of lock-free parallelism. Defaults to
+    :param number_of_threads: Degree of lock-free parallelism. Defaults to
         automatic. Determinism not guaranteed.
 
     :param convergence_tolerance: The tolerance for the ratio between duality
         gap and primal loss for convergence checking.
 
-    :param max_iterations: Maximum number of iterations; set to 1 to simulate
-        online learning. Defaults to automatic.
+    :param maximum_number_of_iterations: Maximum number of iterations; set to 1
+        to simulate online learning. Defaults to automatic.
 
     :param shuffle: Shuffle data every epoch?.
 
-    :param check_frequency: Convergence check frequency (in terms of number of
-        iterations). Set as negative or zero for not checking at all. If left
-        blank, it defaults to check after every 'numThreads' iterations.
+    :param convergence_check_frequency: Convergence check frequency (in terms
+        of number of iterations). Set as negative or zero for not checking at
+        all. If left blank, it defaults to check after every 'numThreads'
+        iterations.
 
     :param bias_learning_rate: The learning rate for adjusting bias from being
         regularized.
@@ -162,48 +165,40 @@ class FastLinearClassifier(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
-            l2_weight=None,
+            l2_regularization=None,
             l1_threshold=None,
+            feature='Features',
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             loss='log',
-            train_threads=None,
+            number_of_threads=None,
             convergence_tolerance=0.1,
-            max_iterations=None,
+            maximum_number_of_iterations=None,
             shuffle=True,
-            check_frequency=None,
+            convergence_check_frequency=None,
             bias_learning_rate=0.0,
-            feature=None,
-            label=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            l2_weight=l2_weight,
+            l2_regularization=l2_regularization,
             l1_threshold=l1_threshold,
+            feature=feature,
+            label=label,
+            weight=weight,
             normalize=normalize,
             caching=caching,
             loss=loss,
-            train_threads=train_threads,
+            number_of_threads=number_of_threads,
             convergence_tolerance=convergence_tolerance,
-            max_iterations=max_iterations,
+            maximum_number_of_iterations=maximum_number_of_iterations,
             shuffle=shuffle,
-            check_frequency=check_frequency,
+            convergence_check_frequency=convergence_check_frequency,
             bias_learning_rate=bias_learning_rate,
             **params)
-        self.feature = feature
-        self.label = label
 
     @trace
     def predict_proba(self, X, **params):

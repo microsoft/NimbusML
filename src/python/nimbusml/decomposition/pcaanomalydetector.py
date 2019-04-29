@@ -68,7 +68,7 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -92,7 +92,7 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param rank: The number of components in the PCA.
 
@@ -118,29 +118,21 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
+            feature='Features',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             rank=20,
             oversampling=20,
             center=True,
             random_state=None,
-            feature=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='anomaly', **params)
         core.__init__(
             self,
+            feature=feature,
+            weight=weight,
             normalize=normalize,
             caching=caching,
             rank=rank,
@@ -148,8 +140,6 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
             center=center,
             random_state=random_state,
             **params)
-        self.feature = feature
-        self.weight = weight
 
     def get_params(self, deep=False):
         """

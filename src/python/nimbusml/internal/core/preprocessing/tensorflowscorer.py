@@ -82,6 +82,9 @@ class TensorFlowScorer(
 
     :param re_train: Retrain TensorFlow model.
 
+    :param add_batch_dimension_inputs: Add a batch dimension to the input e.g.
+        input = [224, 224, 3] => [-1, 224, 224, 3].
+
     :param params: Additional arguments sent to compute engine.
 
     .. index:: transform
@@ -108,6 +111,7 @@ class TensorFlowScorer(
             save_location_operation='save/Const',
             save_operation='save/control_dependency',
             re_train=False,
+            add_batch_dimension_inputs=False,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
@@ -126,6 +130,7 @@ class TensorFlowScorer(
         self.save_location_operation = save_location_operation
         self.save_operation = save_operation
         self.re_train = re_train
+        self.add_batch_dimension_inputs = add_batch_dimension_inputs
 
     @property
     def _entrypoint(self):
@@ -148,7 +153,8 @@ class TensorFlowScorer(
             learning_rate=self.learning_rate,
             save_location_operation=self.save_location_operation,
             save_operation=self.save_operation,
-            re_train=self.re_train)
+            re_train=self.re_train,
+            add_batch_dimension_inputs=self.add_batch_dimension_inputs)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

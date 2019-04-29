@@ -71,7 +71,7 @@ class OnlineGradientDescentRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'hinge' <nimbusml.loss.Hinge>`.
         Other choices are :py:class:`'exp' <nimbusml.loss.Exp>`,
@@ -83,7 +83,7 @@ class OnlineGradientDescentRegressor(
 
     :param decrease_learning_rate: Decrease learning rate.
 
-    :param l2_regularizer_weight: L2 Regularization Weight.
+    :param l2_regularization: L2 Regularization Weight.
 
     :param number_of_iterations: Number of iterations.
 
@@ -92,14 +92,14 @@ class OnlineGradientDescentRegressor(
     :param reset_weights_after_x_examples: Number of examples after which
         weights will be reset to the current average.
 
-    :param do_lazy_updates: Instead of updating averaged weights on every
-        example, only update when loss is nonzero.
+    :param lazy_update: Instead of updating averaged weights on every example,
+        only update when loss is nonzero.
 
     :param recency_gain: Extra weight given to more recent updates
         (`do_lazy_updates`` must be **False**).
 
-    :param recency_gain_multi: Whether Recency Gain is multiplicative vs.
-        additive (`do_lazy_updates`` must be **False**).
+    :param recency_gain_multiplicative: Whether Recency Gain is multiplicative
+        (vs. additive).
 
     :param averaged: Do averaging?.
 
@@ -129,58 +129,48 @@ class OnlineGradientDescentRegressor(
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
             normalize='Auto',
             caching='Auto',
             loss='squared',
             learning_rate=0.1,
             decrease_learning_rate=True,
-            l2_regularizer_weight=0.0,
+            l2_regularization=0.0,
             number_of_iterations=1,
             initial_weights_diameter=0.0,
             reset_weights_after_x_examples=None,
-            do_lazy_updates=True,
+            lazy_update=True,
             recency_gain=0.0,
-            recency_gain_multi=False,
+            recency_gain_multiplicative=False,
             averaged=True,
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
-            feature=None,
-            label=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
+            feature=feature,
+            label=label,
             normalize=normalize,
             caching=caching,
             loss=loss,
             learning_rate=learning_rate,
             decrease_learning_rate=decrease_learning_rate,
-            l2_regularizer_weight=l2_regularizer_weight,
+            l2_regularization=l2_regularization,
             number_of_iterations=number_of_iterations,
             initial_weights_diameter=initial_weights_diameter,
             reset_weights_after_x_examples=reset_weights_after_x_examples,
-            do_lazy_updates=do_lazy_updates,
+            lazy_update=lazy_update,
             recency_gain=recency_gain,
-            recency_gain_multi=recency_gain_multi,
+            recency_gain_multiplicative=recency_gain_multiplicative,
             averaged=averaged,
             averaged_tolerance=averaged_tolerance,
             initial_weights=initial_weights,
             shuffle=shuffle,
             **params)
-        self.feature = feature
-        self.label = label
 
     def get_params(self, deep=False):
         """

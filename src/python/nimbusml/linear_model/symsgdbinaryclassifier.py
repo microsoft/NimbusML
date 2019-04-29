@@ -73,7 +73,7 @@ class SymSgdBinaryClassifier(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param number_of_iterations: Number of passes over the data.
 
@@ -124,6 +124,8 @@ class SymSgdBinaryClassifier(
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
             normalize='Auto',
             caching='Auto',
             number_of_iterations=50,
@@ -135,23 +137,13 @@ class SymSgdBinaryClassifier(
             memory_size=1024,
             shuffle=True,
             positive_instance_weight=1.0,
-            feature=None,
-            label=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
+            feature=feature,
+            label=label,
             normalize=normalize,
             caching=caching,
             number_of_iterations=number_of_iterations,
@@ -164,8 +156,6 @@ class SymSgdBinaryClassifier(
             shuffle=shuffle,
             positive_instance_weight=positive_instance_weight,
             **params)
-        self.feature = feature
-        self.label = label
 
     @trace
     def predict_proba(self, X, **params):

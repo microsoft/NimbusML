@@ -12,23 +12,23 @@ from ..utils.utils import try_set, unlist
 def trainers_generalizedadditivemodelbinaryclassifier(
         training_data,
         predictor_model=None,
-        num_iterations=9500,
-        feature_column='Features',
-        min_documents=10,
-        label_column='Label',
-        learning_rates=0.002,
-        weight_column=None,
+        number_of_iterations=9500,
+        feature_column_name='Features',
+        minimum_example_count_per_leaf=10,
+        label_column_name='Label',
+        learning_rate=0.002,
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         unbalanced_sets=False,
         entropy_coefficient=0.0,
         gain_confidence_level=0,
-        num_threads=None,
+        number_of_threads=None,
         disk_transpose=None,
-        max_bins=255,
-        max_output=float("inf"),
+        maximum_bin_count_per_feature=255,
+        maximum_tree_output=float("inf"),
         get_derivatives_sample_rate=1,
-        rng_seed=123,
+        seed=123,
         feature_flocks=True,
         enable_pruning=True,
         **params):
@@ -38,18 +38,19 @@ def trainers_generalizedadditivemodelbinaryclassifier(
         simultaneously, to fit target values using least-squares. It
         mantains no interactions between features.
 
-    :param num_iterations: Total number of iterations over all
+    :param number_of_iterations: Total number of iterations over all
         features (inputs).
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param min_documents: Minimum number of training instances
-        required to form a partition (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param learning_rates: The learning rate (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param minimum_example_count_per_leaf: Minimum number of training
+        instances required to form a partition (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param learning_rate: The learning rate (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param unbalanced_sets: Should we use derivatives optimized for
         unbalanced sets (inputs).
@@ -57,18 +58,17 @@ def trainers_generalizedadditivemodelbinaryclassifier(
         coefficient between 0 and 1 (inputs).
     :param gain_confidence_level: Tree fitting gain confidence
         requirement (should be in the range [0,1) ). (inputs).
-    :param num_threads: The number of threads to use (inputs).
+    :param number_of_threads: The number of threads to use (inputs).
     :param disk_transpose: Whether to utilize the disk or the data's
         native transposition facilities (where applicable) when
         performing the transpose (inputs).
-    :param max_bins: Maximum number of distinct values (bins) per
-        feature (inputs).
-    :param max_output: Upper bound on absolute value of single output
-        (inputs).
+    :param maximum_bin_count_per_feature: Maximum number of distinct
+        values (bins) per feature (inputs).
+    :param maximum_tree_output: Upper bound on absolute value of
+        single output (inputs).
     :param get_derivatives_sample_rate: Sample each query 1 in k
         times in the GetDerivatives function (inputs).
-    :param rng_seed: The seed of the random number generator
-        (inputs).
+    :param seed: The seed of the random number generator (inputs).
     :param feature_flocks: Whether to collectivize features during
         dataset preparation to speed up training (inputs).
     :param enable_pruning: Enable post-training pruning to avoid
@@ -80,9 +80,9 @@ def trainers_generalizedadditivemodelbinaryclassifier(
     inputs = {}
     outputs = {}
 
-    if num_iterations is not None:
-        inputs['NumIterations'] = try_set(
-            obj=num_iterations,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
@@ -90,31 +90,31 @@ def trainers_generalizedadditivemodelbinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if min_documents is not None:
-        inputs['MinDocuments'] = try_set(
-            obj=min_documents,
+    if minimum_example_count_per_leaf is not None:
+        inputs['MinimumExampleCountPerLeaf'] = try_set(
+            obj=minimum_example_count_per_leaf,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if learning_rates is not None:
-        inputs['LearningRates'] = try_set(
-            obj=learning_rates,
+    if learning_rate is not None:
+        inputs['LearningRate'] = try_set(
+            obj=learning_rate,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -152,9 +152,9 @@ def trainers_generalizedadditivemodelbinaryclassifier(
             obj=gain_confidence_level,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_threads is not None:
-        inputs['NumThreads'] = try_set(
-            obj=num_threads,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if disk_transpose is not None:
@@ -162,14 +162,14 @@ def trainers_generalizedadditivemodelbinaryclassifier(
             obj=disk_transpose,
             none_acceptable=True,
             is_of_type=bool)
-    if max_bins is not None:
-        inputs['MaxBins'] = try_set(
-            obj=max_bins,
+    if maximum_bin_count_per_feature is not None:
+        inputs['MaximumBinCountPerFeature'] = try_set(
+            obj=maximum_bin_count_per_feature,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_output is not None:
-        inputs['MaxOutput'] = try_set(
-            obj=max_output,
+    if maximum_tree_output is not None:
+        inputs['MaximumTreeOutput'] = try_set(
+            obj=maximum_tree_output,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if get_derivatives_sample_rate is not None:
@@ -177,9 +177,9 @@ def trainers_generalizedadditivemodelbinaryclassifier(
             obj=get_derivatives_sample_rate,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if rng_seed is not None:
-        inputs['RngSeed'] = try_set(
-            obj=rng_seed,
+    if seed is not None:
+        inputs['Seed'] = try_set(
+            obj=seed,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if feature_flocks is not None:

@@ -41,9 +41,9 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
             `Naive Bayes <https://en.wikipedia.org/wiki/Naive_Bayes_classifier>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+    :param feature: Column to use for features.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
+    :param label: Column to use for labels.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -67,7 +67,7 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -88,30 +88,20 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
             normalize='Auto',
             caching='Auto',
-            feature=None,
-            label=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
+            feature=feature,
+            label=label,
             normalize=normalize,
             caching=caching,
             **params)
-        self.feature = feature
-        self.label = label
 
     @trace
     def decision_function(self, X, **params):

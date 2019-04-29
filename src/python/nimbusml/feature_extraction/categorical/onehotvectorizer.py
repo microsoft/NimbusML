@@ -115,9 +115,9 @@ class OneHotVectorizer(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             max_num_terms=1000000,
-            output_kind='Ind',
+            output_kind='Indicator',
             term=None,
-            sort='Occurrence',
+            sort='ByOccurrence',
             text_key_values=True,
             columns=None,
             **params):

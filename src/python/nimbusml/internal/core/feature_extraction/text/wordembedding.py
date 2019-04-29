@@ -82,7 +82,7 @@ class WordEmbedding(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            model_kind='Sswe',
+            model_kind='SentimentSpecificWordEmbedding',
             custom_lookup_table=None,
             **params):
         BasePipelineItem.__init__(

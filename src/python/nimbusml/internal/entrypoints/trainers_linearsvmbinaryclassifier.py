@@ -12,9 +12,9 @@ from ..utils.utils import try_set, unlist
 def trainers_linearsvmbinaryclassifier(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
-        weight_column=None,
+        feature_column_name='Features',
+        label_column_name='Label',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         lambda_=0.001,
@@ -33,12 +33,13 @@ def trainers_linearsvmbinaryclassifier(
         Train a linear SVM.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param lambda_: Regularizer constant (inputs).
     :param perform_projection: Perform projection to unit-ball?
@@ -67,21 +68,21 @@ def trainers_linearsvmbinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)

@@ -14,12 +14,12 @@ from ...core.loss.loss_factory import check_loss, create_loss
 from ...entrypoints.trainers_stochasticdualcoordinateascentbinaryclassifier import \
     trainers_stochasticdualcoordinateascentbinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
 class FastLinearBinaryClassifier(
         BasePipelineItem,
-        DefaultSignatureWithRoles):
+        DefaultSignature):
     """
 
     A Stochastic Dual Coordinate Ascent (SDCA) optimization trainer
@@ -84,13 +84,19 @@ class FastLinearBinaryClassifier(
             shwartz13a/shalev-shwartz13a.pdf>`_
 
 
-    :param l2_weight: L2 regularizer constant. By default the l2 constant is
-        automatically inferred based on data set.
+    :param l2_regularization: L2 regularizer constant. By default the l2
+        constant is automatically inferred based on data set.
 
     :param l1_threshold: L1 soft threshold (L1/L2). Note that it is easier to
         control and sweep using the threshold parameter than the raw
         L1-regularizer constant. By default the l1 threshold is automatically
         inferred based on data set.
+
+    :param feature: Column to use for features.
+
+    :param label: Column to use for labels.
+
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -114,7 +120,7 @@ class FastLinearBinaryClassifier(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'log' <nimbusml.loss.Log>`. Other
         choices are :py:class:`'hinge' <nimbusml.loss.Hinge>`, and
@@ -122,7 +128,7 @@ class FastLinearBinaryClassifier(
         information, please see the documentation page about losses,
         [Loss](xref:nimbusml.loss).
 
-    :param train_threads: Degree of lock-free parallelism. Defaults to
+    :param number_of_threads: Degree of lock-free parallelism. Defaults to
         automatic. Determinism not guaranteed.
 
     :param positive_instance_weight: Apply weight to the positive class, for
@@ -131,14 +137,15 @@ class FastLinearBinaryClassifier(
     :param convergence_tolerance: The tolerance for the ratio between duality
         gap and primal loss for convergence checking.
 
-    :param max_iterations: Maximum number of iterations; set to 1 to simulate
-        online learning. Defaults to automatic.
+    :param maximum_number_of_iterations: Maximum number of iterations; set to 1
+        to simulate online learning. Defaults to automatic.
 
     :param shuffle: Shuffle data every epoch?.
 
-    :param check_frequency: Convergence check frequency (in terms of number of
-        iterations). Set as negative or zero for not checking at all. If left
-        blank, it defaults to check after every 'numThreads' iterations.
+    :param convergence_check_frequency: Convergence check frequency (in terms
+        of number of iterations). Set as negative or zero for not checking at
+        all. If left blank, it defaults to check after every 'numThreads'
+        iterations.
 
     :param bias_learning_rate: The learning rate for adjusting bias from being
         regularized.
@@ -162,24 +169,30 @@ class FastLinearBinaryClassifier(
     @trace
     def __init__(
             self,
-            l2_weight=None,
+            l2_regularization=None,
             l1_threshold=None,
+            feature='Features',
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             loss='log',
-            train_threads=None,
+            number_of_threads=None,
             positive_instance_weight=1.0,
             convergence_tolerance=0.1,
-            max_iterations=None,
+            maximum_number_of_iterations=None,
             shuffle=True,
-            check_frequency=None,
+            convergence_check_frequency=None,
             bias_learning_rate=0.0,
             **params):
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
-        self.l2_weight = l2_weight
+        self.l2_regularization = l2_regularization
         self.l1_threshold = l1_threshold
+        self.feature = feature
+        self.label = label
+        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.loss = loss
@@ -187,12 +200,12 @@ class FastLinearBinaryClassifier(
             'SDCAClassificationLossFunction',
             self.__class__.__name__,
             self.loss)
-        self.train_threads = train_threads
+        self.number_of_threads = number_of_threads
         self.positive_instance_weight = positive_instance_weight
         self.convergence_tolerance = convergence_tolerance
-        self.max_iterations = max_iterations
+        self.maximum_number_of_iterations = maximum_number_of_iterations
         self.shuffle = shuffle
-        self.check_frequency = check_frequency
+        self.convergence_check_frequency = convergence_check_frequency
         self.bias_learning_rate = bias_learning_rate
 
     @property
@@ -202,26 +215,23 @@ class FastLinearBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
-                all_args),
-            label_column=self._getattr_role(
-                'label_column',
-                all_args),
-            l2_const=self.l2_weight,
+            l2_regularization=self.l2_regularization,
             l1_threshold=self.l1_threshold,
+            feature_column_name=self.feature,
+            label_column_name=self.label,
+            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching,
             loss_function=create_loss(
                 'SDCAClassificationLossFunction',
                 self.__class__.__name__,
                 self.loss),
-            num_threads=self.train_threads,
+            number_of_threads=self.number_of_threads,
             positive_instance_weight=self.positive_instance_weight,
             convergence_tolerance=self.convergence_tolerance,
-            max_iterations=self.max_iterations,
+            maximum_number_of_iterations=self.maximum_number_of_iterations,
             shuffle=self.shuffle,
-            check_frequency=self.check_frequency,
+            convergence_check_frequency=self.convergence_check_frequency,
             bias_learning_rate=self.bias_learning_rate)
 
         all_args.update(algo_args)

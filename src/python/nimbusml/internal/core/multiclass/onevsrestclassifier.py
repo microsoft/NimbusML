@@ -12,12 +12,10 @@ __all__ = ["OneVsRestClassifier"]
 
 from ...entrypoints.models_oneversusall import models_oneversusall
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class OneVsRestClassifier(
-        BasePipelineItem,
-        DefaultSignatureWithRoles):
+class OneVsRestClassifier(BasePipelineItem, DefaultSignature):
     """
 
     One-vs-All macro (OVA)
@@ -38,7 +36,13 @@ class OneVsRestClassifier(
 
     :param output_for_sub_graph: The training subgraph output.
 
+    :param feature: Column to use for features.
+
     :param use_probabilities: Use probabilities in OVA combiner.
+
+    :param label: Column to use for labels.
+
+    :param weight: Column to use for example weight.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -48,7 +52,7 @@ class OneVsRestClassifier(
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -95,7 +99,10 @@ class OneVsRestClassifier(
             self,
             classifier,
             output_for_sub_graph=0,
+            feature='Features',
             use_probabilities=True,
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             **params):
@@ -104,7 +111,10 @@ class OneVsRestClassifier(
 
         self.classifier = classifier
         self.output_for_sub_graph = output_for_sub_graph
+        self.feature = feature
         self.use_probabilities = use_probabilities
+        self.label = label
+        self.weight = weight
         self.normalize = normalize
         self.caching = caching
 
@@ -115,18 +125,12 @@ class OneVsRestClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
-                all_args),
-            label_column=self._getattr_role(
-                'label_column',
-                all_args),
-            weight_column=self._getattr_role(
-                'weight_column',
-                all_args),
             nodes=self.classifier,
             output_for_sub_graph=self.output_for_sub_graph,
+            feature_column_name=self.feature,
             use_probabilities=self.use_probabilities,
+            label_column_name=self.label,
+            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching)
 

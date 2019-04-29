@@ -14,12 +14,11 @@ from ...core.loss.loss_factory import check_loss, create_loss
 from ...entrypoints.trainers_onlinegradientdescentregressor import \
     trainers_onlinegradientdescentregressor
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
 class OnlineGradientDescentRegressor(
-        BasePipelineItem,
-        DefaultSignatureWithRoles):
+        BasePipelineItem, DefaultSignature):
     """
 
     Train a stochastic gradient descent model.
@@ -45,6 +44,10 @@ class OnlineGradientDescentRegressor(
             <https://en.wikipedia.org/wiki/Stochastic_gradient_descent>`_
 
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
     :param normalize: Specifies the type of automatic normalization used:
 
         * ``"Auto"``: if normalization is needed, it is performed
@@ -67,7 +70,7 @@ class OnlineGradientDescentRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'hinge' <nimbusml.loss.Hinge>`.
         Other choices are :py:class:`'exp' <nimbusml.loss.Exp>`,
@@ -79,7 +82,7 @@ class OnlineGradientDescentRegressor(
 
     :param decrease_learning_rate: Decrease learning rate.
 
-    :param l2_regularizer_weight: L2 Regularization Weight.
+    :param l2_regularization: L2 Regularization Weight.
 
     :param number_of_iterations: Number of iterations.
 
@@ -88,14 +91,14 @@ class OnlineGradientDescentRegressor(
     :param reset_weights_after_x_examples: Number of examples after which
         weights will be reset to the current average.
 
-    :param do_lazy_updates: Instead of updating averaged weights on every
-        example, only update when loss is nonzero.
+    :param lazy_update: Instead of updating averaged weights on every example,
+        only update when loss is nonzero.
 
     :param recency_gain: Extra weight given to more recent updates
         (`do_lazy_updates`` must be **False**).
 
-    :param recency_gain_multi: Whether Recency Gain is multiplicative vs.
-        additive (`do_lazy_updates`` must be **False**).
+    :param recency_gain_multiplicative: Whether Recency Gain is multiplicative
+        (vs. additive).
 
     :param averaged: Do averaging?.
 
@@ -125,18 +128,20 @@ class OnlineGradientDescentRegressor(
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
             normalize='Auto',
             caching='Auto',
             loss='squared',
             learning_rate=0.1,
             decrease_learning_rate=True,
-            l2_regularizer_weight=0.0,
+            l2_regularization=0.0,
             number_of_iterations=1,
             initial_weights_diameter=0.0,
             reset_weights_after_x_examples=None,
-            do_lazy_updates=True,
+            lazy_update=True,
             recency_gain=0.0,
-            recency_gain_multi=False,
+            recency_gain_multiplicative=False,
             averaged=True,
             averaged_tolerance=0.01,
             initial_weights=None,
@@ -145,6 +150,8 @@ class OnlineGradientDescentRegressor(
         BasePipelineItem.__init__(
             self, type='regressor', **params)
 
+        self.feature = feature
+        self.label = label
         self.normalize = normalize
         self.caching = caching
         self.loss = loss
@@ -154,13 +161,13 @@ class OnlineGradientDescentRegressor(
             self.loss)
         self.learning_rate = learning_rate
         self.decrease_learning_rate = decrease_learning_rate
-        self.l2_regularizer_weight = l2_regularizer_weight
+        self.l2_regularization = l2_regularization
         self.number_of_iterations = number_of_iterations
         self.initial_weights_diameter = initial_weights_diameter
         self.reset_weights_after_x_examples = reset_weights_after_x_examples
-        self.do_lazy_updates = do_lazy_updates
+        self.lazy_update = lazy_update
         self.recency_gain = recency_gain
-        self.recency_gain_multi = recency_gain_multi
+        self.recency_gain_multiplicative = recency_gain_multiplicative
         self.averaged = averaged
         self.averaged_tolerance = averaged_tolerance
         self.initial_weights = initial_weights
@@ -173,12 +180,8 @@ class OnlineGradientDescentRegressor(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
-                all_args),
-            label_column=self._getattr_role(
-                'label_column',
-                all_args),
+            feature_column_name=self.feature,
+            label_column_name=self.label,
             normalize_features=self.normalize,
             caching=self.caching,
             loss_function=create_loss(
@@ -187,13 +190,13 @@ class OnlineGradientDescentRegressor(
                 self.loss),
             learning_rate=self.learning_rate,
             decrease_learning_rate=self.decrease_learning_rate,
-            l2_regularizer_weight=self.l2_regularizer_weight,
+            l2_regularization=self.l2_regularization,
             number_of_iterations=self.number_of_iterations,
             initial_weights_diameter=self.initial_weights_diameter,
             reset_weights_after_x_examples=self.reset_weights_after_x_examples,
-            do_lazy_updates=self.do_lazy_updates,
+            lazy_update=self.lazy_update,
             recency_gain=self.recency_gain,
-            recency_gain_multi=self.recency_gain_multi,
+            recency_gain_multiplicative=self.recency_gain_multiplicative,
             averaged=self.averaged,
             averaged_tolerance=self.averaged_tolerance,
             initial_weights=self.initial_weights,

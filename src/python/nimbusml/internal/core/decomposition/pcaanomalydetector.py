@@ -13,12 +13,10 @@ __all__ = ["PcaAnomalyDetector"]
 from ...entrypoints.trainers_pcaanomalydetector import \
     trainers_pcaanomalydetector
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class PcaAnomalyDetector(
-        BasePipelineItem,
-        DefaultSignatureWithRoles):
+class PcaAnomalyDetector(BasePipelineItem, DefaultSignature):
     """
 
     Train an anomaly model using approximate PCA via randomized SVD
@@ -66,6 +64,10 @@ class PcaAnomalyDetector(
             SIREV.pdf>`_
 
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param weight: Column to use for example weight.
+
     :param normalize: Specifies the type of automatic normalization used:
 
         * ``"Auto"``: if normalization is needed, it is performed
@@ -88,7 +90,7 @@ class PcaAnomalyDetector(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param rank: The number of components in the PCA.
 
@@ -114,6 +116,8 @@ class PcaAnomalyDetector(
     @trace
     def __init__(
             self,
+            feature='Features',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             rank=20,
@@ -123,6 +127,8 @@ class PcaAnomalyDetector(
             **params):
         BasePipelineItem.__init__(self, type='anomaly', **params)
 
+        self.feature = feature
+        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.rank = rank
@@ -137,12 +143,8 @@ class PcaAnomalyDetector(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
-                all_args),
-            weight_column=self._getattr_role(
-                'weight_column',
-                all_args),
+            feature_column_name=self.feature,
+            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching,
             rank=self.rank,

@@ -86,6 +86,9 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
 
     :param re_train: Retrain TensorFlow model.
 
+    :param add_batch_dimension_inputs: Add a batch dimension to the input e.g.
+        input = [224, 224, 3] => [-1, 224, 224, 3].
+
     :param params: Additional arguments sent to compute engine.
 
     .. index:: transform
@@ -112,6 +115,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             save_location_operation='save/Const',
             save_operation='save/control_dependency',
             re_train=False,
+            add_batch_dimension_inputs=False,
             label=None,
             columns=None,
             **params):
@@ -151,6 +155,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             save_location_operation=save_location_operation,
             save_operation=save_operation,
             re_train=re_train,
+            add_batch_dimension_inputs=add_batch_dimension_inputs,
             **params)
         self.label = label
         self._columns = columns

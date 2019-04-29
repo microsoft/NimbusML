@@ -12,22 +12,22 @@ from ..utils.utils import try_set, unlist
 def trainers_poissonregressor(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
-        weight_column=None,
+        feature_column_name='Features',
+        label_column_name='Label',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
-        l2_weight=1.0,
-        l1_weight=1.0,
-        opt_tol=1e-07,
-        memory_size=20,
+        l2_regularization=1.0,
+        l1_regularization=1.0,
+        optmization_tolerance=1e-07,
+        history_size=20,
         enforce_non_negativity=False,
-        init_wts_diameter=0.0,
-        max_iterations=2147483647,
-        sgd_initialization_tolerance=0.0,
+        initial_weights_diameter=0.0,
+        maximum_number_of_iterations=2147483647,
+        stochastic_gradient_descent_initilaization_tolerance=0.0,
         quiet=False,
         use_threads=True,
-        num_threads=None,
+        number_of_threads=None,
         dense_optimizer=False,
         **params):
     """
@@ -35,30 +35,34 @@ def trainers_poissonregressor(
         Train an Poisson regression model.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
-    :param l2_weight: L2 regularization weight (inputs).
-    :param l1_weight: L1 regularization weight (inputs).
-    :param opt_tol: Tolerance parameter for optimization convergence.
-        Low = slower, more accurate (inputs).
-    :param memory_size: Memory size for L-BFGS. Low=faster, less
+    :param l2_regularization: L2 regularization weight (inputs).
+    :param l1_regularization: L1 regularization weight (inputs).
+    :param optmization_tolerance: Tolerance parameter for
+        optimization convergence. Low = slower, more accurate
+        (inputs).
+    :param history_size: Memory size for L-BFGS. Low=faster, less
         accurate (inputs).
     :param enforce_non_negativity: Enforce non-negative weights
         (inputs).
-    :param init_wts_diameter: Init weights diameter (inputs).
-    :param max_iterations: Maximum iterations. (inputs).
-    :param sgd_initialization_tolerance: Run SGD to initialize LR
-        weights, converging to this tolerance (inputs).
+    :param initial_weights_diameter: Init weights diameter (inputs).
+    :param maximum_number_of_iterations: Maximum iterations.
+        (inputs).
+    :param stochastic_gradient_descent_initilaization_tolerance: Run
+        SGD to initialize LR weights, converging to this tolerance
+        (inputs).
     :param quiet: If set to true, produce no output during training.
         (inputs).
     :param use_threads: Whether or not to use threads. Default is
         true (inputs).
-    :param num_threads: Number of threads (inputs).
+    :param number_of_threads: Number of threads (inputs).
     :param dense_optimizer: Force densification of the internal
         optimization vectors (inputs).
     :param predictor_model: The trained model (outputs).
@@ -73,21 +77,21 @@ def trainers_poissonregressor(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -110,42 +114,42 @@ def trainers_poissonregressor(
                 'Auto',
                 'Memory',
                 'None'])
-    if l2_weight is not None:
-        inputs['L2Weight'] = try_set(
-            obj=l2_weight,
+    if l2_regularization is not None:
+        inputs['L2Regularization'] = try_set(
+            obj=l2_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if l1_weight is not None:
-        inputs['L1Weight'] = try_set(
-            obj=l1_weight,
+    if l1_regularization is not None:
+        inputs['L1Regularization'] = try_set(
+            obj=l1_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if opt_tol is not None:
-        inputs['OptTol'] = try_set(
-            obj=opt_tol,
+    if optmization_tolerance is not None:
+        inputs['OptmizationTolerance'] = try_set(
+            obj=optmization_tolerance,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if memory_size is not None:
-        inputs['MemorySize'] = try_set(
-            obj=memory_size,
+    if history_size is not None:
+        inputs['HistorySize'] = try_set(
+            obj=history_size,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if enforce_non_negativity is not None:
         inputs['EnforceNonNegativity'] = try_set(
             obj=enforce_non_negativity, none_acceptable=True, is_of_type=bool)
-    if init_wts_diameter is not None:
-        inputs['InitWtsDiameter'] = try_set(
-            obj=init_wts_diameter,
+    if initial_weights_diameter is not None:
+        inputs['InitialWeightsDiameter'] = try_set(
+            obj=initial_weights_diameter,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_iterations is not None:
-        inputs['MaxIterations'] = try_set(
-            obj=max_iterations,
+    if maximum_number_of_iterations is not None:
+        inputs['MaximumNumberOfIterations'] = try_set(
+            obj=maximum_number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if sgd_initialization_tolerance is not None:
-        inputs['SgdInitializationTolerance'] = try_set(
-            obj=sgd_initialization_tolerance,
+    if stochastic_gradient_descent_initilaization_tolerance is not None:
+        inputs['StochasticGradientDescentInitilaizationTolerance'] = try_set(
+            obj=stochastic_gradient_descent_initilaization_tolerance,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if quiet is not None:
@@ -158,9 +162,9 @@ def trainers_poissonregressor(
             obj=use_threads,
             none_acceptable=True,
             is_of_type=bool)
-    if num_threads is not None:
-        inputs['NumThreads'] = try_set(
-            obj=num_threads,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if dense_optimizer is not None:

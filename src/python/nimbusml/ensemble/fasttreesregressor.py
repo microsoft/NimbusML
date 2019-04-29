@@ -85,34 +85,23 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
             `Greedy function approximation: A gradient boosting machine.
             <http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+    :param number_of_trees: Total number of decision trees to create in the
+        ensemble.
 
-    :param group_id: see `Columns </nimbusml/concepts/columns>`_.
+    :param number_of_leaves: The max number of leaves in each regression tree.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
+    :param feature: Column to use for features.
 
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+    :param minimum_example_count_per_leaf: The minimal number of examples
+        allowed in a leaf of a regression tree, out of the subsampled data.
 
-    :param num_trees: Specifies the total number of decision trees to create in
-        the ensemble. By creating more decision trees, you can potentially get
-        better coverage, but the training time increases.
+    :param label: Column to use for labels.
 
-    :param num_leaves: The maximum number of leaves (terminal nodes) that can
-        be created in any tree. Higher values potentially increase the size of
-        the tree and get better precision, but risk overfitting and requiring
-        longer training times.
+    :param learning_rate: The learning rate.
 
-    :param min_split: Minimum number of training instances required to form a
-        leaf. That is, the minimal number of documents allowed in a leaf of
-        regression tree, out of the sub-sampled data. A 'split' means that
-        features in each level of the tree (node) are randomly divided.
+    :param weight: Column to use for example weight.
 
-    :param learning_rate: Determines the size of the step taken in the
-        direction of the gradient in each step of the learning process.  This
-        determines how fast or slow the learner converges on the optimal
-        solution. If the step size is too big, you might overshoot the optimal
-        solution.  If the step size is too small, training takes longer to
-        converge to the best solution.
+    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -122,15 +111,16 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param best_step_trees: Option for using best regression step trees.
 
     :param use_line_search: Should we use line search for a step size.
 
-    :param num_post_bracket_steps: Number of post-bracket line search steps.
+    :param maximum_number_of_line_search_steps: Number of post-bracket line
+        search steps.
 
-    :param min_step_size: Minimum line search step size.
+    :param minimum_step_size: Minimum line search step size.
 
     :param optimizer: Default is ``sgd``.
 
@@ -159,7 +149,7 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
     :param write_last_ensemble: Write the last ensemble instead of the one
         determined by early stopping.
 
-    :param max_tree_output: Upper bound on absolute value of single tree
+    :param maximum_tree_output: Upper bound on absolute value of single tree
         output.
 
     :param random_start: Training starts from random ordering (determined by
@@ -174,17 +164,17 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
         normal training).
 
     :param position_discount_freeform: The discount freeform which specifies
-        the per position discounts of documents in a query (uses a single
+        the per position discounts of examples in a query (uses a single
         variable P for position where P=0 is first position).
 
     :param parallel_trainer: Allows to choose Parallel FastTree Learning
         Algorithm.
 
-    :param train_threads: The number of threads to use.
+    :param number_of_threads: The number of threads to use.
 
     :param random_state: The seed of the random number generator.
 
-    :param feature_select_seed: The seed of the active feature selection.
+    :param feature_selection_seed: The seed of the active feature selection.
 
     :param entropy_coefficient: The entropy (regularization) coefficient
         between 0 and 1.
@@ -202,19 +192,19 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
     :param categorical_split: Whether to do split based on multiple categorical
         feature values.
 
-    :param max_categorical_groups_per_node: Maximum categorical split groups to
-        consider when splitting on a categorical feature. Split groups are a
-        collection of split points. This is used to reduce overfitting when
-        there many categorical features.
+    :param maximum_categorical_group_count_per_node: Maximum categorical split
+        groups to consider when splitting on a categorical feature. Split
+        groups are a collection of split points. This is used to reduce
+        overfitting when there many categorical features.
 
-    :param max_categorical_split_points: Maximum categorical split points to
-        consider when splitting on a categorical feature.
+    :param maximum_categorical_split_point_count: Maximum categorical split
+        points to consider when splitting on a categorical feature.
 
-    :param min_docs_percentage_split: Minimum categorical docs percentage in a
-        bin to consider for a split.
+    :param minimum_example_fraction_for_categorical_split: Minimum categorical
+        example percentage in a bin to consider for a split.
 
-    :param min_docs_for_categorical_split: Minimum categorical doc count in a
-        bin to consider for a split.
+    :param minimum_examples_for_categorical_split: Minimum categorical example
+        count in a bin to consider for a split.
 
     :param bias: Bias for calculating gradient for each feature bin for a
         categorical feature.
@@ -223,7 +213,8 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
         Bundle.AggregateLowPopulation(1): Bundle low population,
         Bundle.Adjacent(2): Neighbor low population bundle.
 
-    :param num_bins: Maximum number of distinct values (bins) per feature.
+    :param maximum_bin_count_per_feature: Maximum number of distinct values
+        (bins) per feature.
 
     :param sparsify_threshold: Sparsity level needed to use sparse feature
         representation.
@@ -242,17 +233,18 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
     :param softmax_temperature: The temperature of the randomized softmax
         distribution for choosing the feature.
 
-    :param execution_times: Print execution time breakdown to stdout.
+    :param execution_time: Print execution time breakdown to stdout.
 
     :param feature_fraction: The fraction of features (chosen randomly) to use
         on each iteration.
 
     :param bagging_size: Number of trees in each bag (0 for disabling bagging).
 
-    :param example_fraction: Percentage of training examples used in each bag.
+    :param bagging_example_fraction: Percentage of training examples used in
+        each bag.
 
-    :param split_fraction: The fraction of features (chosen randomly) to use on
-        each split.
+    :param feature_fraction_per_split: The fraction of features (chosen
+        randomly) to use on each split.
 
     :param smoothing: Smoothing paramter for tree regularization.
 
@@ -262,9 +254,6 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
     :param feature_compression_level: The level of feature compression to use.
 
     :param compress_ensemble: Compress the tree Ensemble.
-
-    :param max_trees_after_compression: Maximum Number of trees after
-        compression.
 
     :param test_frequency: Calculate metric values for train/valid/test every k
         rounds.
@@ -287,16 +276,20 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
     @trace
     def __init__(
             self,
-            num_trees=100,
-            num_leaves=20,
-            min_split=10,
+            number_of_trees=100,
+            number_of_leaves=20,
+            feature='Features',
+            minimum_example_count_per_leaf=10,
+            label='Label',
             learning_rate=0.2,
+            weight=None,
+            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             best_step_trees=False,
             use_line_search=False,
-            num_post_bracket_steps=0,
-            min_step_size=0.0,
+            maximum_number_of_line_search_steps=0,
+            minimum_step_size=0.0,
             optimizer='GradientDescent',
             early_stopping_rule=None,
             early_stopping_metrics=1,
@@ -308,83 +301,62 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
             dropout_rate=0.0,
             get_derivatives_sample_rate=1,
             write_last_ensemble=False,
-            max_tree_output=100.0,
+            maximum_tree_output=100.0,
             random_start=False,
             filter_zero_lambdas=False,
             baseline_scores_formula=None,
             baseline_alpha_risk=None,
             position_discount_freeform=None,
             parallel_trainer=None,
-            train_threads=None,
+            number_of_threads=None,
             random_state=123,
-            feature_select_seed=123,
+            feature_selection_seed=123,
             entropy_coefficient=0.0,
             histogram_pool_size=-1,
             disk_transpose=None,
             feature_flocks=True,
             categorical_split=False,
-            max_categorical_groups_per_node=64,
-            max_categorical_split_points=64,
-            min_docs_percentage_split=0.001,
-            min_docs_for_categorical_split=100,
+            maximum_categorical_group_count_per_node=64,
+            maximum_categorical_split_point_count=64,
+            minimum_example_fraction_for_categorical_split=0.001,
+            minimum_examples_for_categorical_split=100,
             bias=0.0,
             bundling='None',
-            num_bins=255,
+            maximum_bin_count_per_feature=255,
             sparsify_threshold=0.7,
             first_use_penalty=0.0,
             feature_reuse_penalty=0.0,
             gain_conf_level=0.0,
             softmax_temperature=0.0,
-            execution_times=False,
+            execution_time=False,
             feature_fraction=1.0,
             bagging_size=0,
-            example_fraction=0.7,
-            split_fraction=1.0,
+            bagging_example_fraction=0.7,
+            feature_fraction_per_split=1.0,
             smoothing=0.0,
             allow_empty_trees=True,
             feature_compression_level=1,
             compress_ensemble=False,
-            max_trees_after_compression=-1,
             test_frequency=2147483647,
-            feature=None,
-            group_id=None,
-            label=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'group_id_column' in params:
-            raise NameError(
-                "'group_id_column' must be renamed to 'group_id'")
-        if group_id:
-            params['group_id_column'] = group_id
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
-            num_trees=num_trees,
-            num_leaves=num_leaves,
-            min_split=min_split,
+            number_of_trees=number_of_trees,
+            number_of_leaves=number_of_leaves,
+            feature=feature,
+            minimum_example_count_per_leaf=minimum_example_count_per_leaf,
+            label=label,
             learning_rate=learning_rate,
+            weight=weight,
+            row_group_column_name=row_group_column_name,
             normalize=normalize,
             caching=caching,
             best_step_trees=best_step_trees,
             use_line_search=use_line_search,
-            num_post_bracket_steps=num_post_bracket_steps,
-            min_step_size=min_step_size,
+            maximum_number_of_line_search_steps=maximum_number_of_line_search_steps,
+            minimum_step_size=minimum_step_size,
             optimizer=optimizer,
             early_stopping_rule=early_stopping_rule,
             early_stopping_metrics=early_stopping_metrics,
@@ -396,49 +368,44 @@ class FastTreesRegressor(core, BasePredictor, RegressorMixin):
             dropout_rate=dropout_rate,
             get_derivatives_sample_rate=get_derivatives_sample_rate,
             write_last_ensemble=write_last_ensemble,
-            max_tree_output=max_tree_output,
+            maximum_tree_output=maximum_tree_output,
             random_start=random_start,
             filter_zero_lambdas=filter_zero_lambdas,
             baseline_scores_formula=baseline_scores_formula,
             baseline_alpha_risk=baseline_alpha_risk,
             position_discount_freeform=position_discount_freeform,
             parallel_trainer=parallel_trainer,
-            train_threads=train_threads,
+            number_of_threads=number_of_threads,
             random_state=random_state,
-            feature_select_seed=feature_select_seed,
+            feature_selection_seed=feature_selection_seed,
             entropy_coefficient=entropy_coefficient,
             histogram_pool_size=histogram_pool_size,
             disk_transpose=disk_transpose,
             feature_flocks=feature_flocks,
             categorical_split=categorical_split,
-            max_categorical_groups_per_node=max_categorical_groups_per_node,
-            max_categorical_split_points=max_categorical_split_points,
-            min_docs_percentage_split=min_docs_percentage_split,
-            min_docs_for_categorical_split=min_docs_for_categorical_split,
+            maximum_categorical_group_count_per_node=maximum_categorical_group_count_per_node,
+            maximum_categorical_split_point_count=maximum_categorical_split_point_count,
+            minimum_example_fraction_for_categorical_split=minimum_example_fraction_for_categorical_split,
+            minimum_examples_for_categorical_split=minimum_examples_for_categorical_split,
             bias=bias,
             bundling=bundling,
-            num_bins=num_bins,
+            maximum_bin_count_per_feature=maximum_bin_count_per_feature,
             sparsify_threshold=sparsify_threshold,
             first_use_penalty=first_use_penalty,
             feature_reuse_penalty=feature_reuse_penalty,
             gain_conf_level=gain_conf_level,
             softmax_temperature=softmax_temperature,
-            execution_times=execution_times,
+            execution_time=execution_time,
             feature_fraction=feature_fraction,
             bagging_size=bagging_size,
-            example_fraction=example_fraction,
-            split_fraction=split_fraction,
+            bagging_example_fraction=bagging_example_fraction,
+            feature_fraction_per_split=feature_fraction_per_split,
             smoothing=smoothing,
             allow_empty_trees=allow_empty_trees,
             feature_compression_level=feature_compression_level,
             compress_ensemble=compress_ensemble,
-            max_trees_after_compression=max_trees_after_compression,
             test_frequency=test_frequency,
             **params)
-        self.feature = feature
-        self.group_id = group_id
-        self.label = label
-        self.weight = weight
 
     def get_params(self, deep=False):
         """

@@ -50,26 +50,23 @@ class FactorizationMachineBinaryClassifier(
             <http://jmlr.org/papers/volume12/duchi11a/duchi11a.pdf>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
-
     :param learning_rate: Initial learning rate.
 
     :param number_of_iterations: Number of training iterations.
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
     :param latent_dimension: Latent space dimension.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
     :param lambda_linear: Regularization coefficient of linear weights.
 
+    :param weight: Column to use for example weight.
+
     :param lambda_latent: Regularization coefficient of latent weights.
 
-    :param normalize: Whether to normalize the input vectors so that the
-        concatenation of all fields' feature vectors is unit-length.
-
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param extra_feature_columns: Extra columns to use for feature vectors. The
         i-th specified string denotes the column containing features form the
@@ -105,53 +102,36 @@ class FactorizationMachineBinaryClassifier(
             self,
             learning_rate=0.1,
             number_of_iterations=5,
+            feature='Features',
             latent_dimension=20,
+            label='Label',
             lambda_linear=0.0001,
+            weight=None,
             lambda_latent=0.0001,
-            normalize=True,
             caching='Auto',
             extra_feature_columns=None,
             shuffle=True,
             verbose=True,
             radius=0.5,
-            feature=None,
-            label=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
             learning_rate=learning_rate,
             number_of_iterations=number_of_iterations,
+            feature=feature,
             latent_dimension=latent_dimension,
+            label=label,
             lambda_linear=lambda_linear,
+            weight=weight,
             lambda_latent=lambda_latent,
-            normalize=normalize,
             caching=caching,
             extra_feature_columns=extra_feature_columns,
             shuffle=shuffle,
             verbose=verbose,
             radius=radius,
             **params)
-        self.feature = feature
-        self.label = label
-        self.weight = weight
 
     @trace
     def predict_proba(self, X, **params):

@@ -105,7 +105,7 @@ class WordEmbedding(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            model_kind='Sswe',
+            model_kind='SentimentSpecificWordEmbedding',
             custom_lookup_table=None,
             columns=None,
             **params):

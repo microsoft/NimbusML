@@ -12,29 +12,30 @@ from ..utils.utils import try_set, unlist
 def trainers_ordinaryleastsquaresregressor(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
-        weight_column=None,
+        feature_column_name='Features',
+        label_column_name='Label',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
-        l2_weight=1e-06,
-        per_parameter_significance=True,
+        l2_regularization=1e-06,
+        calculate_statistics=True,
         **params):
     """
     **Description**
         Train an OLS regression model.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
-    :param l2_weight: L2 regularization weight (inputs).
-    :param per_parameter_significance: Whether to calculate per
-        parameter significance statistics (inputs).
+    :param l2_regularization: L2 regularization weight (inputs).
+    :param calculate_statistics: Whether to calculate per parameter
+        significance statistics (inputs).
     :param predictor_model: The trained model (outputs).
     """
 
@@ -47,21 +48,21 @@ def trainers_ordinaryleastsquaresregressor(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -84,16 +85,14 @@ def trainers_ordinaryleastsquaresregressor(
                 'Auto',
                 'Memory',
                 'None'])
-    if l2_weight is not None:
-        inputs['L2Weight'] = try_set(
-            obj=l2_weight,
+    if l2_regularization is not None:
+        inputs['L2Regularization'] = try_set(
+            obj=l2_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if per_parameter_significance is not None:
-        inputs['PerParameterSignificance'] = try_set(
-            obj=per_parameter_significance,
-            none_acceptable=True,
-            is_of_type=bool)
+    if calculate_statistics is not None:
+        inputs['CalculateStatistics'] = try_set(
+            obj=calculate_statistics, none_acceptable=True, is_of_type=bool)
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(
             obj=predictor_model, none_acceptable=False, is_of_type=str)

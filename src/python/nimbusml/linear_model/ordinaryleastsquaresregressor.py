@@ -41,11 +41,11 @@ class OrdinaryLeastSquaresRegressor(
             <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+    :param feature: Column to use for features.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
+    :param label: Column to use for labels.
 
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -69,11 +69,11 @@ class OrdinaryLeastSquaresRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
-    :param l2_weight: L2 regularization weight.
+    :param l2_regularization: L2 regularization weight.
 
-    :param per_parameter_significance: Whether to calculate per parameter
+    :param calculate_statistics: Whether to calculate per parameter
         significance statistics.
 
     :param params: Additional arguments sent to compute engine.
@@ -96,41 +96,26 @@ class OrdinaryLeastSquaresRegressor(
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
-            l2_weight=1e-06,
-            per_parameter_significance=True,
-            feature=None,
-            label=None,
-            weight=None,
+            l2_regularization=1e-06,
+            calculate_statistics=True,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
+            feature=feature,
+            label=label,
+            weight=weight,
             normalize=normalize,
             caching=caching,
-            l2_weight=l2_weight,
-            per_parameter_significance=per_parameter_significance,
+            l2_regularization=l2_regularization,
+            calculate_statistics=calculate_statistics,
             **params)
-        self.feature = feature
-        self.label = label
-        self.weight = weight
 
     def get_params(self, deep=False):
         """

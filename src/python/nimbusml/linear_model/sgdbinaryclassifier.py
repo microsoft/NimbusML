@@ -44,11 +44,11 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
             <http://arxiv.org/pdf/1106.5730v2.pdf>`_
 
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+    :param feature: Column to use for features.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
+    :param label: Column to use for labels.
 
-    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -72,7 +72,7 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'log' <nimbusml.loss.Log>`. Other
         choices are :py:class:`'exp' <nimbusml.loss.Exp>`, :py:class:`'hinge'
@@ -80,18 +80,18 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
         <nimbusml.loss.SmoothedHinge>`. For more information, please see the
         documentation page about losses, [Loss](xref:nimbusml.loss).
 
-    :param l2_weight: L2 Regularization constant.
+    :param l2_regularization: L2 Regularization constant.
 
-    :param train_threads: Degree of lock-free parallelism. Defaults to
+    :param number_of_threads: Degree of lock-free parallelism. Defaults to
         automatic depending on data sparseness. Determinism not guaranteed.
 
     :param convergence_tolerance: Exponential moving averaged improvement
         tolerance for convergence.
 
-    :param max_iterations: Maximum number of iterations; set to 1 to simulate
-        online learning.
+    :param number_of_iterations: Maximum number of iterations; set to 1 to
+        simulate online learning.
 
-    :param init_learning_rate: Initial learning rate (only used by SGD).
+    :param initial_learning_rate: Initial learning rate (only used by SGD).
 
     :param shuffle: Shuffle data every epoch?.
 
@@ -119,55 +119,40 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
+            feature='Features',
+            label='Label',
+            weight=None,
             normalize='Auto',
             caching='Auto',
             loss='log',
-            l2_weight=1e-06,
-            train_threads=None,
+            l2_regularization=1e-06,
+            number_of_threads=None,
             convergence_tolerance=0.0001,
-            max_iterations=20,
-            init_learning_rate=0.01,
+            number_of_iterations=20,
+            initial_learning_rate=0.01,
             shuffle=True,
             positive_instance_weight=1.0,
             check_frequency=None,
-            feature=None,
-            label=None,
-            weight=None,
             **params):
 
-        if 'feature_column' in params:
-            raise NameError(
-                "'feature_column' must be renamed to 'feature'")
-        if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
-            raise NameError(
-                "'weight_column' must be renamed to 'weight'")
-        if weight:
-            params['weight_column'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
+            feature=feature,
+            label=label,
+            weight=weight,
             normalize=normalize,
             caching=caching,
             loss=loss,
-            l2_weight=l2_weight,
-            train_threads=train_threads,
+            l2_regularization=l2_regularization,
+            number_of_threads=number_of_threads,
             convergence_tolerance=convergence_tolerance,
-            max_iterations=max_iterations,
-            init_learning_rate=init_learning_rate,
+            number_of_iterations=number_of_iterations,
+            initial_learning_rate=initial_learning_rate,
             shuffle=shuffle,
             positive_instance_weight=positive_instance_weight,
             check_frequency=check_frequency,
             **params)
-        self.feature = feature
-        self.label = label
-        self.weight = weight
 
     @trace
     def predict_proba(self, X, **params):

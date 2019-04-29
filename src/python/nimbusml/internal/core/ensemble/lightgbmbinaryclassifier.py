@@ -13,12 +13,12 @@ __all__ = ["LightGbmBinaryClassifier"]
 from ...entrypoints.trainers_lightgbmbinaryclassifier import \
     trainers_lightgbmbinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
 class LightGbmBinaryClassifier(
         BasePipelineItem,
-        DefaultSignatureWithRoles):
+        DefaultSignature):
     """
 
     Gradient Boosted Decision Trees
@@ -34,23 +34,29 @@ class LightGbmBinaryClassifier(
             `GitHub: LightGBM <https://github.com/Microsoft/LightGBM/wiki>`_
 
 
-    :param num_boost_round: Number of iterations.
+    :param number_of_iterations: Number of iterations.
 
     :param learning_rate: Shrinkage rate for trees, used to prevent over-
         fitting. Range: (0,1].
 
-    :param num_leaves: The maximum number of leaves (terminal nodes) that can
-        be created in any tree. Higher values potentially increase the size of
-        the tree and get better precision, but risk overfitting and requiring
-        longer training times.
+    :param number_of_leaves: Maximum leaves for trees.
 
-    :param min_data_per_leaf: Minimum number of instances needed in a child.
+    :param minimum_example_count_per_leaf: Minimum number of instances needed
+        in a child.
+
+    :param feature: Column to use for features.
 
     :param booster: Which booster to use. Available options are:
 
         #. :py:func:`Dart <nimbusml.ensemble.booster.Dart>`
         #. :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`
         #. :py:func:`Goss <nimbusml.ensemble.booster.Goss>`.
+
+    :param label: Column to use for labels.
+
+    :param weight: Column to use for example weight.
+
+    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -60,43 +66,48 @@ class LightGbmBinaryClassifier(
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
-    :param max_bin: Max number of bucket bin for features.
+    :param unbalanced_sets: Use for binary classification when training data is
+        not balanced.
 
-    :param verbose_eval: Verbose.
+    :param weight_of_positive_examples: Control the balance of positive and
+        negative weights, useful for unbalanced classes. A typical value to
+        consider: sum(negative cases) / sum(positive cases).
+
+    :param sigmoid: Parameter for the sigmoid function.
+
+    :param evaluation_metric: Evaluation metrics.
+
+    :param maximum_bin_count_per_feature: Maximum number of bucket bin for
+        features.
+
+    :param verbose: Verbose.
 
     :param silent: Printing running messages.
 
-    :param n_thread: Number of parallel threads used to run LightGBM.
-
-    :param eval_metric: Evaluation metrics.
-
-    :param use_softmax: Use softmax loss for the multi classification.
+    :param number_of_threads: Number of parallel threads used to run LightGBM.
 
     :param early_stopping_round: Rounds of early stopping, 0 will disable it.
 
-    :param custom_gains: Comma seperated list of gains associated to each
-        relevance label.
-
-    :param sigmoid: Parameter for the sigmoid function. Used only in
-        LightGbmBinaryTrainer, LightGbmMulticlassTrainer and in
-        LightGbmRankingTrainer.
-
     :param batch_size: Number of entries in a batch when loading data.
 
-    :param use_cat: Enable categorical split or not.
+    :param use_categorical_split: Enable categorical split or not.
 
-    :param use_missing: Enable missing value auto infer or not.
+    :param handle_missing_value: Enable special handling of missing value or
+        not.
 
-    :param min_data_per_group: Min number of instances per categorical group.
+    :param minimum_example_count_per_group: Minimum number of instances per
+        categorical group.
 
-    :param max_cat_threshold: Max number of categorical thresholds.
+    :param maximum_categorical_split_point_count: Max number of categorical
+        thresholds.
 
-    :param cat_smooth: Lapalace smooth term in categorical feature spilt. Avoid
-        the bias of small categories.
+    :param categorical_smoothing: Lapalace smooth term in categorical feature
+        spilt. Avoid the bias of small categories.
 
-    :param cat_l2: L2 Regularization for categorical split.
+    :param l2_categorical_regularization: L2 Regularization for categorical
+        split.
 
     :param random_state: Sets the random seed for LightGBM to use.
 
@@ -122,58 +133,66 @@ class LightGbmBinaryClassifier(
     @trace
     def __init__(
             self,
-            num_boost_round=100,
+            number_of_iterations=100,
             learning_rate=None,
-            num_leaves=None,
-            min_data_per_leaf=None,
+            number_of_leaves=None,
+            minimum_example_count_per_leaf=None,
+            feature='Features',
             booster=None,
+            label='Label',
+            weight=None,
+            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
-            max_bin=255,
-            verbose_eval=False,
-            silent=True,
-            n_thread=None,
-            eval_metric='DefaultMetric',
-            use_softmax=None,
-            early_stopping_round=0,
-            custom_gains='0,3,7,15,31,63,127,255,511,1023,2047,4095',
+            unbalanced_sets=False,
+            weight_of_positive_examples=1.0,
             sigmoid=0.5,
+            evaluation_metric='Logloss',
+            maximum_bin_count_per_feature=255,
+            verbose=False,
+            silent=True,
+            number_of_threads=None,
+            early_stopping_round=0,
             batch_size=1048576,
-            use_cat=None,
-            use_missing=False,
-            min_data_per_group=100,
-            max_cat_threshold=32,
-            cat_smooth=10.0,
-            cat_l2=10.0,
+            use_categorical_split=None,
+            handle_missing_value=True,
+            minimum_example_count_per_group=100,
+            maximum_categorical_split_point_count=32,
+            categorical_smoothing=10.0,
+            l2_categorical_regularization=10.0,
             random_state=None,
             parallel_trainer=None,
             **params):
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
-        self.num_boost_round = num_boost_round
+        self.number_of_iterations = number_of_iterations
         self.learning_rate = learning_rate
-        self.num_leaves = num_leaves
-        self.min_data_per_leaf = min_data_per_leaf
+        self.number_of_leaves = number_of_leaves
+        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
+        self.feature = feature
         self.booster = booster
+        self.label = label
+        self.weight = weight
+        self.row_group_column_name = row_group_column_name
         self.normalize = normalize
         self.caching = caching
-        self.max_bin = max_bin
-        self.verbose_eval = verbose_eval
-        self.silent = silent
-        self.n_thread = n_thread
-        self.eval_metric = eval_metric
-        self.use_softmax = use_softmax
-        self.early_stopping_round = early_stopping_round
-        self.custom_gains = custom_gains
+        self.unbalanced_sets = unbalanced_sets
+        self.weight_of_positive_examples = weight_of_positive_examples
         self.sigmoid = sigmoid
+        self.evaluation_metric = evaluation_metric
+        self.maximum_bin_count_per_feature = maximum_bin_count_per_feature
+        self.verbose = verbose
+        self.silent = silent
+        self.number_of_threads = number_of_threads
+        self.early_stopping_round = early_stopping_round
         self.batch_size = batch_size
-        self.use_cat = use_cat
-        self.use_missing = use_missing
-        self.min_data_per_group = min_data_per_group
-        self.max_cat_threshold = max_cat_threshold
-        self.cat_smooth = cat_smooth
-        self.cat_l2 = cat_l2
+        self.use_categorical_split = use_categorical_split
+        self.handle_missing_value = handle_missing_value
+        self.minimum_example_count_per_group = minimum_example_count_per_group
+        self.maximum_categorical_split_point_count = maximum_categorical_split_point_count
+        self.categorical_smoothing = categorical_smoothing
+        self.l2_categorical_regularization = l2_categorical_regularization
         self.random_state = random_state
         self.parallel_trainer = parallel_trainer
 
@@ -184,33 +203,33 @@ class LightGbmBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role('feature_column', all_args),
-            label_column=self._getattr_role('label_column', all_args),
-            weight_column=self._getattr_role('weight_column', all_args),
-            group_id_column=self._getattr_role('group_id_column', all_args),
-            num_boost_round=self.num_boost_round,
+            number_of_iterations=self.number_of_iterations,
             learning_rate=self.learning_rate,
-            num_leaves=self.num_leaves,
-            min_data_per_leaf=self.min_data_per_leaf,
+            number_of_leaves=self.number_of_leaves,
+            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
+            feature_column_name=self.feature,
             booster=self.booster,
+            label_column_name=self.label,
+            example_weight_column_name=self.weight,
+            row_group_column_name=self.row_group_column_name,
             normalize_features=self.normalize,
             caching=self.caching,
-            max_bin=self.max_bin,
-            verbose_eval=self.verbose_eval,
-            silent=self.silent,
-            n_thread=self.n_thread,
-            eval_metric=self.eval_metric,
-            use_softmax=self.use_softmax,
-            early_stopping_round=self.early_stopping_round,
-            custom_gains=self.custom_gains,
+            unbalanced_sets=self.unbalanced_sets,
+            weight_of_positive_examples=self.weight_of_positive_examples,
             sigmoid=self.sigmoid,
+            evaluation_metric=self.evaluation_metric,
+            maximum_bin_count_per_feature=self.maximum_bin_count_per_feature,
+            verbose=self.verbose,
+            silent=self.silent,
+            number_of_threads=self.number_of_threads,
+            early_stopping_round=self.early_stopping_round,
             batch_size=self.batch_size,
-            use_cat=self.use_cat,
-            use_missing=self.use_missing,
-            min_data_per_group=self.min_data_per_group,
-            max_cat_threshold=self.max_cat_threshold,
-            cat_smooth=self.cat_smooth,
-            cat_l2=self.cat_l2,
+            use_categorical_split=self.use_categorical_split,
+            handle_missing_value=self.handle_missing_value,
+            minimum_example_count_per_group=self.minimum_example_count_per_group,
+            maximum_categorical_split_point_count=self.maximum_categorical_split_point_count,
+            categorical_smoothing=self.categorical_smoothing,
+            l2_categorical_regularization=self.l2_categorical_regularization,
             seed=self.random_state,
             parallel_trainer=self.parallel_trainer)
 

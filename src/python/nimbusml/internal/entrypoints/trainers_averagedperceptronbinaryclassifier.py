@@ -12,22 +12,22 @@ from ..utils.utils import try_set, unlist
 def trainers_averagedperceptronbinaryclassifier(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
+        feature_column_name='Features',
+        label_column_name='Label',
         normalize_features='Auto',
         caching='Auto',
         loss_function=None,
         learning_rate=1.0,
         decrease_learning_rate=False,
-        l2_regularizer_weight=0.0,
+        l2_regularization=0.0,
         number_of_iterations=1,
         initial_weights_diameter=0.0,
         calibrator=None,
         max_calibration_examples=1000000,
         reset_weights_after_x_examples=None,
-        do_lazy_updates=True,
+        lazy_update=True,
         recency_gain=0.0,
-        recency_gain_multi=False,
+        recency_gain_multiplicative=False,
         averaged=True,
         averaged_tolerance=0.01,
         initial_weights=None,
@@ -38,16 +38,16 @@ def trainers_averagedperceptronbinaryclassifier(
         Averaged Perceptron Binary Classifier.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param loss_function: Loss Function (inputs).
     :param learning_rate: Learning rate (inputs).
     :param decrease_learning_rate: Decrease learning rate (inputs).
-    :param l2_regularizer_weight: L2 Regularization Weight (inputs).
+    :param l2_regularization: L2 Regularization Weight (inputs).
     :param number_of_iterations: Number of iterations (inputs).
     :param initial_weights_diameter: Init weights diameter (inputs).
     :param calibrator: The calibrator kind to apply to the predictor.
@@ -56,12 +56,12 @@ def trainers_averagedperceptronbinaryclassifier(
         to use when training the calibrator (inputs).
     :param reset_weights_after_x_examples: Number of examples after
         which weights will be reset to the current average (inputs).
-    :param do_lazy_updates: Instead of updating averaged weights on
-        every example, only update when loss is nonzero (inputs).
+    :param lazy_update: Instead of updating averaged weights on every
+        example, only update when loss is nonzero (inputs).
     :param recency_gain: Extra weight given to more recent updates
         (inputs).
-    :param recency_gain_multi: Whether Recency Gain is multiplicative
-        (vs. additive) (inputs).
+    :param recency_gain_multiplicative: Whether Recency Gain is
+        multiplicative (vs. additive) (inputs).
     :param averaged: Do averaging? (inputs).
     :param averaged_tolerance: The inexactness tolerance for
         averaging (inputs).
@@ -81,15 +81,15 @@ def trainers_averagedperceptronbinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -125,9 +125,9 @@ def trainers_averagedperceptronbinaryclassifier(
     if decrease_learning_rate is not None:
         inputs['DecreaseLearningRate'] = try_set(
             obj=decrease_learning_rate, none_acceptable=True, is_of_type=bool)
-    if l2_regularizer_weight is not None:
-        inputs['L2RegularizerWeight'] = try_set(
-            obj=l2_regularizer_weight,
+    if l2_regularization is not None:
+        inputs['L2Regularization'] = try_set(
+            obj=l2_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if number_of_iterations is not None:
@@ -155,9 +155,9 @@ def trainers_averagedperceptronbinaryclassifier(
             obj=reset_weights_after_x_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if do_lazy_updates is not None:
-        inputs['DoLazyUpdates'] = try_set(
-            obj=do_lazy_updates,
+    if lazy_update is not None:
+        inputs['LazyUpdate'] = try_set(
+            obj=lazy_update,
             none_acceptable=True,
             is_of_type=bool)
     if recency_gain is not None:
@@ -165,9 +165,9 @@ def trainers_averagedperceptronbinaryclassifier(
             obj=recency_gain,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if recency_gain_multi is not None:
-        inputs['RecencyGainMulti'] = try_set(
-            obj=recency_gain_multi,
+    if recency_gain_multiplicative is not None:
+        inputs['RecencyGainMultiplicative'] = try_set(
+            obj=recency_gain_multiplicative,
             none_acceptable=True,
             is_of_type=bool)
     if averaged is not None:
