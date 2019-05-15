@@ -48,7 +48,7 @@ class TestPipelineSyntax(unittest.TestCase):
               "'minsplit'] are not allowed"
         with self.assertRaises(NameError, msg=msg):
             LightGbmClassifier(min_data=1, min_data_in_bin=1,
-                               min_data_per_leaf=1,
+                               minimum_example_count_per_leaf=1,
                                minsplit=1, NumLeaves=2)
 
     def test_pipeline_with_no_columns_raise(self):
@@ -111,7 +111,7 @@ class TestPipelineSyntax(unittest.TestCase):
 
         ppl = Pipeline([
             NGramFeaturizer(word_feature_extractor=n_gram()),
-            LightGbmClassifier(min_data_per_leaf=1, min_data_per_group=1)
+            LightGbmClassifier(minimum_example_count_per_leaf=1, min_data_per_group=1)
         ])
         assert ppl is not None
 
@@ -124,7 +124,7 @@ class TestPipelineSyntax(unittest.TestCase):
 
         ppl = Pipeline([
             NGramFeaturizer(word_feature_extractor=n_gram()),
-            LightGbmClassifier(min_data_per_leaf=1, min_data_per_group=1)
+            LightGbmClassifier(minimum_example_count_per_leaf=1, min_data_per_group=1)
         ])
         assert ppl is not None
         ppl.fit(trainData[["SentimentText"]], np.array(trainData["Sentiment"]))

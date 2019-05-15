@@ -211,7 +211,7 @@ class TestSyntaxLearner(unittest.TestCase):
                         'workclass',
                         'education']},
                 FastTreesRegressor(
-                    num_trees=5) << {
+                    number_of_trees=5) << {
                     'Feature': 'Feature',
                     Role.Label: 'y',
                     Role.Weight: 'weight'}])
@@ -238,7 +238,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer(columns=['workclass', 'education']),
             Concat(columns={'Feature': ['workclass', 'education']}),
-            FastTreesRegressor(num_trees=5, feature='Feature', label='y',
+            FastTreesRegressor(number_of_trees=5, feature='Feature', label='y',
                                weight='weight')
         ])
         exp.fit(X, verbose=0)
@@ -264,7 +264,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer(columns=['workclass', 'education']),
             Concat(columns={'Feature': ['workclass', 'education']}),
-            FastTreesRegressor(num_trees=5, label='y',
+            FastTreesRegressor(number_of_trees=5, label='y',
                                weight='weight') << 'Feature'
         ])
         exp.fit(X, verbose=0)
@@ -296,7 +296,7 @@ class TestSyntaxLearner(unittest.TestCase):
                     columns={
                         'Feature': ['workclass', 'education']}),
                 FastTreesRegressor(
-                    num_trees=5, feature='Feature', weight='weight') << {
+                    number_of_trees=5, feature='Feature', weight='weight') << {
                     Role.Label: 'y'}])
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Feature'
@@ -323,7 +323,7 @@ class TestSyntaxLearner(unittest.TestCase):
             OneHotVectorizer(columns=['workclass', 'education']),
             Concat(columns={'Feature': ['workclass', 'education']}),
             ToKey() << 'gr',
-            FastTreesRegressor(num_trees=5, feature='Feature',
+            FastTreesRegressor(number_of_trees=5, feature='Feature',
                                group_id='gr') << {Role.Label: 'y'}
         ])
         exp.fit(X, verbose=0)

@@ -16,17 +16,17 @@ pipe = Pipeline([
     ('cat', OneHotVectorizer() << 'education'),
     # unnamed step, stays same in grid search
     OneHotHashVectorizer() << 'workclass',
-    # this instance of FastTreesBinaryClassifier with num_trees 0 will be
+    # this instance of FastTreesBinaryClassifier with number_of_trees 0 will be
     # never run by grid search as its not a part of param_grid below
-    ('learner', FastTreesBinaryClassifier(num_trees=0, num_leaves=2))
+    ('learner', FastTreesBinaryClassifier(number_of_trees=0, num_leaves=2))
 ])
 
 param_grid = dict(
     cat__output_kind=[
-        'Ind', 'Bin'], learner__num_trees=[
+        'Ind', 'Bin'], learner__number_of_trees=[
         1, 2, 3])
 grid = GridSearchCV(pipe, param_grid, cv=3, iid='warn')
 
 grid.fit(X, y)
 print(grid.best_params_)
-# {'cat__output_kind': 'Ind', 'learner__num_trees': 1}
+# {'cat__output_kind': 'Ind', 'learner__number_of_trees': 1}

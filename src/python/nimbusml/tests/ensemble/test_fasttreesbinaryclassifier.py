@@ -27,7 +27,7 @@ class TestFastTreesBinaryClassifier(unittest.TestCase):
                         "Petal_Length",
                         "Sepal_Length"]},
                 FastTreesBinaryClassifier(
-                    num_trees=2) << {
+                    number_of_trees=2) << {
                     Role.Label: 'Label',
                     Role.Feature: 'Features'}])
 
@@ -38,7 +38,7 @@ class TestFastTreesBinaryClassifier(unittest.TestCase):
         pipeline = Pipeline([
             ColumnConcatenator() << {
                 'Features': ["Petal_Length", "Sepal_Length"]},
-            FastTreesBinaryClassifier(num_trees=2) << {
+            FastTreesBinaryClassifier(number_of_trees=2) << {
                 Role.Feature: 'Features'}
         ])
 
@@ -50,7 +50,7 @@ class TestFastTreesBinaryClassifier(unittest.TestCase):
         pipeline = Pipeline([
             ColumnConcatenator() << {
                 'Features': ["Petal_Length", "Sepal_Length"]},
-            FastTreesBinaryClassifier(num_trees=2)
+            FastTreesBinaryClassifier(number_of_trees=2)
         ])
 
         model = pipeline.fit(df, verbose=0)
@@ -61,7 +61,7 @@ class TestFastTreesBinaryClassifier(unittest.TestCase):
         pipeline = Pipeline([
             ColumnConcatenator() << {
                 'Features': ["Petal_Length", "Sepal_Length"]},
-            FastTreesBinaryClassifier(num_trees=2) << {Role.Label: 'Label'}
+            FastTreesBinaryClassifier(number_of_trees=2) << {Role.Label: 'Label'}
         ])
 
         model = pipeline.fit(df, verbose=0)

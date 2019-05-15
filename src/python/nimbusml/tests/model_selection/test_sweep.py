@@ -51,13 +51,13 @@ class TestSweep(unittest.TestCase):
             ('cat', OneHotVectorizer() << 'education'),
             # unnamed step, stays same in grid search
             OneHotHashVectorizer() << 'workclass',
-            # num_trees 0 will actually be never run by grid search
-            ('learner', FastTreesBinaryClassifier(num_trees=0, num_leaves=2))
+            # number_of_trees 0 will actually be never run by grid search
+            ('learner', FastTreesBinaryClassifier(number_of_trees=0, num_leaves=2))
         ])
 
         param_grid = dict(
             cat__output_kind=[
-                'Ind', 'Bin'], learner__num_trees=[
+                'Ind', 'Bin'], learner__number_of_trees=[
                 1, 2, 3])
         grid = GridSearchCV(pipe, param_grid)
 
@@ -65,7 +65,7 @@ class TestSweep(unittest.TestCase):
         print(grid.best_params_)
         assert grid.best_params_ == {
             'cat__output_kind': 'Ind',
-            'learner__num_trees': 1}
+            'learner__number_of_trees': 1}
 
     def test_learners_sweep(self):
         # grid search over 2 learners, even though pipe defined with
@@ -102,7 +102,7 @@ class TestSweep(unittest.TestCase):
         six.PY2,
         "potential bug in pandas read_csv of unicode text in python2.7")
     def test_uciadult_sweep(self):
-        # grid search over num_trees and then confirm the best num_trees by
+        # grid search over number_of_trees and then confirm the best number_of_trees by
         # full train
         np.random.seed(0)
         (X_train, y_train) = get_X_y(train_file,
@@ -111,27 +111,27 @@ class TestSweep(unittest.TestCase):
                                    label_column, sep=',', encoding='utf-8')
 
         cat = OneHotHashVectorizer() << categorical_columns
-        # num_trees 100 will actually be never run by grid search
+        # number_of_trees 100 will actually be never run by grid search
         # as its not in param_grid below
-        learner = FastTreesBinaryClassifier(num_trees=100, num_leaves=5)
+        learner = FastTreesBinaryClassifier(number_of_trees=100, num_leaves=5)
         pipe = Pipeline(steps=[('cat', cat), ('learner', learner)])
 
-        param_grid = dict(learner__num_trees=[1, 5, 10])
+        param_grid = dict(learner__number_of_trees=[1, 5, 10])
         grid = GridSearchCV(pipe, param_grid)
 
         grid.fit(X_train, y_train)
-        assert grid.best_params_['learner__num_trees'] == 10
+        assert grid.best_params_['learner__number_of_trees'] == 10
 
-        # compare AUC on num_trees 1, 5, 10
-        pipe.set_params(learner__num_trees=1)
+        # compare AUC on number_of_trees 1, 5, 10
+        pipe.set_params(learner__number_of_trees=1)
         pipe.fit(X_train, y_train)
         metrics1, _ = pipe.test(X_train, y_train)
 
-        pipe.set_params(learner__num_trees=5)
+        pipe.set_params(learner__number_of_trees=5)
         pipe.fit(X_train, y_train)
         metrics5, _ = pipe.test(X_train, y_train)
 
-        pipe.set_params(learner__num_trees=10)
+        pipe.set_params(learner__number_of_trees=10)
         pipe.fit(X_train, y_train)
         metrics10, _ = pipe.test(X_train, y_train)
 
@@ -147,7 +147,7 @@ class TestSweep(unittest.TestCase):
             platform.linux_distribution()[1] != "16.04"),
         "not supported on this platform")
     def test_NGramFeaturizer_sweep(self):
-        # grid search over num_trees and then confirm the best num_trees by
+        # grid search over number_of_trees and then confirm the best number_of_trees by
         # full train
         np.random.seed(0)
         data = pd.DataFrame(
@@ -194,7 +194,7 @@ class TestSweep(unittest.TestCase):
             platform.linux_distribution()[1] != "16.04"),
         "not supported on this platform")
     def test_NGramFeaturizer_glove(self):
-        # grid search over num_trees and then confirm the best num_trees by
+        # grid search over number_of_trees and then confirm the best number_of_trees by
         # full train
         np.random.seed(0)
         data = pd.DataFrame(
@@ -243,10 +243,10 @@ class TestSweep(unittest.TestCase):
                                    label_column, sep=',', encoding='utf-8')
 
         cat = OneHotHashVectorizer() << categorical_columns
-        learner = FastTreesBinaryClassifier(num_trees=100, num_leaves=5)
+        learner = FastTreesBinaryClassifier(number_of_trees=100, num_leaves=5)
         pipe = Pipeline(steps=[('cat', cat), ('learner', learner)])
 
-        param_grid = dict(learner__num_trees=[1, 5, 10])
+        param_grid = dict(learner__number_of_trees=[1, 5, 10])
         grid = GridSearchCV(pipe, param_grid)
         grid.fit(X_train, y_train)
 
@@ -255,8 +255,8 @@ class TestSweep(unittest.TestCase):
         grid1.fit(X_train, y_train)
 
         assert grid.best_params_[
-            'learner__num_trees'] == grid1.best_params_[
-            'learner__num_trees']
+            'learner__number_of_trees'] == grid1.best_params_[
+            'learner__number_of_trees']
 
     def test_error_conditions(self):
         # grid search on a wrong param
@@ -267,7 +267,7 @@ class TestSweep(unittest.TestCase):
                                    label_column, sep=',', encoding='utf-8')
 
         cat = OneHotHashVectorizer() << categorical_columns
-        learner = FastTreesBinaryClassifier(num_trees=100, num_leaves=5)
+        learner = FastTreesBinaryClassifier(number_of_trees=100, num_leaves=5)
         pipe = Pipeline(steps=[('cat', cat), ('learner', learner)])
 
         param_grid = dict(learner__wrong_arg=[1, 5, 10])
