@@ -66,15 +66,17 @@ class Role:
     RowId = 'RowId'
 
     @staticmethod
-    def to_attribute(role, suffix="_column"):
+    def to_attribute(role, suffix="_column_name"):
         """
         Converts a role into an attribute name.
         ``GroupId --> group_id_column``.
         """
         if not isinstance(role, str):
             raise TypeError("Unexpected role '{0}'".format(role))
+        if role == "Weight":
+            return "example_weight" + suffix
         if role == "GroupId":
-            return "group_id" + suffix
+            return "row_group" + suffix
         if role == "RowId":
             return "row_id" + suffix
         return role.lower() + suffix
