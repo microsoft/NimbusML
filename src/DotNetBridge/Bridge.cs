@@ -318,6 +318,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             env.ComponentCatalog.RegisterAssembly(typeof(PcaModelParameters).Assembly); // ML.PCA
             env.ComponentCatalog.RegisterAssembly(typeof(CVSplit).Assembly); // ML.EntryPoints
 
+            env.ComponentCatalog.RegisterAssembly(typeof(OlsModelParameters).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryModelParameters).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransformer).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
