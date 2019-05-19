@@ -27,7 +27,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = LogisticRegressionBinaryClassifier(train_threads=1)
+        lr = LogisticRegressionBinaryClassifier(number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train)
         metrics = e.score(X_test, y_test)
@@ -47,7 +47,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = LogisticRegressionClassifier(train_threads=1)
+        lr = LogisticRegressionClassifier(number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())
         metrics = e.score(X_test, y_test)
@@ -67,7 +67,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = FastTreesRegressor(train_threads=1)
+        lr = FastTreesRegressor(number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())
         metrics = e.score(X_test, y_test)
@@ -90,7 +90,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         lr = KMeansPlusPlus(
             n_clusters=2,
             init_algorithm="Random",
-            train_threads=1)
+            number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())
         metrics = e.score(X_test, y_test)

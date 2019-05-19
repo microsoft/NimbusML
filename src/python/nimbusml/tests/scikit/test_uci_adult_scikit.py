@@ -58,7 +58,7 @@ class TestUciAdultScikit(unittest.TestCase):
                 ('linear',
                  FastLinearBinaryClassifier(
                      shuffle=False,
-                     train_threads=1))])
+                     number_of_threads=1))])
         pipe.fit(train, label)
         out_data = pipe.predict(test)
         check_accuracy_scikit(test_file, label_column, out_data, 0.779)
@@ -90,7 +90,7 @@ class TestUciAdultScikit(unittest.TestCase):
         pipe = Pipeline(
             steps=[
                 ('fu', fu), ('linear', FastLinearBinaryClassifier(
-                    shuffle=False, train_threads=1))])
+                    shuffle=False, number_of_threads=1))])
         pipe.fit(train, label)
         out_data = pipe.predict(test)
         check_accuracy_scikit(test_file, label_column, out_data, 0.709)

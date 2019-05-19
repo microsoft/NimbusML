@@ -52,7 +52,7 @@ class TestSweep(unittest.TestCase):
             # unnamed step, stays same in grid search
             OneHotHashVectorizer() << 'workclass',
             # number_of_trees 0 will actually be never run by grid search
-            ('learner', FastTreesBinaryClassifier(number_of_trees=0, num_leaves=2))
+            ('learner', FastTreesBinaryClassifier(number_of_trees=0, number_of_leaves=2))
         ])
 
         param_grid = dict(
@@ -113,7 +113,7 @@ class TestSweep(unittest.TestCase):
         cat = OneHotHashVectorizer() << categorical_columns
         # number_of_trees 100 will actually be never run by grid search
         # as its not in param_grid below
-        learner = FastTreesBinaryClassifier(number_of_trees=100, num_leaves=5)
+        learner = FastTreesBinaryClassifier(number_of_trees=100, number_of_leaves=5)
         pipe = Pipeline(steps=[('cat', cat), ('learner', learner)])
 
         param_grid = dict(learner__number_of_trees=[1, 5, 10])
@@ -167,7 +167,7 @@ class TestSweep(unittest.TestCase):
                 ('ng',
                  NGramFeaturizer(
                      word_feature_extractor=Ngram(),
-                     output_tokens=True,
+                     output_tokens_column_name=True,
                      columns='review')),
                 WordEmbedding(
                     columns='review_TransformedText',
@@ -177,7 +177,7 @@ class TestSweep(unittest.TestCase):
                      feature=[
                          'review',
                          'review_TransformedText'],
-                     train_threads=1,
+                     number_of_threads=1,
                      shuffle=False))])
 
         param_grid = dict(lr__maximum_number_of_iterations=[1, 20])
@@ -214,7 +214,7 @@ class TestSweep(unittest.TestCase):
                 ('ng',
                  NGramFeaturizer(
                      word_feature_extractor=Ngram(),
-                     output_tokens=True,
+                     output_tokens_column_name=True,
                      columns='review')),
                 WordEmbedding(
                     columns='review_TransformedText',
@@ -224,7 +224,7 @@ class TestSweep(unittest.TestCase):
                      feature=[
                          'review',
                          'review_TransformedText'],
-                     train_threads=1,
+                     number_of_threads=1,
                      shuffle=False))])
 
         param_grid = dict(lr__maximum_number_of_iterations=[1, 100, 20])
@@ -243,7 +243,7 @@ class TestSweep(unittest.TestCase):
                                    label_column, sep=',', encoding='utf-8')
 
         cat = OneHotHashVectorizer() << categorical_columns
-        learner = FastTreesBinaryClassifier(number_of_trees=100, num_leaves=5)
+        learner = FastTreesBinaryClassifier(number_of_trees=100, number_of_leaves=5)
         pipe = Pipeline(steps=[('cat', cat), ('learner', learner)])
 
         param_grid = dict(learner__number_of_trees=[1, 5, 10])
@@ -267,7 +267,7 @@ class TestSweep(unittest.TestCase):
                                    label_column, sep=',', encoding='utf-8')
 
         cat = OneHotHashVectorizer() << categorical_columns
-        learner = FastTreesBinaryClassifier(number_of_trees=100, num_leaves=5)
+        learner = FastTreesBinaryClassifier(number_of_trees=100, number_of_leaves=5)
         pipe = Pipeline(steps=[('cat', cat), ('learner', learner)])
 
         param_grid = dict(learner__wrong_arg=[1, 5, 10])

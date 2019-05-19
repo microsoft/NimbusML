@@ -50,7 +50,7 @@ def train_data_type_ppl(fit_X_type=None, fit_Y_type=None, predict_X_type=None):
     label = [1, 0, 1, 1]
     model = Pipeline([
         NGramFeaturizer(),
-        LightGbmClassifier(minimum_example_count_per_leaf=1, n_thread=1)
+        LightGbmClassifier(minimum_example_count_per_leaf=1, number_of_threads=1)
     ])
     data_with_new_type = transform_data(data, fit_X_type)
     label_with_new_type = transform_data(label, fit_Y_type)

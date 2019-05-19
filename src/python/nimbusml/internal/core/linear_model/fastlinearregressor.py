@@ -68,7 +68,7 @@ class FastLinearRegressor(
         optimization
         algorithm. The results depends on the order of the training data. For
         reproducible results, it is recommended that one sets ``shuffle`` to
-        ``False`` and ``train_threads`` to ``1``.
+        ``False`` and ``number_of_threads`` to ``1``.
 
 
         **Reference**

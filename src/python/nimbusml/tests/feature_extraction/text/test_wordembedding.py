@@ -84,7 +84,7 @@ class TestWordEmbedding(unittest.TestCase):
         # TODO: Bug 149666
         # TODO: Bug 149700
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name=True,
                             columns={'features': ['id', 'education']}),
 
             WordEmbedding(columns='features_TransformedText')
@@ -120,7 +120,7 @@ class TestWordEmbedding(unittest.TestCase):
         data = FileDataStream(path, schema=file_schema)
 
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name=True,
                             columns={'features': ['id', 'education']}),
 
             WordEmbedding(columns='features_TransformedText')
@@ -156,7 +156,7 @@ class TestWordEmbedding(unittest.TestCase):
                       'col=spontaneous:R4:6 header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name=True,
                             columns={'features': ['id', 'education']}),
 
             # What is features_TransformedText?
@@ -176,7 +176,7 @@ class TestWordEmbedding(unittest.TestCase):
                       'col=spontaneous:R4:6 header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name=True,
                             columns={'features': ['id', 'education']}),
 
             # What is features_TransformedText?

@@ -400,7 +400,7 @@ class TestMetrics(unittest.TestCase):
         e = Pipeline([
             OneHotVectorizer(columns={'edu': 'education'}),
             LightGbmRegressor(feature=['induced', 'edu'], label='age',
-                              n_thread=1)
+                              number_of_threads=1)
         ])
         e.fit(data, verbose=0)
         metrics, _ = e.test(data)

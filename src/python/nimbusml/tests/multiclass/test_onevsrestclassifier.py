@@ -170,13 +170,13 @@ class TestOneVsRestClassfier(unittest.TestCase):
         clfs = [
             # TODO: BUG 231482 , why doesnt FM work
             # FactorizationMachineBinaryClassifier(),
-            LogisticRegressionBinaryClassifier(train_threads=1),
-            FastForestBinaryClassifier(min_split=1, train_threads=1),
-            GamBinaryClassifier(train_threads=1),
+            LogisticRegressionBinaryClassifier(number_of_threads=1),
+            FastForestBinaryClassifier(min_split=1, number_of_threads=1),
+            GamBinaryClassifier(number_of_threads=1),
             AveragedPerceptronBinaryClassifier(),
-            FastTreesBinaryClassifier(min_split=1, train_threads=1),
-            FastLinearBinaryClassifier(train_threads=1),
-            SgdBinaryClassifier(train_threads=1),
+            FastTreesBinaryClassifier(min_split=1, number_of_threads=1),
+            FastLinearBinaryClassifier(number_of_threads=1),
+            SgdBinaryClassifier(number_of_threads=1),
             # SymSgdBinaryClassifier(number_of_threads=1),
         ]
 

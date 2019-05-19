@@ -79,7 +79,7 @@ class TestExports(unittest.TestCase):
                'maximum_number_of_iterations': None,
                'normalize': 'Auto',
                'shuffle': True,
-               'train_threads': None}
+               'number_of_threads': None}
         assert obj3.get_params() == exp
 
     def test_object_clone(self):
@@ -564,7 +564,7 @@ PredictedProba|<f2> Score",shape=record,fontsize=8];
                     False,
                     True]))
 
-        ng = NGramFeaturizer(columns=['description'], output_tokens=True)
+        ng = NGramFeaturizer(columns=['description'], output_tokens_column_name=True)
         we = WordEmbedding(
             columns='description_TransformedText',
             model_kind='Sswe')
