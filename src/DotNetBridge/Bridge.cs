@@ -15,6 +15,7 @@ using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.Ensemble;
 using Microsoft.ML.Trainers.FastTree;
+using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Transforms;
 
 namespace Microsoft.MachineLearning.DotNetBridge
@@ -306,17 +307,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
             var env = new RmlEnvironment(MarshalDelegate<CheckCancelled>(penv->checkCancel), penv->seed, verbose: penv != null && penv->verbosity > 3);
             var host = env.Register("ML.NET_Execution");
+
             env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
             env.ComponentCatalog.RegisterAssembly(typeof(LinearModelParameters).Assembly); // ML.StandardLearners
             env.ComponentCatalog.RegisterAssembly(typeof(CategoricalCatalog).Assembly); // ML.Transforms
             env.ComponentCatalog.RegisterAssembly(typeof(FastTreeRegressionTrainer).Assembly); // ML.FastTree
-                                                                                               //env.ComponentCatalog.RegisterAssembly(typeof(EnsembleModelParameters).Assembly); // ML.Ensemble
+            
+            //env.ComponentCatalog.RegisterAssembly(typeof(EnsembleModelParameters).Assembly); // ML.Ensemble
             env.ComponentCatalog.RegisterAssembly(typeof(KMeansModelParameters).Assembly); // ML.KMeansClustering
             env.ComponentCatalog.RegisterAssembly(typeof(PcaModelParameters).Assembly); // ML.PCA
             env.ComponentCatalog.RegisterAssembly(typeof(CVSplit).Assembly); // ML.EntryPoints
-            //env.ComponentCatalog.RegisterAssembly(typeof(KMeansPlusPlusTrainer).Assembly); // ML.KMeansClustering
-                                                                                           //env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
-            //env.ComponentCatalog.RegisterAssembly(typeof(LightGbmRegressorTrainer).Assembly);
+
+            env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryModelParameters).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransformer).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
@@ -325,7 +327,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
-            //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // // ML.Ensemble BUG https://github.com/dotnet/machinelearning/issues/1078 Ensemble isn't in a NuGet package
 
             using (var ch = host.Start("Executing"))
             {
