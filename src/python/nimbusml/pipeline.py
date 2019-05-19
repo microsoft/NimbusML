@@ -666,21 +666,21 @@ class Pipeline:
 
             if weight_column is not None or last_node._use_role(
                     Role.Weight):
-                if getattr(last_node, 'weight_column', None):
-                    weight_column = last_node.weight_column
+                if getattr(last_node, 'example_weight_column_name', None):
+                    weight_column = last_node.example_weight_column_name
                 elif weight_column:
-                    last_node.weight_column = weight_column
+                    last_node.example_weight_column_name = weight_column
             else:
-                last_node.weight_column = None
+                last_node.example_weight_column_name = None
                 weight_column = None
 
             if (hasattr(last_node, 'row_group_column_name_')
                     and last_node.row_group_column_name_ is not None):
                 group_id_column = last_node.row_group_column_name_
             elif (hasattr(last_node,
-                          'group_id_column') and
-                  last_node.group_id_column is not None):
-                group_id_column = last_node.group_id_column
+                          'row_group_column_name') and
+                  last_node.row_group_column_name is not None):
+                group_id_column = last_node.row_group_column_name
             else:
                 group_id_column = None
 
