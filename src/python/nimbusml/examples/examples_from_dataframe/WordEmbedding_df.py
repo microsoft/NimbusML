@@ -17,7 +17,7 @@ customer_reviews = pandas.DataFrame(data=dict(review=[
     "Never visit again... rascals!"]))
 
 pipeline = Pipeline([
-    NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name=True),
+    NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name='review_TransformedText'),
     WordEmbedding() << 'review_TransformedText'
 ])
 y = pipeline.fit_transform(customer_reviews)

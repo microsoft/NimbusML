@@ -88,7 +88,7 @@ class TestSweep(unittest.TestCase):
             learner=[
                 FastLinearBinaryClassifier(),
                 FastTreesBinaryClassifier()],
-            learner__train_threads=[
+            learner__number_of_threads=[
                 1,
                 4])
         grid = GridSearchCV(pipe, param_grid)
@@ -96,7 +96,7 @@ class TestSweep(unittest.TestCase):
         grid.fit(X, y)
         assert grid.best_params_[
             'learner'].__class__.__name__ == 'FastLinearBinaryClassifier'
-        assert grid.best_params_['learner__train_threads'] == 1
+        assert grid.best_params_['learner__number_of_threads'] == 1
 
     @unittest.skipIf(
         six.PY2,
@@ -167,7 +167,7 @@ class TestSweep(unittest.TestCase):
                 ('ng',
                  NGramFeaturizer(
                      word_feature_extractor=Ngram(),
-                     output_tokens_column_name=True,
+                     output_tokens_column_name='review_TransformedText',
                      columns='review')),
                 WordEmbedding(
                     columns='review_TransformedText',
@@ -214,7 +214,7 @@ class TestSweep(unittest.TestCase):
                 ('ng',
                  NGramFeaturizer(
                      word_feature_extractor=Ngram(),
-                     output_tokens_column_name=True,
+                     output_tokens_column_name='review_TransformedText',
                      columns='review')),
                 WordEmbedding(
                     columns='review_TransformedText',
