@@ -19,7 +19,7 @@ def trainers_poissonregressor(
         caching='Auto',
         l2_regularization=1.0,
         l1_regularization=1.0,
-        optmization_tolerance=1e-07,
+        optimization_tolerance=1e-07,
         history_size=20,
         enforce_non_negativity=False,
         initial_weights_diameter=0.0,
@@ -45,7 +45,7 @@ def trainers_poissonregressor(
         (inputs).
     :param l2_regularization: L2 regularization weight (inputs).
     :param l1_regularization: L1 regularization weight (inputs).
-    :param optmization_tolerance: Tolerance parameter for
+    :param optimization_tolerance: Tolerance parameter for
         optimization convergence. Low = slower, more accurate
         (inputs).
     :param history_size: Memory size for L-BFGS. Low=faster, less
@@ -124,9 +124,9 @@ def trainers_poissonregressor(
             obj=l1_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if optmization_tolerance is not None:
-        inputs['OptmizationTolerance'] = try_set(
-            obj=optmization_tolerance,
+    if optimization_tolerance is not None:
+        inputs['OptimizationTolerance'] = try_set(
+            obj=optimization_tolerance,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if history_size is not None:

@@ -64,9 +64,9 @@ class NgramHash(Component):
     :param ngram_length: Ngram length.
 
     :param skip_length: Maximum number of tokens to skip when constructing an
-        ngram.
+        n-gram.
 
-    :param all_lengths: Whether to include all ngram lengths up to ngramLength
+    :param all_lengths: Whether to include all n-gram lengths up to ngramLength
         or only ngramLength.
 
     :param seed: Hashing seed.

@@ -76,7 +76,7 @@ class PoissonRegressionRegressor(
 
     :param l1_regularization: L1 regularization weight.
 
-    :param optmization_tolerance: Tolerance parameter for optimization
+    :param optimization_tolerance: Tolerance parameter for optimization
         convergence. Low = slower, more accurate.
 
     :param history_size: Memory size for L-BFGS. Low=faster, less accurate.
@@ -131,7 +131,7 @@ class PoissonRegressionRegressor(
             caching='Auto',
             l2_regularization=1.0,
             l1_regularization=1.0,
-            optmization_tolerance=1e-07,
+            optimization_tolerance=1e-07,
             history_size=20,
             enforce_non_negativity=False,
             initial_weights_diameter=0.0,
@@ -168,7 +168,7 @@ class PoissonRegressionRegressor(
             caching=caching,
             l2_regularization=l2_regularization,
             l1_regularization=l1_regularization,
-            optmization_tolerance=optmization_tolerance,
+            optimization_tolerance=optimization_tolerance,
             history_size=history_size,
             enforce_non_negativity=enforce_non_negativity,
             initial_weights_diameter=initial_weights_diameter,

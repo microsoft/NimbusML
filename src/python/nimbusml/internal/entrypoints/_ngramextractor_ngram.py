@@ -23,10 +23,10 @@ def n_gram(
 
     :param ngram_length: Ngram length (settings).
     :param skip_length: Maximum number of tokens to skip when
-        constructing an ngram (settings).
-    :param all_lengths: Whether to include all ngram lengths up to
+        constructing an n-gram (settings).
+    :param all_lengths: Whether to include all n-gram lengths up to
         NgramLength or only NgramLength (settings).
-    :param max_num_terms: Maximum number of ngrams to store in the
+    :param max_num_terms: Maximum number of n-grams to store in the
         dictionary (settings).
     :param weighting: The weighting criteria (settings).
     """

@@ -34,7 +34,7 @@ def transforms_textfeaturizer(
     **Description**
         A transform that turns a collection of text documents into numerical
         feature vectors. The feature vectors are normalized counts of
-        (word and/or character) ngrams in a given tokenized text.
+        (word and/or character) n-grams in a given tokenized text.
 
     :param column: New column definition (optional form: name:srcs).
         (inputs).

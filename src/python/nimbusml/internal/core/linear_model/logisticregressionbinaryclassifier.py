@@ -120,7 +120,7 @@ class LogisticRegressionBinaryClassifier(
 
     :param l1_regularization: L1 regularization weight.
 
-    :param optmization_tolerance: Tolerance parameter for optimization
+    :param optimization_tolerance: Tolerance parameter for optimization
         convergence. Low = slower, more accurate.
 
     :param history_size: Memory size for L-BFGS. Low=faster, less accurate.
@@ -171,7 +171,7 @@ class LogisticRegressionBinaryClassifier(
             show_training_statistics=False,
             l2_regularization=1.0,
             l1_regularization=1.0,
-            optmization_tolerance=1e-07,
+            optimization_tolerance=1e-07,
             history_size=20,
             enforce_non_negativity=False,
             initial_weights_diameter=0.0,
@@ -190,7 +190,7 @@ class LogisticRegressionBinaryClassifier(
         self.show_training_statistics = show_training_statistics
         self.l2_regularization = l2_regularization
         self.l1_regularization = l1_regularization
-        self.optmization_tolerance = optmization_tolerance
+        self.optimization_tolerance = optimization_tolerance
         self.history_size = history_size
         self.enforce_non_negativity = enforce_non_negativity
         self.initial_weights_diameter = initial_weights_diameter
@@ -216,7 +216,7 @@ class LogisticRegressionBinaryClassifier(
             show_training_statistics=self.show_training_statistics,
             l2_regularization=self.l2_regularization,
             l1_regularization=self.l1_regularization,
-            optmization_tolerance=self.optmization_tolerance,
+            optimization_tolerance=self.optimization_tolerance,
             history_size=self.history_size,
             enforce_non_negativity=self.enforce_non_negativity,
             initial_weights_diameter=self.initial_weights_diameter,

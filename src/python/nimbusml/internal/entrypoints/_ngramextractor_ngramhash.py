@@ -27,8 +27,8 @@ def n_gram_hash(
         between 1 and 30, inclusive. (settings).
     :param ngram_length: Ngram length (settings).
     :param skip_length: Maximum number of tokens to skip when
-        constructing an ngram (settings).
-    :param all_lengths: Whether to include all ngram lengths up to
+        constructing an n-gram (settings).
+    :param all_lengths: Whether to include all n-gram lengths up to
         ngramLength or only ngramLength (settings).
     :param seed: Hashing seed (settings).
     :param ordered: Whether the position of each source column should
