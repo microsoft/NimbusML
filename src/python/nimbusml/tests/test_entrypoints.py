@@ -51,13 +51,13 @@ class TestEntryPoints(unittest.TestCase):
         node = trainers_logisticregressionbinaryclassifier(
             training_data=training_data,
             quiet=quiet,
-            label_column=label_column,
+            label_column_name=label_column,
             predictor_model=predictor_model)
         # check
         assert isinstance(node, EntryPoint)
         assert node.inputs["TrainingData"] == training_data
         assert node.inputs["Quiet"] == quiet
-        assert node.inputs["LabelColumn"] == label_column
+        assert node.inputs["LabelColumnName"] == label_column
         assert node.input_variables == {training_data}
         assert node.output_variables == {predictor_model}
 

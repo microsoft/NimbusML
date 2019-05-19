@@ -107,7 +107,7 @@ class TestSyntaxLearner(unittest.TestCase):
                                       Role.Label: 'new_y'}
         ])
         exp.fit(df, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Features'
+        assert exp.nodes[-1].feature_column_name_ == 'Features'
         assert exp.nodes[-1].label_column_name_ == 'new_y'
         # The pipeline requires it now as it is transformed all along.
         X['yy'] = 0.0
@@ -133,7 +133,7 @@ class TestSyntaxLearner(unittest.TestCase):
                                       Role.Label: 'new_y'}
         ])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Features'
+        assert exp.nodes[-1].feature_column_name_ == 'Features'
         assert exp.nodes[-1].label_column_name_ == 'new_y'
         # The pipeline requires it now as it is transformed all along.
         X['yy'] = 0.0
@@ -216,7 +216,7 @@ class TestSyntaxLearner(unittest.TestCase):
                     Role.Label: 'y',
                     Role.Weight: 'weight'}])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
@@ -242,7 +242,7 @@ class TestSyntaxLearner(unittest.TestCase):
                                weight='weight')
         ])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
@@ -268,7 +268,7 @@ class TestSyntaxLearner(unittest.TestCase):
                                weight='weight') << 'Feature'
         ])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
@@ -299,7 +299,7 @@ class TestSyntaxLearner(unittest.TestCase):
                     number_of_trees=5, feature='Feature', weight='weight') << {
                     Role.Label: 'y'}])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
@@ -329,7 +329,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp.fit(X, verbose=0)
         assert not hasattr(exp.nodes[-1], 'feature_')
         assert not hasattr(exp.nodes[-1], 'group_id_')
-        assert exp.nodes[-1].feature_column_ == 'Feature'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
         # assert not hasattr(exp.nodes[-1], 'row_group_column_name_')
         assert not hasattr(exp.nodes[-1], 'group_id_column')

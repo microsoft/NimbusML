@@ -177,7 +177,7 @@ class TestPipelineClone(unittest.TestCase):
             LightGbmRanker(feature=features,
                            label='label_1',
                            group_id='group_2',
-                           num_boost_round=1,
+                           number_of_iterations=1,
                            number_of_leaves=4)
         ])
         clone_and_check(pipe)
@@ -187,14 +187,14 @@ class TestPipelineClone(unittest.TestCase):
             LightGbmRanker(feature=features,
                            label='label_1',
                            group_id='group_2',
-                           num_boost_round=1,
+                           number_of_iterations=1,
                            number_of_leaves=4)
         ])
         fit_test_clone_and_check(pipe, df)
 
     def test_pipeline_clone_dataframe_roles_shift_operator(self):
         pipe = Pipeline([
-            LightGbmRanker(num_boost_round=1, number_of_leaves=4) << {
+            LightGbmRanker(number_of_iterations=1, number_of_leaves=4) << {
                 Role.Feature: features,
                 Role.Label: 'label_1',
                 Role.GroupId: 'group_2'}
@@ -207,7 +207,7 @@ class TestPipelineClone(unittest.TestCase):
             LightGbmRanker(feature=features,
                            label='label_1',
                            group_id='group_2',
-                           num_boost_round=1,
+                           number_of_iterations=1,
                            number_of_leaves=4)
         ])
         fit_test_clone_and_check(pipe, fds)
@@ -215,7 +215,7 @@ class TestPipelineClone(unittest.TestCase):
     def test_pipeline_clone_filedatastream_roles_shift_operator(self):
         pipe = Pipeline([
             ToKey() << {'group_2': 'group_2'},
-            LightGbmRanker(num_boost_round=1, number_of_leaves=4) << {
+            LightGbmRanker(number_of_iterations=1, number_of_leaves=4) << {
                 Role.Feature: features,
                 Role.Label: 'label_1',
                 Role.GroupId: 'group_2'}
