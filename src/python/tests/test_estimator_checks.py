@@ -170,13 +170,13 @@ NOBINARY_CHECKS = [
 
 INSTANCES = {
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
-        min_data_per_group=1, minimum_example_count_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
-        min_data_per_group=1, minimum_example_count_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmRegressor': LightGbmRegressor(
-        min_data_per_group=1, minimum_example_count_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmRanker': LightGbmRanker(
-        min_data_per_group=1, minimum_example_count_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(
         word_feature_extractor=n_gram()), 'SkipFilter': SkipFilter(
         count=5),

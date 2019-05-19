@@ -89,7 +89,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
 
         lr = KMeansPlusPlus(
             n_clusters=2,
-            init_algorithm="Random",
+            initialization_algorithm="Random",
             number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())

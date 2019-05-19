@@ -33,7 +33,7 @@
 
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
-    :param hash_bits: An integer specifying the number of bits to hash into.
+    :param number_of_bits: An integer specifying the number of bits to hash into.
         Must be between 1 and 30, inclusive. The default value is 16.
 
     :param random_state: An integer specifying the hashing seed. The default

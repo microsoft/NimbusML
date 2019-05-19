@@ -111,7 +111,7 @@ class TestPipelineSyntax(unittest.TestCase):
 
         ppl = Pipeline([
             NGramFeaturizer(word_feature_extractor=n_gram()),
-            LightGbmClassifier(minimum_example_count_per_leaf=1, min_data_per_group=1)
+            LightGbmClassifier(minimum_example_count_per_leaf=1, minimum_example_count_per_group=1)
         ])
         assert ppl is not None
 
@@ -124,7 +124,7 @@ class TestPipelineSyntax(unittest.TestCase):
 
         ppl = Pipeline([
             NGramFeaturizer(word_feature_extractor=n_gram()),
-            LightGbmClassifier(minimum_example_count_per_leaf=1, min_data_per_group=1)
+            LightGbmClassifier(minimum_example_count_per_leaf=1, minimum_example_count_per_group=1)
         ])
         assert ppl is not None
         ppl.fit(trainData[["SentimentText"]], np.array(trainData["Sentiment"]))

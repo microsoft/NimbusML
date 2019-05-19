@@ -193,7 +193,7 @@ class TestMetrics(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = KMeansPlusPlus(n_clusters=2, init_algorithm="Random")
+        lr = KMeansPlusPlus(n_clusters=2, initialization_algorithm="Random")
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame(), verbose=0)
         metrics, _ = e.test(X_test, y_test)
