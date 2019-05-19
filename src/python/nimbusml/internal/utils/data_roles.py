@@ -82,6 +82,20 @@ class Role:
         return role.lower() + suffix
 
     @staticmethod
+    def to_parameter(role, suffix="ColumnName"):
+        """
+        Converts a role into (as per manifesrt.json) parameter name.
+        ``GroupId --> RowGroupColumnName``.
+        """
+        if not isinstance(role, str):
+            raise TypeError("Unexpected role '{0}'".format(role))
+        if role == "Weight":
+            return "ExampleWeight" + suffix
+        if role == "GroupId":
+            return "RowGroup" + suffix
+        return role + suffix
+
+    @staticmethod
     def to_role(column_name, suffix="_column_name"):
         """
         Converts an attribute name to role

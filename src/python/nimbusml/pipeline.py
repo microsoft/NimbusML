@@ -924,7 +924,7 @@ class Pipeline:
             else:
                 assigned = []
                 for role in sorted(DataRoles._allowed):
-                    attr = role + 'Column'
+                    attr = DataRoles.to_parameter(role)
                     if attr in inp:
                         assigned.append(inp[attr])
                 assigned = set(assigned)
@@ -932,9 +932,9 @@ class Pipeline:
                     col for col in input_schema if col not in assigned]
 
                 for role in sorted(DataRoles._allowed):
-                    attr = role + 'Column'
+                    attr = DataRoles.to_parameter(role)
                     if attr in inp:
-                        if attr == 'FeatureColumn' and inp[attr]\
+                        if attr == 'FeatureColumnName' and inp[attr]\
                                 not in input_schema:
                             val = not_assigned
                         else:
