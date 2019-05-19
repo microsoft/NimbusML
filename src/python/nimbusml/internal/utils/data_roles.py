@@ -81,6 +81,19 @@ class Role:
             return "row_id" + suffix
         return role.lower() + suffix
 
+    @staticmethod
+    def to_role(column_name, suffix="_column_name"):
+        """
+        Converts an attribute name to role
+        ``row_group_column_name -> group_id``.
+        """
+        if not isinstance(column_name, str):
+            raise TypeError("Unexpected column_name '{0}'".format(column_name))
+        if column_name == "example_weight" + suffix:
+            return "weight"
+        if column_name == "row_group" + suffix:
+            return "group_id"
+        return column_name.lower().split(suffix)[0]
 
 class DataRoles(Role):
     """
@@ -93,9 +106,8 @@ class DataRoles(Role):
     # train and predict.
     _allowed = set(
         k for k in Role.__dict__ if k[0] != '_' and k[0].upper() == k[0])
-    _allowed_attr = {Role.to_attribute(k): Role.to_attribute(
-        k, suffix='') for k in Role.__dict__ if
-        k[0] != '_' and k[0].upper() == k[0]}
+    _allowed_attr = {Role.to_attribute(k): Role.to_role(k)
+        for k in Role.__dict__ if k[0] != '_' and k[0].upper() == k[0]}
 
     @staticmethod
     def check_role(role):

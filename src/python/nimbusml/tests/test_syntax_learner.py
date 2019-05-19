@@ -108,7 +108,7 @@ class TestSyntaxLearner(unittest.TestCase):
         ])
         exp.fit(df, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Features'
-        assert exp.nodes[-1].label_column_ == 'new_y'
+        assert exp.nodes[-1].label_column_name_ == 'new_y'
         # The pipeline requires it now as it is transformed all along.
         X['yy'] = 0.0
         prediction = exp.predict(X, verbose=0)
@@ -134,7 +134,7 @@ class TestSyntaxLearner(unittest.TestCase):
         ])
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Features'
-        assert exp.nodes[-1].label_column_ == 'new_y'
+        assert exp.nodes[-1].label_column_name_ == 'new_y'
         # The pipeline requires it now as it is transformed all along.
         X['yy'] = 0.0
         prediction = exp.predict(X)
@@ -217,7 +217,7 @@ class TestSyntaxLearner(unittest.TestCase):
                     Role.Weight: 'weight'}])
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
+        assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
@@ -243,7 +243,7 @@ class TestSyntaxLearner(unittest.TestCase):
         ])
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
+        assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
@@ -269,7 +269,7 @@ class TestSyntaxLearner(unittest.TestCase):
         ])
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
+        assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
@@ -300,7 +300,7 @@ class TestSyntaxLearner(unittest.TestCase):
                     Role.Label: 'y'}])
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
+        assert exp.nodes[-1].label_column_name_ == 'y'
         assert exp.nodes[-1].weight_column_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
@@ -330,15 +330,15 @@ class TestSyntaxLearner(unittest.TestCase):
         assert not hasattr(exp.nodes[-1], 'feature_')
         assert not hasattr(exp.nodes[-1], 'group_id_')
         assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
-        # assert not hasattr(exp.nodes[-1], 'group_id_column_')
+        assert exp.nodes[-1].label_column_name_ == 'y'
+        # assert not hasattr(exp.nodes[-1], 'row_group_column_name_')
         assert not hasattr(exp.nodes[-1], 'group_id_column')
         assert not hasattr(exp.nodes[-1], 'groupid_column_')
         assert not hasattr(exp.nodes[-1], 'groupid_column')
-        if not hasattr(exp.nodes[-1], 'group_id_column_'):
+        if not hasattr(exp.nodes[-1], 'row_group_column_name_'):
             raise AssertionError("Attribute not found: {0}".format(
                 ", ".join(sorted(dir(exp.nodes[-1])))))
-        assert exp.nodes[-1].group_id_column_ == 'gr'
+        assert exp.nodes[-1].row_group_column_name_ == 'gr'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.

@@ -229,9 +229,9 @@ class TestMetrics(unittest.TestCase):
         svm = OneClassSvmAnomalyDetector() # noqa
         e = Pipeline([svm])
         e.fit(X_train, verbose=0)
-        if e.nodes[-1].label_column_ is not None:
+        if e.nodes[-1].label_column_name_ is not None:
             raise ValueError("'{0}' should be None".format(
-                e.nodes[-1].label_column_))
+                e.nodes[-1].label_column_name_))
         assert y_test.name == 'Setosa'
         metrics, _ = e.test(X_test, y_test)
         assert_almost_equal(

@@ -115,9 +115,9 @@ class TestPiplineScoreMethod(unittest.TestCase):
         svm = OneClassSvmAnomalyDetector() # noqa
         e = Pipeline([svm])
         e.fit(X_train)
-        if e.nodes[-1].label_column_ is not None:
+        if e.nodes[-1].label_column_name_ is not None:
             raise ValueError("'{0}' should be None".format(
-                e.nodes[-1].label_column_))
+                e.nodes[-1].label_column_name_))
         assert y_test.name == 'Setosa'
         metrics = e.score(X_test, y_test)
         print(metrics)

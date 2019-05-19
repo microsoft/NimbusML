@@ -644,8 +644,8 @@ class Pipeline:
                         strategy_iosklearn))
 
             if label_column is not None or last_node._use_role(Role.Label):
-                if getattr(last_node, 'label_column_', None):
-                    label_column = last_node.label_column_
+                if getattr(last_node, 'label_column_name_', None):
+                    label_column = last_node.label_column_name_
                 elif getattr(last_node, 'label_column_name', None):
                     label_column = last_node.label_column_name
                 elif label_column:
@@ -674,9 +674,9 @@ class Pipeline:
                 last_node.weight_column = None
                 weight_column = None
 
-            if (hasattr(last_node, 'group_id_column_')
-                    and last_node.group_id_column_ is not None):
-                group_id_column = last_node.group_id_column_
+            if (hasattr(last_node, 'row_group_column_name_')
+                    and last_node.row_group_column_name_ is not None):
+                group_id_column = last_node.row_group_column_name_
             elif (hasattr(last_node,
                           'group_id_column') and
                   last_node.group_id_column is not None):
@@ -1959,7 +1959,7 @@ class Pipeline:
                 raise ValueError(
                     "Pipeline needs a trainer as last step for test()")
             if y is None:
-                y = self.last_node.label_column_
+                y = self.last_node.label_column_name_
         elif y is None:
             raise ValueError(errmsg)
 
@@ -1975,8 +1975,8 @@ class Pipeline:
             group_id = group_id if group_id is not None else inputs.get(
                 Role.GroupId)
             if group_id is None:
-                if hasattr(last_node, 'group_id_column_'):
-                    group_id = last_node.group_id_column_
+                if hasattr(last_node, 'row_group_column_name_'):
+                    group_id = last_node.row_group_column_name_
         # if model was loaded using load_model, no nodes present
         except TypeError:
             pass
