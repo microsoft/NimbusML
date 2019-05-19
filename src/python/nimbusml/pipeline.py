@@ -142,8 +142,8 @@ class Pipeline:
         cloned_steps = [deepcopy(s) for s in self.steps]
 
         # Rolls back role manipulation during fitting,
-        # it removes attribute mapped to roles: label_column,
-        # feature_column,
+        # it removes attribute mapped to roles: label_column_name,
+        # feature_column_name,
         # ...
         if len(cloned_steps) > 0:
             last_node = self.last_node
@@ -612,13 +612,13 @@ class Pipeline:
         if last_node.type != 'transform':  # last node is predictor
             if hasattr(
                     last_node,
-                    'feature_column') and last_node.feature_column is \
+                    'feature_column_name') and last_node.feature_column_name is \
                     not None:
-                if isinstance(last_node.feature_column, list):
-                    learner_features = last_node.feature_column
-                    last_node.feature_column = 'Features'
+                if isinstance(last_node.feature_column_name, list):
+                    learner_features = last_node.feature_column_name
+                    last_node.feature_column_name = 'Features'
                 else:
-                    learner_features = [last_node.feature_column]
+                    learner_features = [last_node.feature_column_name]
             elif strategy_iosklearn in ("previous", "accumulate"):
                 if hasattr(
                         last_node,
@@ -627,16 +627,16 @@ class Pipeline:
                         learner_features = last_node.feature
                     else:
                         learner_features = [last_node.feature]
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
                 elif isinstance(columns_out, list):
                     learner_features = columns_out
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
                 elif columns_out is None:
                     learner_features = ['Features']
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
                 else:
                     learner_features = [columns_out]
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
             else:
                 raise NotImplementedError(
                     "Strategy '{0}' to handle unspecified inputs is not "
@@ -646,22 +646,22 @@ class Pipeline:
             if label_column is not None or last_node._use_role(Role.Label):
                 if getattr(last_node, 'label_column_', None):
                     label_column = last_node.label_column_
-                elif getattr(last_node, 'label_column', None):
-                    label_column = last_node.label_column
+                elif getattr(last_node, 'label_column_name', None):
+                    label_column = last_node.label_column_name
                 elif label_column:
-                    last_node.label_column = label_column
+                    last_node.label_column_name = label_column
                 elif y is None:
                     if label_column is None:
                         label_column = Role.Label
-                    last_node.label_column = label_column
+                    last_node.label_column_name = label_column
                 else:
                     label_column = _extract_label_column(
                         last_node, DataSchema.read_schema(y))
                     if label_column is None:
                         label_column = Role.Label
-                    last_node.label_column = label_column
+                    last_node.label_column_name = label_column
             else:
-                last_node.label_column = None
+                last_node.label_column_name = None
                 label_column = None
 
             if weight_column is not None or last_node._use_role(
@@ -705,12 +705,12 @@ class Pipeline:
             # node to
             # use suplied vars
             learner_node = last_node._get_node(
-                feature_column=learner_features,
+                feature_column_name=learner_features,
                 training_data=output_data,
                 predictor_model=predictor_model,
-                label_column=label_column,
-                weight_column=weight_column,
-                group_id_column=group_id_column)
+                label_column_name=label_column,
+                example_weight_column_name=weight_column,
+                row_group_column_name=group_id_column)
             graph_nodes['learner_node'] = [learner_node]
             return graph_nodes, learner_node, learner_features
         else:
