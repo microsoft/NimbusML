@@ -13,11 +13,12 @@ __all__ = ["LogisticRegressionBinaryClassifier"]
 from ...entrypoints.trainers_logisticregressionbinaryclassifier import \
     trainers_logisticregressionbinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
 class LogisticRegressionBinaryClassifier(
-        BasePipelineItem, DefaultSignature):
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Machine Learning Logistic Regression
@@ -103,12 +104,6 @@ class LogisticRegressionBinaryClassifier(
             <https://msdn.microsoft.com/en-us/magazine/dn904675.aspx>`_
 
 
-    :param feature: Column to use for features.
-
-    :param label: Column to use for labels.
-
-    :param weight: Column to use for example weight.
-
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
         ``No``, no normalization is performed. If ``Yes``, normalization always
@@ -171,9 +166,6 @@ class LogisticRegressionBinaryClassifier(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             show_training_statistics=False,
@@ -193,9 +185,6 @@ class LogisticRegressionBinaryClassifier(
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
-        self.feature = feature
-        self.label = label
-        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.show_training_statistics = show_training_statistics
@@ -219,9 +208,9 @@ class LogisticRegressionBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            label_column_name=self.label,
-            example_weight_column_name=self.weight,
+            feature_column_name=self._getattr_role('feature_column_name', all_args),
+            label_column_name=self._getattr_role('label_column_name', all_args),
+            example_weight_column_name=self._getattr_role('example_weight_column_name', all_args),
             normalize_features=self.normalize,
             caching=self.caching,
             show_training_statistics=self.show_training_statistics,

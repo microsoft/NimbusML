@@ -13,11 +13,12 @@ __all__ = ["OrdinaryLeastSquaresRegressor"]
 from ...entrypoints.trainers_ordinaryleastsquaresregressor import \
     trainers_ordinaryleastsquaresregressor
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
 class OrdinaryLeastSquaresRegressor(
-        BasePipelineItem, DefaultSignature):
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Train an OLS regression model
@@ -38,12 +39,6 @@ class OrdinaryLeastSquaresRegressor(
             `Ordinary least squares (OLS)
             <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_
 
-
-    :param feature: Column to use for features.
-
-    :param label: Column to use for labels.
-
-    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -94,9 +89,6 @@ class OrdinaryLeastSquaresRegressor(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             l2_regularization=1e-06,
@@ -105,9 +97,6 @@ class OrdinaryLeastSquaresRegressor(
         BasePipelineItem.__init__(
             self, type='regressor', **params)
 
-        self.feature = feature
-        self.label = label
-        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.l2_regularization = l2_regularization
@@ -120,9 +109,15 @@ class OrdinaryLeastSquaresRegressor(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            label_column_name=self.label,
-            example_weight_column_name=self.weight,
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching,
             l2_regularization=self.l2_regularization,

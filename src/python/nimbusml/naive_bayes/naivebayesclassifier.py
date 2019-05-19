@@ -41,9 +41,9 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
             `Naive Bayes <https://en.wikipedia.org/wiki/Naive_Bayes_classifier>`_
 
 
-    :param feature: Column to use for features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param label: Column to use for labels.
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -88,20 +88,30 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
+            feature=None,
+            label=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
             normalize=normalize,
             caching=caching,
             **params)
+        self.feature = feature
+        self.label = label
 
     @trace
     def decision_function(self, X, **params):

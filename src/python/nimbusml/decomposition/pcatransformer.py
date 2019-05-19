@@ -37,6 +37,11 @@ class PcaTransformer(core, BaseTransform, TransformerMixin):
         Matrix Decompositions <https://arxiv.org/pdf/0909.4061v2.pdf>`_ by N.
         Halko et al.
 
+    :param weight: The PCA transform can take into account a weight for each
+        row. To use weights, the input must contain
+        a weight column, whose name is specified using this parameter. See
+        `Columns </nimbusml/concepts/columns>`_ for syntax.
+
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
          If users specify mutiple non-`Vector Type
          </nimbusml/concepts/types#vectortype-column>`_ columns
@@ -50,11 +55,6 @@ class PcaTransformer(core, BaseTransform, TransformerMixin):
          this case, PCA will applies to each of the columns,
          and this transform will generate n principle components for each of
          the column.
-
-    :param weight: The PCA transform can take into account a weight for each
-        row. To use weights, the input must contain
-        a weight column, whose name is specified using this parameter. See
-        `Columns </nimbusml/concepts/columns>`_ for syntax.
 
     :param rank: The number of components in the PCA. The default value is
         20.
@@ -81,25 +81,30 @@ class PcaTransformer(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            weight=None,
             rank=20,
             oversampling=20,
             center=True,
             random_state=0,
+            weight=None,
             columns=None,
             **params):
 
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         if columns:
             params['columns'] = columns
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            weight=weight,
             rank=rank,
             oversampling=oversampling,
             center=center,
             random_state=random_state,
             **params)
+        self.weight = weight
         self._columns = columns
 
     def get_params(self, deep=False):

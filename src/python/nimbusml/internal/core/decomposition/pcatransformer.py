@@ -12,10 +12,10 @@ __all__ = ["PcaTransformer"]
 
 from ...entrypoints.transforms_pcacalculator import transforms_pcacalculator
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class PcaTransformer(BasePipelineItem, DefaultSignature):
+class PcaTransformer(BasePipelineItem, DefaultSignatureWithRoles):
     """
 
     Pca Transformer
@@ -34,11 +34,6 @@ class PcaTransformer(BasePipelineItem, DefaultSignature):
         Probabilistic Algorithms for Constructing Approximate
         Matrix Decompositions <https://arxiv.org/pdf/0909.4061v2.pdf>`_ by N.
         Halko et al.
-
-    :param weight: The PCA transform can take into account a weight for each
-        row. To use weights, the input must contain
-        a weight column, whose name is specified using this parameter. See
-        `Columns </nimbusml/concepts/columns>`_ for syntax.
 
     :param rank: The number of components in the PCA. The default value is
         20.
@@ -65,7 +60,6 @@ class PcaTransformer(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            weight=None,
             rank=20,
             oversampling=20,
             center=True,
@@ -74,7 +68,6 @@ class PcaTransformer(BasePipelineItem, DefaultSignature):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
-        self.weight = weight
         self.rank = rank
         self.oversampling = oversampling
         self.center = center
@@ -146,7 +139,9 @@ class PcaTransformer(BasePipelineItem, DefaultSignature):
                 o in zip(
                     input_columns,
                     output_columns)] if input_columns else None,
-            example_weight_column_name=self.weight,
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             rank=self.rank,
             oversampling=self.oversampling,
             center=self.center,

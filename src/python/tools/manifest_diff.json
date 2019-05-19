@@ -2,18 +2,6 @@
   "GlobalChanges": {
     "Inputs": [
       {
-        "Name": "FeatureColumnName",
-        "NewName": "Feature"
-      },
-      {
-        "Name": "LabelColumnName",
-        "NewName": "Label"
-      },
-      {
-        "Name": "ExampleWeightColumnName",
-        "NewName": "Weight"
-      },
-      {
         "Name": "Acceleration",
         "Desc": "Specifies the type of hardware acceleration to use. Possible values are ``sse_math``, ``avx_math``, ``mkl_math``, ``clr_math`` and ``gpu_math``. To use GPU acceleration, download NVidia CUDA toolkit 6.5 and NVidia cuDNN v2 and copy all DLL files to the ``mxLibs`` directory of the microsoft_scikit package"
       },
@@ -139,19 +127,19 @@
         "Hidden": true
       },
       {
-        "Name": "FeatureColumn",
+        "Name": "FeatureColumnName",
         "Hidden": true
       },
       {
-        "Name": "LabelColumn",
+        "Name": "LabelColumnName",
         "Hidden": true
       },
       {
-        "Name": "WeightColumn",
+        "Name": "ExampleWeightColumnName",
         "Hidden": true
       },
       {
-        "Name": "GroupIdColumn",
+        "Name": "RowGroupColumnName",
         "Hidden": true
       },
       {

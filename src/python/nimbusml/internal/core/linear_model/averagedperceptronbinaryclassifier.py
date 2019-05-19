@@ -14,11 +14,12 @@ from ...core.loss.loss_factory import check_loss, create_loss
 from ...entrypoints.trainers_averagedperceptronbinaryclassifier import \
     trainers_averagedperceptronbinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
 class AveragedPerceptronBinaryClassifier(
-        BasePipelineItem, DefaultSignature):
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Machine Learning Averaged Perceptron Binary Classifier
@@ -71,10 +72,6 @@ class AveragedPerceptronBinaryClassifier(
             `Discriminative Training Methods for Hidden Markov Models
             <http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.6725>`_
 
-
-    :param feature: Column to use for features.
-
-    :param label: Column to use for labels.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -152,8 +149,6 @@ class AveragedPerceptronBinaryClassifier(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
             loss='hinge',
@@ -174,8 +169,6 @@ class AveragedPerceptronBinaryClassifier(
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
-        self.feature = feature
-        self.label = label
         self.normalize = normalize
         self.caching = caching
         self.loss = loss
@@ -204,8 +197,12 @@ class AveragedPerceptronBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            label_column_name=self.label,
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching,
             loss_function=create_loss(

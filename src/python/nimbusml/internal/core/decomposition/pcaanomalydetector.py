@@ -13,10 +13,12 @@ __all__ = ["PcaAnomalyDetector"]
 from ...entrypoints.trainers_pcaanomalydetector import \
     trainers_pcaanomalydetector
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class PcaAnomalyDetector(BasePipelineItem, DefaultSignature):
+class PcaAnomalyDetector(
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Train an anomaly model using approximate PCA via randomized SVD
@@ -63,10 +65,6 @@ class PcaAnomalyDetector(BasePipelineItem, DefaultSignature):
             <http://users.cms.caltech.edu/~jtropp/papers/HMT11-Finding-Structure-
             SIREV.pdf>`_
 
-
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -116,8 +114,6 @@ class PcaAnomalyDetector(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            feature='Features',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             rank=20,
@@ -127,8 +123,6 @@ class PcaAnomalyDetector(BasePipelineItem, DefaultSignature):
             **params):
         BasePipelineItem.__init__(self, type='anomaly', **params)
 
-        self.feature = feature
-        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.rank = rank
@@ -143,8 +137,12 @@ class PcaAnomalyDetector(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            example_weight_column_name=self.weight,
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching,
             rank=self.rank,

@@ -80,18 +80,18 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
             <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
 
 
-    :param number_of_iterations: Total number of iterations over all features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param feature: Column to use for features.
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param number_of_iterations: Total number of iterations over all features.
 
     :param minimum_example_count_per_leaf: Minimum number of training instances
         required to form a partition.
 
-    :param label: Column to use for labels.
-
     :param learning_rate: The learning rate.
-
-    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -168,11 +168,8 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
     def __init__(
             self,
             number_of_iterations=9500,
-            feature='Features',
             minimum_example_count_per_leaf=10,
-            label='Label',
             learning_rate=0.002,
-            weight=None,
             normalize='Auto',
             caching='Auto',
             pruning_metrics=2,
@@ -186,17 +183,32 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
             random_state=123,
             feature_flocks=True,
             enable_pruning=True,
+            feature=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
             number_of_iterations=number_of_iterations,
-            feature=feature,
             minimum_example_count_per_leaf=minimum_example_count_per_leaf,
-            label=label,
             learning_rate=learning_rate,
-            weight=weight,
             normalize=normalize,
             caching=caching,
             pruning_metrics=pruning_metrics,
@@ -211,6 +223,9 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
             feature_flocks=feature_flocks,
             enable_pruning=enable_pruning,
             **params)
+        self.feature = feature
+        self.label = label
+        self.weight = weight
 
     def get_params(self, deep=False):
         """

@@ -13,10 +13,12 @@ __all__ = ["GamBinaryClassifier"]
 from ...entrypoints.trainers_generalizedadditivemodelbinaryclassifier import \
     trainers_generalizedadditivemodelbinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class GamBinaryClassifier(BasePipelineItem, DefaultSignature):
+class GamBinaryClassifier(
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Generalized Additive Models
@@ -81,16 +83,10 @@ class GamBinaryClassifier(BasePipelineItem, DefaultSignature):
 
     :param number_of_iterations: Total number of iterations over all features.
 
-    :param feature: Column to use for features.
-
     :param minimum_example_count_per_leaf: Minimum number of training instances
         required to form a partition.
 
-    :param label: Column to use for labels.
-
     :param learning_rate: The learning rate.
-
-    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -166,11 +162,8 @@ class GamBinaryClassifier(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             number_of_iterations=9500,
-            feature='Features',
             minimum_example_count_per_leaf=10,
-            label='Label',
             learning_rate=0.002,
-            weight=None,
             normalize='Auto',
             caching='Auto',
             unbalanced_sets=False,
@@ -189,11 +182,8 @@ class GamBinaryClassifier(BasePipelineItem, DefaultSignature):
             self, type='classifier', **params)
 
         self.number_of_iterations = number_of_iterations
-        self.feature = feature
         self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
-        self.label = label
         self.learning_rate = learning_rate
-        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.unbalanced_sets = unbalanced_sets
@@ -215,12 +205,18 @@ class GamBinaryClassifier(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             number_of_iterations=self.number_of_iterations,
-            feature_column_name=self.feature,
             minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
-            label_column_name=self.label,
             learning_rate=self.learning_rate,
-            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching,
             unbalanced_sets=self.unbalanced_sets,

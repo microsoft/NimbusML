@@ -13,12 +13,10 @@ __all__ = ["TensorFlowScorer"]
 from ...entrypoints.transforms_tensorflowscorer import \
     transforms_tensorflowscorer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class TensorFlowScorer(
-        BasePipelineItem,
-        DefaultSignatureWithRoles):
+class TensorFlowScorer(BasePipelineItem, DefaultSignature):
     """
 
     Transforms the data using the
@@ -53,6 +51,8 @@ class TensorFlowScorer(
     :param input_columns: The names of the model inputs.
 
     :param output_columns: The name of the outputs.
+
+    :param label_column: Training labels.
 
     :param tensor_flow_label: TensorFlow label node.
 
@@ -100,6 +100,7 @@ class TensorFlowScorer(
             model_location,
             input_columns=None,
             output_columns=None,
+            label_column=None,
             tensor_flow_label=None,
             optimization_operation=None,
             loss_operation=None,
@@ -119,6 +120,7 @@ class TensorFlowScorer(
         self.model_location = model_location
         self.input_columns = input_columns
         self.output_columns = output_columns
+        self.label_column = label_column
         self.tensor_flow_label = tensor_flow_label
         self.optimization_operation = optimization_operation
         self.loss_operation = loss_operation
@@ -139,10 +141,10 @@ class TensorFlowScorer(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            label_column=self._getattr_role('label_column', all_args),
             model_location=self.model_location,
             input_columns=self.input_columns,
             output_columns=self.output_columns,
+            label_column=self.label_column,
             tensor_flow_label=self.tensor_flow_label,
             optimization_operation=self.optimization_operation,
             loss_operation=self.loss_operation,

@@ -129,8 +129,6 @@ class OnlineGradientDescentRegressor(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
             loss='squared',
@@ -147,13 +145,23 @@ class OnlineGradientDescentRegressor(
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
+            feature=None,
+            label=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
             normalize=normalize,
             caching=caching,
             loss=loss,
@@ -171,6 +179,8 @@ class OnlineGradientDescentRegressor(
             initial_weights=initial_weights,
             shuffle=shuffle,
             **params)
+        self.feature = feature
+        self.label = label
 
     def get_params(self, deep=False):
         """

@@ -68,7 +68,7 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param weight: Column to use for example weight.
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -118,21 +118,29 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
-            feature='Features',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             rank=20,
             oversampling=20,
             center=True,
             random_state=None,
+            feature=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='anomaly', **params)
         core.__init__(
             self,
-            feature=feature,
-            weight=weight,
             normalize=normalize,
             caching=caching,
             rank=rank,
@@ -140,6 +148,8 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
             center=center,
             random_state=random_state,
             **params)
+        self.feature = feature
+        self.weight = weight
 
     def get_params(self, deep=False):
         """

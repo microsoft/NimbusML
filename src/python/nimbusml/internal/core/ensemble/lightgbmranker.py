@@ -12,10 +12,10 @@ __all__ = ["LightGbmRanker"]
 
 from ...entrypoints.trainers_lightgbmranker import trainers_lightgbmranker
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class LightGbmRanker(BasePipelineItem, DefaultSignature):
+class LightGbmRanker(BasePipelineItem, DefaultSignatureWithRoles):
     """
 
     Gradient Boosted Decision Trees
@@ -45,19 +45,11 @@ class LightGbmRanker(BasePipelineItem, DefaultSignature):
     :param minimum_example_count_per_leaf: Minimum number of instances needed
         in a child.
 
-    :param feature: Column to use for features.
-
     :param booster: Which booster to use. Available options are:
 
         #. :py:func:`Dart <nimbusml.ensemble.booster.Dart>`
         #. :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`
         #. :py:func:`Goss <nimbusml.ensemble.booster.Goss>`.
-
-    :param label: Column to use for labels.
-
-    :param weight: Column to use for example weight.
-
-    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -133,11 +125,7 @@ class LightGbmRanker(BasePipelineItem, DefaultSignature):
             learning_rate=None,
             number_of_leaves=None,
             minimum_example_count_per_leaf=None,
-            feature='Features',
             booster=None,
-            label='Label',
-            weight=None,
-            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             custom_gains=[0, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095],
@@ -164,11 +152,7 @@ class LightGbmRanker(BasePipelineItem, DefaultSignature):
         self.learning_rate = learning_rate
         self.number_of_leaves = number_of_leaves
         self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
-        self.feature = feature
         self.booster = booster
-        self.label = label
-        self.weight = weight
-        self.row_group_column_name = row_group_column_name
         self.normalize = normalize
         self.caching = caching
         self.custom_gains = custom_gains
@@ -196,15 +180,15 @@ class LightGbmRanker(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
+            feature_column_name=self._getattr_role('feature_column_name', all_args),
+            label_column_name=self._getattr_role('label_column_name', all_args),
+            example_weight_column_name=self._getattr_role('example_weight_column_name', all_args),
+            row_group_column_name=self._getattr_role('row_group_column_name', all_args),
             number_of_iterations=self.number_of_iterations,
             learning_rate=self.learning_rate,
             number_of_leaves=self.number_of_leaves,
             minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
-            feature_column_name=self.feature,
             booster=self.booster,
-            label_column_name=self.label,
-            example_weight_column_name=self.weight,
-            row_group_column_name=self.row_group_column_name,
             normalize_features=self.normalize,
             caching=self.caching,
             custom_gains=self.custom_gains,

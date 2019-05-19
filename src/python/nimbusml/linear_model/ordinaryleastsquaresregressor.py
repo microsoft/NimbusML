@@ -41,11 +41,11 @@ class OrdinaryLeastSquaresRegressor(
             <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_
 
 
-    :param feature: Column to use for features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param label: Column to use for labels.
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param weight: Column to use for example weight.
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -96,26 +96,41 @@ class OrdinaryLeastSquaresRegressor(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             l2_regularization=1e-06,
             calculate_statistics=True,
+            feature=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
-            weight=weight,
             normalize=normalize,
             caching=caching,
             l2_regularization=l2_regularization,
             calculate_statistics=calculate_statistics,
             **params)
+        self.feature = feature
+        self.label = label
+        self.weight = weight
 
     def get_params(self, deep=False):
         """

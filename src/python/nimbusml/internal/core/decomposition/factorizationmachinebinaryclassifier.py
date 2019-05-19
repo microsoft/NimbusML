@@ -13,11 +13,11 @@ __all__ = ["FactorizationMachineBinaryClassifier"]
 from ...entrypoints.trainers_fieldawarefactorizationmachinebinaryclassifier import \
     trainers_fieldawarefactorizationmachinebinaryclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
 class FactorizationMachineBinaryClassifier(
-        BasePipelineItem, DefaultSignature):
+        BasePipelineItem, DefaultSignatureWithRoles):
     """
 
     Train a field-aware factorization machine for binary classification.
@@ -52,15 +52,9 @@ class FactorizationMachineBinaryClassifier(
 
     :param number_of_iterations: Number of training iterations.
 
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
     :param latent_dimension: Latent space dimension.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
     :param lambda_linear: Regularization coefficient of linear weights.
-
-    :param weight: Column to use for example weight.
 
     :param lambda_latent: Regularization coefficient of latent weights.
 
@@ -100,11 +94,8 @@ class FactorizationMachineBinaryClassifier(
             self,
             learning_rate=0.1,
             number_of_iterations=5,
-            feature='Features',
             latent_dimension=20,
-            label='Label',
             lambda_linear=0.0001,
-            weight=None,
             lambda_latent=0.0001,
             caching='Auto',
             extra_feature_columns=None,
@@ -117,11 +108,8 @@ class FactorizationMachineBinaryClassifier(
 
         self.learning_rate = learning_rate
         self.number_of_iterations = number_of_iterations
-        self.feature = feature
         self.latent_dimension = latent_dimension
-        self.label = label
         self.lambda_linear = lambda_linear
-        self.weight = weight
         self.lambda_latent = lambda_latent
         self.caching = caching
         self.extra_feature_columns = extra_feature_columns
@@ -136,13 +124,19 @@ class FactorizationMachineBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             learning_rate=self.learning_rate,
             number_of_iterations=self.number_of_iterations,
-            feature_column_name=self.feature,
             latent_dimension=self.latent_dimension,
-            label_column_name=self.label,
             lambda_linear=self.lambda_linear,
-            example_weight_column_name=self.weight,
             lambda_latent=self.lambda_latent,
             caching=self.caching,
             extra_feature_columns=self.extra_feature_columns,

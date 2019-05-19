@@ -14,11 +14,12 @@ from ...core.loss.loss_factory import check_loss, create_loss
 from ...entrypoints.trainers_onlinegradientdescentregressor import \
     trainers_onlinegradientdescentregressor
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
 class OnlineGradientDescentRegressor(
-        BasePipelineItem, DefaultSignature):
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Train a stochastic gradient descent model.
@@ -43,10 +44,6 @@ class OnlineGradientDescentRegressor(
             `Stochastic_gradient_descent
             <https://en.wikipedia.org/wiki/Stochastic_gradient_descent>`_
 
-
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -128,8 +125,6 @@ class OnlineGradientDescentRegressor(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
             loss='squared',
@@ -150,8 +145,6 @@ class OnlineGradientDescentRegressor(
         BasePipelineItem.__init__(
             self, type='regressor', **params)
 
-        self.feature = feature
-        self.label = label
         self.normalize = normalize
         self.caching = caching
         self.loss = loss
@@ -180,8 +173,12 @@ class OnlineGradientDescentRegressor(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            label_column_name=self.label,
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching,
             loss_function=create_loss(

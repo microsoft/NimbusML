@@ -13,10 +13,12 @@ __all__ = ["NaiveBayesClassifier"]
 from ...entrypoints.trainers_naivebayesclassifier import \
     trainers_naivebayesclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class NaiveBayesClassifier(BasePipelineItem, DefaultSignature):
+class NaiveBayesClassifier(
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Machine Learning Naive Bayes Classifier
@@ -38,10 +40,6 @@ class NaiveBayesClassifier(BasePipelineItem, DefaultSignature):
 
             `Naive Bayes <https://en.wikipedia.org/wiki/Naive_Bayes_classifier>`_
 
-
-    :param feature: Column to use for features.
-
-    :param label: Column to use for labels.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -86,16 +84,12 @@ class NaiveBayesClassifier(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
             **params):
         BasePipelineItem.__init__(
             self, type='classifier', **params)
 
-        self.feature = feature
-        self.label = label
         self.normalize = normalize
         self.caching = caching
 
@@ -106,8 +100,12 @@ class NaiveBayesClassifier(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            label_column_name=self.label,
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching)
 

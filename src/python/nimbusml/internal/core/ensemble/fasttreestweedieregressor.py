@@ -13,12 +13,12 @@ __all__ = ["FastTreesTweedieRegressor"]
 from ...entrypoints.trainers_fasttreetweedieregressor import \
     trainers_fasttreetweedieregressor
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
 class FastTreesTweedieRegressor(
         BasePipelineItem,
-        DefaultSignature):
+        DefaultSignatureWithRoles):
     """
 
     Machine Learning Fast Tree
@@ -42,18 +42,10 @@ class FastTreesTweedieRegressor(
 
     :param number_of_leaves: The max number of leaves in each regression tree.
 
-    :param feature: Column to use for features.
-
     :param minimum_example_count_per_leaf: The minimal number of examples
         allowed in a leaf of a regression tree, out of the subsampled data.
 
-    :param label: Column to use for labels.
-
     :param learning_rate: The learning rate.
-
-    :param weight: Column to use for example weight.
-
-    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -249,12 +241,8 @@ class FastTreesTweedieRegressor(
             self,
             number_of_trees=100,
             number_of_leaves=20,
-            feature='Features',
             minimum_example_count_per_leaf=10,
-            label='Label',
             learning_rate=0.2,
-            weight=None,
-            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             index=1.5,
@@ -316,12 +304,8 @@ class FastTreesTweedieRegressor(
 
         self.number_of_trees = number_of_trees
         self.number_of_leaves = number_of_leaves
-        self.feature = feature
         self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
-        self.label = label
         self.learning_rate = learning_rate
-        self.weight = weight
-        self.row_group_column_name = row_group_column_name
         self.normalize = normalize
         self.caching = caching
         self.index = index
@@ -385,14 +369,14 @@ class FastTreesTweedieRegressor(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
+            feature_column_name=self._getattr_role('feature_column_name', all_args),
+            label_column_name=self._getattr_role('label_column_name', all_args),
+            example_weight_column_name=self._getattr_role('example_weight_column_name', all_args),
+            row_group_column_name=self._getattr_role('row_group_column_name', all_args),
             number_of_trees=self.number_of_trees,
             number_of_leaves=self.number_of_leaves,
-            feature_column_name=self.feature,
             minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
-            label_column_name=self.label,
             learning_rate=self.learning_rate,
-            example_weight_column_name=self.weight,
-            row_group_column_name=self.row_group_column_name,
             normalize_features=self.normalize,
             caching=self.caching,
             index=self.index,

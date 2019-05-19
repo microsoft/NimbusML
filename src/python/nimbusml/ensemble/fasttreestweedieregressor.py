@@ -40,23 +40,23 @@ class FastTreesTweedieRegressor(
             `Greedy function approximation: A gradient boosting machine.
             <http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param group_id: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+
     :param number_of_trees: Total number of decision trees to create in the
         ensemble.
 
     :param number_of_leaves: The max number of leaves in each regression tree.
 
-    :param feature: Column to use for features.
-
     :param minimum_example_count_per_leaf: The minimal number of examples
         allowed in a leaf of a regression tree, out of the subsampled data.
 
-    :param label: Column to use for labels.
-
     :param learning_rate: The learning rate.
-
-    :param weight: Column to use for example weight.
-
-    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -252,12 +252,8 @@ class FastTreesTweedieRegressor(
             self,
             number_of_trees=100,
             number_of_leaves=20,
-            feature='Features',
             minimum_example_count_per_leaf=10,
-            label='Label',
             learning_rate=0.2,
-            weight=None,
-            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             index=1.5,
@@ -313,19 +309,39 @@ class FastTreesTweedieRegressor(
             feature_compression_level=1,
             compress_ensemble=False,
             test_frequency=2147483647,
+            feature=None,
+            group_id=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'row_group_column_name' in params:
+            raise NameError(
+                "'row_group_column_name' must be renamed to 'group_id'")
+        if group_id:
+            params['row_group_column_name'] = group_id
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
             number_of_trees=number_of_trees,
             number_of_leaves=number_of_leaves,
-            feature=feature,
             minimum_example_count_per_leaf=minimum_example_count_per_leaf,
-            label=label,
             learning_rate=learning_rate,
-            weight=weight,
-            row_group_column_name=row_group_column_name,
             normalize=normalize,
             caching=caching,
             index=index,
@@ -382,6 +398,10 @@ class FastTreesTweedieRegressor(
             compress_ensemble=compress_ensemble,
             test_frequency=test_frequency,
             **params)
+        self.feature = feature
+        self.group_id = group_id
+        self.label = label
+        self.weight = weight
 
     def get_params(self, deep=False):
         """

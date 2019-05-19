@@ -13,10 +13,10 @@ __all__ = ["KMeansPlusPlus"]
 from ...entrypoints.trainers_kmeansplusplusclusterer import \
     trainers_kmeansplusplusclusterer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class KMeansPlusPlus(BasePipelineItem, DefaultSignature):
+class KMeansPlusPlus(BasePipelineItem, DefaultSignatureWithRoles):
     """
 
     Machine Learning KMeans clustering algorithm
@@ -38,10 +38,6 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignature):
             content/uploads/2016/02/ding15.pdf <https://www.microsoft.com/en-
             us/research/wp-content/uploads/2016/02/ding15.pdf>`_
 
-
-    :param feature: Column to use for features.
-
-    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -100,8 +96,6 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            feature='Features',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             n_clusters=5,
@@ -114,8 +108,6 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignature):
         BasePipelineItem.__init__(
             self, type='clusterer', **params)
 
-        self.feature = feature
-        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.n_clusters = n_clusters
@@ -132,8 +124,12 @@ class KMeansPlusPlus(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column_name=self.feature,
-            example_weight_column_name=self.weight,
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching,
             k=self.n_clusters,

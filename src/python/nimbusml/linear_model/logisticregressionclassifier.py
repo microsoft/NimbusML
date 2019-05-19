@@ -106,11 +106,11 @@ class LogisticRegressionClassifier(
             <https://msdn.microsoft.com/en-us/magazine/dn904675.aspx>`_
 
 
-    :param feature: Column to use for features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param label: Column to use for labels.
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param weight: Column to use for example weight.
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -174,9 +174,6 @@ class LogisticRegressionClassifier(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             show_training_statistics=False,
@@ -192,14 +189,29 @@ class LogisticRegressionClassifier(
             use_threads=True,
             number_of_threads=None,
             dense_optimizer=False,
+            feature=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
-            weight=weight,
             normalize=normalize,
             caching=caching,
             show_training_statistics=show_training_statistics,
@@ -216,6 +228,9 @@ class LogisticRegressionClassifier(
             number_of_threads=number_of_threads,
             dense_optimizer=dense_optimizer,
             **params)
+        self.feature = feature
+        self.label = label
+        self.weight = weight
 
     @trace
     def predict_proba(self, X, **params):

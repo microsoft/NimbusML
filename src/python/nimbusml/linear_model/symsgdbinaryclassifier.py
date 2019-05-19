@@ -124,8 +124,6 @@ class SymSgdBinaryClassifier(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
             number_of_iterations=50,
@@ -137,13 +135,23 @@ class SymSgdBinaryClassifier(
             memory_size=1024,
             shuffle=True,
             positive_instance_weight=1.0,
+            feature=None,
+            label=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
             normalize=normalize,
             caching=caching,
             number_of_iterations=number_of_iterations,
@@ -156,6 +164,8 @@ class SymSgdBinaryClassifier(
             shuffle=shuffle,
             positive_instance_weight=positive_instance_weight,
             **params)
+        self.feature = feature
+        self.label = label
 
     @trace
     def predict_proba(self, X, **params):

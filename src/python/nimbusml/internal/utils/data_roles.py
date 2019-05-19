@@ -69,7 +69,7 @@ class Role:
     def to_attribute(role, suffix="_column_name"):
         """
         Converts a role into an attribute name.
-        ``GroupId --> group_id_column``.
+        ``GroupId --> row_group_column_name``.
         """
         if not isinstance(role, str):
             raise TypeError("Unexpected role '{0}'".format(role))

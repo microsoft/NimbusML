@@ -40,9 +40,9 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
             us/research/wp-content/uploads/2016/02/ding15.pdf>`_
 
 
-    :param feature: Column to use for features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param weight: Column to use for example weight.
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -101,8 +101,6 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
     @trace
     def __init__(
             self,
-            feature='Features',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             n_clusters=5,
@@ -111,13 +109,23 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
             opt_tol=1e-07,
             maximum_number_of_iterations=1000,
             accel_mem_budget_mb=4096,
+            feature=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='clusterer', **params)
         core.__init__(
             self,
-            feature=feature,
-            weight=weight,
             normalize=normalize,
             caching=caching,
             n_clusters=n_clusters,
@@ -127,6 +135,8 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
             maximum_number_of_iterations=maximum_number_of_iterations,
             accel_mem_budget_mb=accel_mem_budget_mb,
             **params)
+        self.feature = feature
+        self.weight = weight
 
     def get_params(self, deep=False):
         """

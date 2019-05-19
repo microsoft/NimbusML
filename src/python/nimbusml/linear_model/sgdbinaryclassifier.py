@@ -44,11 +44,11 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
             <http://arxiv.org/pdf/1106.5730v2.pdf>`_
 
 
-    :param feature: Column to use for features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param label: Column to use for labels.
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param weight: Column to use for example weight.
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -119,9 +119,6 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             loss='log',
@@ -133,14 +130,29 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
             shuffle=True,
             positive_instance_weight=1.0,
             check_frequency=None,
+            feature=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
-            weight=weight,
             normalize=normalize,
             caching=caching,
             loss=loss,
@@ -153,6 +165,9 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
             positive_instance_weight=positive_instance_weight,
             check_frequency=check_frequency,
             **params)
+        self.feature = feature
+        self.label = label
+        self.weight = weight
 
     @trace
     def predict_proba(self, X, **params):

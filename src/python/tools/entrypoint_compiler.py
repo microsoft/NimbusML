@@ -58,13 +58,43 @@ class Role:
 
     Feature = 'Feature'
     Label = 'Label'
-    Weight = 'Weight'
-    GroupId = 'GroupId'
+    Weight = 'ExampleWeight'
+    GroupId = 'RowGroup'
+    # unsupported roles below
     User = 'User'
     Item = 'Item'
     Name = 'Name'
     RowId = 'RowId'
 
+    @staticmethod
+    def get_column_name(role, suffix="ColumnName"):
+        """
+        Converts a role into a column name
+        ``GroupId --> RowGroupColumnName``.
+        """
+        if not isinstance(role, str):
+            raise TypeError("Unexpected role '{0}'".format(role))
+        if role == "Weight":
+            return Role.Weight + suffix
+        if role == "GroupId":
+            return Role.GroupId + suffix
+        return role + suffix
+
+    @staticmethod
+    def to_attribute(role, suffix="_column_name"):
+        """
+        Converts a role into a tuple of pythonic original and extended name.
+        ``groupid --> (group_id, row_group_column_name)``.
+        """
+        if not isinstance(role, str):
+            raise TypeError("Unexpected role '{0}'".format(role))
+        if role == "weight":
+            return ("weight", "example_weight" + suffix)
+        if role == "groupid":
+            return ("group_id", "row_group" + suffix)
+        if role == "rowid":
+            return ("row_id", "row_id" + suffix)
+        return (role.lower(), role.lower() + suffix)
 
 _allowed_roles = set(k for k in Role.__dict__ if k[0].upper() == k[0])
 
@@ -602,7 +632,7 @@ def write_class(
     hidden = set(a.name for a in hidden_args)
     allowed_roles = sorted([k.lower()
                             for k in _allowed_roles if
-                            k + 'Column' in hidden])
+                            Role.get_column_name(k) in hidden])
     sig_columns_roles = list(allowed_roles)
 
     base_file = "base_predictor"
@@ -731,21 +761,17 @@ def write_class(
     body_sig_params = []
     for h in sig_columns_roles:
         # add roles as allowed parameters
-        if h == 'groupid':
-            h = 'group_id'
-        elif h == 'colid':
-            h = 'col_id'
-        elif h == 'rowid':
-            h = 'row_id'
         if h == "columns":
             body_header += "\n        if {0}: params['{0}'] = {0}".format(
                 h)
         else:
-            body_header += "\n        if '{0}_column' in params: raise " \
-                           "NameError(\"'{0}_column' must be renamed to " \
-                           "'{0}'\")".format(h)
-            body_header += "\n        if {0}: params['{0}_column'] = {" \
-                           "0}".format(h)
+            body_header += "\n        if '{1}' in params: raise " \
+                           "NameError(\"'{1}' must be renamed to " \
+                           "'{0}'\")".format(Role.to_attribute(h)[0],
+                                            Role.to_attribute(h)[1])
+            body_header += "\n        if {0}: params['{1}'] = {" \
+                           "0}".format(Role.to_attribute(h)[0],
+                                       Role.to_attribute(h)[1])
         body_sig_params.append(h)
     if 'input_columns' in header and 'columns=' in header:
         body_header += "\n        if columns: input_columns = " \
@@ -778,7 +804,7 @@ def write_class(
 
     for h in body_sig_params:
         body += '        self.{0}{1}={1}\n'.format(
-            '_' if h == 'columns' else '', h)
+            '_' if h == 'columns' else '', Role.to_attribute(h)[0])
 
     if 'Predict_Proba' in entrypoint:
         if entrypoint['Predict_Proba'] is True:
@@ -869,8 +895,9 @@ def write_core_class(
     module_doc = '"""\n{}\n"""\n'.format(class_name)
 
     hidden = set(a.name for a in hidden_args)
-    allowed_roles = [k.lower()
-                     for k in _allowed_roles if k + 'Column' in hidden]
+    allowed_roles = sorted([k.lower()
+                            for k in _allowed_roles if
+                            Role.get_column_name(k) in hidden])
 
     dots = '.' * (1 + class_dir.count('.'))
 
@@ -1221,7 +1248,7 @@ def write_core_class(
     if len(columns_entrypoint) > 0:
         for c in columns_entrypoint:
             name = c.new_name_converted
-            if name.endswith('_column'):
+            if name.endswith('_column_name'):
                 tail_snip += "\n        {0}=self._getattr_role('{0}', " \
                              "all_args),".format(name)
             elif name == "source" or c.name == "Source":
@@ -1551,7 +1578,7 @@ class Argument:
 
         # NOTE: the default values specified in the
         # manifest.json for some inputs do not work.
-        if self.name in ('WeightColumn', 'GroupIdColumn', 'GroupColumn'):
+        if self.name in ('ExampleWeightColumnName', 'RowGroupColumnName'):
             self.default = None
 
     def __str__(self):

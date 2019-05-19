@@ -73,9 +73,9 @@ class AveragedPerceptronBinaryClassifier(
             <http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.6725>`_
 
 
-    :param feature: Column to use for features.
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param label: Column to use for labels.
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -153,8 +153,6 @@ class AveragedPerceptronBinaryClassifier(
     @trace
     def __init__(
             self,
-            feature='Features',
-            label='Label',
             normalize='Auto',
             caching='Auto',
             loss='hinge',
@@ -171,13 +169,23 @@ class AveragedPerceptronBinaryClassifier(
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
+            feature=None,
+            label=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            feature=feature,
-            label=label,
             normalize=normalize,
             caching=caching,
             loss=loss,
@@ -195,6 +203,8 @@ class AveragedPerceptronBinaryClassifier(
             initial_weights=initial_weights,
             shuffle=shuffle,
             **params)
+        self.feature = feature
+        self.label = label
 
     @trace
     def predict_proba(self, X, **params):

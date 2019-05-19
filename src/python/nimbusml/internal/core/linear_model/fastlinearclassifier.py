@@ -14,10 +14,12 @@ from ...core.loss.loss_factory import check_loss, create_loss
 from ...entrypoints.trainers_stochasticdualcoordinateascentclassifier import \
     trainers_stochasticdualcoordinateascentclassifier
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
 
 
-class FastLinearClassifier(BasePipelineItem, DefaultSignature):
+class FastLinearClassifier(
+        BasePipelineItem,
+        DefaultSignatureWithRoles):
     """
 
     Train an SDCA multi class model
@@ -87,12 +89,6 @@ class FastLinearClassifier(BasePipelineItem, DefaultSignature):
         control and sweep using the threshold parameter than the raw
         L1-regularizer constant. By default the l1 threshold is automatically
         inferred based on data set.
-
-    :param feature: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param weight: Column to use for example weight.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -166,9 +162,6 @@ class FastLinearClassifier(BasePipelineItem, DefaultSignature):
             self,
             l2_regularization=None,
             l1_threshold=None,
-            feature='Features',
-            label='Label',
-            weight=None,
             normalize='Auto',
             caching='Auto',
             loss='log',
@@ -184,9 +177,6 @@ class FastLinearClassifier(BasePipelineItem, DefaultSignature):
 
         self.l2_regularization = l2_regularization
         self.l1_threshold = l1_threshold
-        self.feature = feature
-        self.label = label
-        self.weight = weight
         self.normalize = normalize
         self.caching = caching
         self.loss = loss
@@ -208,11 +198,17 @@ class FastLinearClassifier(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             l2_regularization=self.l2_regularization,
             l1_threshold=self.l1_threshold,
-            feature_column_name=self.feature,
-            label_column_name=self.label,
-            example_weight_column_name=self.weight,
             normalize_features=self.normalize,
             caching=self.caching,
             loss_function=create_loss(

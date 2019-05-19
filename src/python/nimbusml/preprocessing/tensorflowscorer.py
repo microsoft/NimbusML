@@ -47,8 +47,6 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
         * The name of each output column should match one of the
             operations in the Tensorflow graph.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
     :param model_location: TensorFlow model used by the transform. Please see
@@ -57,6 +55,8 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
     :param input_columns: The names of the model inputs.
 
     :param output_columns: The name of the outputs.
+
+    :param label_column: Training labels.
 
     :param tensor_flow_label: TensorFlow label node.
 
@@ -104,6 +104,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             model_location,
             input_columns=None,
             output_columns=None,
+            label_column=None,
             tensor_flow_label=None,
             optimization_operation=None,
             loss_operation=None,
@@ -116,15 +117,9 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             save_operation='save/control_dependency',
             re_train=False,
             add_batch_dimension_inputs=False,
-            label=None,
             columns=None,
             **params):
 
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
         if columns:
             params['columns'] = columns
         if columns:
@@ -144,6 +139,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             model_location=model_location,
             input_columns=input_columns,
             output_columns=output_columns,
+            label_column=label_column,
             tensor_flow_label=tensor_flow_label,
             optimization_operation=optimization_operation,
             loss_operation=loss_operation,
@@ -157,7 +153,6 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             re_train=re_train,
             add_batch_dimension_inputs=add_batch_dimension_inputs,
             **params)
-        self.label = label
         self._columns = columns
 
     def get_params(self, deep=False):

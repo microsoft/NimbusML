@@ -74,21 +74,21 @@ class FastForestRegressor(core, BasePredictor, RegressorMixin):
             stumps-to-trees-to-forests/>`_
 
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param group_id: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+
     :param number_of_trees: Total number of decision trees to create in the
         ensemble.
 
     :param number_of_leaves: The max number of leaves in each regression tree.
 
-    :param feature: Column to use for features.
-
     :param minimum_example_count_per_leaf: The minimal number of examples
         allowed in a leaf of a regression tree, out of the subsampled data.
-
-    :param label: Column to use for labels.
-
-    :param weight: Column to use for example weight.
-
-    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -218,11 +218,7 @@ class FastForestRegressor(core, BasePredictor, RegressorMixin):
             self,
             number_of_trees=100,
             number_of_leaves=20,
-            feature='Features',
             minimum_example_count_per_leaf=10,
-            label='Label',
-            weight=None,
-            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             shuffle_labels=False,
@@ -258,18 +254,38 @@ class FastForestRegressor(core, BasePredictor, RegressorMixin):
             feature_compression_level=1,
             compress_ensemble=False,
             test_frequency=2147483647,
+            feature=None,
+            group_id=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'row_group_column_name' in params:
+            raise NameError(
+                "'row_group_column_name' must be renamed to 'group_id'")
+        if group_id:
+            params['row_group_column_name'] = group_id
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
             number_of_trees=number_of_trees,
             number_of_leaves=number_of_leaves,
-            feature=feature,
             minimum_example_count_per_leaf=minimum_example_count_per_leaf,
-            label=label,
-            weight=weight,
-            row_group_column_name=row_group_column_name,
             normalize=normalize,
             caching=caching,
             shuffle_labels=shuffle_labels,
@@ -306,6 +322,10 @@ class FastForestRegressor(core, BasePredictor, RegressorMixin):
             compress_ensemble=compress_ensemble,
             test_frequency=test_frequency,
             **params)
+        self.feature = feature
+        self.group_id = group_id
+        self.label = label
+        self.weight = weight
 
     def get_params(self, deep=False):
         """

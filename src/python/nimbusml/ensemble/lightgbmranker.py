@@ -37,6 +37,14 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             `GitHub: LightGBM <https://github.com/Microsoft/LightGBM/wiki>`_
 
 
+    :param feature: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param group_id: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param label: see `Columns </nimbusml/concepts/columns>`_.
+
+    :param weight: see `Columns </nimbusml/concepts/columns>`_.
+
     :param number_of_iterations: Number of iterations.
 
     :param learning_rate: Shrinkage rate for trees, used to prevent over-
@@ -47,19 +55,11 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
     :param minimum_example_count_per_leaf: Minimum number of instances needed
         in a child.
 
-    :param feature: Column to use for features.
-
     :param booster: Which booster to use. Available options are:
 
         #. :py:func:`Dart <nimbusml.ensemble.booster.Dart>`
         #. :py:func:`Gbdt <nimbusml.ensemble.booster.Gbdt>`
         #. :py:func:`Goss <nimbusml.ensemble.booster.Goss>`.
-
-    :param label: Column to use for labels.
-
-    :param weight: Column to use for example weight.
-
-    :param row_group_column_name: Column to use for example groupId.
 
     :param normalize: If ``Auto``, the choice to normalize depends on the
         preference declared by the algorithm. This is the default choice. If
@@ -135,11 +135,7 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             learning_rate=None,
             number_of_leaves=None,
             minimum_example_count_per_leaf=None,
-            feature='Features',
             booster=None,
-            label='Label',
-            weight=None,
-            row_group_column_name=None,
             normalize='Auto',
             caching='Auto',
             custom_gains=[0, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095],
@@ -159,8 +155,32 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             l2_categorical_regularization=10.0,
             random_state=None,
             parallel_trainer=None,
+            feature=None,
+            group_id=None,
+            label=None,
+            weight=None,
             **params):
 
+        if 'feature_column_name' in params:
+            raise NameError(
+                "'feature_column_name' must be renamed to 'feature'")
+        if feature:
+            params['feature_column_name'] = feature
+        if 'row_group_column_name' in params:
+            raise NameError(
+                "'row_group_column_name' must be renamed to 'group_id'")
+        if group_id:
+            params['row_group_column_name'] = group_id
+        if 'label_column_name' in params:
+            raise NameError(
+                "'label_column_name' must be renamed to 'label'")
+        if label:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
+            raise NameError(
+                "'example_weight_column_name' must be renamed to 'weight'")
+        if weight:
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='ranker', **params)
         core.__init__(
             self,
@@ -168,11 +188,7 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             learning_rate=learning_rate,
             number_of_leaves=number_of_leaves,
             minimum_example_count_per_leaf=minimum_example_count_per_leaf,
-            feature=feature,
             booster=booster,
-            label=label,
-            weight=weight,
-            row_group_column_name=row_group_column_name,
             normalize=normalize,
             caching=caching,
             custom_gains=custom_gains,
@@ -193,6 +209,10 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             random_state=random_state,
             parallel_trainer=parallel_trainer,
             **params)
+        self.feature = feature
+        self.group_id = group_id
+        self.label = label
+        self.weight = weight
 
     def get_params(self, deep=False):
         """
