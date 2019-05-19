@@ -15,7 +15,7 @@ from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.internal.utils.data_roles import Role
 from nimbusml.linear_model import AveragedPerceptronBinaryClassifier
 from nimbusml.linear_model import FastLinearBinaryClassifier, \
-    FastLinearRegressor
+    FastLinearRegressor, OnlineGradientDescentRegressor
 from nimbusml.preprocessing import ToKey
 from nimbusml.preprocessing.normalization import MeanVarianceScaler
 from nimbusml.preprocessing.schema import ColumnConcatenator as Concat, \
@@ -157,7 +157,7 @@ class TestSyntaxLearner(unittest.TestCase):
 
         exp = Pipeline([
             OneHotVectorizer() << ['workclass', 'education'],
-            FastLinearRegressor()
+            OnlineGradientDescentRegressor()
         ])
         try:
             exp.fit(X, y, weight=weights, verbose=0)
@@ -180,9 +180,9 @@ class TestSyntaxLearner(unittest.TestCase):
             FastLinearRegressor()
         ])
         exp.fit(X, y, weight=w, verbose=0)
-        assert exp.nodes[-1].feature_column == 'Features'
-        assert exp.nodes[-1].label_column == 'y'
-        assert exp.nodes[-1].weight_column == 'weight'
+        assert exp.nodes[-1].feature_column_name == 'Features'
+        assert exp.nodes[-1].label_column_name == 'y'
+        assert exp.nodes[-1].example_weight_column_name == 'weight'
         X['weight'] = -5
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
@@ -218,7 +218,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -244,7 +244,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -270,7 +270,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -301,7 +301,7 @@ class TestSyntaxLearner(unittest.TestCase):
         exp.fit(X, verbose=0)
         assert exp.nodes[-1].feature_column_name_ == 'Feature'
         assert exp.nodes[-1].label_column_name_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
