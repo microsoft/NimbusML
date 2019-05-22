@@ -54,8 +54,8 @@ class OneHotHashVectorizer(core, BaseTransform, TransformerMixin):
 
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
-    :param number_of_bits: Number of bits to hash into. Must be between 1 and
-        30, inclusive.
+    :param number_of_bits: An integer specifying the number of bits to hash into.
+        Must be between 1 and 30, inclusive. The default value is 16.
 
     :param output_kind: A character string that specifies the kind
         of output kind.

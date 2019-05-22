@@ -121,72 +121,72 @@ class TestTextDataType(unittest.TestCase):
         result, scores, metrics = train_data_type_ppl(
             "series", "list", "array")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_list_series_dataframe(self):
         result, scores, metrics = train_data_type_ppl(
             "list", "series", "dataframe")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_list_list_series(self):
         result, scores, metrics = train_data_type_ppl("list", "list", "series")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_array_series_array(self):
         result, scores, metrics = train_data_type_ppl(
             "array", "series", "array")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_series_array_dataframe(self):
         result, scores, metrics = train_data_type_ppl(
             "series", "array", "dataframe")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_array_series_list(self):
         result, scores, metrics = train_data_type_ppl(
             "array", "series", "list")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_dataframe_list_series(self):
         result, scores, metrics = train_data_type_ppl(
             "dataframe", "list", "series")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_series_series_dataframe(self):
         result, scores, metrics = train_data_type_ppl(
             "series", "series", "dataframe")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
     def test_check_text_datatype_ppl_dataframe_series_series(self):
         result, scores, metrics = train_data_type_ppl(
             "dataframe", "series", "series")
         assert len(result) == 4
-        assert_almost_equal(metrics['Log-loss'].item(), 0.4402459)
+        assert_almost_equal(metrics['Log-loss'].item(), 0.56233514)
         assert_array_equal(scores['Score.0'].values, result['Score.0'].values)
-        assert_array_almost_equal(scores['Score.0'].values, [0.359195, 0.528997, 0.214895, 0.354186])
+        assert_array_almost_equal(scores['Score.0'].values, [0.25, 0.25, 0.25, 0.25])
 
 
 if __name__ == '__main__':
