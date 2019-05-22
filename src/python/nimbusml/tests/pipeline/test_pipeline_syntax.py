@@ -50,7 +50,7 @@ class TestPipelineSyntax(unittest.TestCase):
             LightGbmClassifier(min_data=1, min_data_in_bin=1,
                                minimum_example_count_per_leaf=1,
                                minsplit=1, NumLeaves=2)
-
+    @unittest.skip
     def test_pipeline_with_no_columns_raise(self):
         trainData = pd.DataFrame(
             {
