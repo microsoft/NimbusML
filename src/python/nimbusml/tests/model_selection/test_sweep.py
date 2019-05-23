@@ -57,14 +57,14 @@ class TestSweep(unittest.TestCase):
 
         param_grid = dict(
             cat__output_kind=[
-                'Ind', 'Bin'], learner__number_of_trees=[
+                'Indicator', 'Binary'], learner__number_of_trees=[
                 1, 2, 3])
         grid = GridSearchCV(pipe, param_grid)
 
         grid.fit(X, y)
         print(grid.best_params_)
         assert grid.best_params_ == {
-            'cat__output_kind': 'Ind',
+            'cat__output_kind': 'Indicator',
             'learner__number_of_trees': 1}
 
     def test_learners_sweep(self):
@@ -171,7 +171,7 @@ class TestSweep(unittest.TestCase):
                      columns='review')),
                 WordEmbedding(
                     columns='review_TransformedText',
-                    model_kind='Sswe'),
+                    model_kind='SentimentSpecificWordEmbedding'),
                 ('lr',
                  FastLinearBinaryClassifier(
                      feature=[

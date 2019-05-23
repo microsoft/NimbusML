@@ -35,7 +35,7 @@ class WordEmbedding(BasePipelineItem, DefaultSignature):
         Available options are: 'GloVe50D', 'GloVe100D', 'GloVe200D',
         'GloVe300D', 'GloVeTwitter25D', 'GloVeTwitter50D',
         'GloVeTwitter100D', 'GloVeTwitter200D', 'FastTextWikipedia300D',
-        'Sswe'.
+        'SentimentSpecificWordEmbedding'.
 
     :param custom_lookup_table: Filename for custom word embedding model.
 
