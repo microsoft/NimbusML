@@ -92,7 +92,6 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        features.to_csv("E:/tmp/after.txt")
         assert features.shape == (248, 796)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
