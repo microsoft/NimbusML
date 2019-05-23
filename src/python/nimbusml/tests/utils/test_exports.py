@@ -568,7 +568,7 @@ PredictedProba|<f2> Score",shape=record,fontsize=8];
         ng = NGramFeaturizer(columns=['description'], output_tokens_column_name='description_TransformedText')
         we = WordEmbedding(
             columns='description_TransformedText',
-            model_kind='Sswe')
+            model_kind='SentimentSpecificWordEmbedding')
 
         model = Pipeline([ng, we])
         dot_vis = dot_export_pipeline(model, ds_train)
