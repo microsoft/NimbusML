@@ -32,7 +32,7 @@ from nimbusml.linear_model import OnlineGradientDescentRegressor
 from nimbusml.linear_model import OrdinaryLeastSquaresRegressor
 from nimbusml.linear_model import PoissonRegressionRegressor
 from nimbusml.linear_model import SgdBinaryClassifier
-# from nimbusml.linear_model import SymSgdBinaryClassifier
+from nimbusml.linear_model import SymSgdBinaryClassifier
 from nimbusml.multiclass import OneVsRestClassifier
 from nimbusml.naive_bayes import NaiveBayesClassifier
 from sklearn.utils.testing import assert_raises
@@ -68,7 +68,7 @@ learners = [
     LogisticRegressionClassifier(),
     OnlineGradientDescentRegressor(),
     SgdBinaryClassifier(),
-    # SymSgdBinaryClassifier(),
+    SymSgdBinaryClassifier(),
     OrdinaryLeastSquaresRegressor(),
     PoissonRegressionRegressor()
 ]
