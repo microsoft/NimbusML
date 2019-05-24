@@ -415,4 +415,6 @@ def run_autoflake(filename):
     args.expand_star_imports = None
     args.remove_duplicate_keys = None
     args.remove_unused_variables = None
+    args.ignore_init_module_imports = None
+    args.check = None
     autoflake.fix_file(filename, args=args, standard_out=sys.stdout)
