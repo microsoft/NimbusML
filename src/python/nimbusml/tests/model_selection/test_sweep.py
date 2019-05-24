@@ -42,9 +42,9 @@ class TestSweep(unittest.TestCase):
     def test_hyperparameters_sweep(self):
         # general test with combination of named and unnamed steps
         np.random.seed(0)
-        df = pd.DataFrame(dict(education=['A', 'B', 'A', 'B', 'A'],
-                               workclass=['X', 'X', 'Y', 'Y', 'Y'],
-                               y=[1, 0, 1, 0, 0]))
+        df = pd.DataFrame(dict(education=['A', 'A', 'A', 'B', 'A', 'B', 'A'],
+                               workclass=['X', 'X', 'X', 'X', 'Y', 'Y', 'Y'],
+                               y=[1, 1, 1, 0, 1, 0, 0]))
         X = df.drop('y', axis=1)
         y = df['y']
         pipe = Pipeline([
@@ -74,9 +74,9 @@ class TestSweep(unittest.TestCase):
         # over it
         np.random.seed(0)
 
-        df = pd.DataFrame(dict(education=['A', 'B', 'A', 'B', 'A'],
-                               workclass=['X', 'X', 'Y', 'Y', 'Y'],
-                               y=[1, 0, 1, 0, 0]))
+        df = pd.DataFrame(dict(education=['A', 'A', 'B', 'A', 'B', 'A', 'B', 'A'],
+                               workclass=['X', 'X', 'X', 'Y', 'Y', 'Y', 'Y', 'Y'],
+                               y=[1, 1, 0, 1, 0, 0, 0, 0]))
         X = df.drop('y', axis=1)
         y = df['y']
 
@@ -156,8 +156,14 @@ class TestSweep(unittest.TestCase):
                     'I like this movie',
                     'I don\'t like this',
                     'It is nice',
+                    'I like this movie',
+                    'I don\'t like this',
+                    'It is nice',
                     'So boring'],
                 'sentiment': [
+                    'pos',
+                    'neg',
+                    'pos',
                     'pos',
                     'neg',
                     'pos',
@@ -184,7 +190,7 @@ class TestSweep(unittest.TestCase):
         grid = GridSearchCV(pipeline, param_grid)
 
         grid.fit(data['review'], 1 * (data['sentiment'] == 'pos'))
-        assert grid.best_params_['lr__maximum_number_of_iterations'] == 1
+        assert grid.best_params_['lr__maximum_number_of_iterations'] == 20
 
     # Problem with the SSL CA cert (path? access rights?) for the build
     # machines to download resources for wordembedding transform
@@ -203,8 +209,14 @@ class TestSweep(unittest.TestCase):
                     'I like this movie',
                     'I don\'t like this',
                     'It is nice',
+                    'I like this movie',
+                    'I don\'t like this',
+                    'It is nice',
                     'So boring'],
                 'sentiment': [
+                    'pos',
+                    'neg',
+                    'pos',
                     'pos',
                     'neg',
                     'pos',
@@ -231,7 +243,7 @@ class TestSweep(unittest.TestCase):
         grid = GridSearchCV(pipeline, param_grid)
 
         grid.fit(data['review'], 1 * (data['sentiment'] == 'pos'))
-        assert grid.best_params_['lr__maximum_number_of_iterations'] == 1
+        assert grid.best_params_['lr__maximum_number_of_iterations'] == 100
 
     def test_clone_sweep(self):
         # grid search, then clone pipeline and grid search again
