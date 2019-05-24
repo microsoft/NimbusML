@@ -42,9 +42,9 @@ class TestSweep(unittest.TestCase):
     def test_hyperparameters_sweep(self):
         # general test with combination of named and unnamed steps
         np.random.seed(0)
-        df = pd.DataFrame(dict(education=['A', 'A', 'A', 'B', 'A', 'B', 'A'],
-                               workclass=['X', 'X', 'X', 'X', 'Y', 'Y', 'Y'],
-                               y=[1, 1, 1, 0, 1, 0, 0]))
+        df = pd.DataFrame(dict(education=['A', 'A', 'A', 'A', 'B', 'A', 'B'],
+                               workclass=['X', 'Y', 'X', 'X', 'X', 'Y', 'Y'],
+                               y=[1, 0, 1, 1, 0, 1, 0]))
         X = df.drop('y', axis=1)
         y = df['y']
         pipe = Pipeline([
@@ -74,9 +74,9 @@ class TestSweep(unittest.TestCase):
         # over it
         np.random.seed(0)
 
-        df = pd.DataFrame(dict(education=['A', 'A', 'B', 'A', 'B', 'A', 'B', 'A'],
-                               workclass=['X', 'X', 'X', 'Y', 'Y', 'Y', 'Y', 'Y'],
-                               y=[1, 1, 0, 1, 0, 0, 0, 0]))
+        df = pd.DataFrame(dict(education=['A', 'A', 'A', 'A', 'B', 'A', 'B'],
+                               workclass=['X', 'Y', 'X', 'X', 'X', 'Y', 'Y'],
+                               y=[1, 0, 1, 1, 0, 1, 0]))
         X = df.drop('y', axis=1)
         y = df['y']
 
