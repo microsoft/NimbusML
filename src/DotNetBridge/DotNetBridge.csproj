@@ -35,6 +35,7 @@
     <PackageReference Include="Microsoft.ML.CpuMath" Version="1.0.0" />    
     <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.12.0" />
     <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.0.0" />
+    <PackageReference Include="Microsoft.ML.Mkl.Redist" Version="1.0.0" />
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.0.0" />
     <PackageReference Include="Microsoft.ML.LightGBM" Version="1.0.0" />
     <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="0.12.0" />
