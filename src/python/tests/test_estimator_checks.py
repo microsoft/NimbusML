@@ -204,7 +204,7 @@ MULTI_OUTPUT_EX = [
     'OnlineGradientDescentRegressor',
     'OrdinaryLeastSquaresRegressor',
     'PoissonRegressionRegressor',
-    'SymSgdBinaryClassifier',
+    # 'SymSgdBinaryClassifier', - todo: currently doesnt work on Linux
     'LightGbmClassifier',
     'LightGbmRegressor']
 
