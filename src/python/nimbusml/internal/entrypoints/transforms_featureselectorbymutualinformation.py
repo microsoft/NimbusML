@@ -15,7 +15,7 @@ def transforms_featureselectorbymutualinformation(
         output_data=None,
         model=None,
         slots_in_output=1000,
-        label_column='Label',
+        label_column_name='Label',
         num_bins=256,
         **params):
     """
@@ -27,7 +27,7 @@ def transforms_featureselectorbymutualinformation(
     :param slots_in_output: The maximum number of slots to preserve
         in output (inputs).
     :param data: Input dataset (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param label_column_name: Column to use for labels (inputs).
     :param num_bins: Max number of bins for R4/R8 columns, power of 2
         recommended (inputs).
     :param output_data: Transformed dataset (outputs).
@@ -54,9 +54,9 @@ def transforms_featureselectorbymutualinformation(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if label_column is not None:
+    if label_column_name is not None:
         inputs['LabelColumn'] = try_set(
-            obj=label_column,
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)

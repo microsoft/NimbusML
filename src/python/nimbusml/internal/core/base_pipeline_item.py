@@ -248,7 +248,7 @@ class BasePipelineItem():
     def __init__(self, type=None, random_state=None, **params):
         # The consctuctor is usually called twice.
         # First time from BaseSomething like BaseTransform.
-        # Second from interal classes.
+        # Second from internal classes.
         if hasattr(self, '_BasePipelineItem_already_called'):
             return
         self._BasePipelineItem_already_called = True

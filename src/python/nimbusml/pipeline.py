@@ -1295,7 +1295,7 @@ class Pipeline:
             node = step._get_node(data=data_in, input=columns_in,
                                   output_data=data_out,
                                   output=columns_out, model=model_out,
-                                  label_column=label_column)
+                                  label_column_name=label_column)
             if isinstance(node, list):
                 # In most cases, _get_node returns only one entrypoint
                 # mapped to the current step. In rare cases, the python
