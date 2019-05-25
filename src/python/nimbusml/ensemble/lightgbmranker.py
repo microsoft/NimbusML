@@ -59,10 +59,11 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
         of the tree and get better precision, but risk overfitting and
         requiring longer training times.
 
-    :param min_split: Minimum number of training instances required to form a
-        leaf. That is, the minimal number of documents allowed in a leaf of
-        regression tree, out of the sub-sampled data. A 'split' means that
-        features in each level of the tree (node) are randomly divided.
+    :param minimum_example_count_per_leaf: Minimum number of training instances
+        required to form a leaf. That is, the minimal number of documents
+        allowed in a leaf of regression tree, out of the sub-sampled data. A
+        'split' means that features in each level of the tree (node) are
+        randomly divided.
 
     :param booster: Which booster to use. Available options are:
 
@@ -143,7 +144,7 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             number_of_iterations=100,
             learning_rate=None,
             number_of_leaves=None,
-            min_split=None,
+            minimum_example_count_per_leaf=None,
             booster=None,
             normalize='Auto',
             caching='Auto',
@@ -196,7 +197,7 @@ class LightGbmRanker(core, BasePredictor, ClassifierMixin):
             number_of_iterations=number_of_iterations,
             learning_rate=learning_rate,
             number_of_leaves=number_of_leaves,
-            min_split=min_split,
+            minimum_example_count_per_leaf=minimum_example_count_per_leaf,
             booster=booster,
             normalize=normalize,
             caching=caching,

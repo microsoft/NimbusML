@@ -76,7 +76,6 @@
       },
       {
         "Name": "MinimumExampleCountPerLeaf",
-        "NewName": "MinSplit",
         "Desc": "Minimum number of training instances required to form a leaf. That is, the minimal number of documents allowed in a leaf of regression tree, out of the sub-sampled data. A 'split' means that features in each level of the tree (node) are randomly divided."
       },
       {

@@ -89,10 +89,11 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
 
     :param number_of_iterations: Total number of iterations over all features.
 
-    :param min_split: Minimum number of training instances required to form a
-        leaf. That is, the minimal number of documents allowed in a leaf of
-        regression tree, out of the sub-sampled data. A 'split' means that
-        features in each level of the tree (node) are randomly divided.
+    :param minimum_example_count_per_leaf: Minimum number of training instances
+        required to form a leaf. That is, the minimal number of documents
+        allowed in a leaf of regression tree, out of the sub-sampled data. A
+        'split' means that features in each level of the tree (node) are
+        randomly divided.
 
     :param learning_rate: Determines the size of the step taken in the
         direction of the gradient in each step of the learning process.  This
@@ -175,7 +176,7 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
     def __init__(
             self,
             number_of_iterations=9500,
-            min_split=10,
+            minimum_example_count_per_leaf=10,
             learning_rate=0.002,
             normalize='Auto',
             caching='Auto',
@@ -214,7 +215,7 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
         core.__init__(
             self,
             number_of_iterations=number_of_iterations,
-            min_split=min_split,
+            minimum_example_count_per_leaf=minimum_example_count_per_leaf,
             learning_rate=learning_rate,
             normalize=normalize,
             caching=caching,

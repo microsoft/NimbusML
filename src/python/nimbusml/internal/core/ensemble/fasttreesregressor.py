@@ -94,10 +94,11 @@ class FastTreesRegressor(
         of the tree and get better precision, but risk overfitting and
         requiring longer training times.
 
-    :param min_split: Minimum number of training instances required to form a
-        leaf. That is, the minimal number of documents allowed in a leaf of
-        regression tree, out of the sub-sampled data. A 'split' means that
-        features in each level of the tree (node) are randomly divided.
+    :param minimum_example_count_per_leaf: Minimum number of training instances
+        required to form a leaf. That is, the minimal number of documents
+        allowed in a leaf of regression tree, out of the sub-sampled data. A
+        'split' means that features in each level of the tree (node) are
+        randomly divided.
 
     :param learning_rate: Determines the size of the step taken in the
         direction of the gradient in each step of the learning process.  This
@@ -281,7 +282,7 @@ class FastTreesRegressor(
             self,
             number_of_trees=100,
             number_of_leaves=20,
-            min_split=10,
+            minimum_example_count_per_leaf=10,
             learning_rate=0.2,
             normalize='Auto',
             caching='Auto',
@@ -343,7 +344,7 @@ class FastTreesRegressor(
 
         self.number_of_trees = number_of_trees
         self.number_of_leaves = number_of_leaves
-        self.min_split = min_split
+        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
         self.learning_rate = learning_rate
         self.normalize = normalize
         self.caching = caching
@@ -413,7 +414,7 @@ class FastTreesRegressor(
             row_group_column_name=self._getattr_role('row_group_column_name', all_args),
             number_of_trees=self.number_of_trees,
             number_of_leaves=self.number_of_leaves,
-            minimum_example_count_per_leaf=self.min_split,
+            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
             learning_rate=self.learning_rate,
             normalize_features=self.normalize,
             caching=self.caching,
