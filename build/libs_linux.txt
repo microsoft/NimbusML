@@ -1,3 +1,2 @@
-Newtonsoft.Json.dll
+*.dll
 *.so
-Microsoft.ML.*
