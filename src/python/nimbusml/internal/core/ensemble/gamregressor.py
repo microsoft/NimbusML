@@ -81,10 +81,17 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
 
     :param number_of_iterations: Total number of iterations over all features.
 
-    :param minimum_example_count_per_leaf: Minimum number of training instances
-        required to form a partition.
+    :param min_split: Minimum number of training instances required to form a
+        leaf. That is, the minimal number of documents allowed in a leaf of
+        regression tree, out of the sub-sampled data. A 'split' means that
+        features in each level of the tree (node) are randomly divided.
 
-    :param learning_rate: The learning rate.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -161,7 +168,7 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
     def __init__(
             self,
             number_of_iterations=9500,
-            minimum_example_count_per_leaf=10,
+            min_split=10,
             learning_rate=0.002,
             normalize='Auto',
             caching='Auto',
@@ -181,7 +188,7 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
             self, type='regressor', **params)
 
         self.number_of_iterations = number_of_iterations
-        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
+        self.min_split = min_split
         self.learning_rate = learning_rate
         self.normalize = normalize
         self.caching = caching
@@ -214,7 +221,7 @@ class GamRegressor(BasePipelineItem, DefaultSignatureWithRoles):
                 'example_weight_column_name',
                 all_args),
             number_of_iterations=self.number_of_iterations,
-            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
+            minimum_example_count_per_leaf=self.min_split,
             learning_rate=self.learning_rate,
             normalize_features=self.normalize,
             caching=self.caching,

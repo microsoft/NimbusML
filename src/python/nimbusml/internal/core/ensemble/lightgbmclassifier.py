@@ -36,13 +36,22 @@ class LightGbmClassifier(
 
     :param number_of_iterations: Number of iterations.
 
-    :param learning_rate: Shrinkage rate for trees, used to prevent over-
-        fitting. Range: (0,1].
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
-    :param number_of_leaves: Maximum leaves for trees.
+    :param number_of_leaves: The maximum number of leaves (terminal nodes) that
+        can be created in any tree. Higher values potentially increase the size
+        of the tree and get better precision, but risk overfitting and
+        requiring longer training times.
 
-    :param minimum_example_count_per_leaf: Minimum number of instances needed
-        in a child.
+    :param min_split: Minimum number of training instances required to form a
+        leaf. That is, the minimal number of documents allowed in a leaf of
+        regression tree, out of the sub-sampled data. A 'split' means that
+        features in each level of the tree (node) are randomly divided.
 
     :param booster: Which booster to use. Available options are:
 
@@ -123,7 +132,7 @@ class LightGbmClassifier(
             number_of_iterations=100,
             learning_rate=None,
             number_of_leaves=None,
-            minimum_example_count_per_leaf=None,
+            min_split=None,
             booster=None,
             normalize='Auto',
             caching='Auto',
@@ -151,7 +160,7 @@ class LightGbmClassifier(
         self.number_of_iterations = number_of_iterations
         self.learning_rate = learning_rate
         self.number_of_leaves = number_of_leaves
-        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
+        self.min_split = min_split
         self.booster = booster
         self.normalize = normalize
         self.caching = caching
@@ -187,7 +196,7 @@ class LightGbmClassifier(
             number_of_iterations=self.number_of_iterations,
             learning_rate=self.learning_rate,
             number_of_leaves=self.number_of_leaves,
-            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
+            minimum_example_count_per_leaf=self.min_split,
             booster=self.booster,
             normalize_features=self.normalize,
             caching=self.caching,

@@ -37,15 +37,26 @@ class FastTreesTweedieRegressor(
             `Greedy function approximation: A gradient boosting machine.
             <http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
 
-    :param number_of_trees: Total number of decision trees to create in the
-        ensemble.
+    :param number_of_trees: Specifies the total number of decision trees to
+        create in the ensemble. By creating more decision trees, you can
+        potentially get better coverage, but the training time increases.
 
-    :param number_of_leaves: The max number of leaves in each regression tree.
+    :param number_of_leaves: The maximum number of leaves (terminal nodes) that
+        can be created in any tree. Higher values potentially increase the size
+        of the tree and get better precision, but risk overfitting and
+        requiring longer training times.
 
-    :param minimum_example_count_per_leaf: The minimal number of examples
-        allowed in a leaf of a regression tree, out of the subsampled data.
+    :param min_split: Minimum number of training instances required to form a
+        leaf. That is, the minimal number of documents allowed in a leaf of
+        regression tree, out of the sub-sampled data. A 'split' means that
+        features in each level of the tree (node) are randomly divided.
 
-    :param learning_rate: The learning rate.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -241,7 +252,7 @@ class FastTreesTweedieRegressor(
             self,
             number_of_trees=100,
             number_of_leaves=20,
-            minimum_example_count_per_leaf=10,
+            min_split=10,
             learning_rate=0.2,
             normalize='Auto',
             caching='Auto',
@@ -304,7 +315,7 @@ class FastTreesTweedieRegressor(
 
         self.number_of_trees = number_of_trees
         self.number_of_leaves = number_of_leaves
-        self.minimum_example_count_per_leaf = minimum_example_count_per_leaf
+        self.min_split = min_split
         self.learning_rate = learning_rate
         self.normalize = normalize
         self.caching = caching
@@ -375,7 +386,7 @@ class FastTreesTweedieRegressor(
             row_group_column_name=self._getattr_role('row_group_column_name', all_args),
             number_of_trees=self.number_of_trees,
             number_of_leaves=self.number_of_leaves,
-            minimum_example_count_per_leaf=self.minimum_example_count_per_leaf,
+            minimum_example_count_per_leaf=self.min_split,
             learning_rate=self.learning_rate,
             normalize_features=self.normalize,
             caching=self.caching,

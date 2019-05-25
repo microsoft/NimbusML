@@ -72,7 +72,12 @@ class TensorFlowScorer(BasePipelineItem, DefaultSignature):
     :param learning_rate_operation: The name of the operation in the TensorFlow
         graph which sets optimizer learning rate (Optional).
 
-    :param learning_rate: Learning rate to use during optimization.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param save_location_operation: Name of the input in TensorFlow graph that
         specifiy the location for saving/restoring models from disk.

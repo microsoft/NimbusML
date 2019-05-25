@@ -71,13 +71,23 @@ class PoissonRegressionRegressor(
     :param optimization_tolerance: Tolerance parameter for optimization
         convergence. Low = slower, more accurate.
 
-    :param history_size: Memory size for L-BFGS. Low=faster, less accurate.
+    :param history_size: Memory size for L-BFGS. Lower=faster, less accurate.
+        The technique used for optimization here is L-BFGS, which uses only a
+        limited amount of memory to compute the next step direction. This
+        parameter indicates the number of past positions and gradients to store
+        for the computation of the next step. Must be greater than or equal to
+        ``1``.
 
     :param enforce_non_negativity: Enforce non-negative weights. This flag,
         however, does not put any constraint on the bias term; that is, the
         bias term can be still a negtaive number.
 
-    :param initial_weights_diameter: Init weights diameter.
+    :param initial_weights_diameter: Sets the initial weights diameter that
+        specifies the range from which values are drawn for the initial
+        weights. These weights are initialized randomly from within this range.
+        For example, if the diameter is specified to be ``d``, then the weights
+        are uniformly distributed between ``-d/2`` and ``d/2``. The default
+        value is ``0``, which specifies that all the  weights are set to zero.
 
     :param maximum_number_of_iterations: Maximum iterations.
 

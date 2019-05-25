@@ -78,7 +78,7 @@ class TestDocsExamples(unittest.TestCase):
             cmd = '"{0}" -u "{1}"'.format(
                 sys.executable.replace(
                     'w.exe', '.exe'), full)
-            print("running example {0}", full)
+            print("running example %s", full)
 
             begin = time.clock()
             if six.PY2:
