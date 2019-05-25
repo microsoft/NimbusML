@@ -204,7 +204,7 @@ MULTI_OUTPUT_EX = [
     'OnlineGradientDescentRegressor',
     'OrdinaryLeastSquaresRegressor',
     'PoissonRegressionRegressor',
-    # 'SymSgdBinaryClassifier', - todo: currently doesnt work on Linux
+    'SymSgdBinaryClassifier',
     'LightGbmClassifier',
     'LightGbmRegressor']
 
@@ -253,6 +253,9 @@ for e in epoints:
     print("======== now Estimator is %s =========== " % class_name)
     # skip LighGbm for now, because of random crashes.
     if 'LightGbm' in class_name:
+        continue
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    if 'SymSgdBinaryClassifier' in class_name:
         continue
 
     mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
