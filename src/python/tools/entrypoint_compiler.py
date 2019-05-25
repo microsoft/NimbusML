@@ -1563,6 +1563,7 @@ class Argument:
         self.default = argument.get('Default', Missing())
         self.required = argument.get('Required', Missing())
         self.aliases = argument.get('Aliases', Missing())
+        self.pass_as = argument.get('PassAs', None)
 
         self.name_converted = convert_name(self.name)
         self.new_name_converted = convert_name(
@@ -1572,14 +1573,8 @@ class Argument:
             self.new_name)
         self.name_assignment = self.new_name_converted
         self.name_core_assignment = self.new_name_converted
-        # self.name_annotated = '{}: """{}"""'.format(self.name, self.type)
         self.name_annotated = '{}: {}'.format(
             self.new_name_converted, self.type_python)
-
-        # NOTE: the default values specified in the
-        # manifest.json for some inputs do not work.
-        if self.name in ('ExampleWeightColumnName', 'RowGroupColumnName'):
-            self.default = None
 
     def __str__(self):
         return self.name
@@ -1623,7 +1618,7 @@ class NumericScalarArg(Argument):
                    "is_of_type=numbers.Real"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         if not isinstance(self.range, Missing):
@@ -1654,7 +1649,7 @@ class BooleanScalarArg(NumericScalarArg):
                    "none_acceptable={none_acceptable}, is_of_type=bool"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1701,7 +1696,7 @@ class StringScalarArg(Argument):
             template += ", is_column=True"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1725,7 +1720,7 @@ class EnumArg(StringScalarArg):  # kind = 'Enum', values = []
                    "none_acceptable={none_acceptable}, is_of_type=str"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         value_check = ", values={0}".format(str(self.type['Values']))
@@ -1756,7 +1751,7 @@ class ArrayArg(Argument):
                    "none_acceptable={none_acceptable}, is_of_type=list"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1798,7 +1793,7 @@ class StringArrayArg(ArrayArg):
             template += ', is_column=True'
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1826,7 +1821,7 @@ class StructArrayArg(ArrayArg):  # kind = Array, itemType = dict
             template += ', is_column=True'
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1854,7 +1849,7 @@ class DictionaryArg(NumericScalarArg):
                        "none_acceptable={none_acceptable}, is_of_type=dict"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1890,7 +1885,7 @@ class StructScalarArg(DictionaryArg):
             template += ", is_column=True"
         body = template.format(
             inout=self.inout,
-            name=self.name,
+            name=self.pass_as or self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         field_check = ", field_names={0}".format(
