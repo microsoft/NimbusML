@@ -87,7 +87,7 @@
       },
       {
         "Name": "NumThreads",
-        "NewName": "TrainThreads"
+        "NewName": "NumberOfThreads"
       },
       {
         "Name": "NumTrees",

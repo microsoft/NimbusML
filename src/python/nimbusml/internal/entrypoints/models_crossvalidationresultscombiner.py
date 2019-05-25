@@ -19,8 +19,8 @@ def models_crossvalidationresultscombiner(
         warnings=None,
         kind='SignatureBinaryClassifierTrainer',
         label_column='Label',
-        weight_column=None,
-        group_column=None,
+        weight_column='Weight',
+        group_column='GroupId',
         name_column='Name',
         **params):
     """

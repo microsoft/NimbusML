@@ -43,8 +43,8 @@ class LightLda(BasePipelineItem, DefaultSignature):
 
     :param num_topic: The number of topics.
 
-    :param number_of_threads: The number of training threads. Default value depends
-        on number of logical processors.
+    :param number_of_threads: The number of training threads. Default value
+        depends on number of logical processors.
 
     :param num_max_doc_token: The threshold of maximum count of tokens per doc.
 

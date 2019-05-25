@@ -28,8 +28,8 @@ def models_traintestevaluator(
         pipeline_id=None,
         include_training_metrics=False,
         label_column='Label',
-        weight_column=None,
-        group_column=None,
+        weight_column='Weight',
+        group_column='GroupId',
         name_column='Name',
         **params):
     """
