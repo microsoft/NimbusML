@@ -35,7 +35,7 @@ class TakeFilter(BasePipelineItem, NoOutputSignature):
     @trace
     def __init__(
             self,
-            count=9223372036854775807,
+            count,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)

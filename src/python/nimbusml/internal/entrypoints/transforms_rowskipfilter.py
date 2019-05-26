@@ -13,7 +13,7 @@ def transforms_rowskipfilter(
         data,
         output_data=None,
         model=None,
-        count=0,
+        count,
         **params):
     """
     **Description**
