@@ -42,9 +42,10 @@ class TestDocsExamples(unittest.TestCase):
         fold_files.sort()
 
         modpath = os.path.abspath(os.path.dirname(myfile))
-        modpath = os.path.normpath(
-            os.path.join(os.path.join(modpath), '..'))
+        modpath = os.path.normpath(os.path.join(os.path.join(modpath), '..'))
         os.environ['PYTHONPATH'] = modpath
+        os.environ['MICROSOFTML_RESOURCE_PATH'] = os.path.join(modpath, 'mltmp')
+
         start = 0
         ran = 0
         excs = []
@@ -58,26 +59,17 @@ class TestDocsExamples(unittest.TestCase):
                         'CharTokenizer_df.py',
                         # Bug todo: CustomStopWordsRemover fails on ML.NET side
                         'NGramFeaturizer2.py',
-                        # System.Drawings.Common.dll is missing
-                        # 'Image.py', 'Image_df.py',
+                        # System.Drawings.Common.dll 4.0.0 is needed
+                        'Image.py', 'Image_df.py',
                         ]:
                 continue
-            if (os.name != "nt" and (platform.linux_distribution()[
-                                         0] != "Ubuntu" or
-                                     platform.linux_distribution()[
-                                         1] != "16.04")):
-                if name in {
-                         'Image.py',
-                         'Image_df.py',
-                         'DssmFeaturizer.py',
-                         'Sentiment.py'}:
-                    # REVIEW: fix ssl issue on test centos7 & ubuntu14
-                    # boxes.
-                    # Tests work on ubuntu16.
+            if os.name != "nt":
+                if name in [
+                    # SymSgdNative fails to load on linux
+                    'SymSgdBinaryClassifier.py'
+                    ]:
                     continue
-            if os.name != "nt" and six.PY2:
-                if name in {'NaiveBayesClassifier_df.py'}:
-                    continue
+
             full = os.path.join(fold, name)
             cmd = '"{0}" -u "{1}"'.format(
                 sys.executable.replace(
