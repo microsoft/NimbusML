@@ -44,7 +44,7 @@ class TestDocsExamples(unittest.TestCase):
         modpath = os.path.abspath(os.path.dirname(myfile))
         modpath = os.path.normpath(os.path.join(os.path.join(modpath), '..'))
         os.environ['PYTHONPATH'] = modpath
-        os.environ['MICROSOFTML_RESOURCE_PATH'] = os.path.join(modpath, 'mltmp')
+        os.environ['PYTHONIOENCODING'] = 'UTF-8'
 
         start = 0
         ran = 0
@@ -66,7 +66,11 @@ class TestDocsExamples(unittest.TestCase):
             if os.name != "nt":
                 if name in [
                     # SymSgdNative fails to load on linux
-                    'SymSgdBinaryClassifier.py'
+                    'SymSgdBinaryClassifier.py',
+                    # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
+                    'WordEmbedding.py',
+                    # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
+                    'NaiveBayesClassifier_df'
                     ]:
                     continue
 
