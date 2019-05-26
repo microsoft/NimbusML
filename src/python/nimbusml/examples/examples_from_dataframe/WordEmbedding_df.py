@@ -23,4 +23,4 @@ pipeline = Pipeline([
 y = pipeline.fit_transform(customer_reviews)
 
 # view the review embeddings
-print(y)
+# print(y.head())

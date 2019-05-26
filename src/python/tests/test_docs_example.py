@@ -56,6 +56,10 @@ class TestDocsExamples(unittest.TestCase):
                         # Bug 294481: CharTokenizer_df fails
                         # with error about variable length vector
                         'CharTokenizer_df.py',
+                        # Bug todo: CustomStopWordsRemover fails on ML.NET side
+                        'NGramFeaturizer2.py',
+                        # System.Drawings.Common.dll is missing
+                        # 'Image.py', 'Image_df.py',
                         ]:
                 continue
             if (os.name != "nt" and (platform.linux_distribution()[
@@ -78,7 +82,6 @@ class TestDocsExamples(unittest.TestCase):
             cmd = '"{0}" -u "{1}"'.format(
                 sys.executable.replace(
                     'w.exe', '.exe'), full)
-            print("running example %s", full)
 
             begin = time.clock()
             if six.PY2:
@@ -114,6 +117,9 @@ class TestDocsExamples(unittest.TestCase):
                 "Your CPU supports instructions that this TensorFlow",
                 "CacheClassesFromAssembly: can't map name "
                 "OLSLinearRegression to Void, already mapped to Void",
+                # Binner.py
+                "from collections import Mapping, defaultdict",
+                "DeprecationWarning: Using or importing the ABCs",
                 # BootStrapSample.py
                 "DeprecationWarning: the imp module is deprecated",
                 # PipelineWithGridSearchCV2.py
@@ -134,11 +140,13 @@ class TestDocsExamples(unittest.TestCase):
                 # TODO: Investigate.
                 exps.append("RuntimeWarning: numpy.dtype size changed")
 
-            errors = stderr.split('\n')
-            for exp in exps:
-                errors = [_ for _ in errors if exp in _]
+            errors = None
+            if stderr != '':
+                errors = stderr.split('\n')
+                for exp in exps:
+                    errors = [_ for _ in errors if exp not in _]
 
-            if errors:
+            if errors and (len(errors) > 1 or (len(errors) == 1 and errors[0] != '')):
                 excs.append(RuntimeError(
                     "Issue with\n  File '{0}'\n--CMD\n{1}\n--ERR\n{2}\n--OUT\n"
                     "{3}\n--".format(full, cmd, '\n'.join(errors), stdout)))

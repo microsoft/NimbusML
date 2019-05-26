@@ -7,9 +7,9 @@ from nimbusml.feature_extraction.categorical import OneHotHashVectorizer, \
     OneHotVectorizer
 from sklearn.model_selection import GridSearchCV
 
-df = pd.DataFrame(dict(education=['A', 'B', 'A', 'B', 'A'],
-                       workclass=['X', 'X', 'Y', 'Y', 'Y'],
-                       y=[1, 0, 1, 0, 0]))
+df = pd.DataFrame(dict(education=['A', 'A', 'A', 'A', 'B', 'A', 'B'],
+                        workclass=['X', 'Y', 'X', 'X', 'X', 'Y', 'Y'],
+                        y=[1, 0, 1, 1, 0, 1, 0]))
 X = df.drop('y', axis=1)
 y = df['y']
 pipe = Pipeline([
@@ -18,15 +18,15 @@ pipe = Pipeline([
     OneHotHashVectorizer() << 'workclass',
     # this instance of FastTreesBinaryClassifier with number_of_trees 0 will be
     # never run by grid search as its not a part of param_grid below
-    ('learner', FastTreesBinaryClassifier(number_of_trees=0, num_leaves=2))
+    ('learner', FastTreesBinaryClassifier(number_of_trees=0, number_of_leaves=2))
 ])
 
 param_grid = dict(
     cat__output_kind=[
-        'Ind', 'Bin'], learner__number_of_trees=[
+        'Indicator', 'Binary'], learner__number_of_trees=[
         1, 2, 3])
 grid = GridSearchCV(pipe, param_grid, cv=3, iid='warn')
 
 grid.fit(X, y)
 print(grid.best_params_)
-# {'cat__output_kind': 'Ind', 'learner__number_of_trees': 1}
+# {'cat__output_kind': 'Indicator', 'learner__number_of_trees': 1}

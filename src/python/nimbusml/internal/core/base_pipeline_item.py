@@ -485,7 +485,7 @@ class BasePipelineItem():
                     # current code makes it difficult to guess.
                     # A minor modification in entrypoints.py should do the
                     # trick.
-                    if self.type != "clusterer":
+                    if self.type not in {"clusterer", "anomaly"} :
                         warnings.warn(
                             "Model '{0}' (type='{1}') does not support "
                             "role '{2}' (for developers, check "
