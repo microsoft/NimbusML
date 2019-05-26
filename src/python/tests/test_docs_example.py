@@ -70,6 +70,7 @@ class TestDocsExamples(unittest.TestCase):
                     'SymSgdBinaryClassifier_infert_df.py',
                     # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
                     'WordEmbedding.py',
+                    'WordEmbedding_df.py',
                     'NaiveBayesClassifier_df.py'
                     ]:
                     continue
