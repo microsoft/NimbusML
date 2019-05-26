@@ -67,10 +67,10 @@ class TestDocsExamples(unittest.TestCase):
                 if name in [
                     # SymSgdNative fails to load on linux
                     'SymSgdBinaryClassifier.py',
+                    'SymSgdBinaryClassifier_infert_df.py',
                     # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
                     'WordEmbedding.py',
-                    # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
-                    'NaiveBayesClassifier_df'
+                    'NaiveBayesClassifier_df.py'
                     ]:
                     continue
 
