@@ -20,6 +20,21 @@ data = FileDataStream.read_csv(
     sep=',',
     numeric_dtype=np.float32)  # Error with integer input
 
+def is_nan(x):
+    return (x is np.nan or x != x)
+
+def assert_2d_array_equal(actual, desired):
+    if len(actual) != len(desired):
+        assert_true(False, "arrays are of different lengths.")
+
+    for i in range(len(actual)):
+        if len(actual[i]) != len(desired[i]):
+            assert_true(False, "arrays are of different lengths.")
+        for y in range(len(actual[i])):
+            if is_nan(actual[i][y]) and is_nan(desired[i][y]):
+                continue
+            assert_true(actual[i][y] == desired[i][y])
+
 
 def transform_data():
     xf = MinMaxScaler(columns={'in': 'induced', 'sp': 'spontaneous'})
@@ -40,7 +55,7 @@ class TestIdv(unittest.TestCase):
         assert_array_equal(
             transformed_data_as_df.columns,
             transformed_data_df.columns)
-        assert_array_equal(
+        assert_2d_array_equal(
             transformed_data_as_df.values,
             transformed_data_df.values)
 

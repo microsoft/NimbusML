@@ -71,7 +71,7 @@ class OnlineGradientDescentRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'hinge' <nimbusml.loss.Hinge>`.
         Other choices are :py:class:`'exp' <nimbusml.loss.Exp>`,
@@ -79,32 +79,37 @@ class OnlineGradientDescentRegressor(
         <nimbusml.loss.SmoothedHinge>`. For more information, please see
         :py:class:`'loss' <nimbusml.loss>`.
 
-    :param learning_rate: Learning rate.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param decrease_learning_rate: Decrease learning rate.
 
-    :param l2_regularizer_weight: L2 Regularization Weight.
+    :param l2_regularization: L2 Regularization Weight.
 
-    :param num_iterations: Number of iterations.
+    :param number_of_iterations: Number of iterations.
 
-    :param init_wts_diameter: Sets the initial weights diameter that specifies
-        the range from which values are drawn for the initial weights. These
-        weights are initialized randomly from within this range. For example,
-        if the diameter is specified to be ``d``, then the weights are
-        uniformly distributed between ``-d/2`` and ``d/2``. The default value
-        is ``0``, which specifies that all the  weights are set to zero.
+    :param initial_weights_diameter: Sets the initial weights diameter that
+        specifies the range from which values are drawn for the initial
+        weights. These weights are initialized randomly from within this range.
+        For example, if the diameter is specified to be ``d``, then the weights
+        are uniformly distributed between ``-d/2`` and ``d/2``. The default
+        value is ``0``, which specifies that all the  weights are set to zero.
 
     :param reset_weights_after_x_examples: Number of examples after which
         weights will be reset to the current average.
 
-    :param do_lazy_updates: Instead of updating averaged weights on every
-        example, only update when loss is nonzero.
+    :param lazy_update: Instead of updating averaged weights on every example,
+        only update when loss is nonzero.
 
     :param recency_gain: Extra weight given to more recent updates
         (`do_lazy_updates`` must be **False**).
 
-    :param recency_gain_multi: Whether Recency Gain is multiplicative vs.
-        additive (`do_lazy_updates`` must be **False**).
+    :param recency_gain_multiplicative: Whether Recency Gain is multiplicative
+        (vs. additive).
 
     :param averaged: Do averaging?.
 
@@ -113,8 +118,6 @@ class OnlineGradientDescentRegressor(
     :param initial_weights: Initial Weights and bias, comma-separated.
 
     :param shuffle: Whether to shuffle for each training iteration.
-
-    :param streaming_cache_size: Size of cache when trained in Scope.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -141,32 +144,31 @@ class OnlineGradientDescentRegressor(
             loss='squared',
             learning_rate=0.1,
             decrease_learning_rate=True,
-            l2_regularizer_weight=0.0,
-            num_iterations=1,
-            init_wts_diameter=0.0,
+            l2_regularization=0.0,
+            number_of_iterations=1,
+            initial_weights_diameter=0.0,
             reset_weights_after_x_examples=None,
-            do_lazy_updates=True,
+            lazy_update=True,
             recency_gain=0.0,
-            recency_gain_multi=False,
+            recency_gain_multiplicative=False,
             averaged=True,
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
-            streaming_cache_size=1000000,
             feature=None,
             label=None,
             **params):
 
-        if 'feature_column' in params:
+        if 'feature_column_name' in params:
             raise NameError(
-                "'feature_column' must be renamed to 'feature'")
+                "'feature_column_name' must be renamed to 'feature'")
         if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
             raise NameError(
-                "'label_column' must be renamed to 'label'")
+                "'label_column_name' must be renamed to 'label'")
         if label:
-            params['label_column'] = label
+            params['label_column_name'] = label
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
@@ -175,18 +177,17 @@ class OnlineGradientDescentRegressor(
             loss=loss,
             learning_rate=learning_rate,
             decrease_learning_rate=decrease_learning_rate,
-            l2_regularizer_weight=l2_regularizer_weight,
-            num_iterations=num_iterations,
-            init_wts_diameter=init_wts_diameter,
+            l2_regularization=l2_regularization,
+            number_of_iterations=number_of_iterations,
+            initial_weights_diameter=initial_weights_diameter,
             reset_weights_after_x_examples=reset_weights_after_x_examples,
-            do_lazy_updates=do_lazy_updates,
+            lazy_update=lazy_update,
             recency_gain=recency_gain,
-            recency_gain_multi=recency_gain_multi,
+            recency_gain_multiplicative=recency_gain_multiplicative,
             averaged=averaged,
             averaged_tolerance=averaged_tolerance,
             initial_weights=initial_weights,
             shuffle=shuffle,
-            streaming_cache_size=streaming_cache_size,
             **params)
         self.feature = feature
         self.label = label

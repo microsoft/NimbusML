@@ -497,7 +497,7 @@ class TestDataSchema(unittest.TestCase):
             add_sep=True) == "col=real:R4:0 col=text:TX:1 col=y:R4:2 " \
                              "header=+ sep=,"
         exp = Pipeline([OneHotVectorizer(columns=['text']),
-                        LightGbmRegressor(min_data_per_leaf=1)])
+                        LightGbmRegressor(minimum_example_count_per_leaf=1)])
         exp.fit(ds, 'y')
         pred = exp.predict(ds)
         assert pred is not None

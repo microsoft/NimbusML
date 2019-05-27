@@ -12,15 +12,15 @@ from ..utils.utils import try_set, unlist
 def trainers_kmeansplusplusclusterer(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        weight_column=None,
+        feature_column_name='Features',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         k=5,
-        num_threads=None,
-        init_algorithm='KMeansParallel',
+        number_of_threads=None,
+        initialization_algorithm='KMeansYinyang',
         opt_tol=1e-07,
-        max_iterations=1000,
+        maximum_number_of_iterations=1000,
         accel_mem_budget_mb=4096,
         **params):
     """
@@ -32,19 +32,22 @@ def trainers_kmeansplusplusclusterer(
         the initial cluster centers.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param k: The number of clusters (inputs).
-    :param num_threads: Degree of lock-free parallelism. Defaults to
-        automatic. Determinism not guaranteed. (inputs).
-    :param init_algorithm: Cluster initialization algorithm (inputs).
+    :param number_of_threads: Degree of lock-free parallelism.
+        Defaults to automatic. Determinism not guaranteed. (inputs).
+    :param initialization_algorithm: Cluster initialization algorithm
+        (inputs).
     :param opt_tol: Tolerance parameter for trainer convergence. Low
         = slower, more accurate (inputs).
-    :param max_iterations: Maximum number of iterations. (inputs).
+    :param maximum_number_of_iterations: Maximum number of
+        iterations. (inputs).
     :param accel_mem_budget_mb: Memory budget (in MBs) to use for
         KMeans acceleration (inputs).
     :param predictor_model: The trained model (outputs).
@@ -59,15 +62,15 @@ def trainers_kmeansplusplusclusterer(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -89,35 +92,34 @@ def trainers_kmeansplusplusclusterer(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if k is not None:
         inputs['K'] = try_set(
             obj=k,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_threads is not None:
-        inputs['NumThreads'] = try_set(
-            obj=num_threads,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if init_algorithm is not None:
-        inputs['InitAlgorithm'] = try_set(
-            obj=init_algorithm,
+    if initialization_algorithm is not None:
+        inputs['InitializationAlgorithm'] = try_set(
+            obj=initialization_algorithm,
             none_acceptable=True,
             is_of_type=str,
             values=[
                 'KMeansPlusPlus',
                 'Random',
-                'KMeansParallel'])
+                'KMeansYinyang'])
     if opt_tol is not None:
         inputs['OptTol'] = try_set(
             obj=opt_tol,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_iterations is not None:
-        inputs['MaxIterations'] = try_set(
-            obj=max_iterations,
+    if maximum_number_of_iterations is not None:
+        inputs['MaximumNumberOfIterations'] = try_set(
+            obj=maximum_number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if accel_mem_budget_mb is not None:

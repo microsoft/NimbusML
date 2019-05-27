@@ -180,7 +180,7 @@ class CV:
             _add_confusion_matrix()
 
         elif learner_type == 'multiclass':
-            self._cv_kind = 'SignatureMultiClassClassifierTrainer'
+            self._cv_kind = 'SignatureMulticlassClassificationTrainer'
             self._predictions_columns = [
                 CV.fold_column_name,
                 'Instance',

@@ -95,7 +95,7 @@ class AveragedPerceptronBinaryClassifier(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'hinge' <nimbusml.loss.Hinge>`. Other
         choices are :py:class:`'exp' <nimbusml.loss.Exp>`, :py:class:`'log'
@@ -103,31 +103,36 @@ class AveragedPerceptronBinaryClassifier(
         <nimbusml.loss.SmoothedHinge>`. For more information, please see the
         documentation page about losses, [Loss](xref:nimbusml.loss).
 
-    :param learning_rate: Learning rate.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param decrease_learning_rate: Decrease learning rate.
 
-    :param l2_regularizer_weight: L2 Regularization Weight.
+    :param l2_regularization: L2 Regularization Weight.
 
-    :param num_iterations: Number of iterations.
+    :param number_of_iterations: Number of iterations.
 
-    :param init_wts_diameter: Sets the initial weights diameter that specifies
-        the range from which values are drawn for the initial weights. These
-        weights are initialized randomly from within this range. For example,
-        if the diameter is specified to be ``d``, then the weights are
-        uniformly distributed between ``-d/2`` and ``d/2``. The default value
-        is ``0``, which specifies that all the  weights are set to zero.
+    :param initial_weights_diameter: Sets the initial weights diameter that
+        specifies the range from which values are drawn for the initial
+        weights. These weights are initialized randomly from within this range.
+        For example, if the diameter is specified to be ``d``, then the weights
+        are uniformly distributed between ``-d/2`` and ``d/2``. The default
+        value is ``0``, which specifies that all the  weights are set to zero.
 
     :param reset_weights_after_x_examples: Number of examples after which
         weights will be reset to the current average.
 
-    :param do_lazy_updates: Instead of updating averaged weights on every
-        example, only update when loss is nonzero.
+    :param lazy_update: Instead of updating averaged weights on every example,
+        only update when loss is nonzero.
 
     :param recency_gain: Extra weight given to more recent updates.
 
-    :param recency_gain_multi: Whether Recency Gain is multiplicative (vs.
-        additive).
+    :param recency_gain_multiplicative: Whether Recency Gain is multiplicative
+        (vs. additive).
 
     :param averaged: Do averaging?.
 
@@ -136,8 +141,6 @@ class AveragedPerceptronBinaryClassifier(
     :param initial_weights: Initial Weights and bias, comma-separated.
 
     :param shuffle: Whether to shuffle for each training iteration.
-
-    :param streaming_cache_size: Size of cache when trained in Scope.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -161,18 +164,17 @@ class AveragedPerceptronBinaryClassifier(
             loss='hinge',
             learning_rate=1.0,
             decrease_learning_rate=False,
-            l2_regularizer_weight=0.0,
-            num_iterations=1,
-            init_wts_diameter=0.0,
+            l2_regularization=0.0,
+            number_of_iterations=1,
+            initial_weights_diameter=0.0,
             reset_weights_after_x_examples=None,
-            do_lazy_updates=True,
+            lazy_update=True,
             recency_gain=0.0,
-            recency_gain_multi=False,
+            recency_gain_multiplicative=False,
             averaged=True,
             averaged_tolerance=0.01,
             initial_weights=None,
             shuffle=True,
-            streaming_cache_size=1000000,
             **params):
         BasePipelineItem.__init__(
             self, type='classifier', **params)
@@ -186,18 +188,17 @@ class AveragedPerceptronBinaryClassifier(
             self.loss)
         self.learning_rate = learning_rate
         self.decrease_learning_rate = decrease_learning_rate
-        self.l2_regularizer_weight = l2_regularizer_weight
-        self.num_iterations = num_iterations
-        self.init_wts_diameter = init_wts_diameter
+        self.l2_regularization = l2_regularization
+        self.number_of_iterations = number_of_iterations
+        self.initial_weights_diameter = initial_weights_diameter
         self.reset_weights_after_x_examples = reset_weights_after_x_examples
-        self.do_lazy_updates = do_lazy_updates
+        self.lazy_update = lazy_update
         self.recency_gain = recency_gain
-        self.recency_gain_multi = recency_gain_multi
+        self.recency_gain_multiplicative = recency_gain_multiplicative
         self.averaged = averaged
         self.averaged_tolerance = averaged_tolerance
         self.initial_weights = initial_weights
         self.shuffle = shuffle
-        self.streaming_cache_size = streaming_cache_size
 
     @property
     def _entrypoint(self):
@@ -206,11 +207,11 @@ class AveragedPerceptronBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
                 all_args),
-            label_column=self._getattr_role(
-                'label_column',
+            label_column_name=self._getattr_role(
+                'label_column_name',
                 all_args),
             normalize_features=self.normalize,
             caching=self.caching,
@@ -220,18 +221,17 @@ class AveragedPerceptronBinaryClassifier(
                 self.loss),
             learning_rate=self.learning_rate,
             decrease_learning_rate=self.decrease_learning_rate,
-            l2_regularizer_weight=self.l2_regularizer_weight,
-            num_iterations=self.num_iterations,
-            init_wts_diameter=self.init_wts_diameter,
+            l2_regularization=self.l2_regularization,
+            number_of_iterations=self.number_of_iterations,
+            initial_weights_diameter=self.initial_weights_diameter,
             reset_weights_after_x_examples=self.reset_weights_after_x_examples,
-            do_lazy_updates=self.do_lazy_updates,
+            lazy_update=self.lazy_update,
             recency_gain=self.recency_gain,
-            recency_gain_multi=self.recency_gain_multi,
+            recency_gain_multiplicative=self.recency_gain_multiplicative,
             averaged=self.averaged,
             averaged_tolerance=self.averaged_tolerance,
             initial_weights=self.initial_weights,
-            shuffle=self.shuffle,
-            streaming_cache_size=self.streaming_cache_size)
+            shuffle=self.shuffle)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

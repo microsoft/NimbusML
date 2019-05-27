@@ -113,7 +113,7 @@ def test_dtype(xtype=None, ytype=None, dense=False):
         ydata = ydata.astype(ytype)
         assert ydata.dtype == ytype
 
-    algo = FastLinearBinaryClassifier(max_iterations=2)
+    algo = FastLinearBinaryClassifier(maximum_number_of_iterations=2)
     algo.fit(xdata, ydata)
     assert algo.model_ is not None
 
@@ -155,7 +155,7 @@ class TestDTypes(unittest.TestCase):
                     "================ Testing sparse xtype %s, ytype %s "
                     "================" %
                     (str(xtype), str(ytype)))
-                if (xtype == np.float16 or ytype == np.float16):
+                if (xtype == np.uint64 or xtype == np.float16 or ytype == np.float16):
                     assert_raises(
                         (TypeError, ValueError, RuntimeError), test_dtype,
                         xtype, ytype)

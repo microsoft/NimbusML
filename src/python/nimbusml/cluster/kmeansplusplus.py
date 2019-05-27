@@ -66,19 +66,19 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param n_clusters: The number of clusters.
 
-    :param train_threads: Degree of lock-free parallelism. Defaults to
+    :param number_of_threads: Degree of lock-free parallelism. Defaults to
         automatic. Determinism not guaranteed.
 
-    :param init_algorithm: Cluster initialization algorithm.
+    :param initialization_algorithm: Cluster initialization algorithm.
 
     :param opt_tol: Tolerance parameter for trainer convergence. Low = slower,
         more accurate.
 
-    :param max_iterations: Maximum number of iterations.
+    :param maximum_number_of_iterations: Maximum number of iterations.
 
     :param accel_mem_budget_mb: Memory budget (in MBs) to use for KMeans
         acceleration.
@@ -104,35 +104,35 @@ class KMeansPlusPlus(core, BasePredictor, ClusterMixin):
             normalize='Auto',
             caching='Auto',
             n_clusters=5,
-            train_threads=None,
-            init_algorithm='KMeansParallel',
+            number_of_threads=None,
+            initialization_algorithm='KMeansYinyang',
             opt_tol=1e-07,
-            max_iterations=1000,
+            maximum_number_of_iterations=1000,
             accel_mem_budget_mb=4096,
             feature=None,
             weight=None,
             **params):
 
-        if 'feature_column' in params:
+        if 'feature_column_name' in params:
             raise NameError(
-                "'feature_column' must be renamed to 'feature'")
+                "'feature_column_name' must be renamed to 'feature'")
         if feature:
-            params['feature_column'] = feature
-        if 'weight_column' in params:
+            params['feature_column_name'] = feature
+        if 'example_weight_column_name' in params:
             raise NameError(
-                "'weight_column' must be renamed to 'weight'")
+                "'example_weight_column_name' must be renamed to 'weight'")
         if weight:
-            params['weight_column'] = weight
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='clusterer', **params)
         core.__init__(
             self,
             normalize=normalize,
             caching=caching,
             n_clusters=n_clusters,
-            train_threads=train_threads,
-            init_algorithm=init_algorithm,
+            number_of_threads=number_of_threads,
+            initialization_algorithm=initialization_algorithm,
             opt_tol=opt_tol,
-            max_iterations=max_iterations,
+            maximum_number_of_iterations=maximum_number_of_iterations,
             accel_mem_budget_mb=accel_mem_budget_mb,
             **params)
         self.feature = feature

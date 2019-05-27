@@ -28,6 +28,7 @@ def transforms_tensorflowscorer(
         save_location_operation='save/Const',
         save_operation='save/control_dependency',
         re_train=False,
+        add_batch_dimension_inputs=False,
         **params):
     """
     **Description**
@@ -64,6 +65,9 @@ def transforms_tensorflowscorer(
         specifiy the location for saving/restoring models from disk.
         (inputs).
     :param re_train: Retrain TensorFlow model. (inputs).
+    :param add_batch_dimension_inputs: Add a batch dimension to the
+        input e.g. input = [224, 224, 3] => [-1, 224, 224, 3].
+        (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -142,6 +146,11 @@ def transforms_tensorflowscorer(
     if re_train is not None:
         inputs['ReTrain'] = try_set(
             obj=re_train,
+            none_acceptable=True,
+            is_of_type=bool)
+    if add_batch_dimension_inputs is not None:
+        inputs['AddBatchDimensionInputs'] = try_set(
+            obj=add_batch_dimension_inputs,
             none_acceptable=True,
             is_of_type=bool)
     if output_data is not None:

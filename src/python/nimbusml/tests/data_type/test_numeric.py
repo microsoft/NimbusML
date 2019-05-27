@@ -32,7 +32,7 @@ def train_data_type_single(
     data = [[1, 2, 3], [2, 3, 4], [1, 2, 3], [2, 2, 2]]
     label = [1, 0, 1, 1]
     if fit_X_type == "sparse":
-        model = LightGbmClassifier(min_data_per_leaf=1)
+        model = LightGbmClassifier(minimum_example_count_per_leaf=1)
     else:
         model = LogisticRegressionBinaryClassifier()
     data_with_new_type = transform_data(data, fit_X_type)
@@ -46,7 +46,7 @@ def train_data_type_ppl(fit_X_type=None, fit_Y_type=None, predict_X_type=None):
     data = [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [1.0, 2.0, 3.0], [2.0, 2.0, 2.0]]
     label = [1, 0, 1, 1]
     if fit_X_type == "sparse":
-        model = Pipeline([Binner(), LightGbmClassifier(min_data_per_leaf=1)])
+        model = Pipeline([Binner(), LightGbmClassifier(minimum_example_count_per_leaf=1)])
     else:
         model = Pipeline([Binner(), LogisticRegressionBinaryClassifier()])
     data_with_new_type = transform_data(data, fit_X_type)

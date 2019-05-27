@@ -63,7 +63,7 @@ class NaiveBayesClassifier(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -100,11 +100,11 @@ class NaiveBayesClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
                 all_args),
-            label_column=self._getattr_role(
-                'label_column',
+            label_column_name=self._getattr_role(
+                'label_column_name',
                 all_args),
             normalize_features=self.normalize,
             caching=self.caching)

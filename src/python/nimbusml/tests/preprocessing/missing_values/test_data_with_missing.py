@@ -65,7 +65,7 @@ class TestDataWithMissing(unittest.TestCase):
                     1.1, 2.2, 3.3, np.nan, 5.5], f1=[
                     2.2, np.nan, 4.4, 5.5, 6.6]))
         h = Handler(replace_with='Mean')
-        ft = FastLinearRegressor(shuffle=False, train_threads=1)
+        ft = FastLinearRegressor(shuffle=False, number_of_threads=1)
         p = Pipeline([h, ft])
         p.fit(df[['f', 'f1']].values, df['Label'])
         res = p.predict(df[['f', 'f1']].values)

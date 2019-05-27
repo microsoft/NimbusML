@@ -58,15 +58,15 @@ class NgramHash(Component):
         * *term frequency-inverse document frequency* - the product
           term frequency and the inverse document frequency.
 
-    :param hash_bits: Number of bits to hash into. Must be between 1 and 30,
-        inclusive.
+    :param number_of_bits: Number of bits to hash into. Must be between 1 and
+        30, inclusive.
 
     :param ngram_length: Ngram length.
 
     :param skip_length: Maximum number of tokens to skip when constructing an
-        ngram.
+        n-gram.
 
-    :param all_lengths: Whether to include all ngram lengths up to ngramLength
+    :param all_lengths: Whether to include all n-gram lengths up to ngramLength
         or only ngramLength.
 
     :param seed: Hashing seed.
@@ -74,8 +74,9 @@ class NgramHash(Component):
     :param ordered: Whether the position of each source column should be
         included in the hash (when there are multiple source columns).
 
-    :param invert_hash: Limit the number of keys used to generate the slot name
-        to this many. 0 means no invert hashing, -1 means no limit.
+    :param maximum_number_of_inverts: Limit the number of keys used to generate
+        the slot name to this many. 0 means no invert hashing, -1 means no
+        limit.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -94,29 +95,29 @@ class NgramHash(Component):
     @trace
     def __init__(
             self,
-            hash_bits=16,
+            number_of_bits=16,
             ngram_length=1,
             skip_length=0,
             all_lengths=True,
             seed=314489979,
             ordered=True,
-            invert_hash=0,
+            maximum_number_of_inverts=0,
             **params):
 
-        self.hash_bits = hash_bits
+        self.number_of_bits = number_of_bits
         self.ngram_length = ngram_length
         self.skip_length = skip_length
         self.all_lengths = all_lengths
         self.seed = seed
         self.ordered = ordered
-        self.invert_hash = invert_hash
+        self.maximum_number_of_inverts = maximum_number_of_inverts
         self.kind = 'NgramExtractor'
         self.name = 'NGramHash'
         self.settings = {}
 
-        if hash_bits is not None:
-            self.settings['HashBits'] = try_set(
-                obj=hash_bits,
+        if number_of_bits is not None:
+            self.settings['NumberOfBits'] = try_set(
+                obj=number_of_bits,
                 none_acceptable=True,
                 is_of_type=numbers.Real)
         if ngram_length is not None:
@@ -140,9 +141,9 @@ class NgramHash(Component):
         if ordered is not None:
             self.settings['Ordered'] = try_set(
                 obj=ordered, none_acceptable=True, is_of_type=bool)
-        if invert_hash is not None:
-            self.settings['InvertHash'] = try_set(
-                obj=invert_hash,
+        if maximum_number_of_inverts is not None:
+            self.settings['MaximumNumberOfInverts'] = try_set(
+                obj=maximum_number_of_inverts,
                 none_acceptable=True,
                 is_of_type=numbers.Real)
 

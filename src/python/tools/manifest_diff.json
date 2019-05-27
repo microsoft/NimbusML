@@ -47,7 +47,7 @@
         "NewName": "GainConfLevel"
       },
       {
-        "Name": "InitWtsDiameter",
+        "Name": "InitialWeightsDiameter",
         "Desc": "Sets the initial weights diameter that specifies the range from which values are drawn for the initial weights. These weights are initialized randomly from within this range. For example, if the diameter is specified to be ``d``, then the weights are uniformly distributed between ``-d/2`` and ``d/2``. The default value is ``0``, which specifies that all the  weights are set to zero."
       },
       {
@@ -55,8 +55,7 @@
         "NewName": "L2Weight"
       },
       {
-        "Name": "LearningRates",
-        "NewName": "LearningRate",
+        "Name": "LearningRate",
         "Desc": "Determines the size of the step taken in the direction of the gradient in each step of the learning process.  This determines how fast or slow the learner converges on the optimal solution. If the step size is too big, you might overshoot the optimal solution.  If the step size is too small, training takes longer to converge to the best solution."
       },
       {
@@ -68,12 +67,15 @@
         "NewName": "NumBins"
       },
       {
+        "Name": "HistorySize",
+        "Desc": "Memory size for L-BFGS. Lower=faster, less accurate. The technique used for optimization here is L-BFGS, which uses only a limited amount of memory to compute the next step direction. This parameter indicates the number of past positions and gradients to store for the computation of the next step. Must be greater than or equal to ``1``"
+      },
+      {
         "Name": "MemorySize",
         "Desc": "Memory size for L-BFGS. Lower=faster, less accurate. The technique used for optimization here is L-BFGS, which uses only a limited amount of memory to compute the next step direction. This parameter indicates the number of past positions and gradients to store for the computation of the next step. Must be greater than or equal to ``1``"
       },
       {
-        "Name": "MinDocumentsInLeafs",
-        "NewName": "MinSplit",
+        "Name": "MinimumExampleCountPerLeaf",
         "Desc": "Minimum number of training instances required to form a leaf. That is, the minimal number of documents allowed in a leaf of regression tree, out of the sub-sampled data. A 'split' means that features in each level of the tree (node) are randomly divided."
       },
       {
@@ -82,15 +84,15 @@
         "Desc": "If ``Auto``, the choice to normalize depends on the preference declared by the algorithm. This is the default choice. If ``No``, no normalization is performed. If ``Yes``, normalization always performed. If ``Warn``, if normalization is needed by the algorithm, a warning message is displayed but normalization is not performed. If normalization is performed, a ``MaxMin`` normalizer is used. This normalizer preserves sparsity by mapping zero to zero."
       },
       {
-        "Name": "NumLeaves",
+        "Name": "NumberOfLeaves",
         "Desc": "The maximum number of leaves (terminal nodes) that can be created in any tree. Higher values potentially increase the size of the tree and get better precision, but risk overfitting and requiring longer training times."
       },
       {
         "Name": "NumThreads",
-        "NewName": "TrainThreads"
+        "NewName": "NumberOfThreads"
       },
       {
-        "Name": "NumTrees",
+        "Name": "NumberOfTrees",
         "Desc": "Specifies the total number of decision trees to create in the ensemble. By creating more decision trees, you can potentially get better coverage, but the training time increases."
       },
       {
@@ -127,19 +129,19 @@
         "Hidden": true
       },
       {
-        "Name": "FeatureColumn",
+        "Name": "FeatureColumnName",
         "Hidden": true
       },
       {
-        "Name": "LabelColumn",
+        "Name": "LabelColumnName",
         "Hidden": true
       },
       {
-        "Name": "WeightColumn",
+        "Name": "ExampleWeightColumnName",
         "Hidden": true
       },
       {
-        "Name": "GroupIdColumn",
+        "Name": "RowGroupColumnName",
         "Hidden": true
       },
       {
@@ -298,8 +300,14 @@
       "NewName": "FactorizationMachineBinaryClassifier",
       "Module": "decomposition",
       "Type": "Classifier",
-      "Predict_Proba" : true,
-      "Decision_Function" : true
+      "Predict_Proba": true,
+      "Decision_Function": true,
+      "Inputs": [
+        {
+          "Name": "NormalizeFeatures",
+          "Desc": "Whether to normalize the input vectors so that the concatenation of all fields' feature vectors is unit-length"
+        }
+      ]
     },
     {
       "Name": "Trainers.FastForestBinaryClassifier",
@@ -307,23 +315,13 @@
       "Module": "ensemble",
       "Type": "Classifier",
       "Predict_Proba" : true,
-      "Decision_Function" : true,
-      "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      }
-      ]
+      "Decision_Function" : true
     },
     {
       "Name": "Trainers.FastForestRegressor",
       "NewName": "FastForestRegressor",
       "Module": "ensemble",
-      "Type": "Regressor",
-      "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      }
-      ]
+      "Type": "Regressor"
     },
     {
       "Name": "Trainers.FastTreeBinaryClassifier",
@@ -333,10 +331,6 @@
       "Predict_Proba" : true,
       "Decision_Function" : true,
       "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      },
-      {
         "Name": "BestStepRankingRegressionTrees",
         "NewName": "best_step_trees"
       }
@@ -348,10 +342,6 @@
       "Module": "ensemble",
       "Type": "Regressor",
       "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      },
-      {
         "Name": "BestStepRankingRegressionTrees",
         "NewName": "best_step_trees"
       }
@@ -366,7 +356,7 @@
       "Decision_Function" : true,
       "Inputs": [
         {
-          "Name": "MaxOutput",
+          "Name": "MaximumTreeOutput",
           "Default": "float('inf')"
         }
       ]
@@ -378,7 +368,7 @@
       "Type": "Regressor",
       "Inputs": [
         {
-          "Name": "MaxOutput",
+          "Name": "MaximumTreeOutput",
           "Default": "float('inf')"
         }
       ]
@@ -618,7 +608,13 @@
       "Name": "Transforms.RowRangeFilter",
       "NewName": "RangeFilter",
       "Module": "preprocessing.filter",
-      "Type": "Transform"
+      "Type": "Transform",
+      "Inputs": [
+        {
+          "Name": "Min",
+          "Default": -1
+        }
+      ]
     },
     {
       "Name": "Transforms.RowSkipFilter",
@@ -696,10 +692,6 @@
       "Module": "ensemble",
       "Type": "Regressor",
       "Inputs": [{
-        "Name": "MinDocsPercentageForCategoricalSplit",
-        "NewName": "min_docs_percentage_split"
-      },
-      {
         "Name": "BestStepRankingRegressionTrees",
         "NewName": "best_step_trees"
       }

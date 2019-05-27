@@ -382,10 +382,10 @@ for root, subdirs, files in os.walk(rootdir):
                             line = line.replace(
                                 "[Column Roles for Trainers](roles.md#roles)",
                                 "[Column Roles for Trainers](roles.md#roles-and-learners)")
-                        if "[VectorType Columns](types.md#vectortype)" in line:
+                        if "[VectorDataViewType Columns](types.md#vectortype)" in line:
                             line = line.replace(
-                                "[VectorType Columns](types.md#vectortype)",
-                                "[VectorType Columns](types.md#vectortype-columns)")
+                                "[VectorDataViewType Columns](types.md#vectortype)",
+                                "[VectorDataViewType Columns](types.md#vectortype-columns)")
                         if "[Column Operations for Transforms](columns.md#l-pipeline-syntax)" in line:
                             line = line.replace(
                                 "[Column Operations for Transforms](columns.md#l-pipeline-syntax)",
