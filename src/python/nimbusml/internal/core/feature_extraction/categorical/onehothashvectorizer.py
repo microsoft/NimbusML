@@ -35,7 +35,7 @@ class OneHotHashVectorizer(
         ``OneHotHashVectorizer`` does not currently support handling factor
         data.
 
-    :param hash_bits: An integer specifying the number of bits to hash into.
+    :param number_of_bits: An integer specifying the number of bits to hash into.
         Must be between 1 and 30, inclusive. The default value is 16.
 
     :param output_kind: A character string that specifies the kind
@@ -67,7 +67,7 @@ class OneHotHashVectorizer(
     :param ordered: ``True`` to include the position of each term in the
         hash. Otherwise, ``False``. The default value is ``True``.
 
-    :param invert_hash: An integer specifying the limit on the number of keys
+    :param maximum_number_of_inverts: An integer specifying the limit on the number of keys
         that can be used to generate the slot name. ``0`` means no invert
         hashing; ``-1`` means no limit. While a zero value gives better
         performance, a non-zero value is needed to get meaningful coefficent
@@ -90,20 +90,20 @@ class OneHotHashVectorizer(
     @trace
     def __init__(
             self,
-            hash_bits=16,
+            number_of_bits=16,
             output_kind='Bag',
             random_state=314489979,
             ordered=True,
-            invert_hash=0,
+            maximum_number_of_inverts=0,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
-        self.hash_bits = hash_bits
+        self.number_of_bits = number_of_bits
         self.output_kind = output_kind
         self.random_state = random_state
         self.ordered = ordered
-        self.invert_hash = invert_hash
+        self.maximum_number_of_inverts = maximum_number_of_inverts
 
     @property
     def _entrypoint(self):
@@ -151,11 +151,11 @@ class OneHotHashVectorizer(
                 o in zip(
                     input_columns,
                     output_columns)] if input_columns else None,
-            hash_bits=self.hash_bits,
+            number_of_bits=self.number_of_bits,
             output_kind=self.output_kind,
             seed=self.random_state,
             ordered=self.ordered,
-            invert_hash=self.invert_hash)
+            maximum_number_of_inverts=self.maximum_number_of_inverts)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

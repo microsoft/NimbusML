@@ -19,43 +19,39 @@ class Gbdt(core):
 
     Traditional Gradient Boosting Decision Tree.
 
-    :param unbalanced_sets: Use for binary classification when classes are not
-        balanced.
+    :param minimum_split_gain: Minimum loss reduction required to make a
+        further partition on a leaf node of the tree. the larger, the more
+        conservative the algorithm will be.
 
-    :param min_split_gain: Minimum loss reduction required to make a further
-        partition on a leaf node of the tree. the larger, the more conservative
-        the algorithm will be.
+    :param maximum_tree_depth: Maximum depth of a tree. 0 means no limit.
+        However, tree still grows by best-first.
 
-    :param max_depth: Maximum depth of a tree. 0 means no limit. However, tree
-        still grows by best-first.
-
-    :param min_child_weight: Minimum sum of instance weight(hessian) needed in
-        a child. If the tree partition step results in a leaf node with the sum
-        of instance weight less than min_child_weight, then the building
+    :param minimum_child_weight: Minimum sum of instance weight(hessian) needed
+        in a child. If the tree partition step results in a leaf node with the
+        sum of instance weight less than min_child_weight, then the building
         process will give up further partitioning. In linear regression mode,
         this simply corresponds to minimum number of instances needed to be in
         each node. The larger, the more conservative the algorithm will be.
 
-    :param subsample_freq: Subsample frequency. 0 means no subsample. If
-        subsampleFreq > 0, it will use a subset(ratio=subsample) to train. And
-        the subset will be updated on every Subsample iteratinos.
+    :param subsample_frequency: Subsample frequency for bagging. 0 means no
+        subsample. Specifies the frequency at which the bagging occurs, where
+        if this is set to N, the subsampling will happen at every N
+        iterations.This must be set with Subsample as this specifies the amount
+        to subsample.
 
-    :param subsample: Subsample ratio of the training instance. Setting it to
-        0.5 means that LightGBM randomly collected half of the data instances
-        to grow trees and this will prevent overfitting. Range: (0,1].
+    :param subsample_fraction: Subsample ratio of the training instance.
+        Setting it to 0.5 means that LightGBM randomly collected half of the
+        data instances to grow trees and this will prevent overfitting. Range:
+        (0,1].
 
     :param feature_fraction: Subsample ratio of columns when constructing each
         tree. Range: (0,1].
 
-    :param reg_lambda: L2 regularization term on weights, increasing this value
-        will make model more conservative.
+    :param l2_regularization: L2 regularization term on weights, increasing
+        this value will make model more conservative.
 
-    :param reg_alpha: L1 regularization term on weights, increase this value
-        will make model more conservative.
-
-    :param scale_pos_weight: Control the balance of positive and negative
-        weights, useful for unbalanced classes. A typical value to consider:
-        sum(negative cases) / sum(positive cases).
+    :param l1_regularization: L1 regularization term on weights, increase this
+        value will make model more conservative.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -78,29 +74,25 @@ class Gbdt(core):
     @trace
     def __init__(
             self,
-            unbalanced_sets=False,
-            min_split_gain=0.0,
-            max_depth=0,
-            min_child_weight=0.1,
-            subsample_freq=0,
-            subsample=1.0,
+            minimum_split_gain=0.0,
+            maximum_tree_depth=0,
+            minimum_child_weight=0.1,
+            subsample_frequency=0,
+            subsample_fraction=1.0,
             feature_fraction=1.0,
-            reg_lambda=0.01,
-            reg_alpha=0.0,
-            scale_pos_weight=1.0,
+            l2_regularization=0.01,
+            l1_regularization=0.0,
             **params):
         core.__init__(
             self,
-            unbalanced_sets=unbalanced_sets,
-            min_split_gain=min_split_gain,
-            max_depth=max_depth,
-            min_child_weight=min_child_weight,
-            subsample_freq=subsample_freq,
-            subsample=subsample,
+            minimum_split_gain=minimum_split_gain,
+            maximum_tree_depth=maximum_tree_depth,
+            minimum_child_weight=minimum_child_weight,
+            subsample_frequency=subsample_frequency,
+            subsample_fraction=subsample_fraction,
             feature_fraction=feature_fraction,
-            reg_lambda=reg_lambda,
-            reg_alpha=reg_alpha,
-            scale_pos_weight=scale_pos_weight,
+            l2_regularization=l2_regularization,
+            l1_regularization=l1_regularization,
             **params)
 
     def get_params(self, deep=False):

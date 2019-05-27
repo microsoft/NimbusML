@@ -19,7 +19,7 @@ print(data.head())
 
 # transform usage
 pipeline = Pipeline([
-    NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+    NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name='ngram_TransformedText',
                     columns={'ngram': ['SentimentText']}),
 
     WordEmbedding(columns='ngram_TransformedText')

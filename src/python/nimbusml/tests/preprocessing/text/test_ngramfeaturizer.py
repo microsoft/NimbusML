@@ -204,7 +204,7 @@ class TestNGramFeaturizer(unittest.TestCase):
                              columns={'features': ['id', 'education']})
 
         features = xf.fit_transform(data)
-        assert features.shape == (248, 652)
+        assert features.shape == (248, 637)
 
     def test_ngramfeaturizer_multi(self):
 

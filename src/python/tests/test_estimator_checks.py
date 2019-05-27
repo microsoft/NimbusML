@@ -15,7 +15,7 @@ from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
-from nimbusml.preprocessing.filter import SkipFilter
+from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
@@ -170,16 +170,16 @@ NOBINARY_CHECKS = [
 
 INSTANCES = {
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
-        min_data_per_group=1, min_data_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
-        min_data_per_group=1, min_data_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmRegressor': LightGbmRegressor(
-        min_data_per_group=1, min_data_per_leaf=1),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmRanker': LightGbmRanker(
-        min_data_per_group=1, min_data_per_leaf=1),
-    'NGramFeaturizer': NGramFeaturizer(
-        word_feature_extractor=n_gram()), 'SkipFilter': SkipFilter(
-        count=5),
+        minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
+    'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'SkipFilter': SkipFilter(count=5),
+    'TakeFilter': TakeFilter(count=100000),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,
@@ -253,6 +253,9 @@ for e in epoints:
     print("======== now Estimator is %s =========== " % class_name)
     # skip LighGbm for now, because of random crashes.
     if 'LightGbm' in class_name:
+        continue
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    if 'SymSgdBinaryClassifier' in class_name:
         continue
 
     mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])

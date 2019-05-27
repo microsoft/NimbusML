@@ -1,4 +1,3 @@
-Google.Protobuf.dll
 Newtonsoft.Json.dll
 libCpuMathNative.dylib
 libFactorizationMachineNative.dylib

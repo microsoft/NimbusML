@@ -12,45 +12,50 @@ from ..utils.utils import try_set, unlist
 def trainers_stochasticgradientdescentbinaryclassifier(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
-        weight_column=None,
+        feature_column_name='Features',
+        label_column_name='Label',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         loss_function=None,
-        l2_weight=1e-06,
-        num_threads=None,
+        l2_regularization=1e-06,
+        number_of_threads=None,
+        calibrator=None,
+        max_calibration_examples=1000000,
         convergence_tolerance=0.0001,
-        max_iterations=20,
-        init_learning_rate=0.01,
+        number_of_iterations=20,
+        initial_learning_rate=0.01,
         shuffle=True,
         positive_instance_weight=1.0,
         check_frequency=None,
-        calibrator=None,
-        max_calibration_examples=1000000,
         **params):
     """
     **Description**
         Train an Hogwild SGD binary model.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param weight_column: Column to use for example weight (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param loss_function: Loss Function (inputs).
-    :param l2_weight: L2 Regularization constant (inputs).
-    :param num_threads: Degree of lock-free parallelism. Defaults to
-        automatic depending on data sparseness. Determinism not
-        guaranteed. (inputs).
+    :param l2_regularization: L2 Regularization constant (inputs).
+    :param number_of_threads: Degree of lock-free parallelism.
+        Defaults to automatic depending on data sparseness.
+        Determinism not guaranteed. (inputs).
+    :param calibrator: The calibrator kind to apply to the predictor.
+        Specify null for no calibration (inputs).
+    :param max_calibration_examples: The maximum number of examples
+        to use when training the calibrator (inputs).
     :param convergence_tolerance: Exponential moving averaged
         improvement tolerance for convergence (inputs).
-    :param max_iterations: Maximum number of iterations; set to 1 to
-        simulate online learning. (inputs).
-    :param init_learning_rate: Initial learning rate (only used by
+    :param number_of_iterations: Maximum number of iterations; set to
+        1 to simulate online learning. (inputs).
+    :param initial_learning_rate: Initial learning rate (only used by
         SGD) (inputs).
     :param shuffle: Shuffle data every epoch? (inputs).
     :param positive_instance_weight: Apply weight to the positive
@@ -58,10 +63,6 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     :param check_frequency: Convergence check frequency (in terms of
         number of iterations). Default equals number of threads
         (inputs).
-    :param calibrator: The calibrator kind to apply to the predictor.
-        Specify null for no calibration (inputs).
-    :param max_calibration_examples: The maximum number of examples
-        to use when training the calibrator (inputs).
     :param predictor_model: The trained model (outputs).
     """
 
@@ -74,21 +75,21 @@ def trainers_stochasticgradientdescentbinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -110,21 +111,30 @@ def trainers_stochasticgradientdescentbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(
             obj=loss_function,
             none_acceptable=True,
             is_of_type=dict)
-    if l2_weight is not None:
-        inputs['L2Weight'] = try_set(
-            obj=l2_weight,
+    if l2_regularization is not None:
+        inputs['L2Regularization'] = try_set(
+            obj=l2_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if num_threads is not None:
-        inputs['NumThreads'] = try_set(
-            obj=num_threads,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if calibrator is not None:
+        inputs['Calibrator'] = try_set(
+            obj=calibrator,
+            none_acceptable=True,
+            is_of_type=dict)
+    if max_calibration_examples is not None:
+        inputs['MaxCalibrationExamples'] = try_set(
+            obj=max_calibration_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if convergence_tolerance is not None:
@@ -132,14 +142,14 @@ def trainers_stochasticgradientdescentbinaryclassifier(
             obj=convergence_tolerance,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_iterations is not None:
-        inputs['MaxIterations'] = try_set(
-            obj=max_iterations,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if init_learning_rate is not None:
-        inputs['InitLearningRate'] = try_set(
-            obj=init_learning_rate,
+    if initial_learning_rate is not None:
+        inputs['InitialLearningRate'] = try_set(
+            obj=initial_learning_rate,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if shuffle is not None:
@@ -155,16 +165,6 @@ def trainers_stochasticgradientdescentbinaryclassifier(
     if check_frequency is not None:
         inputs['CheckFrequency'] = try_set(
             obj=check_frequency,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
-    if calibrator is not None:
-        inputs['Calibrator'] = try_set(
-            obj=calibrator,
-            none_acceptable=True,
-            is_of_type=dict)
-    if max_calibration_examples is not None:
-        inputs['MaxCalibrationExamples'] = try_set(
-            obj=max_calibration_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if predictor_model is not None:

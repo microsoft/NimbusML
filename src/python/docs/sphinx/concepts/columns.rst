@@ -28,7 +28,7 @@ Transform All Columns
 
 By default, the ``OneHotVectorizer`` transform will process all columns, which in our example
 results in a the original column values being replaced by their one hot encodings. Note that the
-output of ``OneHotVectorizer`` are :ref:`VectorType`, so the output
+output of ``OneHotVectorizer`` are :ref:`VectorDataViewType`, so the output
 names below are the column names appended with the ``slot`` names, which in our example are data
 driven and generated dynamically from the input data.
 

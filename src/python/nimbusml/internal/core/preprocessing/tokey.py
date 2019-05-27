@@ -28,7 +28,7 @@ class ToKey(BasePipelineItem, DefaultSignature):
         :py:class:`FromKey <nimbusml.preprocessing.FromKey>` to obtain the
         orginal values.
 
-    :param max_num_terms: Maximum number of terms to keep per column when auto-
+    :param max_num_terms: Maximum number of keys to keep per column when auto-
         training.
 
     :param term: List of terms.
@@ -64,7 +64,7 @@ class ToKey(BasePipelineItem, DefaultSignature):
             self,
             max_num_terms=1000000,
             term=None,
-            sort='Occurrence',
+            sort='ByOccurrence',
             text_key_values=False,
             **params):
         BasePipelineItem.__init__(

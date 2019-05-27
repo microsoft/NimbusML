@@ -81,27 +81,13 @@ predefinedstopwordsremover \
 from ....internal.utils.utils import trace"""
 
 signature_fixes = {
-    'DnnFeaturizer': [('source,', 'input = None,'),
-                      ('name = None,', 'output = None,'),
-                      ('source=source,', 'input=input,'),
-                      ('name=name,', 'output=output,')],
+    'SkipFilter': ('count = 0,', 'count,'),
+    'TakeFilter': ('count = 9223372036854775807,', 'count,'),
     'NGramFeaturizer': [(NG_1, NG_1_correct),
                         ('word_feature_extractor = n_gram',
                          'word_feature_extractor = Ngram'),
                          ('char_feature_extractor = n_gram',
                          'char_feature_extractor = Ngram')],
-    'CountSelector': ('count = 0,', 'count = 1.0,'),
-    'OneClassSvmAnomalyDetector': (
-        'label_column=label_column,', 'label_column=None,'),
-    'RangeFilter': ('min = None,', 'min = -1,'),
-    # 'KMeansPlusPlus' : ('feature_column: str = \'Features\',',
-    # 'feature_column: str = \'Features\',\n
-    # label_column: str = \'Label\','),
-    'SsweEmbedding': [('source,', 'input,'),
-                      ('name = None,', 'output = None,'),
-                      ('source=source,', 'source=input,'),
-                      ('name=name,', 'name=output,')],
-    'OneVsRestClassifier': ('nodes,', 'classifier,'),
     'FactorizationMachineBinaryClassifier': (FM, FM_correct),
     'OneHotHashVectorizer': (OHE, OHE_correct),
     'CustomStopWordsRemover': (cust_stop, cust_stop_correct),
@@ -112,30 +98,6 @@ signature_fixes = {
 def fix_code(class_name, filename):
     _fix_code(class_name, filename, signature_fixes)
 
-
-dnnImageFeaturize_1 = """    def _get_node(self, **all_args):
-        algo_args = dict(
-            source=self.source,
-            name=self._name_or_source,
-            dnn_model=self.dnn_model)"""
-
-dnnImageFeaturize_1_correct = """    def _get_node(self, **all_args):
-        input_column = self.input
-        if input_column is None and 'input' in all_args:
-            input_column = all_args['input'][0]
-        if 'input' in all_args:
-            all_args.pop('input')
-
-        output_column = self.output
-        if output_column is None and 'output' in all_args:
-            output_column = all_args['output'][0]
-        if 'output' in all_args:
-            all_args.pop('output')
-
-        algo_args = dict(
-            source=input_column,
-            name=output_column,
-            dnn_model=self.dnn_model)"""
 
 columnselector_1 = """    def _get_node(self, **all_args):
         algo_args = dict(
@@ -247,31 +209,6 @@ instead input %s and output %s" % \
                 column=column
             )"""
 
-expressionTransform_1 = \
-    """        if output_columns is None and 'output' in all_args:
-                output_columns = all_args['output']"""
-
-expressionTransform_1_correct = \
-    """        if output_columns is None \
-    and 'output' in all_args:
-                output_columns = all_args['output']
-                if isinstance(output_columns, list):
-                    output_columns = output_columns[0]"""
-
-expressionTransform_2 = """        algo_args = dict(
-            column=[dict(Source=i, Name=o) for i, o in zip(input_columns, \
-output_columns)] if input_columns else None,
-            expression=self.expression,)"""
-
-expressionTransform_2_correct = """        source = []
-        for i in input_columns:
-            source.append(i)
-        column = [dict([('Source', source), ('Name', output_columns)])]
-
-        algo_args = dict(
-            column=column,
-            expression=self.expression)"""
-
 onevsrestclassifier_1 = """        all_args.update(algo_args)"""
 
 onevsrestclassifier_1_correct = """
@@ -282,26 +219,11 @@ onevsrestclassifier_1_correct = """
 all_args['predictor_model']}"""
 
 signature_fixes_core = {
-    'DnnFeaturizer': [  # ('source,', 'input = None,'),
-        # ('name = None,', 'output = None,'),
-        ('self.source=source', 'self.input=input'),
-        ('self.name=name', 'self.output=output'),
-        (dnnImageFeaturize_1, dnnImageFeaturize_1_correct)],
     'NGramFeaturizer': (textTransform_1, textTransform_1_correct),
-    'CountSelector': ('count = 0,', 'count = 1.0,'),
-    'ColumnConcatenator': [('output = None,', 'output = None,'),
-                           (concatColumns_1, concatColumns_1_correct)],
+    'ColumnConcatenator': [(concatColumns_1, concatColumns_1_correct)],
     'ColumnSelector': [(columnselector_1, columnselector_1_correct)],
-    'RangeFilter': ('min = None,', 'min = -1,'),
-    'Expression': [(expressionTransform_1, expressionTransform_1_correct),
-                   (expressionTransform_2, expressionTransform_2_correct)],
     'OneVsRestClassifier': [
         (onevsrestclassifier_1, onevsrestclassifier_1_correct)],
-    'TensorFlowScorer': [
-        ('model=self.model', 'model_location=self.model')],
-    'Expression': ('zip(input_columns',
-                   'zip([[x] for x in input_columns] if not ' \
-                   'isinstance(input_columns[0], list) else input_columns')
 }
 
 
@@ -317,22 +239,7 @@ s_1_correct = """    if model is not None:
         outputs['PredictorModel'] = try_set(obj=model, \
 none_acceptable=False, is_of_type=str)"""
 
-tf_1_incorrect = """def transforms_tensorflowscorer(
-        model,"""
-
-tf_1_correct = """def transforms_tensorflowscorer(
-        model_location,"""
-
-tf_2_incorrect = """    if model is not None:
-        inputs['Model'] = try_set(obj=model"""
-
-tf_2_correct = """    if model_location is not None:
-        inputs['Model'] = try_set(obj=model_location"""
-
 signature_fixes_entrypoint = {
-    'SelectFeatures.CountSelect': ('count = 0,', 'count,'),
-    'SelectRows.SkipFilter': ('count = 0,', 'count,'),
-    'SelectRows.TakeFilter': ('count = 0,', 'count,'),
     'Transforms.TextFeaturizer': ('column = 0,', 'column,'),
     'Transforms.ManyHeterogeneousModelCombiner': [
         ('predictor_model = None,', 'model = None,'),
@@ -340,10 +247,6 @@ signature_fixes_entrypoint = {
     'Transforms.TwoHeterogeneousModelCombiner': [
         ('predictor_model = None,', 'model = None,'),
         (s_1_incorrect, s_1_correct)],
-    'Transforms.TensorFlowScorer': [
-        (tf_1_incorrect, tf_1_correct),
-        (':param model: TensorFlow', ':param model_location: TensorFlow'),
-        (tf_2_incorrect, tf_2_correct)],
     'Transforms.LightLda' : ('num_threads = 0,', 'num_threads = None,'),
     'Trainers.GeneralizedAdditiveModelRegressor': ('Infinity', 'float("inf")'),
     'Trainers.GeneralizedAdditiveModelBinaryClassifier': (
@@ -368,15 +271,6 @@ def _fix_code(class_name, filename, fixes_dict):
             code = f.read()
             first = True
             for fix in fixes:
-                #if fix[0] in code:
-                #    if first:
-                #        print("    [_fix_code]", os.path.abspath(filename))
-                #        first = False
-                #    print(
-                #        "      '{0}' --> '{1}'".format(
-                #            fix[0].replace(
-                #                "\n", "\\n"), fix[1].replace(
-                #                "\n", "\\n")))
                 code = code.replace(fix[0], fix[1])
             f.seek(0)
             f.write(code)
@@ -411,8 +305,10 @@ def run_autoflake(filename):
     parser.add_argument('--remove-all-unused-imports', action='store_true')
     cmd_args = ['--in-place', '--remove-all-unused-imports']
     args = parser.parse_args(cmd_args)
+    args.check = None
     args.imports = None
     args.expand_star_imports = None
     args.remove_duplicate_keys = None
     args.remove_unused_variables = None
+    args.ignore_init_module_imports = False
     autoflake.fix_file(filename, args=args, standard_out=sys.stdout)

@@ -15,9 +15,9 @@ def transforms_categoricalonehotvectorizer(
         output_data=None,
         model=None,
         max_num_terms=1000000,
-        output_kind='Ind',
+        output_kind='Indicator',
         term=None,
-        sort='Occurrence',
+        sort='ByOccurrence',
         text_key_values=True,
         **params):
     """
@@ -29,7 +29,7 @@ def transforms_categoricalonehotvectorizer(
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
-    :param max_num_terms: Maximum number of terms to keep per column
+    :param max_num_terms: Maximum number of keys to keep per column
         when auto-training (inputs).
     :param output_kind: Output kind: Bag (multi-set vector), Ind
         (indicator vector), or Key (index) (inputs).
@@ -72,9 +72,9 @@ def transforms_categoricalonehotvectorizer(
             is_of_type=str,
             values=[
                 'Bag',
-                'Ind',
+                'Indicator',
                 'Key',
-                'Bin'])
+                'Binary'])
     if term is not None:
         inputs['Term'] = try_set(
             obj=term,
@@ -86,8 +86,8 @@ def transforms_categoricalonehotvectorizer(
             none_acceptable=True,
             is_of_type=str,
             values=[
-                'Occurrence',
-                'Value'])
+                'ByOccurrence',
+                'ByValue'])
     if text_key_values is not None:
         inputs['TextKeyValues'] = try_set(
             obj=text_key_values,

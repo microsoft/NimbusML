@@ -13,7 +13,7 @@ def transforms_wordembeddings(
         data,
         output_data=None,
         model=None,
-        model_kind='Sswe',
+        model_kind='SentimentSpecificWordEmbedding',
         custom_lookup_table=None,
         **params):
     """
@@ -58,7 +58,7 @@ def transforms_wordembeddings(
                 'GloVeTwitter100D',
                 'GloVeTwitter200D',
                 'FastTextWikipedia300D',
-                'Sswe'])
+                'SentimentSpecificWordEmbedding'])
     if data is not None:
         inputs['Data'] = try_set(
             obj=data,

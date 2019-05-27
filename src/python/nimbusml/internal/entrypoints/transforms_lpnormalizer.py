@@ -13,7 +13,7 @@ def transforms_lpnormalizer(
         data,
         output_data=None,
         model=None,
-        norm_kind='L2Norm',
+        norm='L2',
         sub_mean=False,
         **params):
     """
@@ -25,8 +25,7 @@ def transforms_lpnormalizer(
 
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
-    :param norm_kind: The norm to use to normalize each sample
-        (inputs).
+    :param norm: The norm to use to normalize each sample (inputs).
     :param data: Input dataset (inputs).
     :param sub_mean: Subtract mean from each value before normalizing
         (inputs).
@@ -44,16 +43,16 @@ def transforms_lpnormalizer(
             none_acceptable=False,
             is_of_type=list,
             is_column=True)
-    if norm_kind is not None:
-        inputs['NormKind'] = try_set(
-            obj=norm_kind,
+    if norm is not None:
+        inputs['Norm'] = try_set(
+            obj=norm,
             none_acceptable=True,
             is_of_type=str,
             values=[
-                'L2Norm',
-                'StdDev',
-                'L1Norm',
-                'LInf'])
+                'L2',
+                'StandardDeviation',
+                'L1',
+                'Infinity'])
     if data is not None:
         inputs['Data'] = try_set(
             obj=data,

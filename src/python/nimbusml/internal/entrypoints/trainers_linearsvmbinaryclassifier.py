@@ -12,20 +12,20 @@ from ..utils.utils import try_set, unlist
 def trainers_linearsvmbinaryclassifier(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
+        feature_column_name='Features',
+        label_column_name='Label',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         lambda_=0.001,
         perform_projection=False,
-        num_iterations=1,
-        init_wts_diameter=0.0,
+        number_of_iterations=1,
+        initial_weights_diameter=0.0,
         no_bias=False,
         calibrator=None,
         max_calibration_examples=1000000,
         initial_weights=None,
         shuffle=True,
-        streaming_cache_size=1000000,
         batch_size=1,
         **params):
     """
@@ -33,17 +33,19 @@ def trainers_linearsvmbinaryclassifier(
         Train a linear SVM.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param lambda_: Regularizer constant (inputs).
     :param perform_projection: Perform projection to unit-ball?
         Typically used with batch size > 1. (inputs).
-    :param num_iterations: Number of iterations (inputs).
-    :param init_wts_diameter: Init weights diameter (inputs).
+    :param number_of_iterations: Number of iterations (inputs).
+    :param initial_weights_diameter: Init weights diameter (inputs).
     :param no_bias: No bias (inputs).
     :param calibrator: The calibrator kind to apply to the predictor.
         Specify null for no calibration (inputs).
@@ -52,8 +54,6 @@ def trainers_linearsvmbinaryclassifier(
     :param initial_weights: Initial Weights and bias, comma-separated
         (inputs).
     :param shuffle: Whether to shuffle for each training iteration
-        (inputs).
-    :param streaming_cache_size: Size of cache when trained in Scope
         (inputs).
     :param batch_size: Batch size (inputs).
     :param predictor_model: The trained model (outputs).
@@ -68,15 +68,21 @@ def trainers_linearsvmbinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
+            none_acceptable=True,
+            is_of_type=str,
+            is_column=True)
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -98,7 +104,6 @@ def trainers_linearsvmbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if lambda_ is not None:
         inputs['Lambda'] = try_set(
@@ -108,14 +113,14 @@ def trainers_linearsvmbinaryclassifier(
     if perform_projection is not None:
         inputs['PerformProjection'] = try_set(
             obj=perform_projection, none_acceptable=True, is_of_type=bool)
-    if num_iterations is not None:
-        inputs['NumIterations'] = try_set(
-            obj=num_iterations,
+    if number_of_iterations is not None:
+        inputs['NumberOfIterations'] = try_set(
+            obj=number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if init_wts_diameter is not None:
-        inputs['InitWtsDiameter'] = try_set(
-            obj=init_wts_diameter,
+    if initial_weights_diameter is not None:
+        inputs['InitialWeightsDiameter'] = try_set(
+            obj=initial_weights_diameter,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if no_bias is not None:
@@ -143,11 +148,6 @@ def trainers_linearsvmbinaryclassifier(
             obj=shuffle,
             none_acceptable=True,
             is_of_type=bool)
-    if streaming_cache_size is not None:
-        inputs['StreamingCacheSize'] = try_set(
-            obj=streaming_cache_size,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if batch_size is not None:
         inputs['BatchSize'] = try_set(
             obj=batch_size,

@@ -84,14 +84,15 @@ class TestWordEmbedding(unittest.TestCase):
         # TODO: Bug 149666
         # TODO: Bug 149700
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(),
+                            output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             WordEmbedding(columns='features_TransformedText')
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 802)
+        assert features.shape == (248, 787)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
     # Test works on ubuntu16.
@@ -120,14 +121,15 @@ class TestWordEmbedding(unittest.TestCase):
         data = FileDataStream(path, schema=file_schema)
 
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(),
+                            output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             WordEmbedding(columns='features_TransformedText')
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 802)
+        assert features.shape == (248, 787)
         assert 'features_TransformedText.94' in list(features.columns)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
@@ -156,7 +158,7 @@ class TestWordEmbedding(unittest.TestCase):
                       'col=spontaneous:R4:6 header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             # What is features_TransformedText?
@@ -166,7 +168,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 802)
+        assert features.shape == (248, 787)
 
     @unittest.skip('System.ArgumentOutOfRangeException')
     def test_word_embedding_example_dict_newname(self):
@@ -176,7 +178,8 @@ class TestWordEmbedding(unittest.TestCase):
                       'col=spontaneous:R4:6 header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(),
+                            output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             # What is features_TransformedText?

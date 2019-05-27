@@ -41,7 +41,7 @@ class TestSyntaxOneHotVectorizer(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer() << {'f1': 'education2'},
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
-            LightGbmClassifier(min_data_per_leaf=1) << ['f1', 'f3']
+            LightGbmClassifier(minimum_example_count_per_leaf=1) << ['f1', 'f3']
         ])
         exp.fit(X, y)
         res = exp.transform(X)

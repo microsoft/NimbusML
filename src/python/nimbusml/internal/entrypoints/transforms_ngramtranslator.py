@@ -22,20 +22,20 @@ def transforms_ngramtranslator(
         **params):
     """
     **Description**
-        Produces a bag of counts of ngrams (sequences of consecutive values
+        Produces a bag of counts of n-grams (sequences of consecutive values
         of length 1-n) in a given vector of keys. It does so by
-        building a dictionary of ngrams and using the id in the
+        building a dictionary of n-grams and using the id in the
         dictionary as the index in the bag.
 
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
-    :param ngram_length: Maximum ngram length (inputs).
-    :param all_lengths: Whether to store all ngram lengths up to
+    :param ngram_length: Maximum n-gram length (inputs).
+    :param all_lengths: Whether to store all n-gram lengths up to
         ngramLength, or only ngramLength (inputs).
     :param skip_length: Maximum number of tokens to skip when
-        constructing an ngram (inputs).
-    :param max_num_terms: Maximum number of ngrams to store in the
+        constructing an n-gram (inputs).
+    :param max_num_terms: Maximum number of n-grams to store in the
         dictionary (inputs).
     :param weighting: The weighting criteria (inputs).
     :param output_data: Transformed dataset (outputs).

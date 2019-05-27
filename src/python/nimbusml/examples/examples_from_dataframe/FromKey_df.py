@@ -16,5 +16,5 @@ print(y)
 
 tokey = ToKey(columns='text')
 y = tokey.fit_transform(categorical_df)
-y2 = fromkey.fit_transform(y)
+y2 = fromkey.clone().fit_transform(y)
 print(y2['text'] == categorical_df['text'])
