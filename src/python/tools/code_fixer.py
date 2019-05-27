@@ -88,7 +88,6 @@ signature_fixes = {
                          'word_feature_extractor = Ngram'),
                          ('char_feature_extractor = n_gram',
                          'char_feature_extractor = Ngram')],
-    'RangeFilter': ('min = None,', 'min = -1,'),
     'FactorizationMachineBinaryClassifier': (FM, FM_correct),
     'OneHotHashVectorizer': (OHE, OHE_correct),
     'CustomStopWordsRemover': (cust_stop, cust_stop_correct),
@@ -220,13 +219,9 @@ onevsrestclassifier_1_correct = """
 all_args['predictor_model']}"""
 
 signature_fixes_core = {
-    'SkipFilter': ('count = 0,', 'count,'),
-    'TakeFilter': ('count = 9223372036854775807,', 'count,'),
     'NGramFeaturizer': (textTransform_1, textTransform_1_correct),
-    'ColumnConcatenator': [('output = None,', 'output = None,'),
-                           (concatColumns_1, concatColumns_1_correct)],
+    'ColumnConcatenator': [(concatColumns_1, concatColumns_1_correct)],
     'ColumnSelector': [(columnselector_1, columnselector_1_correct)],
-    'RangeFilter': ('min = None,', 'min = -1,'),
     'OneVsRestClassifier': [
         (onevsrestclassifier_1, onevsrestclassifier_1_correct)],
 }
@@ -245,8 +240,6 @@ s_1_correct = """    if model is not None:
 none_acceptable=False, is_of_type=str)"""
 
 signature_fixes_entrypoint = {
-    'Transforms.RowSkipFilter': ('count = 0,', 'count,'),
-    'Transforms.RowTakeFilter': ('count = 9223372036854775807,', 'count,'),
     'Transforms.TextFeaturizer': ('column = 0,', 'column,'),
     'Transforms.ManyHeterogeneousModelCombiner': [
         ('predictor_model = None,', 'model = None,'),

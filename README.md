@@ -1,4 +1,4 @@
-# NimbusML 
+# NimbusML
 
 `nimbusml` is a Python module that provides experimental Python bindings for [ML.NET](https://github.com/dotnet/machinelearning). 
 

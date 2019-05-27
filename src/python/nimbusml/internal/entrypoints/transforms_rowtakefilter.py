@@ -13,7 +13,7 @@ def transforms_rowtakefilter(
         data,
         output_data=None,
         model=None,
-        count,
+        count=9223372036854775807,
         **params):
     """
     **Description**

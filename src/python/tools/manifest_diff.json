@@ -305,7 +305,7 @@
       "Inputs": [
         {
           "Name": "NormalizeFeatures",
-          "Hidden": true
+          "Desc": "Whether to normalize the input vectors so that the concatenation of all fields' feature vectors is unit-length"
         }
       ]
     },
@@ -608,7 +608,13 @@
       "Name": "Transforms.RowRangeFilter",
       "NewName": "RangeFilter",
       "Module": "preprocessing.filter",
-      "Type": "Transform"
+      "Type": "Transform",
+      "Inputs": [
+        {
+          "Name": "Min",
+          "Default": -1
+        }
+      ]
     },
     {
       "Name": "Transforms.RowSkipFilter",

@@ -35,7 +35,7 @@ class SkipFilter(BasePipelineItem, NoOutputSignature):
     @trace
     def __init__(
             self,
-            count,
+            count=0,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)

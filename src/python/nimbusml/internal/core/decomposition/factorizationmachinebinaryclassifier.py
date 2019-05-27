@@ -63,6 +63,9 @@ class FactorizationMachineBinaryClassifier(
 
     :param lambda_latent: Regularization coefficient of latent weights.
 
+    :param normalize: Whether to normalize the input vectors so that the
+        concatenation of all fields' feature vectors is unit-length.
+
     :param caching: Whether trainer should cache input training data.
 
     :param extra_feature_columns: Extra columns to use for feature vectors. The
@@ -102,6 +105,7 @@ class FactorizationMachineBinaryClassifier(
             latent_dimension=20,
             lambda_linear=0.0001,
             lambda_latent=0.0001,
+            normalize=True,
             caching='Auto',
             extra_feature_columns=None,
             shuffle=True,
@@ -116,6 +120,7 @@ class FactorizationMachineBinaryClassifier(
         self.latent_dimension = latent_dimension
         self.lambda_linear = lambda_linear
         self.lambda_latent = lambda_latent
+        self.normalize = normalize
         self.caching = caching
         self.extra_feature_columns = extra_feature_columns
         self.shuffle = shuffle
@@ -143,6 +148,7 @@ class FactorizationMachineBinaryClassifier(
             latent_dimension=self.latent_dimension,
             lambda_linear=self.lambda_linear,
             lambda_latent=self.lambda_latent,
+            normalize_features=self.normalize,
             caching=self.caching,
             extra_feature_columns=self.extra_feature_columns,
             shuffle=self.shuffle,
