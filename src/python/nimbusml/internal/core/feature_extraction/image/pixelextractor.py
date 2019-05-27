@@ -43,8 +43,11 @@ class PixelExtractor(BasePipelineItem, DefaultSignature):
 
     :param order: Order of colors.
 
-    :param interleave: Whether to separate each channel or interleave in
-        specified order.
+    :param interleave: Whether to separate each channel or
+        interleave in ARGB order. This might be important, for example, if
+        you are training
+        a convolutional neural network, since this would affect the shape of
+        the kernel, stride etc.
 
     :param convert: Whether to convert to floating point. The default value
         is ``False``.

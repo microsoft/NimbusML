@@ -86,9 +86,12 @@ class OneHotHashVectorizer(core, BaseTransform, TransformerMixin):
     :param ordered: ``True`` to include the position of each term in the
         hash. Otherwise, ``False``. The default value is ``True``.
 
-    :param maximum_number_of_inverts: Limit the number of keys used to generate
-        the slot name to this many. 0 means no invert hashing, -1 means no
-        limit.
+    :param maximum_number_of_inverts: An integer specifying the limit on the number of keys
+        that can be used to generate the slot name. ``0`` means no invert
+        hashing; ``-1`` means no limit. While a zero value gives better
+        performance, a non-zero value is needed to get meaningful coefficent
+        names.
+        The default value is ``0``.
 
     :param params: Additional arguments sent to compute engine.
 

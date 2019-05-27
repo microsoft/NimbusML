@@ -15,7 +15,7 @@ from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
-from nimbusml.preprocessing.filter import SkipFilter
+from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
@@ -177,9 +177,9 @@ INSTANCES = {
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
-    'NGramFeaturizer': NGramFeaturizer(
-        word_feature_extractor=n_gram()), 'SkipFilter': SkipFilter(
-        count=5),
+    'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'SkipFilter': SkipFilter(count=5),
+    'TakeFilter': TakeFilter(count=100000),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,
