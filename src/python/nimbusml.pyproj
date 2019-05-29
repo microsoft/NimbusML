@@ -117,6 +117,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\SymSgdBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\ToKey_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\WordEmbedding_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\__init__.py" />
     <Compile Include="nimbusml\examples\Exp.py" />
     <Compile Include="nimbusml\examples\FactorizationMachineBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\FastForestBinaryClassifier.py" />
@@ -250,7 +251,7 @@
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_quantileregressionevaluator.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_rankerevaluator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_rankingevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionpipelineensemble.py" />
@@ -1095,7 +1096,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Py3.6" />
+    <InterpreterReference Include="Global|VisualStudio|Py3.7" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

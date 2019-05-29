@@ -13,10 +13,9 @@ using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
 using Microsoft.ML.Data.IO;
 using Microsoft.ML.EntryPoints;
-using Microsoft.ML.EntryPoints.JsonUtils;
 using Microsoft.ML.Internal.Utilities;
+using Microsoft.ML.Runtime;
 using Microsoft.ML.Transforms;
-using Microsoft.ML.Transforms.FeatureSelection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -97,7 +96,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             int? maxThreadsAllowed = Math.Min(args.parallel > 0 ? args.parallel.Value : penv->maxThreadsAllowed, penv->maxThreadsAllowed);
             maxThreadsAllowed = penv->maxThreadsAllowed > 0 ? maxThreadsAllowed : args.parallel;
-            var host = env.Register("RunGraph", args.randomSeed, null, maxThreadsAllowed);
+            var host = env.Register("RunGraph", args.randomSeed, null);
 
             JObject graph;
             try
@@ -146,7 +145,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 {
                                     var extension = Path.GetExtension(path);
                                     if (extension == ".txt")
-                                        dv = TextLoader.ReadFile(host, new TextLoader.Arguments(), new MultiFileSource(path));
+                                        dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
 
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
@@ -285,7 +284,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
         private static Dictionary<string, ColumnMetadataInfo> ProcessColumns(ref IDataView view, int maxSlots, IHostEnvironment env)
         {
             Dictionary<string, ColumnMetadataInfo> result = null;
-            List<SlotsDroppingTransformer.ColumnInfo> drop = null;
+            List<SlotsDroppingTransformer.ColumnOptions> drop = null;
             for (int i = 0; i < view.Schema.Count; i++)
             {
                 if (view.Schema[i].IsHidden)
@@ -293,24 +292,24 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                 var columnName = view.Schema[i].Name;
                 var columnType = view.Schema[i].Type;
-                if (columnType.IsKnownSizeVector)
+                if (columnType.IsKnownSizeVector())
                 {
                     Utils.Add(ref result, columnName, new ColumnMetadataInfo(true, null, null));
-                    if (maxSlots > 0 && columnType.ValueCount > maxSlots)
+                    if (maxSlots > 0 && columnType.GetValueCount() > maxSlots)
                     {
                         Utils.Add(ref drop,
-                            new SlotsDroppingTransformer.ColumnInfo(
-                                input: columnName,
+                            new SlotsDroppingTransformer.ColumnOptions(
+                                name: columnName,
                                 slots: (maxSlots, null)));
                     }
                 }
-                else if (columnType.IsKey)
+                else if (columnType is KeyDataViewType)
                 {
                     Dictionary<uint, ReadOnlyMemory<char>> map = null;
-                    if (columnType.KeyCount > 0 && view.Schema[i].HasKeyValues(columnType.KeyCount))
+                    if (columnType.GetKeyCount() > 0 && view.Schema[i].HasKeyValues())
                     {
                         var keyNames = default(VBuffer<ReadOnlyMemory<char>>);
-                        view.Schema[i].Metadata.GetValue(MetadataUtils.Kinds.KeyValues, ref keyNames);
+                        view.Schema[i].Annotations.GetValue(AnnotationUtils.Kinds.KeyValues, ref keyNames);
                         map = keyNames.Items().ToDictionary(kv => (uint)kv.Key, kv => kv.Value);
                     }
                     Utils.Add(ref result, columnName, new ColumnMetadataInfo(false, null, map));

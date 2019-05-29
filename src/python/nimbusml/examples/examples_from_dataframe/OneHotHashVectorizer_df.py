@@ -75,12 +75,12 @@ test_reviews = pandas.DataFrame(
 
 # OneHotHashVectorizer transform: the entire string is treated as a category.
 # if output column name is same as input column, original input column values
-# are replaced. hash_bits=6 will hash into 2^6 -1 dimensions
+# are replaced. number_of_bits=6 will hash into 2^6 -1 dimensions
 
 y = train_reviews['like']
 X = train_reviews.loc[:, train_reviews.columns != 'like']
 
-cat = OneHotHashVectorizer(hash_bits=6) << 'review'
+cat = OneHotHashVectorizer(number_of_bits=6) << 'review'
 X = cat.fit_transform(X)
 
 # view the transformed numerical values and column names

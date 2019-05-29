@@ -48,7 +48,7 @@ class OneVsRestClassifier(
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -115,14 +115,14 @@ class OneVsRestClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
                 all_args),
-            label_column=self._getattr_role(
-                'label_column',
+            label_column_name=self._getattr_role(
+                'label_column_name',
                 all_args),
-            weight_column=self._getattr_role(
-                'weight_column',
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
                 all_args),
             nodes=self.classifier,
             output_for_sub_graph=self.output_for_sub_graph,

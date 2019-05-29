@@ -10,41 +10,41 @@ from ..utils.utils import try_set
 
 
 def n_gram_hash(
-        hash_bits=16,
+        number_of_bits=16,
         ngram_length=1,
         skip_length=0,
         all_lengths=True,
         seed=314489979,
         ordered=True,
-        invert_hash=0,
+        maximum_number_of_inverts=0,
         **params):
     """
     **Description**
         Extracts NGrams from text and convert them to vector using hashing
         trick.
 
-    :param hash_bits: Number of bits to hash into. Must be between 1
-        and 30, inclusive. (settings).
+    :param number_of_bits: Number of bits to hash into. Must be
+        between 1 and 30, inclusive. (settings).
     :param ngram_length: Ngram length (settings).
     :param skip_length: Maximum number of tokens to skip when
-        constructing an ngram (settings).
-    :param all_lengths: Whether to include all ngram lengths up to
+        constructing an n-gram (settings).
+    :param all_lengths: Whether to include all n-gram lengths up to
         ngramLength or only ngramLength (settings).
     :param seed: Hashing seed (settings).
     :param ordered: Whether the position of each source column should
         be included in the hash (when there are multiple source
         columns). (settings).
-    :param invert_hash: Limit the number of keys used to generate the
-        slot name to this many. 0 means no invert hashing, -1 means
-        no limit. (settings).
+    :param maximum_number_of_inverts: Limit the number of keys used
+        to generate the slot name to this many. 0 means no invert
+        hashing, -1 means no limit. (settings).
     """
 
     entrypoint_name = 'NGramHash'
     settings = {}
 
-    if hash_bits is not None:
-        settings['HashBits'] = try_set(
-            obj=hash_bits,
+    if number_of_bits is not None:
+        settings['NumberOfBits'] = try_set(
+            obj=number_of_bits,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if ngram_length is not None:
@@ -70,9 +70,9 @@ def n_gram_hash(
     if ordered is not None:
         settings['Ordered'] = try_set(
             obj=ordered, none_acceptable=True, is_of_type=bool)
-    if invert_hash is not None:
-        settings['InvertHash'] = try_set(
-            obj=invert_hash,
+    if maximum_number_of_inverts is not None:
+        settings['MaximumNumberOfInverts'] = try_set(
+            obj=maximum_number_of_inverts,
             none_acceptable=True,
             is_of_type=numbers.Real)
 

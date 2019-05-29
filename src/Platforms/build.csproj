@@ -11,14 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="0.10.0-preview-27310-10" />    
-    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.Onnx" Version="0.10.0-preview-27310-10" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.10.0-preview-27310-10" />
+    <PackageReference Include="Microsoft.ML" Version="1.0.0" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.0.0" />    
+    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.12.0" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.0.0" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.0.0" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.0.0" />
+    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="0.12.0" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.12.0" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.12.0" />
   </ItemGroup>
 
 </Project>

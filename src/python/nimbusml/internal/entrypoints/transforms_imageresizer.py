@@ -69,7 +69,8 @@ def transforms_imageresizer(
             is_of_type=str,
             values=[
                 'IsoPad',
-                'IsoCrop'])
+                'IsoCrop',
+                'Fill'])
     if crop_anchor is not None:
         inputs['CropAnchor'] = try_set(
             obj=crop_anchor,

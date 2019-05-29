@@ -14,11 +14,11 @@ def transforms_categoricalhashonehotvectorizer(
         data,
         output_data=None,
         model=None,
-        hash_bits=16,
+        number_of_bits=16,
         output_kind='Bag',
         seed=314489979,
         ordered=True,
-        invert_hash=0,
+        maximum_number_of_inverts=0,
         **params):
     """
     **Description**
@@ -28,18 +28,18 @@ def transforms_categoricalhashonehotvectorizer(
         it.
 
     :param column: New column definition(s) (optional form:
-        name:hashBits:src) (inputs).
+        name:numberOfBits:src) (inputs).
     :param data: Input dataset (inputs).
-    :param hash_bits: Number of bits to hash into. Must be between 1
-        and 30, inclusive. (inputs).
+    :param number_of_bits: Number of bits to hash into. Must be
+        between 1 and 30, inclusive. (inputs).
     :param output_kind: Output kind: Bag (multi-set vector), Ind
         (indicator vector), or Key (index) (inputs).
     :param seed: Hashing seed (inputs).
     :param ordered: Whether the position of each term should be
         included in the hash (inputs).
-    :param invert_hash: Limit the number of keys used to generate the
-        slot name to this many. 0 means no invert hashing, -1 means
-        no limit. (inputs).
+    :param maximum_number_of_inverts: Limit the number of keys used
+        to generate the slot name to this many. 0 means no invert
+        hashing, -1 means no limit. (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -59,9 +59,9 @@ def transforms_categoricalhashonehotvectorizer(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if hash_bits is not None:
-        inputs['HashBits'] = try_set(
-            obj=hash_bits,
+    if number_of_bits is not None:
+        inputs['NumberOfBits'] = try_set(
+            obj=number_of_bits,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if output_kind is not None:
@@ -71,9 +71,9 @@ def transforms_categoricalhashonehotvectorizer(
             is_of_type=str,
             values=[
                 'Bag',
-                'Ind',
+                'Indicator',
                 'Key',
-                'Bin'])
+                'Binary'])
     if seed is not None:
         inputs['Seed'] = try_set(
             obj=seed,
@@ -84,9 +84,9 @@ def transforms_categoricalhashonehotvectorizer(
             obj=ordered,
             none_acceptable=True,
             is_of_type=bool)
-    if invert_hash is not None:
-        inputs['InvertHash'] = try_set(
-            obj=invert_hash,
+    if maximum_number_of_inverts is not None:
+        inputs['MaximumNumberOfInverts'] = try_set(
+            obj=maximum_number_of_inverts,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if output_data is not None:

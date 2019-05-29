@@ -23,7 +23,7 @@ class TestOneHotHashVectorizer(unittest.TestCase):
                 'edu': 'education',
                 'in': 'induced',
                 'sp': 'spontaneous'},
-            hash_bits=2)
+            number_of_bits=2)
         xf.fit_transform(data)
 
         xf = OneHotHashVectorizer(
@@ -31,7 +31,7 @@ class TestOneHotHashVectorizer(unittest.TestCase):
                 'education',
                 'induced',
                 'spontaneous'],
-            hash_bits=2)
+            number_of_bits=2)
         xf.fit_transform(data)
 
 

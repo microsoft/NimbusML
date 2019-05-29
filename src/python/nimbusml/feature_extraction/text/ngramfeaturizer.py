@@ -100,7 +100,22 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
         * ``"Spanish"``
         * ``"Japanese"``.
 
-    :param use_predefined_stop_word_remover: Use stop remover or not.
+    :param stop_words_remover: Specifies the stopwords remover to use. There
+        are
+        three options supported:
+
+        * `None`: No stopwords remover is used.
+        * :py:class:`PredefinedStopWordsRemover
+          <nimbusml.feature_extraction.text.stopwords.PredefinedStopWordsRemover>` :
+          A precompiled language-specific lists
+          of stop words is used that includes the most common words from
+          Microsoft Office.
+        * :py:class:`CustomStopWordsRemover
+          <nimbusml.feature_extraction.text.stopwords.CustomStopWordsRemover>` : A
+          user-defined list of stopwords. It accepts
+          the following option: ``stopword``.
+
+        The default value is `None`.
 
     :param text_case: Text casing using the rules of the invariant culture.
         Takes the
@@ -122,8 +137,8 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
     :param keep_numbers: ``False`` to remove numbers; ``True`` to retain
         numbers. The default value is ``True``.
 
-    :param output_tokens: Whether to output the transformed text tokens as an
-        additional column.
+    :param output_tokens_column_name: Column containing the transformed text
+        tokens.
 
     :param dictionary: A dictionary of whitelisted terms which accepts
         the following options:
@@ -203,12 +218,12 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             language='English',
-            use_predefined_stop_word_remover=False,
+            stop_words_remover=None,
             text_case='Lower',
             keep_diacritics=False,
             keep_punctuations=True,
             keep_numbers=True,
-            output_tokens=False,
+            output_tokens_column_name=None,
             dictionary=None,
             word_feature_extractor=Ngram(
                 max_num_terms=[10000000]),
@@ -226,12 +241,12 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             language=language,
-            use_predefined_stop_word_remover=use_predefined_stop_word_remover,
+            stop_words_remover=stop_words_remover,
             text_case=text_case,
             keep_diacritics=keep_diacritics,
             keep_punctuations=keep_punctuations,
             keep_numbers=keep_numbers,
-            output_tokens=output_tokens,
+            output_tokens_column_name=output_tokens_column_name,
             dictionary=dictionary,
             word_feature_extractor=word_feature_extractor,
             char_feature_extractor=char_feature_extractor,

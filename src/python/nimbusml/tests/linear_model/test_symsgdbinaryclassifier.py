@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+import os
 
 import numpy as np
 from nimbusml.datasets import get_dataset
@@ -15,7 +16,7 @@ from sklearn.utils.testing import assert_greater
 
 class TestSymSgdBinaryClassifier(unittest.TestCase):
 
-    @unittest.skip("BUG: Not included in ML.NET yet")
+    @unittest.skipIf(os.name != "nt", "BUG: SymSgd lib fails to load on Linux")
     def test_SymSgdBinaryClassifier(self):
         np.random.seed(0)
         df = get_dataset("infert").as_df()

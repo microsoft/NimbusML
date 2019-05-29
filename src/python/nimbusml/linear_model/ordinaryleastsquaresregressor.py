@@ -69,11 +69,11 @@ class OrdinaryLeastSquaresRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
-    :param l2_weight: L2 regularization weight.
+    :param l2_regularization: L2 regularization weight.
 
-    :param per_parameter_significance: Whether to calculate per parameter
+    :param calculate_statistics: Whether to calculate per parameter
         significance statistics.
 
     :param params: Additional arguments sent to compute engine.
@@ -98,35 +98,35 @@ class OrdinaryLeastSquaresRegressor(
             self,
             normalize='Auto',
             caching='Auto',
-            l2_weight=1e-06,
-            per_parameter_significance=True,
+            l2_regularization=1e-06,
+            calculate_statistics=True,
             feature=None,
             label=None,
             weight=None,
             **params):
 
-        if 'feature_column' in params:
+        if 'feature_column_name' in params:
             raise NameError(
-                "'feature_column' must be renamed to 'feature'")
+                "'feature_column_name' must be renamed to 'feature'")
         if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
             raise NameError(
-                "'label_column' must be renamed to 'label'")
+                "'label_column_name' must be renamed to 'label'")
         if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
             raise NameError(
-                "'weight_column' must be renamed to 'weight'")
+                "'example_weight_column_name' must be renamed to 'weight'")
         if weight:
-            params['weight_column'] = weight
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='regressor', **params)
         core.__init__(
             self,
             normalize=normalize,
             caching=caching,
-            l2_weight=l2_weight,
-            per_parameter_significance=per_parameter_significance,
+            l2_regularization=l2_regularization,
+            calculate_statistics=calculate_statistics,
             **params)
         self.feature = feature
         self.label = label

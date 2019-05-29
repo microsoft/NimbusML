@@ -67,7 +67,7 @@ class SgdBinaryClassifier(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param loss: The default is :py:class:`'log' <nimbusml.loss.Log>`. Other
         choices are :py:class:`'exp' <nimbusml.loss.Exp>`, :py:class:`'hinge'
@@ -75,18 +75,18 @@ class SgdBinaryClassifier(
         <nimbusml.loss.SmoothedHinge>`. For more information, please see the
         documentation page about losses, [Loss](xref:nimbusml.loss).
 
-    :param l2_weight: L2 Regularization constant.
+    :param l2_regularization: L2 Regularization constant.
 
-    :param train_threads: Degree of lock-free parallelism. Defaults to
+    :param number_of_threads: Degree of lock-free parallelism. Defaults to
         automatic depending on data sparseness. Determinism not guaranteed.
 
     :param convergence_tolerance: Exponential moving averaged improvement
         tolerance for convergence.
 
-    :param max_iterations: Maximum number of iterations; set to 1 to simulate
-        online learning.
+    :param number_of_iterations: Maximum number of iterations; set to 1 to
+        simulate online learning.
 
-    :param init_learning_rate: Initial learning rate (only used by SGD).
+    :param initial_learning_rate: Initial learning rate (only used by SGD).
 
     :param shuffle: Shuffle data every epoch?.
 
@@ -117,11 +117,11 @@ class SgdBinaryClassifier(
             normalize='Auto',
             caching='Auto',
             loss='log',
-            l2_weight=1e-06,
-            train_threads=None,
+            l2_regularization=1e-06,
+            number_of_threads=None,
             convergence_tolerance=0.0001,
-            max_iterations=20,
-            init_learning_rate=0.01,
+            number_of_iterations=20,
+            initial_learning_rate=0.01,
             shuffle=True,
             positive_instance_weight=1.0,
             check_frequency=None,
@@ -136,11 +136,11 @@ class SgdBinaryClassifier(
             'ClassificationLossFunction',
             self.__class__.__name__,
             self.loss)
-        self.l2_weight = l2_weight
-        self.train_threads = train_threads
+        self.l2_regularization = l2_regularization
+        self.number_of_threads = number_of_threads
         self.convergence_tolerance = convergence_tolerance
-        self.max_iterations = max_iterations
-        self.init_learning_rate = init_learning_rate
+        self.number_of_iterations = number_of_iterations
+        self.initial_learning_rate = initial_learning_rate
         self.shuffle = shuffle
         self.positive_instance_weight = positive_instance_weight
         self.check_frequency = check_frequency
@@ -152,14 +152,14 @@ class SgdBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
                 all_args),
-            label_column=self._getattr_role(
-                'label_column',
+            label_column_name=self._getattr_role(
+                'label_column_name',
                 all_args),
-            weight_column=self._getattr_role(
-                'weight_column',
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
                 all_args),
             normalize_features=self.normalize,
             caching=self.caching,
@@ -167,11 +167,11 @@ class SgdBinaryClassifier(
                 'ClassificationLossFunction',
                 self.__class__.__name__,
                 self.loss),
-            l2_weight=self.l2_weight,
-            num_threads=self.train_threads,
+            l2_regularization=self.l2_regularization,
+            number_of_threads=self.number_of_threads,
             convergence_tolerance=self.convergence_tolerance,
-            max_iterations=self.max_iterations,
-            init_learning_rate=self.init_learning_rate,
+            number_of_iterations=self.number_of_iterations,
+            initial_learning_rate=self.initial_learning_rate,
             shuffle=self.shuffle,
             positive_instance_weight=self.positive_instance_weight,
             check_frequency=self.check_frequency)

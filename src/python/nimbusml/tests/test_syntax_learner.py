@@ -15,7 +15,7 @@ from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.internal.utils.data_roles import Role
 from nimbusml.linear_model import AveragedPerceptronBinaryClassifier
 from nimbusml.linear_model import FastLinearBinaryClassifier, \
-    FastLinearRegressor
+    FastLinearRegressor, OnlineGradientDescentRegressor
 from nimbusml.preprocessing import ToKey
 from nimbusml.preprocessing.normalization import MeanVarianceScaler
 from nimbusml.preprocessing.schema import ColumnConcatenator as Concat, \
@@ -46,7 +46,7 @@ class TestSyntaxLearner(unittest.TestCase):
             OneHotVectorizer() << 'y',
             OneHotVectorizer() << ['workclass', 'education'],
             TypeConverter(result_type='R4') << 'y',
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
@@ -83,7 +83,7 @@ class TestSyntaxLearner(unittest.TestCase):
             OneHotVectorizer() << ['workclass', 'education'],
             TypeConverter(result_type='R4') << {'yi': 'y'},
             Drop() << 'y',
-            FastLinearBinaryClassifier(max_iterations=1) << 'yi'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'yi'
         ])
         exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
@@ -107,8 +107,8 @@ class TestSyntaxLearner(unittest.TestCase):
                                       Role.Label: 'new_y'}
         ])
         exp.fit(df, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Features'
-        assert exp.nodes[-1].label_column_ == 'new_y'
+        assert exp.nodes[-1].feature_column_name_ == 'Features'
+        assert exp.nodes[-1].label_column_name_ == 'new_y'
         # The pipeline requires it now as it is transformed all along.
         X['yy'] = 0.0
         prediction = exp.predict(X, verbose=0)
@@ -133,8 +133,8 @@ class TestSyntaxLearner(unittest.TestCase):
                                       Role.Label: 'new_y'}
         ])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Features'
-        assert exp.nodes[-1].label_column_ == 'new_y'
+        assert exp.nodes[-1].feature_column_name_ == 'Features'
+        assert exp.nodes[-1].label_column_name_ == 'new_y'
         # The pipeline requires it now as it is transformed all along.
         X['yy'] = 0.0
         prediction = exp.predict(X)
@@ -157,7 +157,7 @@ class TestSyntaxLearner(unittest.TestCase):
 
         exp = Pipeline([
             OneHotVectorizer() << ['workclass', 'education'],
-            FastLinearRegressor()
+            OnlineGradientDescentRegressor()
         ])
         try:
             exp.fit(X, y, weight=weights, verbose=0)
@@ -180,9 +180,9 @@ class TestSyntaxLearner(unittest.TestCase):
             FastLinearRegressor()
         ])
         exp.fit(X, y, weight=w, verbose=0)
-        assert exp.nodes[-1].feature_column == 'Features'
-        assert exp.nodes[-1].label_column == 'y'
-        assert exp.nodes[-1].weight_column == 'weight'
+        assert exp.nodes[-1].feature_column_name == 'Features'
+        assert exp.nodes[-1].label_column_name == 'y'
+        assert exp.nodes[-1].example_weight_column_name == 'weight'
         X['weight'] = -5
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
@@ -211,14 +211,14 @@ class TestSyntaxLearner(unittest.TestCase):
                         'workclass',
                         'education']},
                 FastTreesRegressor(
-                    num_trees=5) << {
+                    number_of_trees=5) << {
                     'Feature': 'Feature',
                     Role.Label: 'y',
                     Role.Weight: 'weight'}])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
+        assert exp.nodes[-1].label_column_name_ == 'y'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -238,13 +238,13 @@ class TestSyntaxLearner(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer(columns=['workclass', 'education']),
             Concat(columns={'Feature': ['workclass', 'education']}),
-            FastTreesRegressor(num_trees=5, feature='Feature', label='y',
+            FastTreesRegressor(number_of_trees=5, feature='Feature', label='y',
                                weight='weight')
         ])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
+        assert exp.nodes[-1].label_column_name_ == 'y'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -264,13 +264,13 @@ class TestSyntaxLearner(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer(columns=['workclass', 'education']),
             Concat(columns={'Feature': ['workclass', 'education']}),
-            FastTreesRegressor(num_trees=5, label='y',
+            FastTreesRegressor(number_of_trees=5, label='y',
                                weight='weight') << 'Feature'
         ])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
+        assert exp.nodes[-1].label_column_name_ == 'y'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -296,12 +296,12 @@ class TestSyntaxLearner(unittest.TestCase):
                     columns={
                         'Feature': ['workclass', 'education']}),
                 FastTreesRegressor(
-                    num_trees=5, feature='Feature', weight='weight') << {
+                    number_of_trees=5, feature='Feature', weight='weight') << {
                     Role.Label: 'y'}])
         exp.fit(X, verbose=0)
-        assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
-        assert exp.nodes[-1].weight_column_ == 'weight'
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
+        assert exp.nodes[-1].label_column_name_ == 'y'
+        assert exp.nodes[-1].example_weight_column_name_ == 'weight'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.
@@ -323,22 +323,22 @@ class TestSyntaxLearner(unittest.TestCase):
             OneHotVectorizer(columns=['workclass', 'education']),
             Concat(columns={'Feature': ['workclass', 'education']}),
             ToKey() << 'gr',
-            FastTreesRegressor(num_trees=5, feature='Feature',
+            FastTreesRegressor(number_of_trees=5, feature='Feature',
                                group_id='gr') << {Role.Label: 'y'}
         ])
         exp.fit(X, verbose=0)
         assert not hasattr(exp.nodes[-1], 'feature_')
         assert not hasattr(exp.nodes[-1], 'group_id_')
-        assert exp.nodes[-1].feature_column_ == 'Feature'
-        assert exp.nodes[-1].label_column_ == 'y'
-        # assert not hasattr(exp.nodes[-1], 'group_id_column_')
+        assert exp.nodes[-1].feature_column_name_ == 'Feature'
+        assert exp.nodes[-1].label_column_name_ == 'y'
+        # assert not hasattr(exp.nodes[-1], 'row_group_column_name_')
         assert not hasattr(exp.nodes[-1], 'group_id_column')
         assert not hasattr(exp.nodes[-1], 'groupid_column_')
         assert not hasattr(exp.nodes[-1], 'groupid_column')
-        if not hasattr(exp.nodes[-1], 'group_id_column_'):
+        if not hasattr(exp.nodes[-1], 'row_group_column_name_'):
             raise AssertionError("Attribute not found: {0}".format(
                 ", ".join(sorted(dir(exp.nodes[-1])))))
-        assert exp.nodes[-1].group_id_column_ == 'gr'
+        assert exp.nodes[-1].row_group_column_name_ == 'gr'
         # y is required here as well as weight.
         # It is replaced by fakes values.
         # The test does not fail but the weight is not taken into account.

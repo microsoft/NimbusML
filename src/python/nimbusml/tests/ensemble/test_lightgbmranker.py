@@ -45,22 +45,22 @@ class TestLightGbmRanker(unittest.TestCase):
         metrics, _ = pipeline.test(eval_stream)
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            43.571429,
-            decimal=5,
+            0.43571429,
+            decimal=7,
             err_msg="NDCG@1 should be %s" %
-                    43.571429)
+                    0.43571429)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            51.28226,
-            decimal=5,
+            0.5128226,
+            decimal=7,
             err_msg="NDCG@2 should be %s" %
-                    51.28226)
+                    0.5128226)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            55.168069,
-            decimal=5,
+            0.55168069,
+            decimal=7,
             err_msg="NDCG@3 should be %s" %
-                    55.168069)
+                    0.55168069)
         assert_almost_equal(
             metrics['DCG@1'][0],
             4.688759,
@@ -97,22 +97,22 @@ class TestLightGbmRanker(unittest.TestCase):
         metrics, _ = e.test(df)
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            43.571429,
-            decimal=5,
+            0.43571429,
+            decimal=7,
             err_msg="NDCG@1 should be %s" %
-                    43.571429)
+                    0.43571429)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            51.28226,
-            decimal=5,
+            0.5128226,
+            decimal=7,
             err_msg="NDCG@2 should be %s" %
-                    51.28226)
+                    0.5128226)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            55.168069,
-            decimal=5,
+            0.55168069,
+            decimal=7,
             err_msg="NDCG@3 should be %s" %
-                    55.168069)
+                    0.55168069)
         assert_almost_equal(
             metrics['DCG@1'][0],
             4.688759,
@@ -149,22 +149,22 @@ class TestLightGbmRanker(unittest.TestCase):
         metrics, _ = e.test(df)
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            43.571429,
-            decimal=5,
+            0.43571429,
+            decimal=7,
             err_msg="NDCG@1 should be %s" %
-                    43.571429)
+                    0.43571429)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            51.28226,
-            decimal=5,
+            0.5128226,
+            decimal=7,
             err_msg="NDCG@2 should be %s" %
-                    51.28226)
+                    0.5128226)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            55.168069,
-            decimal=5,
+            0.55168069,
+            decimal=7,
             err_msg="NDCG@3 should be %s" %
-                    55.168069)
+                    0.55168069)
         assert_almost_equal(
             metrics['DCG@1'][0],
             4.688759,
@@ -212,22 +212,22 @@ class TestLightGbmRanker(unittest.TestCase):
         metrics, _ = pipeline.test(eval_stream)
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            43.571429,
-            decimal=5,
+            0.43571429,
+            decimal=7,
             err_msg="NDCG@1 should be %s" %
-                    43.571429)
+                    0.43571429)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            51.28226,
-            decimal=5,
+            0.5128226,
+            decimal=7,
             err_msg="NDCG@2 should be %s" %
-                    51.28226)
+                    0.5128226)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            55.168069,
-            decimal=5,
+            0.55168069,
+            decimal=7,
             err_msg="NDCG@3 should be %s" %
-                    55.168069)
+                    0.55168069)
         assert_almost_equal(
             metrics['DCG@1'][0],
             4.688759,

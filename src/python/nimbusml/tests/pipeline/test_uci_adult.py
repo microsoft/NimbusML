@@ -37,7 +37,7 @@ class TestUciAdult(unittest.TestCase):
 
     def test_file_no_schema(self):
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
         assert_raises_regex(
             TypeError,
@@ -54,7 +54,7 @@ class TestUciAdult(unittest.TestCase):
 
     def test_linear_file(self):
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
 
         train_stream = FileDataStream(train_file, schema=file_schema)
@@ -67,7 +67,7 @@ class TestUciAdult(unittest.TestCase):
 
     def test_linear_file_role(self):
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
         train_stream = FileDataStream(train_file, schema=file_schema)
         train_stream._set_role('Label', label_column)
@@ -79,7 +79,7 @@ class TestUciAdult(unittest.TestCase):
     def test_linear_file_role2(self):
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
                              FastLinearBinaryClassifier(
-                                 train_threads=1, shuffle=False) << {
+                                 number_of_threads=1, shuffle=False) << {
                                  'Label': label_column}])
         train_stream = FileDataStream(train_file, schema=file_schema)
         train_stream._set_role('Label', label_column)
@@ -102,7 +102,7 @@ class TestUciAdult(unittest.TestCase):
         (train, label) = get_X_y(train_file, label_column, sep=',')
         (test, label1) = get_X_y(test_file, label_column, sep=',')
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
         pipeline.fit(train, label)
         out_data = pipeline.predict(test)
@@ -112,7 +112,7 @@ class TestUciAdult(unittest.TestCase):
         (train, label) = get_X_y(train_file, label_column, sep=',')
         (test, label1) = get_X_y(test_file, label_column, sep=',')
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
         pipeline.fit(train, label)
         out_data = pipeline.predict(test)
@@ -122,7 +122,7 @@ class TestUciAdult(unittest.TestCase):
         (train, label) = get_X_y(train_file, label_column, sep=',')
         (test, label1) = get_X_y(test_file, label_column, sep=',')
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
         pipeline.fit(train, label)
         out_data = pipeline.predict(test)
@@ -132,7 +132,7 @@ class TestUciAdult(unittest.TestCase):
         (train, label) = get_X_y(train_file, label_column, sep=',')
         (test, label1) = get_X_y(test_file, label_column, sep=',')
         pipeline = Pipeline([OneHotVectorizer() << categorical_columns,
-                             FastLinearBinaryClassifier(train_threads=1,
+                             FastLinearBinaryClassifier(number_of_threads=1,
                                                         shuffle=False)])
         pipeline.fit(train, label)
         out_data = pipeline.predict(test)

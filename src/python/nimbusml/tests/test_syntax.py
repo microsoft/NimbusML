@@ -37,7 +37,7 @@ class TestSyntax(unittest.TestCase):
 
         exp = Pipeline([
             OneHotVectorizer(),
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -57,7 +57,7 @@ class TestSyntax(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer() << 'education',
             OneHotVectorizer(max_num_terms=2) << 'workclass',
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -77,7 +77,7 @@ class TestSyntax(unittest.TestCase):
         exp = Pipeline([
             OneHotVectorizer() << 'education',
             OneHotVectorizer(max_num_terms=2) << 'workclass',
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -103,7 +103,7 @@ class TestSyntax(unittest.TestCase):
             # does not do what the syntax implicetely tells.
             # We need to modify either the bridge to look into
             # every available column at one step.
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -125,7 +125,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'edu2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'wki': 'workclass'},
             Concat() << {'Inputs': ['edu1', 'edu2', 'wki']},
-            FastLinearBinaryClassifier(max_iterations=1) << 'Inputs'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -147,7 +147,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'edu2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'wki': 'workclass'},
             Concat() << {'Inputs': ['edu1', 'edu2', 'wki']},
-            FastLinearBinaryClassifier(max_iterations=1) << 'Inputs'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -169,7 +169,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'edu2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'wki': 'workclass'},
             Concat() << {'Inputs': ['edu1', 'edu2', 'wki']},
-            FastLinearBinaryClassifier(max_iterations=1) << 'Inputs'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -191,7 +191,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer(columns={'edu2': 'education'}),
             OneHotVectorizer(max_num_terms=2, columns={'wki': 'workclass'}),
             Concat(columns={'Inputs': ['edu1', 'edu2', 'wki']}),
-            FastLinearBinaryClassifier(max_iterations=1) << 'Inputs'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -214,7 +214,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer() << {'edu1': 'education'},
             OneHotHashVectorizer() << {'edu2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'wki': 'workclass'},
-            FastLinearBinaryClassifier(max_iterations=1) << ['edu1', 'edu2',
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << ['edu1', 'edu2',
                                                              'wki']
         ])
         try:
@@ -238,7 +238,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer() << {'edu1': 'education'},
             OneHotHashVectorizer() << {'edu2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'wki': 'workclass'},
-            FastLinearBinaryClassifier(max_iterations=1) << ['edu1', 'edu4',
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << ['edu1', 'edu4',
                                                              'wki']
         ])
         try:
@@ -259,7 +259,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'f2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
-            FastLinearBinaryClassifier(max_iterations=1) << 'Features'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Features'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -287,7 +287,7 @@ class TestSyntax(unittest.TestCase):
             OneHotHashVectorizer() << {'f2': 'education'},
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': 'f[0-9]+'},
-            FastLinearBinaryClassifier(max_iterations=1) << 'Features'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Features'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -310,7 +310,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
             Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
-            FastLinearBinaryClassifier(max_iterations=1) << ['Features']
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << ['Features']
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -333,7 +333,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'FeaturesCustom': ['f%d' % i for i in range(1, 4)]},
             Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
-            FastLinearBinaryClassifier(max_iterations=1) << 'FeaturesCustom'
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'FeaturesCustom'
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -362,7 +362,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
             Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
-            FastLinearBinaryClassifier(max_iterations=1) << ['Features']
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1) << ['Features']
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -386,7 +386,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(max_num_terms=2) << {'f3': 'workclass'},
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
             Drop() << '~Features',
-            FastLinearBinaryClassifier(max_iterations=1)
+            FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
         exp.fit(X, y)
         prediction = exp.predict(X)
@@ -518,7 +518,7 @@ class TestSyntax(unittest.TestCase):
                 OneHotVectorizer() << {
                     'edu1': 'education'}, OneHotHashVectorizer() << {
                     'edu2': 'education'}, FastLinearBinaryClassifier(
-                    max_iterations=1) << {
+                    maximum_number_of_iterations=1) << {
                         'Features': ['edu1', 'edu2'], Role.Label: 'y'}])
         exp.fit(df)
         prediction = exp.predict(X)
@@ -542,7 +542,7 @@ class TestSyntax(unittest.TestCase):
         exp.insert(0, OneHotVectorizer() << {'edu1': 'education'})
         exp.append(
             FastLinearBinaryClassifier(
-                max_iterations=1) << {
+                maximum_number_of_iterations=1) << {
                 'Features': [
                     'edu1',
                     'edu2'],

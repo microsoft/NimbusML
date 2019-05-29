@@ -12,29 +12,30 @@ from ..utils.utils import try_set, unlist
 def trainers_stochasticdualcoordinateascentbinaryclassifier(
         training_data,
         predictor_model=None,
-        l2_const=None,
+        l2_regularization=None,
         l1_threshold=None,
-        feature_column='Features',
-        label_column='Label',
+        feature_column_name='Features',
+        label_column_name='Label',
+        example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         loss_function=None,
-        num_threads=None,
-        positive_instance_weight=1.0,
+        number_of_threads=None,
         calibrator=None,
         max_calibration_examples=1000000,
+        positive_instance_weight=1.0,
         convergence_tolerance=0.1,
-        max_iterations=None,
+        maximum_number_of_iterations=None,
         shuffle=True,
-        check_frequency=None,
+        convergence_check_frequency=None,
         bias_learning_rate=0.0,
         **params):
     """
     **Description**
         Train an SDCA binary model.
 
-    :param l2_const: L2 regularizer constant. By default the l2
-        constant is automatically inferred based on data set.
+    :param l2_regularization: L2 regularizer constant. By default the
+        l2 constant is automatically inferred based on data set.
         (inputs).
     :param training_data: The data to be used for training (inputs).
     :param l1_threshold: L1 soft threshold (L1/L2). Note that it is
@@ -42,31 +43,34 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
         than the raw L1-regularizer constant. By default the l1
         threshold is automatically inferred based on data set.
         (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param loss_function: Loss Function (inputs).
-    :param num_threads: Degree of lock-free parallelism. Defaults to
-        automatic. Determinism not guaranteed. (inputs).
-    :param positive_instance_weight: Apply weight to the positive
-        class, for imbalanced data (inputs).
+    :param number_of_threads: Degree of lock-free parallelism.
+        Defaults to automatic. Determinism not guaranteed. (inputs).
     :param calibrator: The calibrator kind to apply to the predictor.
         Specify null for no calibration (inputs).
     :param max_calibration_examples: The maximum number of examples
         to use when training the calibrator (inputs).
+    :param positive_instance_weight: Apply weight to the positive
+        class, for imbalanced data (inputs).
     :param convergence_tolerance: The tolerance for the ratio between
         duality gap and primal loss for convergence checking.
         (inputs).
-    :param max_iterations: Maximum number of iterations; set to 1 to
-        simulate online learning. Defaults to automatic. (inputs).
+    :param maximum_number_of_iterations: Maximum number of
+        iterations; set to 1 to simulate online learning. Defaults to
+        automatic. (inputs).
     :param shuffle: Shuffle data every epoch? (inputs).
-    :param check_frequency: Convergence check frequency (in terms of
-        number of iterations). Set as negative or zero for not
-        checking at all. If left blank, it defaults to check after
-        every 'numThreads' iterations. (inputs).
+    :param convergence_check_frequency: Convergence check frequency
+        (in terms of number of iterations). Set as negative or zero
+        for not checking at all. If left blank, it defaults to check
+        after every 'numThreads' iterations. (inputs).
     :param bias_learning_rate: The learning rate for adjusting bias
         from being regularized. (inputs).
     :param predictor_model: The trained model (outputs).
@@ -76,9 +80,9 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
     inputs = {}
     outputs = {}
 
-    if l2_const is not None:
-        inputs['L2Const'] = try_set(
-            obj=l2_const,
+    if l2_regularization is not None:
+        inputs['L2Regularization'] = try_set(
+            obj=l2_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
@@ -91,15 +95,21 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
             obj=l1_threshold,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
+            none_acceptable=True,
+            is_of_type=str,
+            is_column=True)
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -121,21 +131,15 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if loss_function is not None:
         inputs['LossFunction'] = try_set(
             obj=loss_function,
             none_acceptable=True,
             is_of_type=dict)
-    if num_threads is not None:
-        inputs['NumThreads'] = try_set(
-            obj=num_threads,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
-    if positive_instance_weight is not None:
-        inputs['PositiveInstanceWeight'] = try_set(
-            obj=positive_instance_weight,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if calibrator is not None:
@@ -148,14 +152,19 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
             obj=max_calibration_examples,
             none_acceptable=True,
             is_of_type=numbers.Real)
+    if positive_instance_weight is not None:
+        inputs['PositiveInstanceWeight'] = try_set(
+            obj=positive_instance_weight,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
     if convergence_tolerance is not None:
         inputs['ConvergenceTolerance'] = try_set(
             obj=convergence_tolerance,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_iterations is not None:
-        inputs['MaxIterations'] = try_set(
-            obj=max_iterations,
+    if maximum_number_of_iterations is not None:
+        inputs['MaximumNumberOfIterations'] = try_set(
+            obj=maximum_number_of_iterations,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if shuffle is not None:
@@ -163,9 +172,9 @@ def trainers_stochasticdualcoordinateascentbinaryclassifier(
             obj=shuffle,
             none_acceptable=True,
             is_of_type=bool)
-    if check_frequency is not None:
-        inputs['CheckFrequency'] = try_set(
-            obj=check_frequency,
+    if convergence_check_frequency is not None:
+        inputs['ConvergenceCheckFrequency'] = try_set(
+            obj=convergence_check_frequency,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if bias_learning_rate is not None:
