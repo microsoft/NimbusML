@@ -1096,6 +1096,8 @@ class Pipeline:
         if hasattr(self, "_run_time_error"):
             delattr(self, "_run_time_error")
 
+        self._delete_cached_summary()
+
         # Checks that no node was ever trained.
         for i, n in enumerate(self.nodes):
             if hasattr(n, "model_") and n.model_ is not None:
@@ -2193,6 +2195,14 @@ class Pipeline:
         self._run_time = time.time() - start_time
         self._write_csv_time = graph._write_csv_time
         return self.model_summary
+
+    @trace
+    def _delete_cached_summary(self):
+        """
+        Deletes cached model summary
+        """
+        if hasattr(self, 'model_summary'):
+            delattr(self, 'model_summary')
 
     @trace
     def _validate_model_summary(self, model_summary):
