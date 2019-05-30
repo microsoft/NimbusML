@@ -112,6 +112,17 @@ class TestModelSummary(unittest.TestCase):
             pipeline.fit(train_stream, label_column)
             assert_raises(TypeError, pipeline.summary)
 
+    def test_summary_called_back_to_back_on_predictor(self):
+        """
+        When a predictor is fit without using a Pipeline,
+        calling summary() more than once should not throw
+        an exception.
+        """
+        ols = OrdinaryLeastSquaresRegressor()
+        ols.fit([1,2,3,4], [2,4,6,7])
+        ols.summary()
+        ols.summary()
+
 
 if __name__ == '__main__':
     unittest.main()

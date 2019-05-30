@@ -139,7 +139,7 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         """
         Returns model summary.
         """
-        if hasattr(self, 'model_summary_') and self.model_summary_:
+        if hasattr(self, 'model_summary_') and self.model_summary_ is not None:
             return self.model_summary_
 
         if not hasattr(
