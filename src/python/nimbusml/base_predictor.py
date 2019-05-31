@@ -52,7 +52,10 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         self.X_ = X
         self.y_ = y
 
-        self._delete_cached_summary()
+        # Clear cached summary since it should not
+        # retain its value after a new call to fit
+        if hasattr(self, 'model_summary_'):
+            delattr(self, 'model_summary_')
 
         pipeline = Pipeline([self])
         try:
@@ -154,11 +157,3 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         pipeline = Pipeline([self], model=self.model_)
         self.model_summary_ = pipeline.summary()
         return self.model_summary_
-
-    @trace
-    def _delete_cached_summary(self):
-        """
-        Deletes cached model summary
-        """
-        if hasattr(self, 'model_summary_'):
-            delattr(self, 'model_summary_')
