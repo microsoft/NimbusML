@@ -18,7 +18,11 @@ from itertools import chain
 from textwrap import wrap
 
 import six
-from sklearn.utils.fixes import signature
+
+try:
+    from inspect import signature
+except ImportError:
+    from funcsigs import signature
 
 from ..utils.data_roles import DataRoles, Role
 from ..utils.data_stream import ViewBasePipelineItem, DataStream, \
