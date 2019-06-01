@@ -1089,12 +1089,14 @@ class Pipeline:
                 clone = self.clone()
             self.steps = clone.steps
 
+        # Clear cached values
+        for attr in ["_run_time_error", "model_summary"]:
+            if hasattr(self, attr):
+                delattr(self, attr)
+
         # Caches the predictor to restore it as it was
         # in case of exception. It is deleted after the training.
         self._cache_predictor = deepcopy(self.steps[-1])
-
-        if hasattr(self, "_run_time_error"):
-            delattr(self, "_run_time_error")
 
         # Checks that no node was ever trained.
         for i, n in enumerate(self.nodes):

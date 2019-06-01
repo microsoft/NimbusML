@@ -123,6 +123,29 @@ class TestModelSummary(unittest.TestCase):
         ols.summary()
         ols.summary()
 
+    def test_pipeline_summary_is_refreshed_after_refitting(self):
+        predictor = OrdinaryLeastSquaresRegressor(normalize='No', l2_regularization=0)
+        pipeline = Pipeline([predictor])
+
+        pipeline.fit([0,1,2,3], [1,2,3,4])
+        summary1 = pipeline.summary()
+
+        pipeline.fit([0,1,2,3], [2,5,8,11])
+        summary2 = pipeline.summary()
+
+        self.assertFalse(summary1.equals(summary2))
+
+    def test_predictor_summary_is_refreshed_after_refitting(self):
+        predictor = OrdinaryLeastSquaresRegressor(normalize='No', l2_regularization=0)
+
+        predictor.fit([0,1,2,3], [1,2,3,4])
+        summary1 = predictor.summary()
+
+        predictor.fit([0,1,2,3], [2,5,8,11])
+        summary2 = predictor.summary()
+
+        self.assertFalse(summary1.equals(summary2))
+
 
 if __name__ == '__main__':
     unittest.main()
