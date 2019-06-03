@@ -261,6 +261,7 @@ then
         "${PythonExe}" -m pip install --upgrade pyzmq
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
+    "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 
     PackagePath=${PythonRoot}/lib/python${PythonVersion}/site-packages/nimbusml
     # TestsPath1=${PackagePath}/tests
