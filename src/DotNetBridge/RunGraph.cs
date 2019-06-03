@@ -86,24 +86,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 model.Save(host, fs);
         }
 
-        private static void OpenBitmap()
-        {
-            try
-            {
-                string path = "/home/ganik/sources/NimbusML/dependencies/Python3.7/bin/a.png";
-                var dst = new Bitmap(path);
-            }
-            catch (Exception)
-            {
-            }
-            throw new Exception("Good");
-        }
-
         private static void RunGraphCore(EnvironmentBlock* penv, IHostEnvironment env, string graphStr, int cdata, DataSourceBlock** ppdata)
         {
             Contracts.AssertValue(env);
-
-            OpenBitmap();
 
             var args = new RunGraphArgs();
             string err = null;
