@@ -59,8 +59,6 @@ class TestDocsExamples(unittest.TestCase):
                         'CharTokenizer_df.py',
                         # Bug todo: CustomStopWordsRemover fails on ML.NET side
                         'NGramFeaturizer2.py',
-                        # System.Drawings.Common.dll 4.0.0 is needed
-                        'Image.py', 'Image_df.py',
                         ]:
                 continue
             if os.name != "nt":

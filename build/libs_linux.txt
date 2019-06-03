@@ -8,4 +8,5 @@ libSymSgdNative.so
 lib_lightgbm.so
 libtensorflow.so
 libtensorflow_framework.so
+System.Drawings.Common.dll
 Microsoft.ML.*
