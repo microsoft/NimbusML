@@ -53,6 +53,8 @@ class TestDocsExamples(unittest.TestCase):
         for i, (fold, name) in enumerate(fold_files):
             if i <= start:
                 continue
+            if name != 'Image.py':
+                continue
             if name in [
                         # Bug 294481: CharTokenizer_df fails
                         # with error about variable length vector
