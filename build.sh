@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+export FONTCONFIG_PATH=/etc/fonts
 
 ProductVersion=$(<version.txt)
 
@@ -260,13 +261,12 @@ then
         "${PythonExe}" -m pip install --upgrade pyzmq
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
-    "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 
     PackagePath=${PythonRoot}/lib/python${PythonVersion}/site-packages/nimbusml
-    TestsPath1=${PackagePath}/tests
+    # TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
+    #"${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
     "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
 fi
 
