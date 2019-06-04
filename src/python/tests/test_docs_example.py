@@ -76,7 +76,7 @@ class TestDocsExamples(unittest.TestCase):
                     ]:
                     continue
             # skip for centos7 tests 
-            if platform.linux_distribution()[0] != "Ubuntu":
+            if platform.linux_distribution()[0] == "centos":
                 if name in [
                     # libgdiplus needs to be setup
                     'Image.py',
