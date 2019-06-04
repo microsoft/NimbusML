@@ -50,6 +50,10 @@ class TestDocsExamples(unittest.TestCase):
         ran = 0
         excs = []
 
+        print("os:", os.name)
+        print("linux:", platform.linux_distribution()[0])
+        print("version:", platform.linux_distribution()[1])
+
         for i, (fold, name) in enumerate(fold_files):
             if i <= start:
                 continue
