@@ -49,13 +49,7 @@ class TestDocsExamples(unittest.TestCase):
         ran = 0
         excs = []
 
-        print("os:", os.name)
-        print("linux:", platform.linux_distribution()[0])
-        print("version:", platform.linux_distribution()[1])
-
         for i, (fold, name) in enumerate(fold_files):
-            if name not in ['Image.py', 'SymSgdBinaryClassifier.py']:
-                continue
             if name in [
                         # Bug 294481: CharTokenizer_df fails
                         # with error about variable length vector
@@ -64,7 +58,7 @@ class TestDocsExamples(unittest.TestCase):
                         'NGramFeaturizer2.py',
                         ]:
                 continue
-            # skip for all linux tests
+            # skip for all linux tests, mac is ok
             if os.name == "posix" and platform.linux_distribution()[0] != '':
                 if name in [
                     # SymSgdNative fails to load on linux
