@@ -322,6 +322,7 @@ call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-
 if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
 call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
 call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
+
 set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
