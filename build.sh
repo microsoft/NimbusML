@@ -258,6 +258,9 @@ then
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq
+    elif [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
+    then
+        "${PythonExe}" -m pip install --upgrade pytest-remotedata
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
