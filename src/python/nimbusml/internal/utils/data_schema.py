@@ -470,7 +470,7 @@ class DataSchema:
             opts = opts.copy()
             opts['sep'] = DataSchema._default_options['sep']
 
-        val = []
+        val = ['quote=+']
         for k, v in sorted(opts.items()):
             if isinstance(v, bool):
                 v = "+" if v else '-'
