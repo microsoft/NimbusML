@@ -46,24 +46,20 @@ class TestDocsExamples(unittest.TestCase):
         os.environ['PYTHONPATH'] = modpath
         os.environ['PYTHONIOENCODING'] = 'UTF-8'
 
-        start = 0
         ran = 0
         excs = []
 
         for i, (fold, name) in enumerate(fold_files):
-            if i <= start:
-                continue
             if name in [
                         # Bug 294481: CharTokenizer_df fails
                         # with error about variable length vector
                         'CharTokenizer_df.py',
                         # Bug todo: CustomStopWordsRemover fails on ML.NET side
                         'NGramFeaturizer2.py',
-                        # System.Drawings.Common.dll 4.0.0 is needed
-                        'Image.py', 'Image_df.py',
                         ]:
                 continue
-            if os.name != "nt":
+            # skip for all linux tests, mac is ok
+            if os.name == "posix" and platform.linux_distribution()[0] != '':
                 if name in [
                     # SymSgdNative fails to load on linux
                     'SymSgdBinaryClassifier.py',
@@ -72,6 +68,14 @@ class TestDocsExamples(unittest.TestCase):
                     'WordEmbedding.py',
                     'WordEmbedding_df.py',
                     'NaiveBayesClassifier_df.py'
+                    ]:
+                    continue
+            # skip for centos7 tests 
+            if platform.linux_distribution()[0] == 'CentOS Linux':
+                if name in [
+                    # libgdiplus needs to be setup
+                    'Image.py',
+                    'Image_df.py'
                     ]:
                     continue
 
@@ -128,7 +132,10 @@ class TestDocsExamples(unittest.TestCase):
                 # FastLinearClassifier_iris_df.py
                 "FutureWarning: elementwise comparison failed",
                 # PcaAnomalyDetector_df.py
-                "FutureWarning: Sorting because non-concatenation axis"
+                "FutureWarning: Sorting because non-concatenation axis",
+                # Image.py
+                "Unable to revert mtime: /Library/Fonts",
+                "Fontconfig error: Cannot load default config file",
                 ]
             if sys.version_info[:2] <= (3, 6):
                 # This warning is new but it does not break any

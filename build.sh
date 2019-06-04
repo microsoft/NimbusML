@@ -266,8 +266,8 @@ then
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
+    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}"
+    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}"
 fi
 
 exit $?

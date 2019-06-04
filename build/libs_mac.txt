@@ -8,4 +8,5 @@ libSymSgdNative.dylib
 lib_lightgbm.dylib
 libtensorflow.dylib
 libtensorflow_framework.dylib
+System.Drawing.Common.dll
 Microsoft.ML.*

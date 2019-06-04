@@ -29,9 +29,6 @@ pipeline = Pipeline([transform_1, transform_2, transform_3, algo])
 pipeline.fit(X, y)
 
 # scoring
-nimbusml_pred = pipeline.predict(X)
-print("Predicted Labels : {0}".format(nimbusml_pred.PredictedLabel.values))
-print(
-    "Accuracy : {0}".format(
-        np.mean(
-            y.Label.values == nimbusml_pred.PredictedLabel.values)))
+scores = pipeline.predict(X)
+print("Predicted Labels:", scores.PredictedLabel.values)
+print("Accuracy:", np.mean(y.Label.values == scores.PredictedLabel.values))

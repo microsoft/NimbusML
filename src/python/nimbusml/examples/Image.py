@@ -31,10 +31,8 @@ pipeline = Pipeline([
 pipeline.fit(X, y)
 
 # predict
-nimbusml_pred = pipeline.predict(X)
-print("Predicted Labels : {0}".format(nimbusml_pred.PredictedLabel.values))
+scores = pipeline.predict(X)
+print("Predicted Labels:", scores.PredictedLabel.values)
 # Predicted Labels : [True False]
-print(
-    "Accuracy : {0}".format(np.mean(
-        y.Label.values == nimbusml_pred.PredictedLabel.values)))
+print("Accuracy:", np.mean(y.Label.values == scores.PredictedLabel.values))
 # Accuracy : 1
