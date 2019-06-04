@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-export FONTCONFIG_PATH=/etc/fonts
 
 ProductVersion=$(<version.txt)
 

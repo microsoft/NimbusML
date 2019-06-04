@@ -46,7 +46,6 @@ class TestDocsExamples(unittest.TestCase):
         os.environ['PYTHONPATH'] = modpath
         os.environ['PYTHONIOENCODING'] = 'UTF-8'
 
-        start = 0
         ran = 0
         excs = []
 
@@ -55,9 +54,7 @@ class TestDocsExamples(unittest.TestCase):
         print("version:", platform.linux_distribution()[1])
 
         for i, (fold, name) in enumerate(fold_files):
-            if i <= start:
-                continue
-            if name not in ['Image.py', 'WordEmbedding.py']:
+            if name not in ['Image.py', 'SymSgdBinaryClassifier.py']:
                 continue
             if name in [
                         # Bug 294481: CharTokenizer_df fails
@@ -68,11 +65,15 @@ class TestDocsExamples(unittest.TestCase):
                         ]:
                 continue
             # skip for all linux tests
-            if os.name != "nt":
+            if os.name == "posix" and platform.linux_distribution()[0] != '':
                 if name in [
                     # SymSgdNative fails to load on linux
                     'SymSgdBinaryClassifier.py',
-                    'SymSgdBinaryClassifier_infert_df.py'
+                    'SymSgdBinaryClassifier_infert_df.py',
+                    # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
+                    'WordEmbedding.py',
+                    'WordEmbedding_df.py',
+                    'NaiveBayesClassifier_df.py'
                     ]:
                     continue
             # skip for centos7 tests 
@@ -81,10 +82,6 @@ class TestDocsExamples(unittest.TestCase):
                     # libgdiplus needs to be setup
                     'Image.py',
                     'Image_df.py'
-                    # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
-                    'WordEmbedding.py',
-                    'WordEmbedding_df.py',
-                    'NaiveBayesClassifier_df.py'
                     ]:
                     continue
 
