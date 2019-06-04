@@ -63,11 +63,20 @@ class TestDocsExamples(unittest.TestCase):
                         'NGramFeaturizer2.py',
                         ]:
                 continue
+            # skip for all linux tests
             if os.name != "nt":
                 if name in [
                     # SymSgdNative fails to load on linux
                     'SymSgdBinaryClassifier.py',
-                    'SymSgdBinaryClassifier_infert_df.py',
+                    'SymSgdBinaryClassifier_infert_df.py'
+                    ]:
+                    continue
+            # skip for centos7 tests 
+            if platform.linux_distribution()[0] != "Ubuntu":
+                if name in [
+                    # libgdiplus needs to be setup
+                    'Image.py',
+                    'Image_df.py'
                     # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
                     'WordEmbedding.py',
                     'WordEmbedding_df.py',
