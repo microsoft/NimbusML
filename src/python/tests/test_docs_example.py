@@ -57,7 +57,7 @@ class TestDocsExamples(unittest.TestCase):
         for i, (fold, name) in enumerate(fold_files):
             if i <= start:
                 continue
-            if name != 'Image.py':
+            if name not in ['Image.py', 'WordEmbedding.py']:
                 continue
             if name in [
                         # Bug 294481: CharTokenizer_df fails
@@ -76,7 +76,7 @@ class TestDocsExamples(unittest.TestCase):
                     ]:
                     continue
             # skip for centos7 tests 
-            if platform.linux_distribution()[0] == "centos":
+            if platform.linux_distribution()[0] == 'CentOS Linux':
                 if name in [
                     # libgdiplus needs to be setup
                     'Image.py',
@@ -141,7 +141,10 @@ class TestDocsExamples(unittest.TestCase):
                 # FastLinearClassifier_iris_df.py
                 "FutureWarning: elementwise comparison failed",
                 # PcaAnomalyDetector_df.py
-                "FutureWarning: Sorting because non-concatenation axis"
+                "FutureWarning: Sorting because non-concatenation axis",
+                # Image.py
+                "Unable to revert mtime: /Library/Fonts",
+                "Fontconfig error: Cannot load default config file",
                 ]
             if sys.version_info[:2] <= (3, 6):
                 # This warning is new but it does not break any
