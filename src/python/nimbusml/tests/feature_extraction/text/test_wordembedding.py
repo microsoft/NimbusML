@@ -76,7 +76,7 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
 
         # transform usage
@@ -92,7 +92,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 787)
+        assert features.shape == (248, 802)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
     # Test works on ubuntu16.
@@ -117,7 +117,7 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
 
         pipeline = Pipeline([
@@ -129,7 +129,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 787)
+        assert features.shape == (248, 802)
         assert 'features_TransformedText.94' in list(features.columns)
 
     # TODO: fix ssl issue on test centos7 & ubuntu14 boxes.
@@ -155,7 +155,7 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
             NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name='features_TransformedText',
@@ -168,14 +168,14 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 787)
+        assert features.shape == (248, 802)
 
     @unittest.skip('System.ArgumentOutOfRangeException')
     def test_word_embedding_example_dict_newname(self):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
             NGramFeaturizer(word_feature_extractor=Ngram(),
