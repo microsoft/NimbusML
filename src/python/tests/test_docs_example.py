@@ -118,6 +118,10 @@ class TestDocsExamples(unittest.TestCase):
                 "Your CPU supports instructions that this TensorFlow",
                 "CacheClassesFromAssembly: can't map name "
                 "OLSLinearRegression to Void, already mapped to Void",
+                # TensorFlowScorer.py
+                "tensorflow/compiler/xla/service/service.cc:150] XLA service",
+                "tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device",
+                "tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency:",
                 # Binner.py
                 "from collections import Mapping, defaultdict",
                 "DeprecationWarning: Using or importing the ABCs",
