@@ -472,6 +472,8 @@ class DataSchema:
 
         val = ['quote+']
         for k, v in sorted(opts.items()):
+            if k == 'quote':
+                continue
             if isinstance(v, bool):
                 v = "+" if v else '-'
             elif k == 'sep' and v == '\t':
