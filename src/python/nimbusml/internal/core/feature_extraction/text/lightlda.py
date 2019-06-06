@@ -43,8 +43,8 @@ class LightLda(BasePipelineItem, DefaultSignature):
 
     :param num_topic: The number of topics.
 
-    :param train_threads: The number of training threads. Default value depends
-        on number of logical processors.
+    :param number_of_threads: The number of training threads. Default value
+        depends on number of logical processors.
 
     :param num_max_doc_token: The threshold of maximum count of tokens per doc.
 
@@ -91,7 +91,7 @@ class LightLda(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             num_topic=100,
-            train_threads=0,
+            number_of_threads=0,
             num_max_doc_token=512,
             alpha_sum=100.0,
             beta=0.01,
@@ -107,7 +107,7 @@ class LightLda(BasePipelineItem, DefaultSignature):
             self, type='transform', **params)
 
         self.num_topic = num_topic
-        self.train_threads = train_threads
+        self.number_of_threads = number_of_threads
         self.num_max_doc_token = num_max_doc_token
         self.alpha_sum = alpha_sum
         self.beta = beta
@@ -166,7 +166,7 @@ class LightLda(BasePipelineItem, DefaultSignature):
                     input_columns,
                     output_columns)] if input_columns else None,
             num_topic=self.num_topic,
-            num_threads=self.train_threads,
+            num_threads=self.number_of_threads,
             num_max_doc_token=self.num_max_doc_token,
             alpha_sum=self.alpha_sum,
             beta=self.beta,

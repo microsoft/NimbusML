@@ -1,4 +1,3 @@
-Google.Protobuf.dll
 Newtonsoft.Json.dll
 libCpuMathNative.dylib
 libFactorizationMachineNative.dylib
@@ -9,4 +8,5 @@ libSymSgdNative.dylib
 lib_lightgbm.dylib
 libtensorflow.dylib
 libtensorflow_framework.dylib
+System.Drawing.Common.dll
 Microsoft.ML.*

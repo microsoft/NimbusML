@@ -404,7 +404,7 @@ class TestCvRanker(unittest.TestCase):
         steps = [ToKey() << {
                 group_id: group_id}, ColumnConcatenator() << {
                 'Features': [features]}, LightGbmRanker(
-                min_data_per_leaf=1) << {
+                minimum_example_count_per_leaf=1) << {
                 Role.GroupId: group_id}]
         data = self.data_wt_rename(label_name, group_id, features)
         check_cv(pipeline=Pipeline(steps), X=data, **params)
@@ -420,7 +420,7 @@ class TestCvRanker(unittest.TestCase):
             ToKey() << {
                 group_id: group_id},
             LightGbmRanker(
-                min_data_per_leaf=1,
+                minimum_example_count_per_leaf=1,
                 feature=features,
                 label='rank', group_id='group'
             )]
@@ -474,7 +474,7 @@ class TestCvRanker(unittest.TestCase):
                      group_id: group_id},
                  # even specify all the roles needed in the following line, the
                  # roles are still not passed correctly
-                 LightGbmRanker(min_data_per_leaf=1) << {
+                 LightGbmRanker(minimum_example_count_per_leaf=1) << {
                      Role.GroupId: group_id, Role.Feature: features,
                      Role.Label: label_name}]
         data = self.data(label_name, group_id, features)

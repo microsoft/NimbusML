@@ -89,50 +89,47 @@ test_X = test_reviews['review']
 
 
 def test_dtype(xtype=None, ytype=None, dense=False):
-    with warnings.catch_warnings():
-        warnings.filterwarnings('ignore', category=PendingDeprecationWarning)
-            
-        tfidf = TfidfVectorizer(
-            analyzer='word',
-            ngram_range=(
-                1,
-                1),
-            min_df=2,
-            max_df=0.8,
-            norm='l2')
-        sparse_data = tfidf.fit_transform(train_X, train_y)
-        assert isinstance(sparse_data, csr_matrix)
-        if xtype is not None:
-            sparse_data = csr_matrix(sparse_data, dtype=xtype)
-            assert sparse_data.dtype == xtype
+    tfidf = TfidfVectorizer(
+        analyzer='word',
+        ngram_range=(
+            1,
+            1),
+        min_df=2,
+        max_df=0.8,
+        norm='l2')
+    sparse_data = tfidf.fit_transform(train_X, train_y)
+    assert isinstance(sparse_data, csr_matrix)
+    if xtype is not None:
+        sparse_data = csr_matrix(sparse_data, dtype=xtype)
+        assert sparse_data.dtype == xtype
 
-        xdata = sparse_data
-        if dense is True:
-            xdata = sparse_data.todense()
-            assert xdata.dtype == xtype
+    xdata = sparse_data
+    if dense is True:
+        xdata = sparse_data.todense()
+        assert xdata.dtype == xtype
 
-        ydata = train_y
-        if ytype is not None:
-            ydata = ydata.astype(ytype)
-            assert ydata.dtype == ytype
+    ydata = train_y
+    if ytype is not None:
+        ydata = ydata.astype(ytype)
+        assert ydata.dtype == ytype
 
-        algo = FastLinearBinaryClassifier(max_iterations=2)
-        algo.fit(xdata, ydata, verbose=0)
-        assert algo.model_ is not None
+    algo = FastLinearBinaryClassifier(maximum_number_of_iterations=2)
+    algo.fit(xdata, ydata)
+    assert algo.model_ is not None
 
-        test_sparse_data = tfidf.transform(test_X)
-        assert isinstance(test_sparse_data, csr_matrix)
-        if xtype is not None:
-            test_sparse_data = csr_matrix(test_sparse_data, dtype=xtype)
-            assert test_sparse_data.dtype == xtype
+    test_sparse_data = tfidf.transform(test_X)
+    assert isinstance(test_sparse_data, csr_matrix)
+    if xtype is not None:
+        test_sparse_data = csr_matrix(test_sparse_data, dtype=xtype)
+        assert test_sparse_data.dtype == xtype
 
-        xtest_data = test_sparse_data
-        if dense is True:
-            xtest_data = test_sparse_data.todense()
-            assert xtest_data.dtype == xtype
+    xtest_data = test_sparse_data
+    if dense is True:
+        xtest_data = test_sparse_data.todense()
+        assert xtest_data.dtype == xtype
 
-        data = algo.predict(xtest_data)
-        assert data.size == test_reviews.size
+    data = algo.predict(xtest_data)
+    assert data.size == test_reviews.size
 
 
 class TestDTypes(unittest.TestCase):
@@ -159,7 +156,7 @@ class TestDTypes(unittest.TestCase):
                     "================ Testing sparse xtype %s, ytype %s "
                     "================" %
                     (str(xtype), str(ytype)))
-                if xtype == np.float16 or ytype == np.float16:
+                if (xtype == np.uint64 or xtype == np.float16 or ytype == np.float16):
                     assert_raises(
                         (TypeError, ValueError, RuntimeError), test_dtype,
                         xtype, ytype)

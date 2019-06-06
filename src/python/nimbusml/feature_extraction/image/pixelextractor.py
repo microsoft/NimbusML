@@ -62,7 +62,9 @@ class PixelExtractor(core, BaseTransform, TransformerMixin):
     :param use_blue: Specifies whether to use blue channel. The default value
         is ``True``.
 
-    :param interleave_argb: Whether to separate each channel or
+    :param order: Order of colors.
+
+    :param interleave: Whether to separate each channel or
         interleave in ARGB order. This might be important, for example, if
         you are training
         a convolutional neural network, since this would affect the shape of
@@ -99,7 +101,8 @@ class PixelExtractor(core, BaseTransform, TransformerMixin):
             use_red=True,
             use_green=True,
             use_blue=True,
-            interleave_argb=False,
+            order='ARGB',
+            interleave=False,
             convert=True,
             offset=None,
             scale=None,
@@ -115,7 +118,8 @@ class PixelExtractor(core, BaseTransform, TransformerMixin):
             use_red=use_red,
             use_green=use_green,
             use_blue=use_blue,
-            interleave_argb=interleave_argb,
+            order=order,
+            interleave=interleave,
             convert=convert,
             offset=offset,
             scale=scale,

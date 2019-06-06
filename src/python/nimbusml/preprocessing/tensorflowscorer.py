@@ -47,8 +47,6 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
         * The name of each output column should match one of the
             operations in the Tensorflow graph.
 
-    :param label: see `Columns </nimbusml/concepts/columns>`_.
-
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
     :param model_location: TensorFlow model used by the transform. Please see
@@ -57,6 +55,8 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
     :param input_columns: The names of the model inputs.
 
     :param output_columns: The name of the outputs.
+
+    :param label_column: Training labels.
 
     :param tensor_flow_label: TensorFlow label node.
 
@@ -76,7 +76,12 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
     :param learning_rate_operation: The name of the operation in the TensorFlow
         graph which sets optimizer learning rate (Optional).
 
-    :param learning_rate: Learning rate to use during optimization.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param save_location_operation: Name of the input in TensorFlow graph that
         specifiy the location for saving/restoring models from disk.
@@ -85,6 +90,9 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
         the location for saving/restoring models from disk.
 
     :param re_train: Retrain TensorFlow model.
+
+    :param add_batch_dimension_inputs: Add a batch dimension to the input e.g.
+        input = [224, 224, 3] => [-1, 224, 224, 3].
 
     :param params: Additional arguments sent to compute engine.
 
@@ -101,6 +109,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             model_location,
             input_columns=None,
             output_columns=None,
+            label_column=None,
             tensor_flow_label=None,
             optimization_operation=None,
             loss_operation=None,
@@ -112,15 +121,10 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             save_location_operation='save/Const',
             save_operation='save/control_dependency',
             re_train=False,
-            label=None,
+            add_batch_dimension_inputs=False,
             columns=None,
             **params):
 
-        if 'label_column' in params:
-            raise NameError(
-                "'label_column' must be renamed to 'label'")
-        if label:
-            params['label_column'] = label
         if columns:
             params['columns'] = columns
         if columns:
@@ -140,6 +144,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             model_location=model_location,
             input_columns=input_columns,
             output_columns=output_columns,
+            label_column=label_column,
             tensor_flow_label=tensor_flow_label,
             optimization_operation=optimization_operation,
             loss_operation=loss_operation,
@@ -151,8 +156,8 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             save_location_operation=save_location_operation,
             save_operation=save_operation,
             re_train=re_train,
+            add_batch_dimension_inputs=add_batch_dimension_inputs,
             **params)
-        self.label = label
         self._columns = columns
 
     def get_params(self, deep=False):

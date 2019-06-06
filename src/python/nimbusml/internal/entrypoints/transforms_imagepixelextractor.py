@@ -18,7 +18,8 @@ def transforms_imagepixelextractor(
         use_red=True,
         use_green=True,
         use_blue=True,
-        interleave_argb=False,
+        order='ARGB',
+        interleave=False,
         convert=True,
         offset=None,
         scale=None,
@@ -35,8 +36,9 @@ def transforms_imagepixelextractor(
     :param use_red: Whether to use red channel (inputs).
     :param use_green: Whether to use green channel (inputs).
     :param use_blue: Whether to use blue channel (inputs).
-    :param interleave_argb: Whether to separate each channel or
-        interleave in ARGB order (inputs).
+    :param order: Order of colors. (inputs).
+    :param interleave: Whether to separate each channel or interleave
+        in specified order (inputs).
     :param convert: Whether to convert to floating point (inputs).
     :param offset: Offset (pre-scale) (inputs).
     :param scale: Scale factor (inputs).
@@ -79,9 +81,21 @@ def transforms_imagepixelextractor(
             obj=use_blue,
             none_acceptable=True,
             is_of_type=bool)
-    if interleave_argb is not None:
-        inputs['InterleaveArgb'] = try_set(
-            obj=interleave_argb,
+    if order is not None:
+        inputs['Order'] = try_set(
+            obj=order,
+            none_acceptable=True,
+            is_of_type=str,
+            values=[
+                'ARGB',
+                'ARBG',
+                'ABRG',
+                'ABGR',
+                'AGRB',
+                'AGBR'])
+    if interleave is not None:
+        inputs['Interleave'] = try_set(
+            obj=interleave,
             none_acceptable=True,
             is_of_type=bool)
     if convert is not None:

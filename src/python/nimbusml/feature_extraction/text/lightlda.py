@@ -47,8 +47,8 @@ class LightLda(core, BaseTransform, TransformerMixin):
 
     :param num_topic: The number of topics.
 
-    :param train_threads: The number of training threads. Default value depends
-        on number of logical processors.
+    :param number_of_threads: The number of training threads. Default value
+        depends on number of logical processors.
 
     :param num_max_doc_token: The threshold of maximum count of tokens per doc.
 
@@ -95,7 +95,7 @@ class LightLda(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             num_topic=100,
-            train_threads=0,
+            number_of_threads=0,
             num_max_doc_token=512,
             alpha_sum=100.0,
             beta=0.01,
@@ -115,7 +115,7 @@ class LightLda(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             num_topic=num_topic,
-            train_threads=train_threads,
+            number_of_threads=number_of_threads,
             num_max_doc_token=num_max_doc_token,
             alpha_sum=alpha_sum,
             beta=beta,

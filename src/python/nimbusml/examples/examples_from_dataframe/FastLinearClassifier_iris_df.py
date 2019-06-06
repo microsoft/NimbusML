@@ -1,6 +1,7 @@
 ###############################################################################
 # FastLinearClassifier
 import numpy as np
+import pandas as pd
 from nimbusml.datasets import get_dataset
 from nimbusml.linear_model import FastLinearClassifier
 from sklearn.model_selection import train_test_split
@@ -19,6 +20,7 @@ X_train, X_test, y_train, y_test = \
 lr = FastLinearClassifier().fit(X_train, y_train)
 
 scores = lr.predict(X_test)
+scores = pd.to_numeric(scores)
 
 # evaluate the model
 print('Accuracy:', np.mean(y_test == [i for i in scores]))

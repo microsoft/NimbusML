@@ -62,11 +62,11 @@ class OrdinaryLeastSquaresRegressor(
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
-    :param l2_weight: L2 regularization weight.
+    :param l2_regularization: L2 regularization weight.
 
-    :param per_parameter_significance: Whether to calculate per parameter
+    :param calculate_statistics: Whether to calculate per parameter
         significance statistics.
 
     :param params: Additional arguments sent to compute engine.
@@ -91,16 +91,16 @@ class OrdinaryLeastSquaresRegressor(
             self,
             normalize='Auto',
             caching='Auto',
-            l2_weight=1e-06,
-            per_parameter_significance=True,
+            l2_regularization=1e-06,
+            calculate_statistics=True,
             **params):
         BasePipelineItem.__init__(
             self, type='regressor', **params)
 
         self.normalize = normalize
         self.caching = caching
-        self.l2_weight = l2_weight
-        self.per_parameter_significance = per_parameter_significance
+        self.l2_regularization = l2_regularization
+        self.calculate_statistics = calculate_statistics
 
     @property
     def _entrypoint(self):
@@ -109,13 +109,19 @@ class OrdinaryLeastSquaresRegressor(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role('feature_column', all_args),
-            label_column=self._getattr_role('label_column', all_args),
-            weight_column=self._getattr_role('weight_column', all_args),
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
+                all_args),
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
+                all_args),
             normalize_features=self.normalize,
             caching=self.caching,
-            l2_weight=self.l2_weight,
-            per_parameter_significance=self.per_parameter_significance)
+            l2_regularization=self.l2_regularization,
+            calculate_statistics=self.calculate_statistics)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

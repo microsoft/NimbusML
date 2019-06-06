@@ -139,8 +139,8 @@ class PcaTransformer(BasePipelineItem, DefaultSignatureWithRoles):
                 o in zip(
                     input_columns,
                     output_columns)] if input_columns else None,
-            weight_column=self._getattr_role(
-                'weight_column',
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
                 all_args),
             rank=self.rank,
             oversampling=self.oversampling,

@@ -13,12 +13,10 @@ __all__ = ["TensorFlowScorer"]
 from ...entrypoints.transforms_tensorflowscorer import \
     transforms_tensorflowscorer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignatureWithRoles
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class TensorFlowScorer(
-        BasePipelineItem,
-        DefaultSignatureWithRoles):
+class TensorFlowScorer(BasePipelineItem, DefaultSignature):
     """
 
     Transforms the data using the
@@ -54,6 +52,8 @@ class TensorFlowScorer(
 
     :param output_columns: The name of the outputs.
 
+    :param label_column: Training labels.
+
     :param tensor_flow_label: TensorFlow label node.
 
     :param optimization_operation: The name of the optimization operation in
@@ -72,7 +72,12 @@ class TensorFlowScorer(
     :param learning_rate_operation: The name of the operation in the TensorFlow
         graph which sets optimizer learning rate (Optional).
 
-    :param learning_rate: Learning rate to use during optimization.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
     :param save_location_operation: Name of the input in TensorFlow graph that
         specifiy the location for saving/restoring models from disk.
@@ -81,6 +86,9 @@ class TensorFlowScorer(
         the location for saving/restoring models from disk.
 
     :param re_train: Retrain TensorFlow model.
+
+    :param add_batch_dimension_inputs: Add a batch dimension to the input e.g.
+        input = [224, 224, 3] => [-1, 224, 224, 3].
 
     :param params: Additional arguments sent to compute engine.
 
@@ -97,6 +105,7 @@ class TensorFlowScorer(
             model_location,
             input_columns=None,
             output_columns=None,
+            label_column=None,
             tensor_flow_label=None,
             optimization_operation=None,
             loss_operation=None,
@@ -108,6 +117,7 @@ class TensorFlowScorer(
             save_location_operation='save/Const',
             save_operation='save/control_dependency',
             re_train=False,
+            add_batch_dimension_inputs=False,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
@@ -115,6 +125,7 @@ class TensorFlowScorer(
         self.model_location = model_location
         self.input_columns = input_columns
         self.output_columns = output_columns
+        self.label_column = label_column
         self.tensor_flow_label = tensor_flow_label
         self.optimization_operation = optimization_operation
         self.loss_operation = loss_operation
@@ -126,6 +137,7 @@ class TensorFlowScorer(
         self.save_location_operation = save_location_operation
         self.save_operation = save_operation
         self.re_train = re_train
+        self.add_batch_dimension_inputs = add_batch_dimension_inputs
 
     @property
     def _entrypoint(self):
@@ -134,10 +146,10 @@ class TensorFlowScorer(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            label_column=self._getattr_role('label_column', all_args),
             model_location=self.model_location,
             input_columns=self.input_columns,
             output_columns=self.output_columns,
+            label_column=self.label_column,
             tensor_flow_label=self.tensor_flow_label,
             optimization_operation=self.optimization_operation,
             loss_operation=self.loss_operation,
@@ -148,7 +160,8 @@ class TensorFlowScorer(
             learning_rate=self.learning_rate,
             save_location_operation=self.save_location_operation,
             save_operation=self.save_operation,
-            re_train=self.re_train)
+            re_train=self.re_train,
+            add_batch_dimension_inputs=self.add_batch_dimension_inputs)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

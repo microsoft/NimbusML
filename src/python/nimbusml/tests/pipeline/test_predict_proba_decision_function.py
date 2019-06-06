@@ -76,7 +76,7 @@ class TestPredictProba(unittest.TestCase):
         assert_almost_equal(
             proba_sum(
                 LogisticRegressionBinaryClassifier(
-                    train_threads=1)),
+                    number_of_threads=1)),
             38.0,
             decimal=3,
             err_msg=invalid_predict_proba_output)
@@ -84,7 +84,7 @@ class TestPredictProba(unittest.TestCase):
     def test_pass_predict_proba_binary_with_pipeline(self):
         assert_almost_equal(
             proba_sum(Pipeline([LogisticRegressionBinaryClassifier(
-                train_threads=1)])), 38.0, decimal=3,
+                number_of_threads=1)])), 38.0, decimal=3,
             err_msg=invalid_predict_proba_output)
 
     def test_pass_predict_proba_multiclass(self):
@@ -105,7 +105,7 @@ class TestPredictProba(unittest.TestCase):
                                 err_msg=invalid_predict_proba_output)
 
     def test_pass_predict_proba_multiclass_3class(self):
-        clf = FastLinearClassifier(train_threads=1)
+        clf = FastLinearClassifier(number_of_threads=1)
         clf.fit(X_train_3class, y_train_3class, verbose=0)
         s = clf.predict_proba(X_test_3class).sum()
         assert_almost_equal(
@@ -146,12 +146,12 @@ invalid_decision_function_output = 'Invalid sum of scores ' \
 class TestDecisionFunction(unittest.TestCase):
     def test_pass_decision_function_binary(self):
         assert_almost_equal(decfun_sum(FactorizationMachineBinaryClassifier(
-        )), -38.384098, decimal=1, err_msg=invalid_decision_function_output)
+        )), -32.618393, decimal=5, err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_binary_with_pipeline(self):
         assert_almost_equal(
             decfun_sum(Pipeline([FactorizationMachineBinaryClassifier(
-            )])), -38.384098, decimal=1,
+            )])), -32.618393, decimal=5,
             err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_multiclass(self):
@@ -164,7 +164,7 @@ class TestDecisionFunction(unittest.TestCase):
         )])), -96.87325, decimal=4, err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_multiclass_3class(self):
-        clf = FastLinearClassifier(train_threads=1)
+        clf = FastLinearClassifier(number_of_threads=1)
         clf.fit(X_train_3class, y_train_3class, verbose=0)
         s = clf.decision_function(X_test_3class).sum()
         assert_almost_equal(

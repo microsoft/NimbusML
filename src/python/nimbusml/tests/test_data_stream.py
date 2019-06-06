@@ -34,24 +34,24 @@ class TestDataStream(unittest.TestCase):
         li = [1.0, 1.0, 2.0]
         df = pandas.DataFrame(li)
         schema0 = DataSchema.read_schema(df)
-        assert str(schema0) == 'col=c0:R8:0 header=+'
+        assert str(schema0) == 'col=c0:R8:0 quote+ header=+'
 
         li = [[1.0, 1.0, 2.0], [3.0, 5.0, 6.0]]
         schema1 = DataSchema.read_schema(li)
-        assert str(schema1) == 'col=c0:R8:0 col=c1:R8:1 col=c2:R8:2 header=+'
+        assert str(schema1) == 'col=c0:R8:0 col=c1:R8:1 col=c2:R8:2 quote+ header=+'
 
         df = pandas.DataFrame([[1.0, 1.0, 2.0], [3.0, 5.0, 6.0]])
         schema2 = DataSchema.read_schema(df)
-        assert str(schema2) == 'col=c0:R8:0 col=c1:R8:1 col=c2:R8:2 header=+'
+        assert str(schema2) == 'col=c0:R8:0 col=c1:R8:1 col=c2:R8:2 quote+ header=+'
 
         mat = numpy.array([[1.0, 1.0, 2.0], [3.0, 5.0, 6.0]])
         schema3 = DataSchema.read_schema(mat)
-        assert str(schema3) == 'col=Data:R8:0-2 header=+'
+        assert str(schema3) == 'col=Data:R8:0-2 quote+ header=+'
 
         li = [1.0, 1.0, 2.0]
         df = pandas.DataFrame(li)
         schema0 = DataSchema.read_schema(df, header=False)
-        assert str(schema0) == 'col=c0:R8:0 header=-'
+        assert str(schema0) == 'col=c0:R8:0 quote+ header=-'
 
     def test_data_stream_head_file(self):
         df = pandas.DataFrame(dict(a=[0, 1], b=[0.1, 0.2]))

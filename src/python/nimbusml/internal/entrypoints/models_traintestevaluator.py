@@ -28,8 +28,8 @@ def models_traintestevaluator(
         pipeline_id=None,
         include_training_metrics=False,
         label_column='Label',
-        weight_column=None,
-        group_column=None,
+        weight_column='Weight',
+        group_column='GroupId',
         name_column='Name',
         **params):
     """
@@ -115,7 +115,7 @@ def models_traintestevaluator(
             is_of_type=str,
             values=[
                 'SignatureBinaryClassifierTrainer',
-                'SignatureMultiClassClassifierTrainer',
+                'SignatureMulticlassClassificationTrainer',
                 'SignatureRankerTrainer',
                 'SignatureRegressorTrainer',
                 'SignatureMultiOutputRegressorTrainer',

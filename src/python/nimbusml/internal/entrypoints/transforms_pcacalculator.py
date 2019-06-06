@@ -14,7 +14,7 @@ def transforms_pcacalculator(
         data,
         output_data=None,
         model=None,
-        weight_column=None,
+        example_weight_column_name=None,
         rank=20,
         oversampling=20,
         center=True,
@@ -28,7 +28,8 @@ def transforms_pcacalculator(
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
-    :param weight_column: The name of the weight column (inputs).
+    :param example_weight_column_name: The name of the weight column
+        (inputs).
     :param rank: The number of components in the PCA (inputs).
     :param oversampling: Oversampling parameter for randomized PCA
         training (inputs).
@@ -54,9 +55,9 @@ def transforms_pcacalculator(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)

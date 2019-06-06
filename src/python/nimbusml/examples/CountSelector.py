@@ -18,7 +18,7 @@ print(data.head())
 
 
 pip = Pipeline([
-    OneHotHashVectorizer(columns={'edu': 'education'}, hash_bits=2),
+    OneHotHashVectorizer(columns={'edu': 'education'}, number_of_bits=2),
     CountSelector(count=5, columns=['edu'])
 ])
 features_selection = pip.fit_transform(data)

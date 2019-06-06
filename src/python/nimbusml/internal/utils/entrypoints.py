@@ -16,10 +16,7 @@ import pandas as pd
 import six
 from pandas import DataFrame
 from scipy.sparse import csr_matrix
-try:
-    from sklearn.utils.fixes import signature
-except ImportError:
-    from inspect import signature
+from nimbusml.utils import signature
 
 from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream

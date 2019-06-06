@@ -11,7 +11,7 @@ from ..utils.utils import try_set
 
 def fast_tree_ranking(
         training_data,
-        num_trees=100,
+        number_of_trees=100,
         num_leaves=20,
         feature_column='Features',
         min_documents_in_leafs=10,
@@ -90,7 +90,7 @@ def fast_tree_ranking(
         Trains gradient boosted decision trees to the LambdaRank quasi-
         gradient.
 
-    :param num_trees: Total number of decision trees to create in the
+    :param number_of_trees: Total number of decision trees to create in the
         ensemble (settings).
     :param training_data: The data to be used for training
         (settings).
@@ -125,8 +125,8 @@ def fast_tree_ranking(
         (settings).
     :param normalize_query_lambdas: Normalize query lambdas
         (settings).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (settings).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (settings).
     :param use_line_search: Should we use line search for a step size
         (settings).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -247,9 +247,9 @@ def fast_tree_ranking(
     entrypoint_name = 'FastTreeRanking'
     settings = {}
 
-    if num_trees is not None:
+    if number_of_trees is not None:
         settings['NumTrees'] = try_set(
-            obj=num_trees,
+            obj=number_of_trees,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
@@ -312,7 +312,6 @@ def fast_tree_ranking(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if custom_gains is not None:
         settings['CustomGains'] = try_set(

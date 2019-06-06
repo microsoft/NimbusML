@@ -37,6 +37,7 @@ if sys.version_info.major == 3:
 if sys.version_info[0:2] == (2,7):
     _install_requires.append('decorator')
     _install_requires.append('enum')
+    _install_requires.append('funcsigs>=1.0.2')
 
 setup(
     name='nimbusml',
@@ -44,7 +45,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on
     # single-sourcing the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.7.0',
+    version='1.1.0',
 
     description='NimbusML',
     long_description=long_description,

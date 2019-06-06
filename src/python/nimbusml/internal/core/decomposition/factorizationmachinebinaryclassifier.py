@@ -48,42 +48,30 @@ class FactorizationMachineBinaryClassifier(
             <http://jmlr.org/papers/volume12/duchi11a/duchi11a.pdf>`_
 
 
-    :param learning_rate: Initial learning rate.
+    :param learning_rate: Determines the size of the step taken in the
+        direction of the gradient in each step of the learning process.  This
+        determines how fast or slow the learner converges on the optimal
+        solution. If the step size is too big, you might overshoot the optimal
+        solution.  If the step size is too small, training takes longer to
+        converge to the best solution.
 
-    :param iters: Number of training iterations.
+    :param number_of_iterations: Number of training iterations.
 
-    :param latent_dim: Latent space dimension.
+    :param latent_dimension: Latent space dimension.
 
     :param lambda_linear: Regularization coefficient of linear weights.
 
     :param lambda_latent: Regularization coefficient of latent weights.
 
-    :param normalize: Specifies the type of automatic normalization used:
-
-        * ``"Auto"``: if normalization is needed, it is performed
-          automatically. This is the default choice.
-        * ``"No"``: no normalization is performed.
-        * ``"Yes"``: normalization is performed.
-        * ``"Warn"``: if normalization is needed, a warning
-          message is displayed, but normalization is not performed.
-
-        Normalization rescales disparate data ranges to a standard scale.
-        Feature
-        scaling insures the distances between data points are proportional
-        and
-        enables various optimization methods such as gradient descent to
-        converge
-        much faster. If normalization is performed, a ``MaxMin`` normalizer
-        is
-        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
-        0``
-        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
-        sparsity by mapping zero to zero.
-
-    :param norm: Whether to normalize the input vectors so that the
+    :param normalize: Whether to normalize the input vectors so that the
         concatenation of all fields' feature vectors is unit-length.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
+
+    :param extra_feature_columns: Extra columns to use for feature vectors. The
+        i-th specified string denotes the column containing features form the
+        (i+1)-th field. Note that the first field is specified by "feat"
+        instead of "exfeat".
 
     :param shuffle: Whether to shuffle for each training iteration.
 
@@ -113,13 +101,13 @@ class FactorizationMachineBinaryClassifier(
     def __init__(
             self,
             learning_rate=0.1,
-            iters=5,
-            latent_dim=20,
+            number_of_iterations=5,
+            latent_dimension=20,
             lambda_linear=0.0001,
             lambda_latent=0.0001,
-            normalize='Auto',
-            norm=True,
+            normalize=True,
             caching='Auto',
+            extra_feature_columns=None,
             shuffle=True,
             verbose=True,
             radius=0.5,
@@ -128,13 +116,13 @@ class FactorizationMachineBinaryClassifier(
             self, type='classifier', **params)
 
         self.learning_rate = learning_rate
-        self.iters = iters
-        self.latent_dim = latent_dim
+        self.number_of_iterations = number_of_iterations
+        self.latent_dimension = latent_dimension
         self.lambda_linear = lambda_linear
         self.lambda_latent = lambda_latent
         self.normalize = normalize
-        self.norm = norm
         self.caching = caching
+        self.extra_feature_columns = extra_feature_columns
         self.shuffle = shuffle
         self.verbose = verbose
         self.radius = radius
@@ -146,20 +134,23 @@ class FactorizationMachineBinaryClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role(
-                'feature_column',
+            feature_column_name=self._getattr_role(
+                'feature_column_name',
                 all_args),
-            label_column=self._getattr_role(
-                'label_column',
+            label_column_name=self._getattr_role(
+                'label_column_name',
+                all_args),
+            example_weight_column_name=self._getattr_role(
+                'example_weight_column_name',
                 all_args),
             learning_rate=self.learning_rate,
-            iters=self.iters,
-            latent_dim=self.latent_dim,
+            number_of_iterations=self.number_of_iterations,
+            latent_dimension=self.latent_dimension,
             lambda_linear=self.lambda_linear,
             lambda_latent=self.lambda_latent,
             normalize_features=self.normalize,
-            norm=self.norm,
             caching=self.caching,
+            extra_feature_columns=self.extra_feature_columns,
             shuffle=self.shuffle,
             verbose=self.verbose,
             radius=self.radius)

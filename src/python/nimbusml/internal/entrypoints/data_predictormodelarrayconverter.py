@@ -9,29 +9,29 @@ from ..utils.utils import try_set, unlist
 
 
 def data_predictormodelarrayconverter(
-        model,
-        output_model,
+        models,
+        output_models,
         **params):
     """
     **Description**
         Create an array variable of PredictorModel
 
-    :param model: The models (inputs).
-    :param output_model: The model array (outputs).
+    :param models: The models (inputs).
+    :param output_models: The model array (outputs).
     """
 
     entrypoint_name = 'Data.PredictorModelArrayConverter'
     inputs = {}
     outputs = {}
 
-    if model is not None:
-        inputs['Model'] = try_set(
-            obj=model,
+    if models is not None:
+        inputs['Models'] = try_set(
+            obj=models,
             none_acceptable=False,
             is_of_type=list)
-    if output_model is not None:
-        outputs['OutputModel'] = try_set(
-            obj=output_model,
+    if output_models is not None:
+        outputs['OutputModels'] = try_set(
+            obj=output_models,
             none_acceptable=False,
             is_of_type=list)
 

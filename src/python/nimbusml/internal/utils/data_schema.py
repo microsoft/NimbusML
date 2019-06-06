@@ -334,7 +334,7 @@ class DataSchema:
 
             exp = Pipeline([
                          OneHotVectorizer(columns = ['text']),
-                         LightGbmRegressor(min_data_per_leaf = 1)
+                         LightGbmRegressor(minimum_example_count_per_leaf = 1)
                         ])
 
             exp.fit(FileDataStream('data.csv', schema = schema), 'y')
@@ -470,8 +470,10 @@ class DataSchema:
             opts = opts.copy()
             opts['sep'] = DataSchema._default_options['sep']
 
-        val = []
+        val = ['quote+']
         for k, v in sorted(opts.items()):
+            if k == 'quote':
+                continue
             if isinstance(v, bool):
                 v = "+" if v else '-'
             elif k == 'sep' and v == '\t':

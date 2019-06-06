@@ -69,17 +69,18 @@ class TestExports(unittest.TestCase):
             Role.Label: 'new_y'}
         exp = {'bias_learning_rate': 1.0,
                'caching': 'Auto',
-               'check_frequency': None,
+               'convergence_check_frequency': None,
                'convergence_tolerance': 0.01,
                'feature': ['workclass', 'education'],
                'l1_threshold': None,
-               'l2_weight': None,
+               'l2_regularization': None,
                'label': 'new_y',
                'loss': 'squared',
-               'max_iterations': None,
+               'maximum_number_of_iterations': None,
                'normalize': 'Auto',
                'shuffle': True,
-               'train_threads': None}
+               'weight': None,
+               'number_of_threads': None}
         assert obj3.get_params() == exp
 
     def test_object_clone(self):
@@ -308,9 +309,9 @@ class TestExports(unittest.TestCase):
         ])
 
         for node in exp.nodes:
-            if hasattr(node, 'label_column'):
-                assert node.label_column == 'new_y'
-        assert exp.nodes[-1].label_column == 'new_y'
+            if hasattr(node, 'label_column_name'):
+                assert node.label_column_name == 'new_y'
+        assert exp.nodes[-1].label_column_name == 'new_y'
 
         res = dot_export_pipeline(exp, df).strip("\n\r ")
         exp = """
@@ -564,10 +565,10 @@ PredictedProba|<f2> Score",shape=record,fontsize=8];
                     False,
                     True]))
 
-        ng = NGramFeaturizer(columns=['description'], output_tokens=True)
+        ng = NGramFeaturizer(columns=['description'], output_tokens_column_name='description_TransformedText')
         we = WordEmbedding(
             columns='description_TransformedText',
-            model_kind='Sswe')
+            model_kind='SentimentSpecificWordEmbedding')
 
         model = Pipeline([ng, we])
         dot_vis = dot_export_pipeline(model, ds_train)

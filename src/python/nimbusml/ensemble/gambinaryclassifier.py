@@ -87,10 +87,13 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
 
     :param weight: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param num_iterations: Total number of iterations over all features.
+    :param number_of_iterations: Total number of iterations over all features.
 
-    :param min_documents: Minimum number of training instances required to form
-        a partition.
+    :param minimum_example_count_per_leaf: Minimum number of training instances
+        required to form a leaf. That is, the minimal number of documents
+        allowed in a leaf of regression tree, out of the sub-sampled data. A
+        'split' means that features in each level of the tree (node) are
+        randomly divided.
 
     :param learning_rate: Determines the size of the step taken in the
         direction of the gradient in each step of the learning process.  This
@@ -121,7 +124,7 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param unbalanced_sets: Should we use derivatives optimized for unbalanced
         sets.
@@ -132,15 +135,16 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
     :param gain_conf_level: Tree fitting gain confidence requirement (should be
         in the range [0,1) ).
 
-    :param train_threads: The number of threads to use.
+    :param number_of_threads: The number of threads to use.
 
     :param disk_transpose: Whether to utilize the disk or the data's native
         transposition facilities (where applicable) when performing the
         transpose.
 
-    :param num_bins: Maximum number of distinct values (bins) per feature.
+    :param maximum_bin_count_per_feature: Maximum number of distinct values
+        (bins) per feature.
 
-    :param max_output: Upper bound on absolute value of single output.
+    :param maximum_tree_output: Upper bound on absolute value of single output.
 
     :param get_derivatives_sample_rate: Sample each query 1 in k times in the
         GetDerivatives function.
@@ -171,18 +175,18 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
     @trace
     def __init__(
             self,
-            num_iterations=9500,
-            min_documents=10,
+            number_of_iterations=9500,
+            minimum_example_count_per_leaf=10,
             learning_rate=0.002,
             normalize='Auto',
             caching='Auto',
             unbalanced_sets=False,
             entropy_coefficient=0.0,
             gain_conf_level=0,
-            train_threads=None,
+            number_of_threads=None,
             disk_transpose=None,
-            num_bins=255,
-            max_output=float('inf'),
+            maximum_bin_count_per_feature=255,
+            maximum_tree_output=float('inf'),
             get_derivatives_sample_rate=1,
             random_state=123,
             feature_flocks=True,
@@ -192,36 +196,36 @@ class GamBinaryClassifier(core, BasePredictor, ClassifierMixin):
             weight=None,
             **params):
 
-        if 'feature_column' in params:
+        if 'feature_column_name' in params:
             raise NameError(
-                "'feature_column' must be renamed to 'feature'")
+                "'feature_column_name' must be renamed to 'feature'")
         if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
             raise NameError(
-                "'label_column' must be renamed to 'label'")
+                "'label_column_name' must be renamed to 'label'")
         if label:
-            params['label_column'] = label
-        if 'weight_column' in params:
+            params['label_column_name'] = label
+        if 'example_weight_column_name' in params:
             raise NameError(
-                "'weight_column' must be renamed to 'weight'")
+                "'example_weight_column_name' must be renamed to 'weight'")
         if weight:
-            params['weight_column'] = weight
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,
-            num_iterations=num_iterations,
-            min_documents=min_documents,
+            number_of_iterations=number_of_iterations,
+            minimum_example_count_per_leaf=minimum_example_count_per_leaf,
             learning_rate=learning_rate,
             normalize=normalize,
             caching=caching,
             unbalanced_sets=unbalanced_sets,
             entropy_coefficient=entropy_coefficient,
             gain_conf_level=gain_conf_level,
-            train_threads=train_threads,
+            number_of_threads=number_of_threads,
             disk_transpose=disk_transpose,
-            num_bins=num_bins,
-            max_output=max_output,
+            maximum_bin_count_per_feature=maximum_bin_count_per_feature,
+            maximum_tree_output=maximum_tree_output,
             get_derivatives_sample_rate=get_derivatives_sample_rate,
             random_state=random_state,
             feature_flocks=feature_flocks,

@@ -12,24 +12,24 @@ from ..utils.utils import try_set, unlist
 def trainers_fasttreetweedieregressor(
         training_data,
         predictor_model=None,
-        num_trees=100,
-        num_leaves=20,
-        feature_column='Features',
-        min_documents_in_leafs=10,
-        label_column='Label',
-        learning_rates=0.2,
-        weight_column=None,
-        group_id_column=None,
+        number_of_trees=100,
+        number_of_leaves=20,
+        feature_column_name='Features',
+        minimum_example_count_per_leaf=10,
+        label_column_name='Label',
+        learning_rate=0.2,
+        example_weight_column_name=None,
+        row_group_column_name=None,
         normalize_features='Auto',
         caching='Auto',
         index=1.5,
         best_step_ranking_regression_trees=False,
         use_line_search=False,
-        num_post_bracket_steps=0,
-        min_step_size=0.0,
+        maximum_number_of_line_search_steps=0,
+        minimum_step_size=0.0,
         optimization_algorithm='GradientDescent',
         early_stopping_rule=None,
-        early_stopping_metrics=0,
+        early_stopping_metrics=1,
         enable_pruning=False,
         use_tolerant_pruning=False,
         pruning_threshold=0.004,
@@ -38,43 +38,42 @@ def trainers_fasttreetweedieregressor(
         dropout_rate=0.0,
         get_derivatives_sample_rate=1,
         write_last_ensemble=False,
-        max_tree_output=100.0,
+        maximum_tree_output=100.0,
         random_start=False,
         filter_zero_lambdas=False,
         baseline_scores_formula=None,
         baseline_alpha_risk=None,
         position_discount_freeform=None,
         parallel_trainer=None,
-        num_threads=None,
-        rng_seed=123,
-        feature_select_seed=123,
+        number_of_threads=None,
+        seed=123,
+        feature_selection_seed=123,
         entropy_coefficient=0.0,
         histogram_pool_size=-1,
         disk_transpose=None,
         feature_flocks=True,
         categorical_split=False,
-        max_categorical_groups_per_node=64,
-        max_categorical_split_points=64,
-        min_docs_percentage_for_categorical_split=0.001,
-        min_docs_for_categorical_split=100,
+        maximum_categorical_group_count_per_node=64,
+        maximum_categorical_split_point_count=64,
+        minimum_example_fraction_for_categorical_split=0.001,
+        minimum_examples_for_categorical_split=100,
         bias=0.0,
         bundling='None',
-        max_bins=255,
+        maximum_bin_count_per_feature=255,
         sparsify_threshold=0.7,
         feature_first_use_penalty=0.0,
         feature_reuse_penalty=0.0,
         gain_confidence_level=0.0,
         softmax_temperature=0.0,
-        execution_times=False,
+        execution_time=False,
         feature_fraction=1.0,
         bagging_size=0,
-        bagging_train_fraction=0.7,
-        split_fraction=1.0,
+        bagging_example_fraction=0.7,
+        feature_fraction_per_split=1.0,
         smoothing=0.0,
         allow_empty_trees=True,
         feature_compression_level=1,
         compress_ensemble=False,
-        max_trees_after_compression=-1,
         print_test_graph=False,
         print_train_valid_graph=False,
         test_frequency=2147483647,
@@ -85,34 +84,35 @@ def trainers_fasttreetweedieregressor(
         Tweedie loss function. This learner is a generalization of
         Poisson, compound Poisson, and gamma regression.
 
-    :param num_trees: Total number of decision trees to create in the
-        ensemble (inputs).
+    :param number_of_trees: Total number of decision trees to create
+        in the ensemble (inputs).
     :param training_data: The data to be used for training (inputs).
-    :param num_leaves: The max number of leaves in each regression
-        tree (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param min_documents_in_leafs: The minimal number of documents
-        allowed in a leaf of a regression tree, out of the subsampled
-        data (inputs).
-    :param label_column: Column to use for labels (inputs).
-    :param learning_rates: The learning rate (inputs).
-    :param weight_column: Column to use for example weight (inputs).
-    :param group_id_column: Column to use for example groupId
+    :param number_of_leaves: The max number of leaves in each
+        regression tree (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param minimum_example_count_per_leaf: The minimal number of
+        examples allowed in a leaf of a regression tree, out of the
+        subsampled data (inputs).
+    :param label_column_name: Column to use for labels (inputs).
+    :param learning_rate: The learning rate (inputs).
+    :param example_weight_column_name: Column to use for example
+        weight (inputs).
+    :param row_group_column_name: Column to use for example groupId
         (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param index: Index parameter for the Tweedie distribution, in
         the range [1, 2]. 1 is Poisson loss, 2 is gamma loss, and
         intermediate values are compound Poisson loss. (inputs).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (inputs).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (inputs).
     :param use_line_search: Should we use line search for a step size
         (inputs).
-    :param num_post_bracket_steps: Number of post-bracket line search
-        steps (inputs).
-    :param min_step_size: Minimum line search step size (inputs).
+    :param maximum_number_of_line_search_steps: Number of post-
+        bracket line search steps (inputs).
+    :param minimum_step_size: Minimum line search step size (inputs).
     :param optimization_algorithm: Optimization algorithm to be used
         (GradientDescent, AcceleratedGradientDescent) (inputs).
     :param early_stopping_rule: Early stopping rule. (Validation set
@@ -135,8 +135,8 @@ def trainers_fasttreetweedieregressor(
         times in the GetDerivatives function (inputs).
     :param write_last_ensemble: Write the last ensemble instead of
         the one determined by early stopping (inputs).
-    :param max_tree_output: Upper bound on absolute value of single
-        tree output (inputs).
+    :param maximum_tree_output: Upper bound on absolute value of
+        single tree output (inputs).
     :param random_start: Training starts from random ordering
         (determined by /r1) (inputs).
     :param filter_zero_lambdas: Filter zero lambdas during training
@@ -146,15 +146,14 @@ def trainers_fasttreetweedieregressor(
     :param baseline_alpha_risk: Baseline alpha for tradeoffs of risk
         (0 is normal training) (inputs).
     :param position_discount_freeform: The discount freeform which
-        specifies the per position discounts of documents in a query
+        specifies the per position discounts of examples in a query
         (uses a single variable P for position where P=0 is first
         position) (inputs).
     :param parallel_trainer: Allows to choose Parallel FastTree
         Learning Algorithm (inputs).
-    :param num_threads: The number of threads to use (inputs).
-    :param rng_seed: The seed of the random number generator
-        (inputs).
-    :param feature_select_seed: The seed of the active feature
+    :param number_of_threads: The number of threads to use (inputs).
+    :param seed: The seed of the random number generator (inputs).
+    :param feature_selection_seed: The seed of the active feature
         selection (inputs).
     :param entropy_coefficient: The entropy (regularization)
         coefficient between 0 and 1 (inputs).
@@ -167,27 +166,28 @@ def trainers_fasttreetweedieregressor(
         dataset preparation to speed up training (inputs).
     :param categorical_split: Whether to do split based on multiple
         categorical feature values. (inputs).
-    :param max_categorical_groups_per_node: Maximum categorical split
-        groups to consider when splitting on a categorical feature.
-        Split groups are a collection of split points. This is used
-        to reduce overfitting when there many categorical features.
+    :param maximum_categorical_group_count_per_node: Maximum
+        categorical split groups to consider when splitting on a
+        categorical feature. Split groups are a collection of split
+        points. This is used to reduce overfitting when there many
+        categorical features. (inputs).
+    :param maximum_categorical_split_point_count: Maximum categorical
+        split points to consider when splitting on a categorical
+        feature. (inputs).
+    :param minimum_example_fraction_for_categorical_split: Minimum
+        categorical example percentage in a bin to consider for a
+        split. (inputs).
+    :param minimum_examples_for_categorical_split: Minimum
+        categorical example count in a bin to consider for a split.
         (inputs).
-    :param max_categorical_split_points: Maximum categorical split
-        points to consider when splitting on a categorical feature.
-        (inputs).
-    :param min_docs_percentage_for_categorical_split: Minimum
-        categorical docs percentage in a bin to consider for a split.
-        (inputs).
-    :param min_docs_for_categorical_split: Minimum categorical doc
-        count in a bin to consider for a split. (inputs).
     :param bias: Bias for calculating gradient for each feature bin
         for a categorical feature. (inputs).
     :param bundling: Bundle low population bins. Bundle.None(0): no
         bundling, Bundle.AggregateLowPopulation(1): Bundle low
         population, Bundle.Adjacent(2): Neighbor low population
         bundle. (inputs).
-    :param max_bins: Maximum number of distinct values (bins) per
-        feature (inputs).
+    :param maximum_bin_count_per_feature: Maximum number of distinct
+        values (bins) per feature (inputs).
     :param sparsify_threshold: Sparsity level needed to use sparse
         feature representation (inputs).
     :param feature_first_use_penalty: The feature first use penalty
@@ -198,16 +198,16 @@ def trainers_fasttreetweedieregressor(
         requirement (should be in the range [0,1) ). (inputs).
     :param softmax_temperature: The temperature of the randomized
         softmax distribution for choosing the feature (inputs).
-    :param execution_times: Print execution time breakdown to stdout
+    :param execution_time: Print execution time breakdown to stdout
         (inputs).
     :param feature_fraction: The fraction of features (chosen
         randomly) to use on each iteration (inputs).
     :param bagging_size: Number of trees in each bag (0 for disabling
         bagging) (inputs).
-    :param bagging_train_fraction: Percentage of training examples
+    :param bagging_example_fraction: Percentage of training examples
         used in each bag (inputs).
-    :param split_fraction: The fraction of features (chosen randomly)
-        to use on each split (inputs).
+    :param feature_fraction_per_split: The fraction of features
+        (chosen randomly) to use on each split (inputs).
     :param smoothing: Smoothing paramter for tree regularization
         (inputs).
     :param allow_empty_trees: When a root split is impossible, allow
@@ -215,8 +215,6 @@ def trainers_fasttreetweedieregressor(
     :param feature_compression_level: The level of feature
         compression to use (inputs).
     :param compress_ensemble: Compress the tree Ensemble (inputs).
-    :param max_trees_after_compression: Maximum Number of trees after
-        compression (inputs).
     :param print_test_graph: Print metrics graph for the first test
         set (inputs).
     :param print_train_valid_graph: Print Train and Validation
@@ -230,9 +228,9 @@ def trainers_fasttreetweedieregressor(
     inputs = {}
     outputs = {}
 
-    if num_trees is not None:
-        inputs['NumTrees'] = try_set(
-            obj=num_trees,
+    if number_of_trees is not None:
+        inputs['NumberOfTrees'] = try_set(
+            obj=number_of_trees,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
@@ -240,42 +238,42 @@ def trainers_fasttreetweedieregressor(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if num_leaves is not None:
-        inputs['NumLeaves'] = try_set(
-            obj=num_leaves,
+    if number_of_leaves is not None:
+        inputs['NumberOfLeaves'] = try_set(
+            obj=number_of_leaves,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if min_documents_in_leafs is not None:
-        inputs['MinDocumentsInLeafs'] = try_set(
-            obj=min_documents_in_leafs,
+    if minimum_example_count_per_leaf is not None:
+        inputs['MinimumExampleCountPerLeaf'] = try_set(
+            obj=minimum_example_count_per_leaf,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if learning_rates is not None:
-        inputs['LearningRates'] = try_set(
-            obj=learning_rates,
+    if learning_rate is not None:
+        inputs['LearningRate'] = try_set(
+            obj=learning_rate,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if weight_column is not None:
-        inputs['WeightColumn'] = try_set(
-            obj=weight_column,
+    if example_weight_column_name is not None:
+        inputs['ExampleWeightColumnName'] = try_set(
+            obj=example_weight_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if group_id_column is not None:
-        inputs['GroupIdColumn'] = try_set(
-            obj=group_id_column,
+    if row_group_column_name is not None:
+        inputs['RowGroupColumnName'] = try_set(
+            obj=row_group_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -297,7 +295,6 @@ def trainers_fasttreetweedieregressor(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if index is not None:
         inputs['Index'] = try_set(
@@ -314,14 +311,14 @@ def trainers_fasttreetweedieregressor(
             obj=use_line_search,
             none_acceptable=True,
             is_of_type=bool)
-    if num_post_bracket_steps is not None:
-        inputs['NumPostBracketSteps'] = try_set(
-            obj=num_post_bracket_steps,
+    if maximum_number_of_line_search_steps is not None:
+        inputs['MaximumNumberOfLineSearchSteps'] = try_set(
+            obj=maximum_number_of_line_search_steps,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_step_size is not None:
-        inputs['MinStepSize'] = try_set(
-            obj=min_step_size,
+    if minimum_step_size is not None:
+        inputs['MinimumStepSize'] = try_set(
+            obj=minimum_step_size,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if optimization_algorithm is not None:
@@ -383,9 +380,9 @@ def trainers_fasttreetweedieregressor(
             obj=write_last_ensemble,
             none_acceptable=True,
             is_of_type=bool)
-    if max_tree_output is not None:
-        inputs['MaxTreeOutput'] = try_set(
-            obj=max_tree_output,
+    if maximum_tree_output is not None:
+        inputs['MaximumTreeOutput'] = try_set(
+            obj=maximum_tree_output,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if random_start is not None:
@@ -414,19 +411,19 @@ def trainers_fasttreetweedieregressor(
             obj=parallel_trainer,
             none_acceptable=True,
             is_of_type=dict)
-    if num_threads is not None:
-        inputs['NumThreads'] = try_set(
-            obj=num_threads,
+    if number_of_threads is not None:
+        inputs['NumberOfThreads'] = try_set(
+            obj=number_of_threads,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if rng_seed is not None:
-        inputs['RngSeed'] = try_set(
-            obj=rng_seed,
+    if seed is not None:
+        inputs['Seed'] = try_set(
+            obj=seed,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if feature_select_seed is not None:
-        inputs['FeatureSelectSeed'] = try_set(
-            obj=feature_select_seed,
+    if feature_selection_seed is not None:
+        inputs['FeatureSelectionSeed'] = try_set(
+            obj=feature_selection_seed,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if entropy_coefficient is not None:
@@ -454,24 +451,24 @@ def trainers_fasttreetweedieregressor(
             obj=categorical_split,
             none_acceptable=True,
             is_of_type=bool)
-    if max_categorical_groups_per_node is not None:
-        inputs['MaxCategoricalGroupsPerNode'] = try_set(
-            obj=max_categorical_groups_per_node,
+    if maximum_categorical_group_count_per_node is not None:
+        inputs['MaximumCategoricalGroupCountPerNode'] = try_set(
+            obj=maximum_categorical_group_count_per_node,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if max_categorical_split_points is not None:
-        inputs['MaxCategoricalSplitPoints'] = try_set(
-            obj=max_categorical_split_points,
+    if maximum_categorical_split_point_count is not None:
+        inputs['MaximumCategoricalSplitPointCount'] = try_set(
+            obj=maximum_categorical_split_point_count,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_docs_percentage_for_categorical_split is not None:
-        inputs['MinDocsPercentageForCategoricalSplit'] = try_set(
-            obj=min_docs_percentage_for_categorical_split,
+    if minimum_example_fraction_for_categorical_split is not None:
+        inputs['MinimumExampleFractionForCategoricalSplit'] = try_set(
+            obj=minimum_example_fraction_for_categorical_split,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if min_docs_for_categorical_split is not None:
-        inputs['MinDocsForCategoricalSplit'] = try_set(
-            obj=min_docs_for_categorical_split,
+    if minimum_examples_for_categorical_split is not None:
+        inputs['MinimumExamplesForCategoricalSplit'] = try_set(
+            obj=minimum_examples_for_categorical_split,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if bias is not None:
@@ -488,9 +485,9 @@ def trainers_fasttreetweedieregressor(
                 'None',
                 'AggregateLowPopulation',
                 'Adjacent'])
-    if max_bins is not None:
-        inputs['MaxBins'] = try_set(
-            obj=max_bins,
+    if maximum_bin_count_per_feature is not None:
+        inputs['MaximumBinCountPerFeature'] = try_set(
+            obj=maximum_bin_count_per_feature,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if sparsify_threshold is not None:
@@ -518,9 +515,9 @@ def trainers_fasttreetweedieregressor(
             obj=softmax_temperature,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if execution_times is not None:
-        inputs['ExecutionTimes'] = try_set(
-            obj=execution_times,
+    if execution_time is not None:
+        inputs['ExecutionTime'] = try_set(
+            obj=execution_time,
             none_acceptable=True,
             is_of_type=bool)
     if feature_fraction is not None:
@@ -533,14 +530,14 @@ def trainers_fasttreetweedieregressor(
             obj=bagging_size,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if bagging_train_fraction is not None:
-        inputs['BaggingTrainFraction'] = try_set(
-            obj=bagging_train_fraction,
+    if bagging_example_fraction is not None:
+        inputs['BaggingExampleFraction'] = try_set(
+            obj=bagging_example_fraction,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if split_fraction is not None:
-        inputs['SplitFraction'] = try_set(
-            obj=split_fraction,
+    if feature_fraction_per_split is not None:
+        inputs['FeatureFractionPerSplit'] = try_set(
+            obj=feature_fraction_per_split,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if smoothing is not None:
@@ -563,11 +560,6 @@ def trainers_fasttreetweedieregressor(
             obj=compress_ensemble,
             none_acceptable=True,
             is_of_type=bool)
-    if max_trees_after_compression is not None:
-        inputs['MaxTreesAfterCompression'] = try_set(
-            obj=max_trees_after_compression,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
     if print_test_graph is not None:
         inputs['PrintTestGraph'] = try_set(
             obj=print_test_graph,

@@ -14,7 +14,7 @@ def transforms_hashconverter(
         data,
         output_data=None,
         model=None,
-        hash_bits=31,
+        number_of_bits=31,
         join=True,
         seed=314489979,
         ordered=True,
@@ -28,8 +28,8 @@ def transforms_hashconverter(
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
-    :param hash_bits: Number of bits to hash into. Must be between 1
-        and 31, inclusive. (inputs).
+    :param number_of_bits: Number of bits to hash into. Must be
+        between 1 and 31, inclusive. (inputs).
     :param join: Whether the values need to be combined for a single
         hash (inputs).
     :param seed: Hashing seed (inputs).
@@ -54,9 +54,9 @@ def transforms_hashconverter(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if hash_bits is not None:
-        inputs['HashBits'] = try_set(
-            obj=hash_bits,
+    if number_of_bits is not None:
+        inputs['NumberOfBits'] = try_set(
+            obj=number_of_bits,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if join is not None:

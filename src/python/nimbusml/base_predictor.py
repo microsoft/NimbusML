@@ -52,6 +52,11 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         self.X_ = X
         self.y_ = y
 
+        # Clear cached summary since it should not
+        # retain its value after a new call to fit
+        if hasattr(self, 'model_summary_'):
+            delattr(self, 'model_summary_')
+
         pipeline = Pipeline([self])
         try:
             pipeline.fit(X, y, **params)
@@ -139,7 +144,7 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         """
         Returns model summary.
         """
-        if hasattr(self, 'model_summary_') and self.model_summary_:
+        if hasattr(self, 'model_summary_') and self.model_summary_ is not None:
             return self.model_summary_
 
         if not hasattr(

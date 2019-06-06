@@ -12,8 +12,8 @@ from ..utils.utils import try_set, unlist
 def trainers_symsgdbinaryclassifier(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
+        feature_column_name='Features',
+        label_column_name='Label',
         normalize_features='Auto',
         caching='Auto',
         number_of_iterations=50,
@@ -31,11 +31,11 @@ def trainers_symsgdbinaryclassifier(
         Train a symbolic SGD.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param number_of_iterations: Number of passes over the data.
         (inputs).
@@ -67,15 +67,15 @@ def trainers_symsgdbinaryclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -97,7 +97,6 @@ def trainers_symsgdbinaryclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if number_of_iterations is not None:
         inputs['NumberOfIterations'] = try_set(
