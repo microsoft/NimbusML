@@ -109,6 +109,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\OneHotVectorizer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\OnlineGradientDescentRegressor_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\OrdinaryLeastSquaresRegressor_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\IidSpikeDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PcaAnomalyDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PcaTransformer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RangeFilter_df.py" />
@@ -224,6 +225,8 @@
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
+    <Compile Include="nimbusml\internal\core\time_series\iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\time_series\__init__.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_customtextloader.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_dataviewreference.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_idataviewarrayconverter.py" />
@@ -571,6 +574,8 @@
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
+    <Compile Include="nimbusml\time_series\iidspikedetector.py" />
+    <Compile Include="nimbusml\time_series\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />
     <Compile Include="nimbusml\tests\idv\test_idv.py" />
@@ -743,6 +748,7 @@
     <Folder Include="nimbusml\internal\core\preprocessing\normalization\" />
     <Folder Include="nimbusml\internal\core\preprocessing\schema\" />
     <Folder Include="nimbusml\internal\core\preprocessing\text\" />
+    <Folder Include="nimbusml\internal\core\time_series\" />
     <Folder Include="nimbusml\internal\entrypoints\" />
     <Folder Include="nimbusml\internal\utils\" />
     <Folder Include="nimbusml\linear_model\" />
@@ -780,6 +786,7 @@
     <Folder Include="nimbusml\tests\preprocessing\text\" />
     <Folder Include="nimbusml\tests\scikit\" />
     <Folder Include="nimbusml\tests\utils\" />
+    <Folder Include="nimbusml\time_series\" />
     <Folder Include="nimbusml\utils\" />
     <Folder Include="tests\" />
     <Folder Include="tools\" />
