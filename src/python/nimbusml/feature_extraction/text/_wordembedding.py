@@ -58,7 +58,7 @@ class WordEmbedding(core, BaseTransform, TransformerMixin):
         Available options are: 'GloVe50D', 'GloVe100D', 'GloVe200D',
         'GloVe300D', 'GloVeTwitter25D', 'GloVeTwitter50D',
         'GloVeTwitter100D', 'GloVeTwitter200D', 'FastTextWikipedia300D',
-        'Sswe'.
+        'SentimentSpecificWordEmbedding'.
 
     :param custom_lookup_table: Filename for custom word embedding model.
 
@@ -70,10 +70,9 @@ class WordEmbedding(core, BaseTransform, TransformerMixin):
         <'This', 'is', 'good'>, users need to create an input column by:
 
         * concatenating columns with TX type,
-        * or using the ``output_tokens=True`` for ``NGramFeaturizer()`` to
+        * or using the ``output_tokens_column_name`` for ``NGramFeaturizer()`` to
         convert a column with sentences like "This is good" into <'This',
-        'is', 'good'>. The column for the output token column is renamed with
-        a prefix of '_TranformedText'.
+        'is', 'good'>.
 
 
         In the following example, after the ``NGramFeaturizer``, features
@@ -105,7 +104,7 @@ class WordEmbedding(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            model_kind='Sswe',
+            model_kind='SentimentSpecificWordEmbedding',
             custom_lookup_table=None,
             columns=None,
             **params):

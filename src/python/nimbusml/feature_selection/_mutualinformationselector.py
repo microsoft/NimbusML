@@ -111,11 +111,11 @@ class MutualInformationSelector(
             columns=None,
             **params):
 
-        if 'label_column' in params:
+        if 'label_column_name' in params:
             raise NameError(
-                "'label_column' must be renamed to 'label'")
+                "'label_column_name' must be renamed to 'label'")
         if label:
-            params['label_column'] = label
+            params['label_column_name'] = label
         if columns:
             params['columns'] = columns
         BaseTransform.__init__(self, **params)

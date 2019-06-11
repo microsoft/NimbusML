@@ -39,9 +39,9 @@ class TestLightGbmClassifier(unittest.TestCase):
         X_train = texttransform.fit_transform(X_train, max_slots=5000)
         X_test = texttransform.transform(X_test, max_slots=5000)
 
-        mymodel = LightGbmClassifier().fit(X_train, y_train)
+        mymodel = LightGbmClassifier().fit(X_train, y_train, verbose=0)
         scores = mymodel.predict(X_test)
-        accuracy = np.mean(y_test == [i for i in scores])[0]
+        accuracy = np.mean(y_test.values.ravel() == scores.values)
         assert_greater(
             accuracy,
             0.58,

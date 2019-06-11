@@ -12,14 +12,22 @@ def transforms_columnselector(
         data,
         output_data=None,
         model=None,
-        column=None,
+        keep_columns=None,
+        drop_columns=None,
+        keep_hidden=False,
+        ignore_missing=False,
         **params):
     """
     **Description**
         Selects a set of columns, dropping all others
 
-    :param column: Column name to keep (inputs).
+    :param keep_columns: List of columns to keep. (inputs).
     :param data: Input dataset (inputs).
+    :param drop_columns: List of columns to drop. (inputs).
+    :param keep_hidden: Specifies whether to keep or remove hidden
+        columns. (inputs).
+    :param ignore_missing: Specifies whether to ignore columns that
+        are missing from the input. (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -28,9 +36,9 @@ def transforms_columnselector(
     inputs = {}
     outputs = {}
 
-    if column is not None:
-        inputs['Column'] = try_set(
-            obj=column,
+    if keep_columns is not None:
+        inputs['KeepColumns'] = try_set(
+            obj=keep_columns,
             none_acceptable=True,
             is_of_type=list,
             is_column=True)
@@ -39,6 +47,22 @@ def transforms_columnselector(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
+    if drop_columns is not None:
+        inputs['DropColumns'] = try_set(
+            obj=drop_columns,
+            none_acceptable=True,
+            is_of_type=list,
+            is_column=True)
+    if keep_hidden is not None:
+        inputs['KeepHidden'] = try_set(
+            obj=keep_hidden,
+            none_acceptable=True,
+            is_of_type=bool)
+    if ignore_missing is not None:
+        inputs['IgnoreMissing'] = try_set(
+            obj=ignore_missing,
+            none_acceptable=True,
+            is_of_type=bool)
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

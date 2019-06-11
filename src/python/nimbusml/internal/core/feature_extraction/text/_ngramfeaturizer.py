@@ -116,8 +116,8 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
     :param keep_numbers: ``False`` to remove numbers; ``True`` to retain
         numbers. The default value is ``True``.
 
-    :param output_tokens: Whether to output the transformed text tokens as an
-        additional column.
+    :param output_tokens_column_name: Column containing the transformed text
+        tokens.
 
     :param dictionary: A dictionary of whitelisted terms which accepts
         the following options:
@@ -202,7 +202,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
             keep_diacritics=False,
             keep_punctuations=True,
             keep_numbers=True,
-            output_tokens=False,
+            output_tokens_column_name=None,
             dictionary=None,
             word_feature_extractor=n_gram(
                 max_num_terms=[10000000]),
@@ -221,7 +221,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
         self.keep_diacritics = keep_diacritics
         self.keep_punctuations = keep_punctuations
         self.keep_numbers = keep_numbers
-        self.output_tokens = output_tokens
+        self.output_tokens_column_name = output_tokens_column_name
         self.dictionary = dictionary
         self.word_feature_extractor = word_feature_extractor
         self.char_feature_extractor = char_feature_extractor
@@ -283,7 +283,7 @@ class NGramFeaturizer(BasePipelineItem, SingleOutputSignature):
             keep_diacritics=self.keep_diacritics,
             keep_punctuations=self.keep_punctuations,
             keep_numbers=self.keep_numbers,
-            output_tokens=self.output_tokens,
+            output_tokens_column_name=self.output_tokens_column_name,
             dictionary=self.dictionary,
             word_feature_extractor=self.word_feature_extractor,
             char_feature_extractor=self.char_feature_extractor,

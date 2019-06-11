@@ -53,7 +53,7 @@ class SkipFilter(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            count=0,
+            count,
             columns=None,
             **params):
 

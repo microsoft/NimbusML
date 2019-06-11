@@ -41,12 +41,12 @@ class LightLda(BasePipelineItem, DefaultSignature):
         Gibbs samplers.
 
 
-    :param num_topic: The number of topics in the LDA.
+    :param num_topic: The number of topics.
+
+    :param number_of_threads: The number of training threads. Default value
+        depends on number of logical processors.
 
     :param num_max_doc_token: The threshold of maximum count of tokens per doc.
-
-    :param train_threads: The number of training threads. Default value depends
-        on number of logical processors.
 
     :param alpha_sum: Dirichlet prior on document-topic vectors.
 
@@ -91,8 +91,8 @@ class LightLda(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             num_topic=100,
+            number_of_threads=0,
             num_max_doc_token=512,
-            train_threads=None,
             alpha_sum=100.0,
             beta=0.01,
             mhstep=4,
@@ -107,8 +107,8 @@ class LightLda(BasePipelineItem, DefaultSignature):
             self, type='transform', **params)
 
         self.num_topic = num_topic
+        self.number_of_threads = number_of_threads
         self.num_max_doc_token = num_max_doc_token
-        self.train_threads = train_threads
         self.alpha_sum = alpha_sum
         self.beta = beta
         self.mhstep = mhstep
@@ -166,8 +166,8 @@ class LightLda(BasePipelineItem, DefaultSignature):
                     input_columns,
                     output_columns)] if input_columns else None,
             num_topic=self.num_topic,
+            num_threads=self.number_of_threads,
             num_max_doc_token=self.num_max_doc_token,
-            num_threads=self.train_threads,
             alpha_sum=self.alpha_sum,
             beta=self.beta,
             mhstep=self.mhstep,

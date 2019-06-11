@@ -1,6 +1,6 @@
 @ECHO ON
-set PY=%~dp0..\..\..\..\dependencies\Python3.6\python.exe
-set PYS=%~dp0..\..\..\..\dependencies\Python3.6\Scripts
+set PY=%~dp0..\..\..\..\dependencies\Python3.7\python.exe
+set PYS=%~dp0..\..\..\..\dependencies\Python3.7\Scripts
 set PYTHONPATH=%~dp0..\..\..\..\python
 %PYS%\pip install sphinx==1.5.5
 %PYS%\pip install sphinx-docfx-yaml

@@ -45,12 +45,12 @@ class LightLda(core, BaseTransform, TransformerMixin):
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param num_topic: The number of topics in the LDA.
+    :param num_topic: The number of topics.
+
+    :param number_of_threads: The number of training threads. Default value
+        depends on number of logical processors.
 
     :param num_max_doc_token: The threshold of maximum count of tokens per doc.
-
-    :param train_threads: The number of training threads. Default value depends
-        on number of logical processors.
 
     :param alpha_sum: Dirichlet prior on document-topic vectors.
 
@@ -95,8 +95,8 @@ class LightLda(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             num_topic=100,
+            number_of_threads=0,
             num_max_doc_token=512,
-            train_threads=None,
             alpha_sum=100.0,
             beta=0.01,
             mhstep=4,
@@ -115,8 +115,8 @@ class LightLda(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             num_topic=num_topic,
+            number_of_threads=number_of_threads,
             num_max_doc_token=num_max_doc_token,
-            train_threads=train_threads,
             alpha_sum=alpha_sum,
             beta=beta,
             mhstep=mhstep,

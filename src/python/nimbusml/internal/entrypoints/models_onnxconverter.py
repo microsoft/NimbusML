@@ -17,6 +17,7 @@ def models_onnxconverter(
         domain=None,
         inputs_to_drop=None,
         outputs_to_drop=None,
+        onnx_version='Stable',
         **params):
     """
     **Description**
@@ -35,6 +36,10 @@ def models_onnxconverter(
         (inputs).
     :param model: Model that needs to be converted to ONNX format.
         (inputs).
+    :param onnx_version: The targeted ONNX version. It can be either
+        "Stable" or "Experimental". If "Experimental" is used,
+        produced model can contain components that is not officially
+        supported in ONNX standard. (inputs).
     """
 
     entrypoint_name = 'Models.OnnxConverter'
@@ -82,6 +87,14 @@ def models_onnxconverter(
             obj=model,
             none_acceptable=False,
             is_of_type=str)
+    if onnx_version is not None:
+        inputs['OnnxVersion'] = try_set(
+            obj=onnx_version,
+            none_acceptable=True,
+            is_of_type=str,
+            values=[
+                'Stable',
+                'Experimental'])
 
     input_variables = {
         x for x in unlist(inputs.values())

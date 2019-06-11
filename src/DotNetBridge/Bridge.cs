@@ -7,17 +7,15 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.EntryPoints;
+using Microsoft.ML.Model.OnnxConverter;
 using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.FastTree;
-using Microsoft.ML.Runtime.ImageAnalytics;
-using Microsoft.ML.Runtime.KMeans;
-using Microsoft.ML.Runtime.Learners;
-using Microsoft.ML.Runtime.LightGBM;
-using Microsoft.ML.Runtime.Model.Onnx;
-using Microsoft.ML.Runtime.PCA;
-using Microsoft.ML.Runtime.PipelineInference;
-using Microsoft.ML.Runtime.SymSgd;
+using Microsoft.ML.Trainers;
+using Microsoft.ML.Trainers.Ensemble;
+using Microsoft.ML.Trainers.FastTree;
+using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Transforms;
 
 namespace Microsoft.MachineLearning.DotNetBridge
@@ -307,108 +305,110 @@ namespace Microsoft.MachineLearning.DotNetBridge
         /// </summary>
         private static unsafe int GenericExec(EnvironmentBlock* penv, sbyte* psz, int cdata, DataSourceBlock** ppdata)
         {
-            using (var env = new RmlEnvironment(MarshalDelegate<CheckCancelled>(penv->checkCancel), penv->seed,
-                    verbose: penv != null && penv->verbosity > 3, conc: penv != null ? penv->maxThreadsAllowed : 0))
+            var env = new RmlEnvironment(MarshalDelegate<CheckCancelled>(penv->checkCancel), penv->seed, verbose: penv != null && penv->verbosity > 3);
+            var host = env.Register("ML.NET_Execution");
+
+            env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
+            env.ComponentCatalog.RegisterAssembly(typeof(LinearModelParameters).Assembly); // ML.StandardLearners
+            env.ComponentCatalog.RegisterAssembly(typeof(CategoricalCatalog).Assembly); // ML.Transforms
+            env.ComponentCatalog.RegisterAssembly(typeof(FastTreeRegressionTrainer).Assembly); // ML.FastTree
+            
+            //env.ComponentCatalog.RegisterAssembly(typeof(EnsembleModelParameters).Assembly); // ML.Ensemble
+            env.ComponentCatalog.RegisterAssembly(typeof(KMeansModelParameters).Assembly); // ML.KMeansClustering
+            env.ComponentCatalog.RegisterAssembly(typeof(PcaModelParameters).Assembly); // ML.PCA
+            env.ComponentCatalog.RegisterAssembly(typeof(CVSplit).Assembly); // ML.EntryPoints
+
+            env.ComponentCatalog.RegisterAssembly(typeof(OlsModelParameters).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryModelParameters).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransformer).Assembly);
+            //env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
+            //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
+            env.ComponentCatalog.RegisterAssembly(typeof(DataViewReference).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(ImageLoadingTransformer).Assembly);
+            //env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
+            //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
+            //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
+
+            using (var ch = host.Start("Executing"))
             {
-                var host = env.Register("ML.NET_Execution");
-                env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
-                env.ComponentCatalog.RegisterAssembly(typeof(LinearPredictor).Assembly); // ML.StandardLearners
-                env.ComponentCatalog.RegisterAssembly(typeof(CategoricalTransform).Assembly); // ML.Transforms
-                env.ComponentCatalog.RegisterAssembly(typeof(FastTreeBinaryPredictor).Assembly); // ML.FastTree
-                env.ComponentCatalog.RegisterAssembly(typeof(KMeansPredictor).Assembly); // ML.KMeansClustering
-                env.ComponentCatalog.RegisterAssembly(typeof(PcaPredictor).Assembly); // ML.PCA
-                env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
-                env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryPredictor).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransform).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
-                //env.ComponentCatalog.RegisterAssembly(typeof(EnsemblePredictor).Assembly); // ML.Ensemble
-
-                using (var ch = host.Start("Executing"))
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                try
                 {
-                    var sw = new System.Diagnostics.Stopwatch();
-                    sw.Start();
-                    try
-                    {
-                        // code, pszIn, and pszOut can be null.
-                        ch.Trace("Checking parameters");
+                    // code, pszIn, and pszOut can be null.
+                    ch.Trace("Checking parameters");
 
-                        host.CheckParam(penv != null, nameof(penv));
-                        host.CheckParam(penv->messageSink != null, "penv->message");
+                    host.CheckParam(penv != null, nameof(penv));
+                    host.CheckParam(penv->messageSink != null, "penv->message");
 
-                        host.CheckParam(psz != null, nameof(psz));
+                    host.CheckParam(psz != null, nameof(psz));
 
-                        ch.Trace("Converting graph operands");
-                        var graph = BytesToString(psz);
+                    ch.Trace("Converting graph operands");
+                    var graph = BytesToString(psz);
 
-                        ch.Trace("Wiring message sink");
-                        var message = MarshalDelegate<MessageSink>(penv->messageSink);
-                        var messageValidator = new MessageValidator(host);
-                        var lk = new object();
-                        Action<IMessageSource, ChannelMessage> listener =
-                            (sender, msg) =>
-                            {
-                                byte[] bs = StringToNullTerminatedBytes(sender.FullName);
-                                string m = messageValidator.Validate(msg);
-                                if (!string.IsNullOrEmpty(m))
-                                {
-                                    byte[] bm = StringToNullTerminatedBytes(m);
-                                    lock (lk)
-                                    {
-                                        fixed (byte* ps = bs)
-                                        fixed (byte* pm = bm)
-                                            message(penv, msg.Kind, (sbyte*)ps, (sbyte*)pm);
-                                    }
-                                }
-                            };
-                        env.AddListener(listener);
-
-                        host.CheckParam(cdata >= 0, nameof(cdata), "must be non-negative");
-                        host.CheckParam(ppdata != null || cdata == 0, nameof(ppdata));
-                        for (int i = 0; i < cdata; i++)
+                    ch.Trace("Wiring message sink");
+                    var message = MarshalDelegate<MessageSink>(penv->messageSink);
+                    var messageValidator = new MessageValidator(host);
+                    var lk = new object();
+                    Action<IMessageSource, ChannelMessage> listener =
+                        (sender, msg) =>
                         {
-                            var pdata = ppdata[i];
-                            host.CheckParam(pdata != null, "pdata");
-                            host.CheckParam(0 <= pdata->ccol && pdata->ccol <= int.MaxValue, "ccol");
-                            host.CheckParam(0 <= pdata->crow && pdata->crow <= long.MaxValue, "crow");
-                            if (pdata->ccol > 0)
+                            byte[] bs = StringToNullTerminatedBytes(sender.FullName);
+                            string m = messageValidator.Validate(msg);
+                            if (!string.IsNullOrEmpty(m))
                             {
-                                host.CheckParam(pdata->names != null, "names");
-                                host.CheckParam(pdata->kinds != null, "kinds");
-                                host.CheckParam(pdata->keyCards != null, "keyCards");
-                                host.CheckParam(pdata->vecCards != null, "vecCards");
-                                host.CheckParam(pdata->getters != null, "getters");
+                                byte[] bm = StringToNullTerminatedBytes(m);
+                                lock (lk)
+                                {
+                                    fixed (byte* ps = bs)
+                                    fixed (byte* pm = bm)
+                                        message(penv, msg.Kind, (sbyte*)ps, (sbyte*)pm);
+                                }
                             }
+                        };
+                    env.AddListener(listener);
+
+                    host.CheckParam(cdata >= 0, nameof(cdata), "must be non-negative");
+                    host.CheckParam(ppdata != null || cdata == 0, nameof(ppdata));
+                    for (int i = 0; i < cdata; i++)
+                    {
+                        var pdata = ppdata[i];
+                        host.CheckParam(pdata != null, "pdata");
+                        host.CheckParam(0 <= pdata->ccol && pdata->ccol <= int.MaxValue, "ccol");
+                        host.CheckParam(0 <= pdata->crow && pdata->crow <= long.MaxValue, "crow");
+                        if (pdata->ccol > 0)
+                        {
+                            host.CheckParam(pdata->names != null, "names");
+                            host.CheckParam(pdata->kinds != null, "kinds");
+                            host.CheckParam(pdata->keyCards != null, "keyCards");
+                            host.CheckParam(pdata->vecCards != null, "vecCards");
+                            host.CheckParam(pdata->getters != null, "getters");
                         }
-
-                        ch.Trace("Validating number of data sources");
-
-                        // Wrap the data sets.
-                        ch.Trace("Wrapping native data sources");
-                        ch.Trace("Executing");
-                        ExecCore(penv, host, ch, graph, cdata, ppdata);
-                    }
-                    catch (Exception e)
-                    {
-                        // Dump the exception chain.
-                        var ex = e;
-                        while (ex.InnerException != null)
-                            ex = ex.InnerException;
-                        ch.Error("*** {1}: '{0}'", ex.Message, ex.GetType());
-                        return -1;
-                    }
-                    finally
-                    {
-                        sw.Stop();
-                        if (penv != null && penv->verbosity > 0)
-                            ch.Info("Elapsed time: {0}", sw.Elapsed);
-                        else
-                            ch.Trace("Elapsed time: {0}", sw.Elapsed);
                     }
 
-                    ch.Done();
+                    ch.Trace("Validating number of data sources");
+
+                    // Wrap the data sets.
+                    ch.Trace("Wrapping native data sources");
+                    ch.Trace("Executing");
+                    ExecCore(penv, host, ch, graph, cdata, ppdata);
+                }
+                catch (Exception e)
+                {
+                    // Dump the exception chain.
+                    var ex = e;
+                    while (ex.InnerException != null)
+                        ex = ex.InnerException;
+                    ch.Error("*** {1}: '{0}'", ex.Message, ex.GetType());
+                    return -1;
+                }
+                finally
+                {
+                    sw.Stop();
+                    if (penv != null && penv->verbosity > 0)
+                        ch.Info("Elapsed time: {0}", sw.Elapsed);
+                    else
+                        ch.Trace("Elapsed time: {0}", sw.Elapsed);
                 }
             }
             return 0;

@@ -12,7 +12,7 @@ from ..utils.utils import try_set, unlist
 def trainers_fasttreeranker(
         training_data,
         predictor_model=None,
-        num_trees=100,
+        number_of_trees=100,
         num_leaves=20,
         feature_column='Features',
         min_documents_in_leafs=10,
@@ -91,7 +91,7 @@ def trainers_fasttreeranker(
         Trains gradient boosted decision trees to the LambdaRank quasi-
         gradient.
 
-    :param num_trees: Total number of decision trees to create in the
+    :param number_of_trees: Total number of decision trees to create in the
         ensemble (inputs).
     :param training_data: The data to be used for training (inputs).
     :param num_leaves: The max number of leaves in each regression
@@ -123,8 +123,8 @@ def trainers_fasttreeranker(
     :param distance_weight2: Distance weight 2 adjustment to cost
         (inputs).
     :param normalize_query_lambdas: Normalize query lambdas (inputs).
-    :param best_step_ranking_regression_trees: Use best regression
-        step trees? (inputs).
+    :param best_step_ranking_regression_trees: Option for using best
+        regression step trees (inputs).
     :param use_line_search: Should we use line search for a step size
         (inputs).
     :param num_post_bracket_steps: Number of post-bracket line search
@@ -247,9 +247,9 @@ def trainers_fasttreeranker(
     inputs = {}
     outputs = {}
 
-    if num_trees is not None:
+    if number_of_trees is not None:
         inputs['NumTrees'] = try_set(
-            obj=num_trees,
+            obj=number_of_trees,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if training_data is not None:
@@ -314,7 +314,6 @@ def trainers_fasttreeranker(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if custom_gains is not None:
         inputs['CustomGains'] = try_set(

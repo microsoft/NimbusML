@@ -1,6 +1,7 @@
 ###############################################################################
 # NaiveBayesClassifier
 import numpy as np
+import pandas as pd
 from nimbusml import Pipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.text import NGramFeaturizer
@@ -26,10 +27,9 @@ texttransform = NGramFeaturizer(
 nb = NaiveBayesClassifier(feature=['SentimentText'])
 
 ppl = Pipeline([texttransform, nb])
-
 ppl.fit(X_train, y_train)
 
-scores = ppl.predict(X_test)['PredictedLabel']
-
 # evaluate the model
-print('Accuracy:', np.mean(y_test == [i for i in scores]))
+metrics, scores = ppl.test(X_test, y_test, output_scores=True)
+
+print(metrics)

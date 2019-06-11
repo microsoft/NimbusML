@@ -19,7 +19,8 @@ def simple_path_parser(
 
     :param columns: Column definitions used to override the
         Partitioned Path Parser. Expected with the format
-        name:type:numeric-source, e.g. col=MyFeature:R4:1 (settings).
+        name:type:numeric-source, for example, col=MyFeature:R4:1
+        (settings).
     :param type: Data type of each column. (settings).
     """
 

@@ -16,7 +16,7 @@ data = FileDataStream.read_csv("test.csv",
 data.head()
 # transform usage
 xf = TensorFlowScorer(
-    model=os.path.join(os.path.dirname(__file__), 'frozen_saved_model.pb'),
+    model_location=os.path.join(os.path.dirname(__file__), 'frozen_saved_model.pb'),
     columns={'c': ['a', 'b']}
 )
 

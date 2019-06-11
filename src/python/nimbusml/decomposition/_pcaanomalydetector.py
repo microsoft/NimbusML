@@ -92,7 +92,7 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param rank: The number of components in the PCA.
 
@@ -128,16 +128,16 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
             weight=None,
             **params):
 
-        if 'feature_column' in params:
+        if 'feature_column_name' in params:
             raise NameError(
-                "'feature_column' must be renamed to 'feature'")
+                "'feature_column_name' must be renamed to 'feature'")
         if feature:
-            params['feature_column'] = feature
-        if 'weight_column' in params:
+            params['feature_column_name'] = feature
+        if 'example_weight_column_name' in params:
             raise NameError(
-                "'weight_column' must be renamed to 'weight'")
+                "'example_weight_column_name' must be renamed to 'weight'")
         if weight:
-            params['weight_column'] = weight
+            params['example_weight_column_name'] = weight
         BasePredictor.__init__(self, type='anomaly', **params)
         core.__init__(
             self,

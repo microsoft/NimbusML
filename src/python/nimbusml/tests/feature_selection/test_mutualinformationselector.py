@@ -69,7 +69,7 @@ class TestMutualInformationSelector(unittest.TestCase):
             Role.Feature: [
                 'x1', 'x2'], Role.Label: 'like'}
         assert transform_2._allowed_roles == {'Label'}
-        assert transform_2.label_column == 'like'
+        assert transform_2.label_column_name == 'like'
         assert transform_2.input == ['x1', 'x2']
         assert transform_2.output == ['Feature']
         exp = Pipeline([transform_2])
@@ -79,7 +79,7 @@ class TestMutualInformationSelector(unittest.TestCase):
         transform_2 = MutualInformationSelector(
         ) << {"zoo": ['x1', 'x2'], Role.Label: 'like'}
         assert transform_2._allowed_roles == {'Label'}
-        assert transform_2.label_column == 'like'
+        assert transform_2.label_column_name == 'like'
         assert transform_2.input == ['x1', 'x2']
         assert transform_2.output == ['zoo']
         exp = Pipeline([transform_2])
@@ -89,7 +89,7 @@ class TestMutualInformationSelector(unittest.TestCase):
         transform_2 = MutualInformationSelector() << {
             "zoo": ['x1'], Role.Label: 'like'}
         assert transform_2._allowed_roles == {'Label'}
-        assert transform_2.label_column == 'like'
+        assert transform_2.label_column_name == 'like'
         assert transform_2.input == ['x1']
         assert transform_2.output == ['zoo']
         exp = Pipeline([transform_2])
@@ -99,7 +99,7 @@ class TestMutualInformationSelector(unittest.TestCase):
         transform_2 = MutualInformationSelector(
             slots_in_output=1, columns=['x1'], label='like')
         assert transform_2._allowed_roles == {'Label'}
-        assert transform_2.label_column == 'like'
+        assert transform_2.label_column_name == 'like'
         assert transform_2.input == ['x1']
         assert transform_2.output == ['x1']
         pipe = Pipeline([transform_2])
@@ -152,7 +152,7 @@ class TestMutualInformationSelector(unittest.TestCase):
             slots_in_output=1, feature=[
                 'x1', 'x2'], label='like')
         assert transform_2._allowed_roles == {'Label'}
-        assert transform_2.label_column == 'like'
+        assert transform_2.label_column_name == 'like'
         # assert transform_2.input == ['x1', 'x2']  # None
         # assert transform_2.output == ['Feature'] # None
         pipe = Pipeline([transform_2])

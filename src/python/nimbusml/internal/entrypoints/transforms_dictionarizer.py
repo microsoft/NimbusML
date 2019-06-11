@@ -16,7 +16,7 @@ def transforms_dictionarizer(
         column=None,
         max_num_terms=1000000,
         term=None,
-        sort='Occurrence',
+        sort='ByOccurrence',
         text_key_values=False,
         **params):
     """
@@ -27,14 +27,14 @@ def transforms_dictionarizer(
     :param column: New column definition(s) (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
-    :param max_num_terms: Maximum number of terms to keep per column
+    :param max_num_terms: Maximum number of keys to keep per column
         when auto-training (inputs).
     :param term: List of terms (inputs).
     :param sort: How items should be ordered when vectorized. By
         default, they will be in the order encountered. If by value
-        items are sorted according to their default comparison, e.g.,
-        text sorting will be case sensitive (e.g., 'A' then 'Z' then
-        'a'). (inputs).
+        items are sorted according to their default comparison, for
+        example, text sorting will be case sensitive (for example,
+        'A' then 'Z' then 'a'). (inputs).
     :param text_key_values: Whether key value metadata should be
         text, regardless of the actual input type (inputs).
     :param output_data: Transformed dataset (outputs).
@@ -72,8 +72,8 @@ def transforms_dictionarizer(
             none_acceptable=True,
             is_of_type=str,
             values=[
-                'Occurrence',
-                'Value'])
+                'ByOccurrence',
+                'ByValue'])
     if text_key_values is not None:
         inputs['TextKeyValues'] = try_set(
             obj=text_key_values,

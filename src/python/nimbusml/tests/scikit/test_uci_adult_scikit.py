@@ -58,7 +58,7 @@ class TestUciAdultScikit(unittest.TestCase):
                 ('linear',
                  FastLinearBinaryClassifier(
                      shuffle=False,
-                     train_threads=1))])
+                     number_of_threads=1))])
         pipe.fit(train, label)
         out_data = pipe.predict(test)
         check_accuracy_scikit(test_file, label_column, out_data, 0.779)
@@ -90,7 +90,7 @@ class TestUciAdultScikit(unittest.TestCase):
         pipe = Pipeline(
             steps=[
                 ('fu', fu), ('linear', FastLinearBinaryClassifier(
-                    shuffle=False, train_threads=1))])
+                    shuffle=False, number_of_threads=1))])
         pipe.fit(train, label)
         out_data = pipe.predict(test)
         check_accuracy_scikit(test_file, label_column, out_data, 0.709)
@@ -106,14 +106,14 @@ class TestUciAdultScikit(unittest.TestCase):
 
         ftree = FastTreesBinaryClassifier().fit(X_train, y_train)
         scores = ftree.predict(X_test)
-        accu1 = np.mean(y_test == [i for i in scores])[0]
+        accu1 = np.mean(y_test.values.ravel() == scores.values)
 
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(ftree)
         ftree2 = pickle.loads(s)
         scores2 = ftree2.predict(X_test)
-        accu2 = np.mean(y_test == [i for i in scores2])[0]
+        accu2 = np.mean(y_test.values.ravel() == scores2.values)
         assert_equal(
             accu1,
             accu2,
@@ -124,7 +124,7 @@ class TestUciAdultScikit(unittest.TestCase):
         (X_train, y_train) = get_X_y(train_file,
                                      label_column, sep=',',
                                      features=selected_features)
-        cat = (OneHotVectorizer() << ['age']).fit(X_train)
+        cat = (OneHotVectorizer() << ['age']).fit(X_train, verbose=0)
         out1 = cat.transform(X_train)
 
         # Unpickle transform and generate output.
@@ -153,14 +153,14 @@ class TestUciAdultScikit(unittest.TestCase):
         pipe.fit(X_train, y_train)
 
         scores = pipe.predict(X_test)
-        accu1 = np.mean(y_test == [i for i in scores])[0]
+        accu1 = np.mean(y_test.values.ravel() == scores.values)
 
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(pipe)
         pipe2 = pickle.loads(s)
         scores2 = pipe2.predict(X_test)
-        accu2 = np.mean(y_test == [i for i in scores2])[0]
+        accu2 = np.mean(y_test.values.ravel() == scores2.values)
         assert_equal(
             accu1,
             accu2,
@@ -178,17 +178,17 @@ class TestUciAdultScikit(unittest.TestCase):
         cat = OneHotVectorizer() << 'age'
         ftree = FastTreesBinaryClassifier()
         pipe = nimbusmlPipeline([cat, ftree])
-        pipe.fit(X_train, y_train)
+        pipe.fit(X_train, y_train, verbose=0)
 
         scores = pipe.predict(X_test)
-        accu1 = np.mean(y_test == [i for i in scores["PredictedLabel"]])[0]
+        accu1 = np.mean(y_test.values.ravel() == scores["PredictedLabel"].values)
 
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(pipe)
         pipe2 = pickle.loads(s)
         scores2 = pipe2.predict(X_test)
-        accu2 = np.mean(y_test == [i for i in scores2["PredictedLabel"]])[0]
+        accu2 = np.mean(y_test.values.ravel() == scores2["PredictedLabel"].values)
         assert_equal(
             accu1,
             accu2,
@@ -211,14 +211,14 @@ class TestUciAdultScikit(unittest.TestCase):
         skpipe.fit(X_train, y_train)
 
         scores = skpipe.predict(X_test)
-        accu1 = np.mean(y_test == [i for i in scores["PredictedLabel"]])[0]
+        accu1 = np.mean(y_test.values.ravel() == scores["PredictedLabel"].values)
 
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(skpipe)
         pipe2 = pickle.loads(s)
         scores2 = pipe2.predict(X_test)
-        accu2 = np.mean(y_test == [i for i in scores2["PredictedLabel"]])[0]
+        accu2 = np.mean(y_test.values.ravel() == scores2["PredictedLabel"].values)
         assert_equal(
             accu1,
             accu2,
@@ -284,21 +284,21 @@ class TestUciAdultScikit(unittest.TestCase):
         if 'F1' in X_train.columns:
             raise Exception("F1 is in the dataset")
         cat = OneHotVectorizer() << 'age'
-        ftree = FastTreesBinaryClassifier(num_trees=5)
+        ftree = FastTreesBinaryClassifier(number_of_trees=5)
         pipe = Pipeline(
             steps=[
                 ("cat", cat), ('pca', PCA(5)), ("ftree", ftree)])
 
         grid = GridSearchCV(pipe, dict(pca__n_components=[2],
-                                       ftree__num_trees=[11]))
+                                       ftree__number_of_trees=[11]))
         grid.fit(X_train, y_train)
         assert grid.best_params_ == {
-            'ftree__num_trees': 11,
+            'ftree__number_of_trees': 11,
             'pca__n_components': 2}
         steps = grid.best_estimator_.steps
         ft = steps[-1][1]
-        num_trees = ft.num_trees
-        assert num_trees == 11
+        number_of_trees = ft.number_of_trees
+        assert number_of_trees == 11
 
     def test_lr_named_steps_iris(self):
         iris = load_iris()

@@ -87,7 +87,7 @@ class DataColumn:
             self.type = DataColumn.get_type_mapping().get(dtype, dtype)
             pos = kwargs.get('pos', 0)
             length = kwargs.get('length', None)
-            if isinstance(pos, int):
+            if isinstance(pos, six.integer_types):
                 if length is None:
                     self.pos = pos
                 else:
@@ -186,7 +186,7 @@ class DataColumn:
 
     @property
     def IsVector(self):
-        return not isinstance(self.pos, int)
+        return not isinstance(self.pos, six.integer_types)
 
     def __eq__(self, other):
         return self.name == other.name and \
@@ -194,7 +194,7 @@ class DataColumn:
                self.type == other.type
 
     def format_pos(self):
-        if isinstance(self.pos, int):
+        if isinstance(self.pos, six.integer_types):
             return str(self.pos)
         else:
             begin = self.pos[0]
@@ -235,7 +235,7 @@ class DataColumn:
             self.name_as_string, self.type, self.format_pos())
 
     def __repr__(self):
-        if isinstance(self.pos, int):
+        if isinstance(self.pos, six.integer_types):
             rpos = self.pos
         elif len(self.pos) == 1:
             rpos = self.pos[0]
@@ -279,8 +279,8 @@ class DataColumn:
         """
         So that lists of DataColumn can be sorted.
         """
-        o1 = self.pos if isinstance(self.pos, int) else self.pos[0]  # tuple
-        o2 = o.pos if isinstance(o.pos, int) else o.pos[0]  # tuple
+        o1 = self.pos if isinstance(self.pos, six.integer_types) else self.pos[0]  # tuple
+        o2 = o.pos if isinstance(o.pos, six.integer_types) else o.pos[0]  # tuple
         return o1 < o2
 
 
@@ -334,7 +334,7 @@ class DataSchema:
 
             exp = Pipeline([
                          OneHotVectorizer(columns = ['text']),
-                         LightGbmRegressor(min_data_per_leaf = 1)
+                         LightGbmRegressor(minimum_example_count_per_leaf = 1)
                         ])
 
             exp.fit(FileDataStream('data.csv', schema = schema), 'y')
@@ -434,7 +434,7 @@ class DataSchema:
                 subsequent_indent='    '))
 
     def __getitem__(self, i):
-        if isinstance(i, int):
+        if isinstance(i, six.integer_types):
             # not efficient
             keys = list(self.columns.keys())
             return self.columns[keys[i]]
@@ -470,8 +470,10 @@ class DataSchema:
             opts = opts.copy()
             opts['sep'] = DataSchema._default_options['sep']
 
-        val = []
+        val = ['quote+']
         for k, v in sorted(opts.items()):
+            if k == 'quote':
+                continue
             if isinstance(v, bool):
                 v = "+" if v else '-'
             elif k == 'sep' and v == '\t':
@@ -546,7 +548,7 @@ class DataSchema:
                     type(names)))
         columns = list(df.columns)
         for k, v in names.items():
-            if isinstance(k, int):
+            if isinstance(k, six.integer_types):
                 columns[k] = v
             elif isinstance(k, tuple):
                 if len(k) != 2:
@@ -610,15 +612,8 @@ class DataSchema:
                 df = read_csv(filepath_or_buffer, nrows=nrows, **pd_options)
 
             # We remove integers as column names.
-            if sys.version_info < (3, 0):
-                df.columns = \
-                    ['c' + str(_) if
-                        (not isinstance(_, str) and not isinstance(_, unicode))
-                        else _ for _ in df.columns]
-            else:
-                df.columns = [
-                    'c' + str(_) if not isinstance(_, str)
-                    else _ for _ in df.columns]
+            df.columns = [_ if isinstance(_, six.string_types)
+                          else 'c' + str(_) for _ in df.columns]
 
             if isinstance(pd_options.get('dtype', None), dict):
                 # We overwrite types if specified.
@@ -734,7 +729,7 @@ class DataSchema:
             elif isinstance(col, tuple):
                 # multilevel index
                 return col
-            elif isinstance(col, int):
+            elif isinstance(col, six.integer_types):
                 # reads a file with no header
                 return "c%d" % col
             else:
@@ -788,7 +783,7 @@ class DataSchema:
 
                     names = options.get('names', None)
                     if isinstance(names, dict):
-                        names = set(_ for _ in names if isinstance(_, int))
+                        names = set(_ for _ in names if isinstance(_, six.integer_types))
                     elif isinstance(names, list):
                         names = set(range(len(names)))
                     else:
@@ -901,7 +896,7 @@ class COL:
             if not specified (None), the container is assumed to be the
             previous transform in the pipeline
         """
-        if not isinstance(expr, (str, list, int)):
+        if not isinstance(expr, (str, list, six.integer_types)):
             raise TypeError(
                 "expr must be a string, int or a list of string, int.".format(
                     expr))
@@ -970,7 +965,7 @@ class COL:
                             self.expr))
             else:
                 cols = get_cols(self.expr)
-        elif isinstance(self.expr, int):
+        elif isinstance(self.expr, six.integer_types):
             cols = [str(self.expr)]
         elif isinstance(self.expr, list):
             cols = []

@@ -38,15 +38,15 @@ def data_textloader(
             is_of_type=dict,
             field_names=[
                 'Column',
-                'UseThreads',
-                'HeaderFile',
-                'MaxRows',
                 'AllowQuoting',
                 'AllowSparse',
                 'InputSize',
                 'Separator',
                 'TrimWhitespace',
-                'HasHeader'])
+                'HasHeader',
+                'UseThreads',
+                'HeaderFile',
+                'MaxRows'])
     if data is not None:
         outputs['Data'] = try_set(
             obj=data,

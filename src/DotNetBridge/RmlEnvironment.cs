@@ -5,8 +5,8 @@
 
 using System;
 using System.Globalization;
+using Microsoft.ML;
 using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -25,12 +25,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
         private sealed class Host : HostBase
         {
 
-            public Host(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, IRandom rand, bool verbose, int? conc)
-                : base(source, shortName, parentFullName, rand, verbose, conc)
+            public Host(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, Random rand, bool verbose)
+                : base(source, shortName, parentFullName, rand, verbose)
             {
             }
 
-            public new bool IsCancelled { get { return Root.IsCancelled; } }
             protected override IChannel CreateCommChannel(ChannelProviderBase parent, string name)
             {
                 Contracts.AssertValue(parent);
@@ -47,48 +46,45 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 return new Pipe<TMessage>(parent, name, GetDispatchDelegate<TMessage>());
             }
 
-            protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, IRandom rand, bool verbose, int? conc)
+            protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, Random rand, bool verbose)
             {
-                return new Host(source, shortName, parentFullName, rand, verbose, conc);
+                return new Host(source, shortName, parentFullName, rand, verbose);
             }
-
         }
 
-        public new bool IsCancelled { get { return CheckCancelled(); } }
-
-        public RmlEnvironment(Bridge.CheckCancelled checkDelegate, int? seed = null, bool verbose = false, int conc = 0)
-            : this(RandomUtils.Create(seed), verbose, conc)
+        public RmlEnvironment(Bridge.CheckCancelled checkDelegate, int? seed = null, bool verbose = false)
+            : this(RandomUtils.Create(seed), verbose)
         {
 
             CheckCancelled = checkDelegate;
         }
 
-        public RmlEnvironment(IRandom rand, bool verbose = false, int conc = 0)
-            : base(rand, verbose, conc)
+        public RmlEnvironment(Random rand, bool verbose = false)
+            : base(rand, verbose)
         {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             EnsureDispatcher<ChannelMessage>();
         }
 
-        public RmlEnvironment(RmlEnvironment source, int? seed = null, bool verbose = false, int conc = 0)
-            : this(source, RandomUtils.Create(seed), verbose, conc)
+        public RmlEnvironment(RmlEnvironment source, int? seed = null, bool verbose = false)
+            : this(source, RandomUtils.Create(seed), verbose)
         {
         }
 
-        public RmlEnvironment(RmlEnvironment source, IRandom rand, bool verbose = false, int conc = 0)
-            : base(source, rand, verbose, conc)
+        public RmlEnvironment(RmlEnvironment source, Random rand, bool verbose = false)
+            : base(source, rand, verbose)
         {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             EnsureDispatcher<ChannelMessage>();
         }
 
-        protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, IRandom rand, bool verbose, int? conc)
+        protected override IHost RegisterCore(HostEnvironmentBase<RmlEnvironment> source, string shortName, string parentFullName, Random rand, bool verbose)
         {
             Contracts.AssertValue(rand);
             Contracts.AssertValueOrNull(parentFullName);
             Contracts.AssertNonEmpty(shortName);
             Contracts.Assert(source == this || source is Host);
-            return new Host(source, shortName, parentFullName, rand, verbose, conc);
+            return new Host(source, shortName, parentFullName, rand, verbose);
         }
 
 

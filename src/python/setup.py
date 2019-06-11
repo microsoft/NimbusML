@@ -30,9 +30,14 @@ _install_requires = [
         'scikit-learn>0.19.0',
     ]
 
+# dotnetcore2 package is available only for python 3.x
+if sys.version_info.major == 3:
+    _install_requires.append('dotnetcore2>=2.1.2')
+
 if sys.version_info[0:2] == (2,7):
     _install_requires.append('decorator')
     _install_requires.append('enum')
+    _install_requires.append('funcsigs>=1.0.2')
 
 setup(
     name='nimbusml',
@@ -40,7 +45,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on
     # single-sourcing the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.6.2',
+    version='1.1.0',
 
     description='NimbusML',
     long_description=long_description,
@@ -73,6 +78,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 
     # What does your project relate to?
@@ -106,7 +112,7 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'tests': [
-            'nose>=1.3', 'pytest',
+            'nose>=1.3', 'pytest>=4.4.0',
             'graphviz', 'imageio',
         ],
         'utils': ['graphviz', 'imageio'],
@@ -126,10 +132,10 @@ setup(
         'jupyter_client>=4.4.0',
         'nbconvert>=4.2.0',
         'nose>=1.3',
-        'pytest',
+        'pytest>=4.4.0',
     ],
 
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.7.*',
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.8.*',
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less,

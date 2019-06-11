@@ -7,7 +7,7 @@ import textwrap
 from os.path import isfile
 from os.path import join as pjoin
 
-dir_path = r'src\python\docs\docstrings'
+dir_path = pjoin(src, python, docs, docstrings)
 files = []
 for root, directories, filenames in os.walk(dir_path):
     for file in filenames:

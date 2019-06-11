@@ -48,15 +48,15 @@ class ToKey(core, BaseTransform, TransformerMixin):
 
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
-    :param max_num_terms: Maximum number of terms to keep per column when auto-
+    :param max_num_terms: Maximum number of keys to keep per column when auto-
         training.
 
     :param term: List of terms.
 
     :param sort: How items should be ordered when vectorized. By default, they
         will be in the order encountered. If by value items are sorted
-        according to their default comparison, e.g., text sorting will be case
-        sensitive (e.g., 'A' then 'Z' then 'a').
+        according to their default comparison, for example, text sorting will
+        be case sensitive (for example, 'A' then 'Z' then 'a').
 
     :param text_key_values: Whether key value metadata should be text,
         regardless of the actual input type.
@@ -84,7 +84,7 @@ class ToKey(core, BaseTransform, TransformerMixin):
             self,
             max_num_terms=1000000,
             term=None,
-            sort='Occurrence',
+            sort='ByOccurrence',
             text_key_values=False,
             columns=None,
             **params):

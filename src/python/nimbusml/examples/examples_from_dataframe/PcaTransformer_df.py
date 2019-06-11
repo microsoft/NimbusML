@@ -31,7 +31,7 @@ X = ['age', 'parity', 'induced', 'spontaneous', 'stratum', 'pooledstratum']
 for rank in range(len(X), 2, -1):
     print('Number of dimensions=', rank)
     pipe = Pipeline([
-        ColumnConcatenator() << {'X': X},  # X is VectorType column
+        ColumnConcatenator() << {'X': X},  # X is VectorDataViewType column
         PcaTransformer(rank=rank) << 'X',  # find principal components of X
         LightGbmBinaryClassifier()
     ])

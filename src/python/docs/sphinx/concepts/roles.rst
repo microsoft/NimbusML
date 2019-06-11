@@ -141,9 +141,9 @@ Below is an example of using GroupId at the trainer.
     exp = Pipeline([
         OneHotVectorizer() << ['workclass', 'education'],
         ToKey() << 'group',
-        LightGbmRanker(min_data_per_leaf = 1)   << {Role.Feature: ['workclass', 'education'], Role.Label:'y', Role.GroupId:'group'}
-        #Equivalent to LightGbmRanker(min_data_per_leaf = 1)   << {'Feature': ['workclass', 'education'], 'Label':'y', 'GroupId':'group'}
-        #Equivalent to LightGbmRanker(min_data_per_leaf = 1, feature = ['workclass', 'education'], label = 'y', group_id = 'group')
+        LightGbmRanker(minimum_example_count_per_leaf = 1)   << {Role.Feature: ['workclass', 'education'], Role.Label:'y', Role.GroupId:'group'}
+        #Equivalent to LightGbmRanker(minimum_example_count_per_leaf = 1)   << {'Feature': ['workclass', 'education'], 'Label':'y', 'GroupId':'group'}
+        #Equivalent to LightGbmRanker(minimum_example_count_per_leaf = 1, feature = ['workclass', 'education'], label = 'y', group_id = 'group')
     ])
     exp.fit(df)
     prediction = exp.predict(df)

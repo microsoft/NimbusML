@@ -81,7 +81,7 @@ ngram = NGramFeaturizer(word_feature_extractor=n_gram()) << 'review'
 X = ngram.fit_transform(X)
 
 # view the transformed numerical values and column names
-print(X)
+# print(X.head())
 
 mymodel = LogisticRegressionBinaryClassifier().fit(X, y)
 
@@ -90,4 +90,4 @@ X_test = ngram.transform(test_reviews)
 scores = mymodel.predict(ngram.transform(test_reviews))
 
 # view the scores
-print(scores)
+# print(scores.head())

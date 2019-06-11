@@ -18,8 +18,8 @@ def check_supported_losses(testcase, learner, losses, acc_threshold):
     # 247514 for that work.
     learner_args = getargspec(learner.__init__).args
     kwargs = {}
-    if 'train_threads' in learner_args and 'shuffle' in learner_args:
-        kwargs.update({'train_threads': 1, 'shuffle': False})
+    if 'number_of_threads' in learner_args and 'shuffle' in learner_args:
+        kwargs.update({'number_of_threads': 1, 'shuffle': False})
     for l in losses:
         kwargs['loss'] = l
         accuracy = get_accuracy(testcase, learner(**kwargs))

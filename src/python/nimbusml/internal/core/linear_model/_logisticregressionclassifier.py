@@ -113,16 +113,18 @@ class LogisticRegressionClassifier(
         normalization is performed, a ``MaxMin`` normalizer is used. This
         normalizer preserves sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
-    :param l2_weight: L2 regularization weight.
+    :param show_training_statistics: Show statistics of training examples.
 
-    :param l1_weight: L1 regularization weight.
+    :param l2_regularization: L2 regularization weight.
 
-    :param opt_tol: Tolerance parameter for optimization convergence. Lower =
-        slower, more accurate.
+    :param l1_regularization: L1 regularization weight.
 
-    :param memory_size: Memory size for L-BFGS. Lower=faster, less accurate.
+    :param optimization_tolerance: Tolerance parameter for optimization
+        convergence. Low = slower, more accurate.
+
+    :param history_size: Memory size for L-BFGS. Lower=faster, less accurate.
         The technique used for optimization here is L-BFGS, which uses only a
         limited amount of memory to compute the next step direction. This
         parameter indicates the number of past positions and gradients to store
@@ -133,23 +135,23 @@ class LogisticRegressionClassifier(
         however, does not put any constraint on the bias term; that is, the
         bias term can be still a negtaive number.
 
-    :param init_wts_diameter: Sets the initial weights diameter that specifies
-        the range from which values are drawn for the initial weights. These
-        weights are initialized randomly from within this range. For example,
-        if the diameter is specified to be ``d``, then the weights are
-        uniformly distributed between ``-d/2`` and ``d/2``. The default value
-        is ``0``, which specifies that all the  weights are set to zero.
+    :param initial_weights_diameter: Sets the initial weights diameter that
+        specifies the range from which values are drawn for the initial
+        weights. These weights are initialized randomly from within this range.
+        For example, if the diameter is specified to be ``d``, then the weights
+        are uniformly distributed between ``-d/2`` and ``d/2``. The default
+        value is ``0``, which specifies that all the  weights are set to zero.
 
-    :param max_iterations: Maximum iterations.
+    :param maximum_number_of_iterations: Maximum iterations.
 
-    :param sgd_init_tol: Run SGD to initialize LR weights, converging to this
-        tolerance.
+    :param stochastic_gradient_descent_initilaization_tolerance: Run SGD to
+        initialize LR weights, converging to this tolerance.
 
     :param quiet: If set to true, produce no output during training.
 
     :param use_threads: Whether or not to use threads. Default is true.
 
-    :param train_threads: Number of threads.
+    :param number_of_threads: Number of threads.
 
     :param dense_optimizer: If ``True``, forces densification of the internal
         optimization vectors. If ``False``, enables the logistic regression
@@ -177,17 +179,18 @@ class LogisticRegressionClassifier(
             self,
             normalize='Auto',
             caching='Auto',
-            l2_weight=1.0,
-            l1_weight=1.0,
-            opt_tol=1e-07,
-            memory_size=20,
+            show_training_statistics=False,
+            l2_regularization=1.0,
+            l1_regularization=1.0,
+            optimization_tolerance=1e-07,
+            history_size=20,
             enforce_non_negativity=False,
-            init_wts_diameter=0.0,
-            max_iterations=2147483647,
-            sgd_init_tol=0.0,
+            initial_weights_diameter=0.0,
+            maximum_number_of_iterations=2147483647,
+            stochastic_gradient_descent_initilaization_tolerance=0.0,
             quiet=False,
             use_threads=True,
-            train_threads=None,
+            number_of_threads=None,
             dense_optimizer=False,
             **params):
         BasePipelineItem.__init__(
@@ -195,17 +198,18 @@ class LogisticRegressionClassifier(
 
         self.normalize = normalize
         self.caching = caching
-        self.l2_weight = l2_weight
-        self.l1_weight = l1_weight
-        self.opt_tol = opt_tol
-        self.memory_size = memory_size
+        self.show_training_statistics = show_training_statistics
+        self.l2_regularization = l2_regularization
+        self.l1_regularization = l1_regularization
+        self.optimization_tolerance = optimization_tolerance
+        self.history_size = history_size
         self.enforce_non_negativity = enforce_non_negativity
-        self.init_wts_diameter = init_wts_diameter
-        self.max_iterations = max_iterations
-        self.sgd_init_tol = sgd_init_tol
+        self.initial_weights_diameter = initial_weights_diameter
+        self.maximum_number_of_iterations = maximum_number_of_iterations
+        self.stochastic_gradient_descent_initilaization_tolerance = stochastic_gradient_descent_initilaization_tolerance
         self.quiet = quiet
         self.use_threads = use_threads
-        self.train_threads = train_threads
+        self.number_of_threads = number_of_threads
         self.dense_optimizer = dense_optimizer
 
     @property
@@ -215,22 +219,23 @@ class LogisticRegressionClassifier(
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            feature_column=self._getattr_role('feature_column', all_args),
-            label_column=self._getattr_role('label_column', all_args),
-            weight_column=self._getattr_role('weight_column', all_args),
+            feature_column_name=self._getattr_role('feature_column_name', all_args),
+            label_column_name=self._getattr_role('label_column_name', all_args),
+            example_weight_column_name=self._getattr_role('example_weight_column_name', all_args),
             normalize_features=self.normalize,
             caching=self.caching,
-            l2_weight=self.l2_weight,
-            l1_weight=self.l1_weight,
-            opt_tol=self.opt_tol,
-            memory_size=self.memory_size,
+            show_training_statistics=self.show_training_statistics,
+            l2_regularization=self.l2_regularization,
+            l1_regularization=self.l1_regularization,
+            optimization_tolerance=self.optimization_tolerance,
+            history_size=self.history_size,
             enforce_non_negativity=self.enforce_non_negativity,
-            init_wts_diameter=self.init_wts_diameter,
-            max_iterations=self.max_iterations,
-            sgd_initialization_tolerance=self.sgd_init_tol,
+            initial_weights_diameter=self.initial_weights_diameter,
+            maximum_number_of_iterations=self.maximum_number_of_iterations,
+            stochastic_gradient_descent_initilaization_tolerance=self.stochastic_gradient_descent_initilaization_tolerance,
             quiet=self.quiet,
             use_threads=self.use_threads,
-            num_threads=self.train_threads,
+            number_of_threads=self.number_of_threads,
             dense_optimizer=self.dense_optimizer)
 
         all_args.update(algo_args)

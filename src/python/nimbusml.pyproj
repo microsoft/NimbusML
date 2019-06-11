@@ -12,8 +12,8 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|Py3.6</InterpreterId>
-    <InterpreterPath>..\..\dependencies\Python3.6\python.exe</InterpreterPath>
+    <InterpreterId>Global|VisualStudio|Py3.7</InterpreterId>
+    <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
@@ -117,6 +117,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\SymSgdBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\ToKey_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\WordEmbedding_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\__init__.py" />
     <Compile Include="nimbusml\examples\Exp.py" />
     <Compile Include="nimbusml\examples\FactorizationMachineBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\FastForestBinaryClassifier.py" />
@@ -227,11 +228,9 @@
     <Compile Include="nimbusml\internal\entrypoints\data_idataviewarrayconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_predictormodelarrayconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_textloader.py" />
-    <Compile Include="nimbusml\internal\entrypoints\data_transformmodelarrayconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_anomalydetectionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_anomalypipelineensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_binaryclassificationevaluator.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_binarycrossvalidator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_binaryensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_binarypipelineensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_classificationevaluator.py" />
@@ -251,13 +250,20 @@
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_quantileregressionevaluator.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_rankerevaluator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_rankingevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionpipelineensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_summarizer.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_traintestbinaryevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestevaluator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_exponentialaverage.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_percentilethresholdtransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_pvaluetransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_slidingwindowtransform.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestregressor.py" />
@@ -294,7 +300,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_columndropper.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnselector.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columntypeconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_combinerbycontiguousgroupid.py" />
@@ -304,6 +309,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_datasettransformscorer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_dictionarizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_featurecombiner.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_featurecontributioncalculationtransformer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_featureselectorbycount.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_featureselectorbymutualinformation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_globalcontrastnormalizer.py" />
@@ -350,11 +356,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_twoheterogeneousmodelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_vectortoimage.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_wordembeddings.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_wordtokenizer.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_automlengine_defaults.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_automlengine_rocket.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_automlengine_uniformrandom.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_automlstatebase_automlstate.py" />
     <Compile Include="nimbusml\internal\entrypoints\_boosterparameterfunction_dart.py" />
     <Compile Include="nimbusml\internal\entrypoints\_boosterparameterfunction_gbdt.py" />
     <Compile Include="nimbusml\internal\entrypoints\_boosterparameterfunction_goss.py" />
@@ -412,7 +413,6 @@
     <Compile Include="nimbusml\internal\entrypoints\_sdcaclassificationlossfunction_logloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_sdcaclassificationlossfunction_smoothedhingeloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_sdcaregressionlossfunction_squaredloss.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_searchterminator_iterationlimited.py" />
     <Compile Include="nimbusml\internal\entrypoints\_stopwordsremover_custom.py" />
     <Compile Include="nimbusml\internal\entrypoints\_stopwordsremover_predefined.py" />
     <Compile Include="nimbusml\internal\entrypoints\__init__.py" />
@@ -1094,7 +1094,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Py3.6" />
+    <InterpreterReference Include="Global|VisualStudio|Py3.7" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

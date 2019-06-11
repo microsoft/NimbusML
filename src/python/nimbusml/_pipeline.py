@@ -31,8 +31,8 @@ from .internal.entrypoints.models_clusterevaluator import \
     models_clusterevaluator
 from .internal.entrypoints.models_datasettransformer import \
     models_datasettransformer
-from .internal.entrypoints.models_rankerevaluator import \
-    models_rankerevaluator
+from .internal.entrypoints.models_rankingevaluator import \
+    models_rankingevaluator
 from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
@@ -142,8 +142,8 @@ class Pipeline:
         cloned_steps = [deepcopy(s) for s in self.steps]
 
         # Rolls back role manipulation during fitting,
-        # it removes attribute mapped to roles: label_column,
-        # feature_column,
+        # it removes attribute mapped to roles: label_column_name,
+        # feature_column_name,
         # ...
         if len(cloned_steps) > 0:
             last_node = self.last_node
@@ -612,13 +612,13 @@ class Pipeline:
         if last_node.type != 'transform':  # last node is predictor
             if hasattr(
                     last_node,
-                    'feature_column') and last_node.feature_column is \
+                    'feature_column_name') and last_node.feature_column_name is \
                     not None:
-                if isinstance(last_node.feature_column, list):
-                    learner_features = last_node.feature_column
-                    last_node.feature_column = 'Features'
+                if isinstance(last_node.feature_column_name, list):
+                    learner_features = last_node.feature_column_name
+                    last_node.feature_column_name = 'Features'
                 else:
-                    learner_features = [last_node.feature_column]
+                    learner_features = [last_node.feature_column_name]
             elif strategy_iosklearn in ("previous", "accumulate"):
                 if hasattr(
                         last_node,
@@ -627,16 +627,16 @@ class Pipeline:
                         learner_features = last_node.feature
                     else:
                         learner_features = [last_node.feature]
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
                 elif isinstance(columns_out, list):
                     learner_features = columns_out
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
                 elif columns_out is None:
                     learner_features = ['Features']
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
                 else:
                     learner_features = [columns_out]
-                    last_node.feature_column = 'Features'
+                    last_node.feature_column_name = 'Features'
             else:
                 raise NotImplementedError(
                     "Strategy '{0}' to handle unspecified inputs is not "
@@ -644,43 +644,43 @@ class Pipeline:
                         strategy_iosklearn))
 
             if label_column is not None or last_node._use_role(Role.Label):
-                if getattr(last_node, 'label_column_', None):
-                    label_column = last_node.label_column_
-                elif getattr(last_node, 'label_column', None):
-                    label_column = last_node.label_column
+                if getattr(last_node, 'label_column_name_', None):
+                    label_column = last_node.label_column_name_
+                elif getattr(last_node, 'label_column_name', None):
+                    label_column = last_node.label_column_name
                 elif label_column:
-                    last_node.label_column = label_column
+                    last_node.label_column_name = label_column
                 elif y is None:
                     if label_column is None:
                         label_column = Role.Label
-                    last_node.label_column = label_column
+                    last_node.label_column_name = label_column
                 else:
                     label_column = _extract_label_column(
                         last_node, DataSchema.read_schema(y))
                     if label_column is None:
                         label_column = Role.Label
-                    last_node.label_column = label_column
+                    last_node.label_column_name = label_column
             else:
-                last_node.label_column = None
+                last_node.label_column_name = None
                 label_column = None
 
             if weight_column is not None or last_node._use_role(
                     Role.Weight):
-                if getattr(last_node, 'weight_column', None):
-                    weight_column = last_node.weight_column
+                if getattr(last_node, 'example_weight_column_name', None):
+                    weight_column = last_node.example_weight_column_name
                 elif weight_column:
-                    last_node.weight_column = weight_column
+                    last_node.example_weight_column_name = weight_column
             else:
-                last_node.weight_column = None
+                last_node.example_weight_column_name = None
                 weight_column = None
 
-            if (hasattr(last_node, 'group_id_column_')
-                    and last_node.group_id_column_ is not None):
-                group_id_column = last_node.group_id_column_
+            if (hasattr(last_node, 'row_group_column_name_')
+                    and last_node.row_group_column_name_ is not None):
+                group_id_column = last_node.row_group_column_name_
             elif (hasattr(last_node,
-                          'group_id_column') and
-                  last_node.group_id_column is not None):
-                group_id_column = last_node.group_id_column
+                          'row_group_column_name') and
+                  last_node.row_group_column_name is not None):
+                group_id_column = last_node.row_group_column_name
             else:
                 group_id_column = None
 
@@ -705,12 +705,12 @@ class Pipeline:
             # node to
             # use suplied vars
             learner_node = last_node._get_node(
-                feature_column=learner_features,
+                feature_column_name=learner_features,
                 training_data=output_data,
                 predictor_model=predictor_model,
-                label_column=label_column,
-                weight_column=weight_column,
-                group_id_column=group_id_column)
+                label_column_name=label_column,
+                example_weight_column_name=weight_column,
+                row_group_column_name=group_id_column)
             graph_nodes['learner_node'] = [learner_node]
             return graph_nodes, learner_node, learner_features
         else:
@@ -729,6 +729,7 @@ class Pipeline:
         params.pop('output_scores', False)
         output_binary_data_stream = params.pop(
             'output_binary_data_stream', False)
+        params.pop('parallel', None)
 
         X, y, columns_renamed, feature_columns, label_column, schema, \
             weights, weight_column = self._preprocess_X_y(X, y, weights)
@@ -923,7 +924,7 @@ class Pipeline:
             else:
                 assigned = []
                 for role in sorted(DataRoles._allowed):
-                    attr = role + 'Column'
+                    attr = DataRoles.to_parameter(role)
                     if attr in inp:
                         assigned.append(inp[attr])
                 assigned = set(assigned)
@@ -931,9 +932,9 @@ class Pipeline:
                     col for col in input_schema if col not in assigned]
 
                 for role in sorted(DataRoles._allowed):
-                    attr = role + 'Column'
+                    attr = DataRoles.to_parameter(role)
                     if attr in inp:
-                        if attr == 'FeatureColumn' and inp[attr]\
+                        if attr == 'FeatureColumnName' and inp[attr]\
                                 not in input_schema:
                             val = not_assigned
                         else:
@@ -981,7 +982,7 @@ class Pipeline:
         for node, entrypoint in nodes:
             if 'ColumnDropper' in node.__class__.__name__:
                 schi = list(current_schema)
-                for co in entrypoint.inputs['Column']:
+                for co in entrypoint.inputs['DropColumns']:
                     if co in current_schema:
                         del current_schema[current_schema.index(co)]
                     else:
@@ -1088,12 +1089,14 @@ class Pipeline:
                 clone = self.clone()
             self.steps = clone.steps
 
+        # Clear cached values
+        for attr in ["_run_time_error", "model_summary"]:
+            if hasattr(self, attr):
+                delattr(self, attr)
+
         # Caches the predictor to restore it as it was
         # in case of exception. It is deleted after the training.
         self._cache_predictor = deepcopy(self.steps[-1])
-
-        if hasattr(self, "_run_time_error"):
-            delattr(self, "_run_time_error")
 
         # Checks that no node was ever trained.
         for i, n in enumerate(self.nodes):
@@ -1108,6 +1111,7 @@ class Pipeline:
         graph, X, y, weights, start_time, schema, telemetry_info, \
             learner_features, _, max_slots = self._fit_graph(
                 X, y, verbose, **params)
+        params.pop('max_slots', max_slots)
 
         def move_information_about_roles_once_used():
             last_node = self.last_node
@@ -1131,7 +1135,8 @@ class Pipeline:
                 w=weights,
                 verbose=verbose,
                 max_slots=max_slots,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             if hasattr(e, 'model'):
@@ -1292,7 +1297,7 @@ class Pipeline:
             node = step._get_node(data=data_in, input=columns_in,
                                   output_data=data_out,
                                   output=columns_out, model=model_out,
-                                  label_column=label_column)
+                                  label_column_name=label_column)
             if isinstance(node, list):
                 # In most cases, _get_node returns only one entrypoint
                 # mapped to the current step. In rare cases, the python
@@ -1460,7 +1465,7 @@ class Pipeline:
             column = [OrderedDict(Source=group_id, Name=group_id)]
             algo_args = dict(data=svd, output_data=svd, column=column)
             key_node = transforms_texttokeyconverter(**algo_args)
-            evaluate_node = models_rankerevaluator(
+            evaluate_node = models_rankingevaluator(
                 group_id_column=group_id, **params)
             all_nodes.extend([
                 key_node,
@@ -1586,7 +1591,7 @@ class Pipeline:
                 "clone it and then modify.")
         if len(self) == 0:
             raise IndexError("Pipeline is empty.")
-        if isinstance(index, int):
+        if isinstance(index, six.integer_types):
             del self.steps[index]
         elif isinstance(index, str):
             res = []
@@ -1657,7 +1662,7 @@ class Pipeline:
         """
         if len(self) == 0:
             raise IndexError("Pipeline is empty.")
-        if isinstance(index, int):
+        if isinstance(index, six.integer_types):
             return self.steps[index]
         elif isinstance(index, str):
             res = []
@@ -1785,7 +1790,8 @@ class Pipeline:
                 random_state=self.random_state,
                 model=self.model,
                 verbose=verbose,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
@@ -1955,7 +1961,7 @@ class Pipeline:
                 raise ValueError(
                     "Pipeline needs a trainer as last step for test()")
             if y is None:
-                y = self.last_node.label_column_
+                y = self.last_node.label_column_name_
         elif y is None:
             raise ValueError(errmsg)
 
@@ -1971,8 +1977,8 @@ class Pipeline:
             group_id = group_id if group_id is not None else inputs.get(
                 Role.GroupId)
             if group_id is None:
-                if hasattr(last_node, 'group_id_column_'):
-                    group_id = last_node.group_id_column_
+                if hasattr(last_node, 'row_group_column_name_'):
+                    group_id = last_node.row_group_column_name_
         # if model was loaded using load_model, no nodes present
         except TypeError:
             pass
@@ -2104,7 +2110,8 @@ class Pipeline:
                 model=self.model,
                 verbose=verbose,
                 max_slots=max_slots,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
@@ -2175,7 +2182,8 @@ class Pipeline:
                 model=self.model,
                 verbose=verbose,
                 is_summary=True,
-                telemetry_info=telemetry_info)
+                telemetry_info=telemetry_info,
+                **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e

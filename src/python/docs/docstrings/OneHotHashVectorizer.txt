@@ -33,7 +33,7 @@
 
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
-    :param hash_bits: An integer specifying the number of bits to hash into.
+    :param number_of_bits: An integer specifying the number of bits to hash into.
         Must be between 1 and 30, inclusive. The default value is 16.
 
     :param random_state: An integer specifying the hashing seed. The default
@@ -43,7 +43,7 @@
     :param ordered: ``True`` to include the position of each term in the
         hash. Otherwise, ``False``. The default value is ``True``.
 
-    :param invert_hash: An integer specifying the limit on the number of keys
+    :param maximum_number_of_inverts: An integer specifying the limit on the number of keys
         that can be used to generate the slot name. ``0`` means no invert
         hashing; ``-1`` means no limit. While a zero value gives better
         performance, a non-zero value is needed to get meaningful coefficent
