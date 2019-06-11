@@ -10,7 +10,7 @@ from ..utils.utils import try_set, unlist
 
 
 def timeseriesprocessingentrypoints_iidspikedetector(
-        source,
+        column,
         data,
         name,
         output_data=None,
@@ -24,7 +24,7 @@ def timeseriesprocessingentrypoints_iidspikedetector(
         This transform detects the spikes in a i.i.d. sequence using adaptive
         kernel density estimation.
 
-    :param source: The name of the source column. (inputs).
+    :param column: The name of the source column. (inputs).
     :param data: Input dataset (inputs).
     :param name: The name of the new column. (inputs).
     :param confidence: The confidence for spike detection in the
@@ -41,9 +41,9 @@ def timeseriesprocessingentrypoints_iidspikedetector(
     inputs = {}
     outputs = {}
 
-    if source is not None:
+    if column is not None:
         inputs['Source'] = try_set(
-            obj=source,
+            obj=column,
             none_acceptable=False,
             is_of_type=str,
             is_column=True)

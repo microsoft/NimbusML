@@ -3489,7 +3489,8 @@
       "ShortName": "ispike",
       "Inputs": [
         {
-          "Name": "Source",
+          "Name": "Column",
+          "PassAs": "Source",
           "Type": "String",
           "Desc": "The name of the source column.",
           "Aliases": [
