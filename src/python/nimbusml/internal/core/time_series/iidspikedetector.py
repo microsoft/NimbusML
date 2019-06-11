@@ -80,25 +80,8 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
 
     @trace
     def _get_node(self, **all_args):
-
-        input_column = self.input
-        if input_column is None and 'input' in all_args:
-            input_column = all_args['input']
-        if 'input' in all_args:
-            all_args.pop('input')
-
-        # validate input
-        if input_column is None:
-            raise ValueError(
-                "'None' input passed when it cannot be none.")
-
-        if not isinstance(input_column, str):
-            raise ValueError(
-                "input has to be a string, instead got %s" %
-                type(input_column))
-
         algo_args = dict(
-            column=input_column,
+            source=self.source,
             name=self._name_or_source,
             confidence=self.confidence,
             side=self.side,

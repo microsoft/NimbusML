@@ -160,6 +160,7 @@
     <Compile Include="nimbusml\examples\OneVsRestClassifier.py" />
     <Compile Include="nimbusml\examples\OnlineGradientDescentRegressor.py" />
     <Compile Include="nimbusml\examples\OrdinaryLeastSquaresRegressor.py" />
+    <Compile Include="nimbusml\examples\IidSpikeDetector.py" />
     <Compile Include="nimbusml\examples\PcaAnomalyDetector.py" />
     <Compile Include="nimbusml\examples\PcaTransformer.py" />
     <Compile Include="nimbusml\examples\PipelineWithGridSearchCV2.py" />
@@ -574,6 +575,8 @@
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
+    <Compile Include="nimbusml\tests\time_series\test_iidspikedetector.py" />
+    <Compile Include="nimbusml\tests\time_series\__init__.py" />
     <Compile Include="nimbusml\time_series\iidspikedetector.py" />
     <Compile Include="nimbusml\time_series\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
@@ -770,6 +773,7 @@
     <Folder Include="nimbusml\tests\multiclass\" />
     <Folder Include="nimbusml\tests\model_summary\" />
     <Folder Include="nimbusml\tests\idv\" />
+    <Folder Include="nimbusml\tests\time_series\" />
     <Folder Include="nimbusml\tests\pipeline\" />
     <Folder Include="nimbusml\tests\feature_extraction\" />
     <Folder Include="nimbusml\tests\feature_extraction\categorical\" />
