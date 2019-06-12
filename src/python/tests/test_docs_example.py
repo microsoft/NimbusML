@@ -42,38 +42,43 @@ class TestDocsExamples(unittest.TestCase):
         fold_files.sort()
 
         modpath = os.path.abspath(os.path.dirname(myfile))
-        modpath = os.path.normpath(
-            os.path.join(os.path.join(modpath), '..'))
+        modpath = os.path.normpath(os.path.join(os.path.join(modpath), '..'))
         os.environ['PYTHONPATH'] = modpath
-        start = 0
+        os.environ['PYTHONIOENCODING'] = 'UTF-8'
+
         ran = 0
         excs = []
 
         for i, (fold, name) in enumerate(fold_files):
-            if i <= start:
-                continue
             if name in [
                         # Bug 294481: CharTokenizer_df fails
                         # with error about variable length vector
                         'CharTokenizer_df.py',
+                        # Bug todo: CustomStopWordsRemover fails on ML.NET side
+                        'NGramFeaturizer2.py',
                         ]:
                 continue
-            if (os.name != "nt" and (platform.linux_distribution()[
-                                         0] != "Ubuntu" or
-                                     platform.linux_distribution()[
-                                         1] != "16.04")):
-                if name in {
-                         'Image.py',
-                         'Image_df.py',
-                         'DssmFeaturizer.py',
-                         'Sentiment.py'}:
-                    # REVIEW: fix ssl issue on test centos7 & ubuntu14
-                    # boxes.
-                    # Tests work on ubuntu16.
+            # skip for all linux tests, mac is ok
+            if os.name == "posix" and platform.linux_distribution()[0] != '':
+                if name in [
+                    # SymSgdNative fails to load on linux
+                    'SymSgdBinaryClassifier.py',
+                    'SymSgdBinaryClassifier_infert_df.py',
+                    # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
+                    'WordEmbedding.py',
+                    'WordEmbedding_df.py',
+                    'NaiveBayesClassifier_df.py'
+                    ]:
                     continue
-            if os.name != "nt" and six.PY2:
-                if name in {'NaiveBayesClassifier_df.py'}:
+            # skip for centos7 tests 
+            if platform.linux_distribution()[0] == 'CentOS Linux':
+                if name in [
+                    # libgdiplus needs to be setup
+                    'Image.py',
+                    'Image_df.py'
+                    ]:
                     continue
+
             full = os.path.join(fold, name)
             cmd = '"{0}" -u "{1}"'.format(
                 sys.executable.replace(
@@ -113,6 +118,13 @@ class TestDocsExamples(unittest.TestCase):
                 "Your CPU supports instructions that this TensorFlow",
                 "CacheClassesFromAssembly: can't map name "
                 "OLSLinearRegression to Void, already mapped to Void",
+                # TensorFlowScorer.py
+                "tensorflow/compiler/xla/service/service.cc:150] XLA service",
+                "tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device",
+                "tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency:",
+                # Binner.py
+                "from collections import Mapping, defaultdict",
+                "DeprecationWarning: Using or importing the ABCs",
                 # BootStrapSample.py
                 "DeprecationWarning: the imp module is deprecated",
                 # PipelineWithGridSearchCV2.py
@@ -124,7 +136,10 @@ class TestDocsExamples(unittest.TestCase):
                 # FastLinearClassifier_iris_df.py
                 "FutureWarning: elementwise comparison failed",
                 # PcaAnomalyDetector_df.py
-                "FutureWarning: Sorting because non-concatenation axis"
+                "FutureWarning: Sorting because non-concatenation axis",
+                # Image.py
+                "Unable to revert mtime: /Library/Fonts",
+                "Fontconfig error: Cannot load default config file",
                 ]
             if sys.version_info[:2] <= (3, 6):
                 # This warning is new but it does not break any
@@ -133,11 +148,13 @@ class TestDocsExamples(unittest.TestCase):
                 # TODO: Investigate.
                 exps.append("RuntimeWarning: numpy.dtype size changed")
 
-            errors = stderr.split('\n')
-            for exp in exps:
-                errors = [_ for _ in errors if exp in _]
+            errors = None
+            if stderr != '':
+                errors = stderr.split('\n')
+                for exp in exps:
+                    errors = [_ for _ in errors if exp not in _]
 
-            if errors:
+            if errors and (len(errors) > 1 or (len(errors) == 1 and errors[0] != '')):
                 excs.append(RuntimeError(
                     "Issue with\n  File '{0}'\n--CMD\n{1}\n--ERR\n{2}\n--OUT\n"
                     "{3}\n--".format(full, cmd, '\n'.join(errors), stdout)))

@@ -11,21 +11,21 @@ from ..utils.utils import try_set, unlist
 def trainers_naivebayesclassifier(
         training_data,
         predictor_model=None,
-        feature_column='Features',
-        label_column='Label',
+        feature_column_name='Features',
+        label_column_name='Label',
         normalize_features='Auto',
         caching='Auto',
         **params):
     """
     **Description**
-        Train a MultiClassNaiveBayesTrainer.
+        Train a MulticlassNaiveBayesTrainer.
 
     :param training_data: The data to be used for training (inputs).
-    :param feature_column: Column to use for features (inputs).
-    :param label_column: Column to use for labels (inputs).
+    :param feature_column_name: Column to use for features (inputs).
+    :param label_column_name: Column to use for labels (inputs).
     :param normalize_features: Normalize option for the feature
         column (inputs).
-    :param caching: Whether learner should cache input training data
+    :param caching: Whether trainer should cache input training data
         (inputs).
     :param predictor_model: The trained model (outputs).
     """
@@ -39,15 +39,15 @@ def trainers_naivebayesclassifier(
             obj=training_data,
             none_acceptable=False,
             is_of_type=str)
-    if feature_column is not None:
-        inputs['FeatureColumn'] = try_set(
-            obj=feature_column,
+    if feature_column_name is not None:
+        inputs['FeatureColumnName'] = try_set(
+            obj=feature_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if label_column is not None:
-        inputs['LabelColumn'] = try_set(
-            obj=label_column,
+    if label_column_name is not None:
+        inputs['LabelColumnName'] = try_set(
+            obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -69,7 +69,6 @@ def trainers_naivebayesclassifier(
             values=[
                 'Auto',
                 'Memory',
-                'Disk',
                 'None'])
     if predictor_model is not None:
         outputs['PredictorModel'] = try_set(

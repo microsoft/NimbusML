@@ -14,15 +14,21 @@ usage()
     echo "Usage: $0 --configuration <Configuration> [--runTests]"
     echo ""
     echo "Options:"
-    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
+    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
     echo "  --runTests                        Run tests after build"
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
     echo "  --buildNativeBridgeOnly           Build only the native bridge code"
-    echo "  --skipNativeBridge                Build the DotNet bridge and python wheel but use existing native bridge binaries (e.g. <repo>/x64/DbgLinPy3.6/pybridge.so)"
+    echo "  --skipNativeBridge                Build the DotNet bridge and python wheel but use existing native bridge binaries (e.g. <repo>/x64/DbgLinPy3.7/pybridge.so)"
     exit 1
 }
 
-__configuration=DbgLinPy3.6
+# Parameter defaults
+if [ "$(uname -s)" = "Darwin" ]
+then 
+    __configuration=DbgMacPy3.7
+else
+    __configuration=DbgLinPy3.7
+fi
 __runTests=false
 __buildNativeBridge=true
 __buildDotNetBridge=true
@@ -59,6 +65,12 @@ while [ "$1" != "" ]; do
 done
 
 case $__configuration in
+*LinPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-2019.03.v2.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.7-1.69.0.0.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
+    ;;
 *LinPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.6-1.64.0.0.tar.gz
@@ -76,6 +88,12 @@ case $__configuration in
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-2.7-1.64.0.0.tar.gz
     PythonVersion=2.7
     PythonTag=cp27
+    ;;
+*MacPy3.7)
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2019.03.v2.tar.gz
+    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.69.0.0.tar.gz
+    PythonVersion=3.7
+    PythonTag=cp37
     ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
@@ -95,6 +113,8 @@ case $__configuration in
     PythonVersion=2.7
     PythonTag=cp27
     ;;
+*)
+echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
@@ -171,14 +191,37 @@ then
     touch "${__currentScriptDir}/src/python/nimbusml/internal/libs/__init__.py"
 
     echo "Placing binaries in libs dir for wheel packaging ... "
-    mv "${BuildOutputDir}/${__configuration}"/Platform "${__currentScriptDir}/src/python/nimbusml/internal/libs/Platform"
-    mv "${BuildOutputDir}/${__configuration}"/*.* "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-    find "${__currentScriptDir}/src/python/nimbusml/internal/libs/" \( -name "dummy*" -o -name "*.exe" \) -print | xargs rm
-    if [[ ! $__configuration = Dbg* ]]
-    then
-        find "${__currentScriptDir}/src/python/nimbusml/internal/libs/" \( -name "*.pdb" -o -name "*.ipdb" \) -print | xargs rm
-    fi
+    cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
+    if [ ${PythonVersion} = 2.7 ]
+    then
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		ext=*.so
+		if [ "$(uname -s)" = "Darwin" ]
+		then 
+            ext=*.dylib
+		fi	
+		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    else
+		libs_txt=libs_linux.txt
+		if [ "$(uname -s)" = "Darwin" ]
+		then 
+		    libs_txt=libs_mac.txt
+		fi
+		cat build/${libs_txt} | while read i; do
+			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		done
+    fi
+	
+    if [[ $__configuration = Dbg* ]]
+    then
+        cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    fi
+  
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 
@@ -211,10 +254,13 @@ then
         exit 1
     fi
     # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-    "${PythonExe}" -m pip install nose pytest graphviz pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    "${PythonExe}" -m pip install nose "pytest>=4.4.0" graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq
+    elif [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
+    then
+        "${PythonExe}" -m pip install --upgrade pytest-remotedata
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
@@ -223,8 +269,8 @@ then
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}" --cov="${PackagePath}" --cov-report term-missing --cov-report html:"${ReportPath}"
+    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}"
+    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}"
 fi
 
 exit $?

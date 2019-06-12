@@ -137,8 +137,8 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
     :param keep_numbers: ``False`` to remove numbers; ``True`` to retain
         numbers. The default value is ``True``.
 
-    :param output_tokens: Whether to output the transformed text tokens as an
-        additional column.
+    :param output_tokens_column_name: Column containing the transformed text
+        tokens.
 
     :param dictionary: A dictionary of whitelisted terms which accepts
         the following options:
@@ -223,7 +223,7 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
             keep_diacritics=False,
             keep_punctuations=True,
             keep_numbers=True,
-            output_tokens=False,
+            output_tokens_column_name=None,
             dictionary=None,
             word_feature_extractor=Ngram(
                 max_num_terms=[10000000]),
@@ -246,7 +246,7 @@ class NGramFeaturizer(core, BaseTransform, TransformerMixin):
             keep_diacritics=keep_diacritics,
             keep_punctuations=keep_punctuations,
             keep_numbers=keep_numbers,
-            output_tokens=output_tokens,
+            output_tokens_column_name=output_tokens_column_name,
             dictionary=dictionary,
             word_feature_extractor=word_feature_extractor,
             char_feature_extractor=char_feature_extractor,

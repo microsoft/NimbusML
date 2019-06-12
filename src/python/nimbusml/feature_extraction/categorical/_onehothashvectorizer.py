@@ -54,7 +54,7 @@ class OneHotHashVectorizer(core, BaseTransform, TransformerMixin):
 
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
-    :param hash_bits: An integer specifying the number of bits to hash into.
+    :param number_of_bits: An integer specifying the number of bits to hash into.
         Must be between 1 and 30, inclusive. The default value is 16.
 
     :param output_kind: A character string that specifies the kind
@@ -86,7 +86,7 @@ class OneHotHashVectorizer(core, BaseTransform, TransformerMixin):
     :param ordered: ``True`` to include the position of each term in the
         hash. Otherwise, ``False``. The default value is ``True``.
 
-    :param invert_hash: An integer specifying the limit on the number of keys
+    :param maximum_number_of_inverts: An integer specifying the limit on the number of keys
         that can be used to generate the slot name. ``0`` means no invert
         hashing; ``-1`` means no limit. While a zero value gives better
         performance, a non-zero value is needed to get meaningful coefficent
@@ -109,11 +109,11 @@ class OneHotHashVectorizer(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            hash_bits=16,
+            number_of_bits=16,
             output_kind='Bag',
             random_state=314489979,
             ordered=True,
-            invert_hash=0,
+            maximum_number_of_inverts=0,
             columns=None,
             **params):
 
@@ -122,11 +122,11 @@ class OneHotHashVectorizer(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            hash_bits=hash_bits,
+            number_of_bits=number_of_bits,
             output_kind=output_kind,
             random_state=random_state,
             ordered=ordered,
-            invert_hash=invert_hash,
+            maximum_number_of_inverts=maximum_number_of_inverts,
             **params)
         self._columns = columns
 

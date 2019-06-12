@@ -44,10 +44,9 @@
         <'This', 'is', 'good'>, users need to create an input column by:
 
         * concatenating columns with TX type,
-        * or using the ``output_tokens=True`` for ```NGramFeaturizer()`` to
+        * or using the ``output_tokens_column_name`` for ```NGramFeaturizer()`` to
         convert a column with sentences like "This is good" into <'This',
-        'is', 'good'>. The column for the output token column is renamed with
-        a prefix of '_TranformedText'.
+        'is', 'good'>.
 
         In the following example, after the ``NGramFeaturizer``, features
         named *ngram.__* are generated.

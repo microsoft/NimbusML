@@ -90,11 +90,11 @@ class PcaTransformer(core, BaseTransform, TransformerMixin):
             columns=None,
             **params):
 
-        if 'weight_column' in params:
+        if 'example_weight_column_name' in params:
             raise NameError(
-                "'weight_column' must be renamed to 'weight'")
+                "'example_weight_column_name' must be renamed to 'weight'")
         if weight:
-            params['weight_column'] = weight
+            params['example_weight_column_name'] = weight
         if columns:
             params['columns'] = columns
         BaseTransform.__init__(self, **params)

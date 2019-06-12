@@ -1,6 +1,7 @@
 ###############################################################################
 # ColumnConcatenator
 import numpy as np
+import pandas as pd
 from nimbusml import Pipeline, Role
 from nimbusml.datasets import get_dataset
 from nimbusml.linear_model import LogisticRegressionClassifier
@@ -31,7 +32,6 @@ pipeline = Pipeline([dropcols, concat, LogisticRegressionClassifier()])
 # TODO: fix as_matrix() requirement
 pipeline.fit(X_train, y_train)
 
-scores = pipeline.predict(X_test)
-print(scores)
 # Evaluate the model
-print('Accuracy:', np.mean(y_test == [i for i in scores]))
+metrics, scores = pipeline.test(X_test, y_test, output_scores=True)
+print(metrics)

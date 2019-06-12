@@ -67,7 +67,7 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
         and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
         sparsity by mapping zero to zero.
 
-    :param caching: Whether learner should cache input training data.
+    :param caching: Whether trainer should cache input training data.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -94,16 +94,16 @@ class NaiveBayesClassifier(core, BasePredictor, ClassifierMixin):
             label=None,
             **params):
 
-        if 'feature_column' in params:
+        if 'feature_column_name' in params:
             raise NameError(
-                "'feature_column' must be renamed to 'feature'")
+                "'feature_column_name' must be renamed to 'feature'")
         if feature:
-            params['feature_column'] = feature
-        if 'label_column' in params:
+            params['feature_column_name'] = feature
+        if 'label_column_name' in params:
             raise NameError(
-                "'label_column' must be renamed to 'label'")
+                "'label_column_name' must be renamed to 'label'")
         if label:
-            params['label_column'] = label
+            params['label_column_name'] = label
         BasePredictor.__init__(self, type='classifier', **params)
         core.__init__(
             self,

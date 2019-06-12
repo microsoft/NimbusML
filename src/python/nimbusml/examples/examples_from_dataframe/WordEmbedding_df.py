@@ -3,7 +3,7 @@
 import pandas
 from nimbusml import Pipeline
 from nimbusml.feature_extraction.text import WordEmbedding
-from nimbusml.feature_extraction.text.ngramfeaturizer import NGramFeaturizer
+from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.feature_extraction.text.extractor import Ngram
 
 # create the data
@@ -17,10 +17,10 @@ customer_reviews = pandas.DataFrame(data=dict(review=[
     "Never visit again... rascals!"]))
 
 pipeline = Pipeline([
-    NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True),
+    NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name='review_TransformedText'),
     WordEmbedding() << 'review_TransformedText'
 ])
 y = pipeline.fit_transform(customer_reviews)
 
 # view the review embeddings
-print(y)
+# print(y.head())

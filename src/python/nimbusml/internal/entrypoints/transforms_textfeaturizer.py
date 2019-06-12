@@ -20,7 +20,7 @@ def transforms_textfeaturizer(
         keep_diacritics=False,
         keep_punctuations=True,
         keep_numbers=True,
-        output_tokens=False,
+        output_tokens_column_name=None,
         dictionary=None,
         word_feature_extractor=n_gram(
             max_num_terms=[10000000]),
@@ -34,7 +34,7 @@ def transforms_textfeaturizer(
     **Description**
         A transform that turns a collection of text documents into numerical
         feature vectors. The feature vectors are normalized counts of
-        (word and/or character) ngrams in a given tokenized text.
+        (word and/or character) n-grams in a given tokenized text.
 
     :param column: New column definition (optional form: name:srcs).
         (inputs).
@@ -50,8 +50,8 @@ def transforms_textfeaturizer(
         remove them. (inputs).
     :param keep_numbers: Whether to keep numbers or remove them.
         (inputs).
-    :param output_tokens: Whether to output the transformed text
-        tokens as an additional column. (inputs).
+    :param output_tokens_column_name: Column containing the
+        transformed text tokens. (inputs).
     :param dictionary: A dictionary of whitelisted terms. (inputs).
     :param word_feature_extractor: Ngram feature extractor to use for
         words (WordBag/WordHashBag). (inputs).
@@ -123,11 +123,12 @@ def transforms_textfeaturizer(
             obj=keep_numbers,
             none_acceptable=True,
             is_of_type=bool)
-    if output_tokens is not None:
-        inputs['OutputTokens'] = try_set(
-            obj=output_tokens,
+    if output_tokens_column_name is not None:
+        inputs['OutputTokensColumnName'] = try_set(
+            obj=output_tokens_column_name,
             none_acceptable=True,
-            is_of_type=bool)
+            is_of_type=str,
+            is_column=True)
     if dictionary is not None:
         inputs['Dictionary'] = try_set(
             obj=dictionary,
@@ -154,7 +155,7 @@ def transforms_textfeaturizer(
                 'None',
                 'L1',
                 'L2',
-                'LInf'])
+                'Infinity'])
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

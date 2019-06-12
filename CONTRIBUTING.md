@@ -1,6 +1,6 @@
 # Welcome!
 
-If you are here, it means you are interested in helping us out. A hearty welcome and thank you! There are many ways you can contribute to the NimbusML project:
+If you are here, it means you are interested in helping us out. A hearty welcome and thank you! While this is an experimental project, we will make our best effort to respond to feedback and issues. If you would like to join the effort, here are ways you can contribute to the NimbusML project:
 
 * Offer PRs to fix bugs or implement new features.
 * Give us feedback and bug reports regarding the software or the documentation.
@@ -24,8 +24,8 @@ All commits in a pull request will be squashed to a single commit with the origi
 
 ## Style Guide
 
-See the [Style Guide](style-guide.md) for information about coding styles, source structure, making pull requests, and more.
+See the [Style Guide](docs/project-docs/style-guide.md) for information about coding styles, source structure, making pull requests, and more.
 
 ## Building and Devleopment
 
-See the [Developer Guide](../developers/developer-guide.md) for details about building from source and developing in this repo.
+See the [Developer Guide](docs/developers/developer-guide.md) for details about building from source and developing in this repo.

@@ -65,7 +65,7 @@ where
 * **col=** is specified for every column in the dataset,
 * **name** is the name of the column,
 * **position** is the 0-based index (or index range) of the column(s),
-* **type** is one of the :ref:`column-types`. When the *position* is a range (i.e. *start_index-end_index*), the column is of :ref:`VectorType`.
+* **type** is one of the :ref:`column-types`. When the *position* is a range (i.e. *start_index-end_index*), the column is of :ref:`VectorDataViewType`.
 * **options**
 
   * **header=** [+-] : Specifies if there is a header present in the text file

@@ -76,7 +76,7 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
 
         # transform usage
@@ -84,7 +84,8 @@ class TestWordEmbedding(unittest.TestCase):
         # TODO: Bug 149666
         # TODO: Bug 149700
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(),
+                            output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             WordEmbedding(columns='features_TransformedText')
@@ -116,11 +117,12 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
 
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(),
+                            output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             WordEmbedding(columns='features_TransformedText')
@@ -153,10 +155,10 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             # What is features_TransformedText?
@@ -173,10 +175,11 @@ class TestWordEmbedding(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
                       'col=parity:R4:3 col=induced:R4:4 col=case:R4:5 ' \
-                      'col=spontaneous:R4:6 header=+'
+                      'col=spontaneous:R4:6 quote+ header=+'
         data = FileDataStream(path, schema=file_schema)
         pipeline = Pipeline([
-            NGramFeaturizer(word_feature_extractor=Ngram(), output_tokens=True,
+            NGramFeaturizer(word_feature_extractor=Ngram(),
+                            output_tokens_column_name='features_TransformedText',
                             columns={'features': ['id', 'education']}),
 
             # What is features_TransformedText?

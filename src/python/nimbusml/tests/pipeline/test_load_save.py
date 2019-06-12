@@ -39,7 +39,7 @@ class TestLoadSave(unittest.TestCase):
                 ('linear',
                  FastLinearBinaryClassifier(
                      shuffle=False,
-                     train_threads=1))])
+                     number_of_threads=1))])
 
         model_nimbusml.fit(train, label)
 
@@ -80,7 +80,7 @@ class TestLoadSave(unittest.TestCase):
                 ('linear',
                  FastLinearBinaryClassifier(
                      shuffle=False,
-                     train_threads=1))])
+                     number_of_threads=1))])
 
         model_nimbusml.fit(train, label)
 

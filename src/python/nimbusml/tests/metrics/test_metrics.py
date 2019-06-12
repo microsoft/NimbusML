@@ -80,10 +80,10 @@ class TestMetrics(unittest.TestCase):
                     0.686)
         assert_almost_equal(
             metrics['Log-loss reduction'][0],
-            30.05,
-            decimal=1,
+            0.3005,
+            decimal=3,
             err_msg="Log-loss reduction should be %s" %
-                    30.05)
+                    0.3005)
         assert_almost_equal(
             metrics['Test-set entropy (prior Log-Loss/instance)'][0],
             0.981,
@@ -136,10 +136,10 @@ class TestMetrics(unittest.TestCase):
                     0.419)
         assert_almost_equal(
             metrics['Log-loss reduction'][0],
-            38.476,
-            decimal=1,
+            0.38476,
+            decimal=3,
             err_msg="Log-loss reduction should be %s" %
-                    38.476)
+                    0.38476)
         assert_almost_equal(
             metrics['(class 0)'][0],
             0.223,
@@ -193,7 +193,7 @@ class TestMetrics(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = KMeansPlusPlus(n_clusters=2, init_algorithm="Random")
+        lr = KMeansPlusPlus(n_clusters=2, initialization_algorithm="Random")
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame(), verbose=0)
         metrics, _ = e.test(X_test, y_test)
@@ -229,9 +229,9 @@ class TestMetrics(unittest.TestCase):
         svm = OneClassSvmAnomalyDetector() # noqa
         e = Pipeline([svm])
         e.fit(X_train, verbose=0)
-        if e.nodes[-1].label_column_ is not None:
+        if e.nodes[-1].label_column_name_ is not None:
             raise ValueError("'{0}' should be None".format(
-                e.nodes[-1].label_column_))
+                e.nodes[-1].label_column_name_))
         assert y_test.name == 'Setosa'
         metrics, _ = e.test(X_test, y_test)
         assert_almost_equal(
@@ -306,22 +306,22 @@ class TestMetrics(unittest.TestCase):
             X_test, y_test, evaltype='ranking', group_id=groups_df)
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            100,
+            1,
             decimal=5,
             err_msg="NDCG@1 should be %s" %
-                    100)
+                    1)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            100,
+            1,
             decimal=5,
-            err_msg="NDCG@1 should be %s" %
-                    100)
+            err_msg="NDCG@2 should be %s" %
+                    1)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            100,
+            1,
             decimal=5,
-            err_msg="NDCG@1 should be %s" %
-                    100)
+            err_msg="NDCG@3 should be %s" %
+                    1)
         # TODO: JRP comment for now. Debug fluctuations on build server
         # assert_almost_equal(metrics['DCG@1'][0], 4.32808, decimal=3,
         # err_msg="DCG@1 should be %s" % 4.32808)
@@ -359,22 +359,22 @@ class TestMetrics(unittest.TestCase):
             X_test, y_test, evaltype='ranking', group_id='group_id')
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            100,
+            1,
             decimal=5,
             err_msg="NDCG@1 should be %s" %
-                    100)
+                    1)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            100,
+            1,
             decimal=5,
-            err_msg="NDCG@1 should be %s" %
-                    100)
+            err_msg="NDCG@2 should be %s" %
+                    1)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            100,
+            1,
             decimal=5,
-            err_msg="NDCG@1 should be %s" %
-                    100)
+            err_msg="NDCG@3 should be %s" %
+                    1)
         assert_almost_equal(
             metrics['DCG@1'][0],
             4.32808,
@@ -400,7 +400,7 @@ class TestMetrics(unittest.TestCase):
         e = Pipeline([
             OneHotVectorizer(columns={'edu': 'education'}),
             LightGbmRegressor(feature=['induced', 'edu'], label='age',
-                              n_thread=1)
+                              number_of_threads=1)
         ])
         e.fit(data, verbose=0)
         metrics, _ = e.test(data)

@@ -10,92 +10,90 @@ from ..utils.utils import try_set
 
 
 def dart(
-        drop_rate=0.1,
-        max_drop=1,
-        skip_drop=0.5,
+        tree_drop_fraction=0.1,
+        maximum_number_of_dropped_trees_per_round=1,
+        skip_drop_fraction=0.5,
         xgboost_dart_mode=False,
         uniform_drop=False,
-        unbalanced_sets=False,
-        min_split_gain=0.0,
-        max_depth=0,
-        min_child_weight=0.1,
-        subsample_freq=0,
-        subsample=1.0,
+        minimum_split_gain=0.0,
+        maximum_tree_depth=0,
+        minimum_child_weight=0.1,
+        subsample_frequency=0,
+        subsample_fraction=1.0,
         feature_fraction=1.0,
-        reg_lambda=0.01,
-        reg_alpha=0.0,
-        scale_pos_weight=1.0,
+        l2_regularization=0.01,
+        l1_regularization=0.0,
         **params):
     """
     **Description**
         Dropouts meet Multiple Additive Regresion Trees. See
         https://arxiv.org/abs/1505.01866
 
-    :param drop_rate: Drop ratio for trees. Range:(0,1). (settings).
-    :param max_drop: Max number of dropped tree in a boosting round.
+    :param tree_drop_fraction: The drop ratio for trees. Range:(0,1).
         (settings).
-    :param skip_drop: Probability for not perform dropping in a
+    :param maximum_number_of_dropped_trees_per_round: Maximum number
+        of dropped trees in a boosting round. (settings).
+    :param skip_drop_fraction: Probability for not dropping in a
         boosting round. (settings).
     :param xgboost_dart_mode: True will enable xgboost dart mode.
         (settings).
     :param uniform_drop: True will enable uniform drop. (settings).
-    :param unbalanced_sets: Use for binary classification when
-        classes are not balanced. (settings).
-    :param min_split_gain: Minimum loss reduction required to make a
-        further partition on a leaf node of the tree. the larger, the
-        more conservative the algorithm will be. (settings).
-    :param max_depth: Maximum depth of a tree. 0 means no limit.
-        However, tree still grows by best-first. (settings).
-    :param min_child_weight: Minimum sum of instance weight(hessian)
-        needed in a child. If the tree partition step results in a
-        leaf node with the sum of instance weight less than
-        min_child_weight, then the building process will give up
+    :param minimum_split_gain: Minimum loss reduction required to
+        make a further partition on a leaf node of the tree. the
+        larger, the more conservative the algorithm will be.
+        (settings).
+    :param maximum_tree_depth: Maximum depth of a tree. 0 means no
+        limit. However, tree still grows by best-first. (settings).
+    :param minimum_child_weight: Minimum sum of instance
+        weight(hessian) needed in a child. If the tree partition step
+        results in a leaf node with the sum of instance weight less
+        than min_child_weight, then the building process will give up
         further partitioning. In linear regression mode, this simply
         corresponds to minimum number of instances needed to be in
         each node. The larger, the more conservative the algorithm
         will be. (settings).
-    :param subsample_freq: Subsample frequency. 0 means no subsample.
-        If subsampleFreq > 0, it will use a subset(ratio=subsample)
-        to train. And the subset will be updated on every Subsample
-        iteratinos. (settings).
-    :param subsample: Subsample ratio of the training instance.
-        Setting it to 0.5 means that LightGBM randomly collected half
-        of the data instances to grow trees and this will prevent
-        overfitting. Range: (0,1]. (settings).
+    :param subsample_frequency: Subsample frequency for bagging. 0
+        means no subsample. Specifies the frequency at which the
+        bagging occurs, where if this is set to N, the subsampling
+        will happen at every N iterations.This must be set with
+        Subsample as this specifies the amount to subsample.
+        (settings).
+    :param subsample_fraction: Subsample ratio of the training
+        instance. Setting it to 0.5 means that LightGBM randomly
+        collected half of the data instances to grow trees and this
+        will prevent overfitting. Range: (0,1]. (settings).
     :param feature_fraction: Subsample ratio of columns when
         constructing each tree. Range: (0,1]. (settings).
-    :param reg_lambda: L2 regularization term on weights, increasing
-        this value will make model more conservative. (settings).
-    :param reg_alpha: L1 regularization term on weights, increase
-        this value will make model more conservative. (settings).
-    :param scale_pos_weight: Control the balance of positive and
-        negative weights, useful for unbalanced classes. A typical
-        value to consider: sum(negative cases) / sum(positive cases).
+    :param l2_regularization: L2 regularization term on weights,
+        increasing this value will make model more conservative.
+        (settings).
+    :param l1_regularization: L1 regularization term on weights,
+        increase this value will make model more conservative.
         (settings).
     """
 
     entrypoint_name = 'dart'
     settings = {}
 
-    if drop_rate is not None:
-        settings['DropRate'] = try_set(
-            obj=drop_rate,
+    if tree_drop_fraction is not None:
+        settings['TreeDropFraction'] = try_set(
+            obj=tree_drop_fraction,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
                 'Inf': 0.0,
                 'Max': 1.0})
-    if max_drop is not None:
-        settings['MaxDrop'] = try_set(
-            obj=max_drop,
+    if maximum_number_of_dropped_trees_per_round is not None:
+        settings['MaximumNumberOfDroppedTreesPerRound'] = try_set(
+            obj=maximum_number_of_dropped_trees_per_round,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
                 'Inf': 0,
                 'Max': 2147483647})
-    if skip_drop is not None:
-        settings['SkipDrop'] = try_set(
-            obj=skip_drop,
+    if skip_drop_fraction is not None:
+        settings['SkipDropFraction'] = try_set(
+            obj=skip_drop_fraction,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
@@ -107,38 +105,35 @@ def dart(
     if uniform_drop is not None:
         settings['UniformDrop'] = try_set(
             obj=uniform_drop, none_acceptable=True, is_of_type=bool)
-    if unbalanced_sets is not None:
-        settings['UnbalancedSets'] = try_set(
-            obj=unbalanced_sets, none_acceptable=True, is_of_type=bool)
-    if min_split_gain is not None:
-        settings['MinSplitGain'] = try_set(
-            obj=min_split_gain,
+    if minimum_split_gain is not None:
+        settings['MinimumSplitGain'] = try_set(
+            obj=minimum_split_gain,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
-    if max_depth is not None:
-        settings['MaxDepth'] = try_set(
-            obj=max_depth,
+    if maximum_tree_depth is not None:
+        settings['MaximumTreeDepth'] = try_set(
+            obj=maximum_tree_depth,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
                 'Max': 2147483647,
                 'Min': 0})
-    if min_child_weight is not None:
-        settings['MinChildWeight'] = try_set(
-            obj=min_child_weight,
+    if minimum_child_weight is not None:
+        settings['MinimumChildWeight'] = try_set(
+            obj=minimum_child_weight,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
-    if subsample_freq is not None:
-        settings['SubsampleFreq'] = try_set(
-            obj=subsample_freq,
+    if subsample_frequency is not None:
+        settings['SubsampleFrequency'] = try_set(
+            obj=subsample_frequency,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
                 'Max': 2147483647,
                 'Min': 0})
-    if subsample is not None:
-        settings['Subsample'] = try_set(
-            obj=subsample,
+    if subsample_fraction is not None:
+        settings['SubsampleFraction'] = try_set(
+            obj=subsample_fraction,
             none_acceptable=True,
             is_of_type=numbers.Real,
             valid_range={
@@ -152,21 +147,16 @@ def dart(
             valid_range={
                 'Inf': 0.0,
                 'Max': 1.0})
-    if reg_lambda is not None:
-        settings['RegLambda'] = try_set(
-            obj=reg_lambda,
+    if l2_regularization is not None:
+        settings['L2Regularization'] = try_set(
+            obj=l2_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
-    if reg_alpha is not None:
-        settings['RegAlpha'] = try_set(
-            obj=reg_alpha,
+    if l1_regularization is not None:
+        settings['L1Regularization'] = try_set(
+            obj=l1_regularization,
             none_acceptable=True,
             is_of_type=numbers.Real, valid_range={'Min': 0.0})
-    if scale_pos_weight is not None:
-        settings['ScalePosWeight'] = try_set(
-            obj=scale_pos_weight,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
 
     component = Component(
         name=entrypoint_name,

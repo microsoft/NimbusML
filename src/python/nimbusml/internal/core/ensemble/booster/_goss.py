@@ -41,43 +41,39 @@ class Goss(Component):
 
     :param other_rate: Retain ratio for small gradient instances.
 
-    :param unbalanced_sets: Use for binary classification when classes are not
-        balanced.
+    :param minimum_split_gain: Minimum loss reduction required to make a
+        further partition on a leaf node of the tree. the larger, the more
+        conservative the algorithm will be.
 
-    :param min_split_gain: Minimum loss reduction required to make a further
-        partition on a leaf node of the tree. the larger, the more conservative
-        the algorithm will be.
+    :param maximum_tree_depth: Maximum depth of a tree. 0 means no limit.
+        However, tree still grows by best-first.
 
-    :param max_depth: Maximum depth of a tree. 0 means no limit. However, tree
-        still grows by best-first.
-
-    :param min_child_weight: Minimum sum of instance weight(hessian) needed in
-        a child. If the tree partition step results in a leaf node with the sum
-        of instance weight less than min_child_weight, then the building
+    :param minimum_child_weight: Minimum sum of instance weight(hessian) needed
+        in a child. If the tree partition step results in a leaf node with the
+        sum of instance weight less than min_child_weight, then the building
         process will give up further partitioning. In linear regression mode,
         this simply corresponds to minimum number of instances needed to be in
         each node. The larger, the more conservative the algorithm will be.
 
-    :param subsample_freq: Subsample frequency. 0 means no subsample. If
-        subsampleFreq > 0, it will use a subset(ratio=subsample) to train. And
-        the subset will be updated on every Subsample iteratinos.
+    :param subsample_frequency: Subsample frequency for bagging. 0 means no
+        subsample. Specifies the frequency at which the bagging occurs, where
+        if this is set to N, the subsampling will happen at every N
+        iterations.This must be set with Subsample as this specifies the amount
+        to subsample.
 
-    :param subsample: Subsample ratio of the training instance. Setting it to
-        0.5 means that LightGBM randomly collected half of the data instances
-        to grow trees and this will prevent overfitting. Range: (0,1].
+    :param subsample_fraction: Subsample ratio of the training instance.
+        Setting it to 0.5 means that LightGBM randomly collected half of the
+        data instances to grow trees and this will prevent overfitting. Range:
+        (0,1].
 
     :param feature_fraction: Subsample ratio of columns when constructing each
         tree. Range: (0,1].
 
-    :param reg_lambda: L2 regularization term on weights, increasing this value
-        will make model more conservative.
+    :param l2_regularization: L2 regularization term on weights, increasing
+        this value will make model more conservative.
 
-    :param reg_alpha: L1 regularization term on weights, increase this value
-        will make model more conservative.
-
-    :param scale_pos_weight: Control the balance of positive and negative
-        weights, useful for unbalanced classes. A typical value to consider:
-        sum(negative cases) / sum(positive cases).
+    :param l1_regularization: L1 regularization term on weights, increase this
+        value will make model more conservative.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -102,30 +98,26 @@ class Goss(Component):
             self,
             top_rate=0.2,
             other_rate=0.1,
-            unbalanced_sets=False,
-            min_split_gain=0.0,
-            max_depth=0,
-            min_child_weight=0.1,
-            subsample_freq=0,
-            subsample=1.0,
+            minimum_split_gain=0.0,
+            maximum_tree_depth=0,
+            minimum_child_weight=0.1,
+            subsample_frequency=0,
+            subsample_fraction=1.0,
             feature_fraction=1.0,
-            reg_lambda=0.01,
-            reg_alpha=0.0,
-            scale_pos_weight=1.0,
+            l2_regularization=0.01,
+            l1_regularization=0.0,
             **params):
 
         self.top_rate = top_rate
         self.other_rate = other_rate
-        self.unbalanced_sets = unbalanced_sets
-        self.min_split_gain = min_split_gain
-        self.max_depth = max_depth
-        self.min_child_weight = min_child_weight
-        self.subsample_freq = subsample_freq
-        self.subsample = subsample
+        self.minimum_split_gain = minimum_split_gain
+        self.maximum_tree_depth = maximum_tree_depth
+        self.minimum_child_weight = minimum_child_weight
+        self.subsample_frequency = subsample_frequency
+        self.subsample_fraction = subsample_fraction
         self.feature_fraction = feature_fraction
-        self.reg_lambda = reg_lambda
-        self.reg_alpha = reg_alpha
-        self.scale_pos_weight = scale_pos_weight
+        self.l2_regularization = l2_regularization
+        self.l1_regularization = l1_regularization
         self.kind = 'BoosterParameterFunction'
         self.name = 'goss'
         self.settings = {}
@@ -146,38 +138,35 @@ class Goss(Component):
                 valid_range={
                     'Inf': 0.0,
                     'Max': 1.0})
-        if unbalanced_sets is not None:
-            self.settings['UnbalancedSets'] = try_set(
-                obj=unbalanced_sets, none_acceptable=True, is_of_type=bool)
-        if min_split_gain is not None:
-            self.settings['MinSplitGain'] = try_set(
-                obj=min_split_gain,
+        if minimum_split_gain is not None:
+            self.settings['MinimumSplitGain'] = try_set(
+                obj=minimum_split_gain,
                 none_acceptable=True,
                 is_of_type=numbers.Real, valid_range={'Min': 0.0})
-        if max_depth is not None:
-            self.settings['MaxDepth'] = try_set(
-                obj=max_depth,
+        if maximum_tree_depth is not None:
+            self.settings['MaximumTreeDepth'] = try_set(
+                obj=maximum_tree_depth,
                 none_acceptable=True,
                 is_of_type=numbers.Real,
                 valid_range={
                     'Max': 2147483647,
                     'Min': 0})
-        if min_child_weight is not None:
-            self.settings['MinChildWeight'] = try_set(
-                obj=min_child_weight,
+        if minimum_child_weight is not None:
+            self.settings['MinimumChildWeight'] = try_set(
+                obj=minimum_child_weight,
                 none_acceptable=True,
                 is_of_type=numbers.Real, valid_range={'Min': 0.0})
-        if subsample_freq is not None:
-            self.settings['SubsampleFreq'] = try_set(
-                obj=subsample_freq,
+        if subsample_frequency is not None:
+            self.settings['SubsampleFrequency'] = try_set(
+                obj=subsample_frequency,
                 none_acceptable=True,
                 is_of_type=numbers.Real,
                 valid_range={
                     'Max': 2147483647,
                     'Min': 0})
-        if subsample is not None:
-            self.settings['Subsample'] = try_set(
-                obj=subsample,
+        if subsample_fraction is not None:
+            self.settings['SubsampleFraction'] = try_set(
+                obj=subsample_fraction,
                 none_acceptable=True,
                 is_of_type=numbers.Real,
                 valid_range={
@@ -191,21 +180,16 @@ class Goss(Component):
                 valid_range={
                     'Inf': 0.0,
                     'Max': 1.0})
-        if reg_lambda is not None:
-            self.settings['RegLambda'] = try_set(
-                obj=reg_lambda,
+        if l2_regularization is not None:
+            self.settings['L2Regularization'] = try_set(
+                obj=l2_regularization,
                 none_acceptable=True,
                 is_of_type=numbers.Real, valid_range={'Min': 0.0})
-        if reg_alpha is not None:
-            self.settings['RegAlpha'] = try_set(
-                obj=reg_alpha,
+        if l1_regularization is not None:
+            self.settings['L1Regularization'] = try_set(
+                obj=l1_regularization,
                 none_acceptable=True,
                 is_of_type=numbers.Real, valid_range={'Min': 0.0})
-        if scale_pos_weight is not None:
-            self.settings['ScalePosWeight'] = try_set(
-                obj=scale_pos_weight,
-                none_acceptable=True,
-                is_of_type=numbers.Real)
 
         super(
             Goss,

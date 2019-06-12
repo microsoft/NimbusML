@@ -6,6 +6,8 @@ phases:
     name: Windows
     buildScript: build.cmd
     buildMatrix:
+      Py37:
+        _configuration: RlsWinPy3.7
       Py36:
         _configuration: RlsWinPy3.6
       Py35:
@@ -21,12 +23,8 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
-      Py36:
-        _configuration: RlsMacPy3.6
-      Py35:
-        _configuration: RlsMacPy3.5
-      Py27:
-        _configuration: RlsMacPy2.7
+      Py37:
+        _configuration: RlsMacPy3.7
     buildQueue:
       name: Hosted macOS
 
@@ -38,27 +36,10 @@ phases:
     buildScript: ./build.sh
     testDistro: ubuntu16
     buildMatrix:
+      Py37:
+        _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
-    buildQueue:
-      name: Hosted Ubuntu 1604
-  # Run tests on Ubuntu14
-- template: /build/ci/phase-template.yml
-  parameters:
-    name: Linux_Ubuntu14
-    buildScript: ./build.sh
-    testDistro: ubuntu14
-    buildMatrix:
-      Py36:
-        _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
   # Run tests on CentOS7
@@ -68,10 +49,6 @@ phases:
     buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
-      Py36:
-        _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
       Py27:
         _configuration: RlsLinPy2.7
     buildQueue:

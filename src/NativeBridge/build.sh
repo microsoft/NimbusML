@@ -7,8 +7,8 @@ usage()
     echo "Usage: $0 --configuration <Configuration> "
     echo ""
     echo "Options:"
-    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
-    echo "  --pythonver <Python version>      Python version number (3.6, 3.5, 2.7)"
+    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
+    echo "  --pythonver <Python version>      Python version number (3.7, 3.6, 3.5, 2.7)"
     echo "  --pythonpath <Python path>        Path to python library."
     echo "  --boostpath <Boost path>          Path to boost library."
     exit 1
@@ -23,8 +23,8 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 RootRepo="$DIR/../.."
 
-__configuration=DbgLinPy3.6
-__pythonver=3.6
+__configuration=DbgLinPy3.7
+__pythonver=3.7
 __rootBinPath="$RootRepo/x64"
 __pythonpath=""
 __boostpath=""

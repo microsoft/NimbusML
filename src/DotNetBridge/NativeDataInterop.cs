@@ -5,11 +5,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -32,7 +34,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             [FieldOffset(0x18)]
             public readonly sbyte** names;
             [FieldOffset(0x20)]
-            public readonly DataKind* kinds;
+            public readonly InternalDataKind* kinds;
             [FieldOffset(0x28)]
             public readonly long* keyCards;
             [FieldOffset(0x30)]
@@ -69,7 +71,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             // Column data kinds.
             [FieldOffset(0x18)]
-            public DataKind* kinds;
+            public InternalDataKind* kinds;
 
             // For columns that have key type, these contain the cardinalities of the
             // key types. Zero means unbounded, -1 means not a key type.
@@ -107,7 +109,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             var schema = view.Schema;
             var colIndices = new List<int>();
-            var kindList = new List<DataKind>();
+            var kindList = new List<InternalDataKind>();
             var keyCardList = new List<int>();
             var nameUtf8Bytes = new List<Byte>();
             var nameIndices = new List<int>();
@@ -115,77 +117,77 @@ namespace Microsoft.MachineLearning.DotNetBridge
             var expandCols = new HashSet<int>();
             var allNames = new HashSet<string>();
 
-            for (int col = 0; col < schema.ColumnCount; col++)
+            for (int col = 0; col < schema.Count; col++)
             {
-                if (schema.IsHidden(col))
+                if (schema[col].IsHidden)
                     continue;
 
-                var fullType = schema.GetColumnType(col);
-                var itemType = fullType.ItemType;
-                var name = schema.GetColumnName(col);
+                var fullType = schema[col].Type;
+                var itemType = fullType.GetItemType();
+                var name = schema[col].Name;
 
-                DataKind kind = itemType.RawKind;
+                var kind = itemType.GetRawKind();
                 int keyCard;
 
-                if (fullType.ValueCount == 0)
+                if (fullType.GetValueCount() == 0)
                 {
                     throw ch.ExceptNotSupp("Column has variable length vector: " + 
                         name + ". Not supported in python. Drop column before sending to Python");
                 }
 
-                if (itemType.IsKey)
+                if (itemType is KeyDataViewType)
                 {
                     // Key types are returned as their signed counterparts in Python, so that -1 can be the missing value.
                     // For U1 and U2 kinds, we convert to a larger type to prevent overflow. For U4 and U8 kinds, we convert
                     // to I4 if the key count is known (since KeyCount is an I4), and to I8 otherwise.
                     switch (kind)
                     {
-                    case DataKind.U1:
-                        kind = DataKind.I2;
+                    case InternalDataKind.U1:
+                        kind = InternalDataKind.I2;
                         break;
-                    case DataKind.U2:
-                        kind = DataKind.I4;
+                    case InternalDataKind.U2:
+                        kind = InternalDataKind.I4;
                         break;
-                    case DataKind.U4:
+                    case InternalDataKind.U4:
                         // We convert known-cardinality U4 key types to I4.
-                        kind = itemType.KeyCount > 0 ? DataKind.I4 : DataKind.I8;
+                        kind = itemType.GetKeyCount() > 0 ? InternalDataKind.I4 : InternalDataKind.I8;
                         break;
-                    case DataKind.U8:
+                    case InternalDataKind.U8:
                         // We convert known-cardinality U8 key types to I4.
-                        kind = itemType.KeyCount > 0 ? DataKind.I4 : DataKind.I8;
+                        kind = itemType.GetKeyCount() > 0 ? InternalDataKind.I4 : InternalDataKind.I8;
                         break;
                     }
 
-                    keyCard = itemType.KeyCount;
-                    if (!schema.HasKeyNames(col, keyCard))
+                    keyCard = itemType.GetKeyCountAsInt32();
+                    if (!schema[col].HasKeyValues())
                         keyCard = -1;
                 }
-                else if (itemType.IsStandardScalar)
+                else if (itemType.IsStandardScalar())
                 {
-                    switch (itemType.RawKind)
+                    switch (itemType.GetRawKind())
                     {
                     default:
-                        throw Contracts.Except("Data type {0} not handled", itemType.RawKind);
+                        throw Contracts.Except("Data type {0} not handled", itemType.GetRawKind());
 
-                    case DataKind.I1:
-                    case DataKind.I2:
-                    case DataKind.I4:
-                    case DataKind.I8:
-                    case DataKind.U1:
-                    case DataKind.U2:
-                    case DataKind.U4:
-                    case DataKind.U8:
-                    case DataKind.R4:
-                    case DataKind.R8:
-                    case DataKind.BL:
-                    case DataKind.TX:
+                    case InternalDataKind.I1:
+                    case InternalDataKind.I2:
+                    case InternalDataKind.I4:
+                    case InternalDataKind.I8:
+                    case InternalDataKind.U1:
+                    case InternalDataKind.U2:
+                    case InternalDataKind.U4:
+                    case InternalDataKind.U8:
+                    case InternalDataKind.R4:
+                    case InternalDataKind.R8:
+                    case InternalDataKind.BL:
+                    case InternalDataKind.TX:
                         break;
                     }
                     keyCard = -1;
                 }
                 else
                 {
-                    throw Contracts.Except("Data type {0} not handled", itemType.RawKind);
+                    throw Contracts.Except("Data type {0} not handled", itemType.GetRawKind());
                 }
 
                 int nSlots;
@@ -193,18 +195,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 if (infos != null && infos.TryGetValue(name, out info) && info.Expand)
                 {
                     expandCols.Add(col);
-                    Contracts.Assert(fullType.IsKnownSizeVector);
-                    nSlots = fullType.VectorSize;
+                    Contracts.Assert(fullType.IsKnownSizeVector());
+                    nSlots = fullType.GetVectorSize();
                     if (info.SlotNames != null)
                     {
                         Contracts.Assert(info.SlotNames.Length == nSlots);
                         for (int i = 0; i < nSlots; i++)
                             AddUniqueName(info.SlotNames[i], allNames, nameIndices, nameUtf8Bytes);
                     }
-                    else if (schema.HasSlotNames(col, nSlots))
+                    else if (schema[col].HasSlotNames(nSlots))
                     {
                         var romNames = default(VBuffer<ReadOnlyMemory<char>>);
-                        schema.GetMetadata(MetadataUtils.Kinds.SlotNames, col, ref romNames);
+                        schema[col].Annotations.GetValue(AnnotationUtils.Kinds.SlotNames, ref romNames);
                         foreach (var kvp in romNames.Items(true))
                         {
                             // REVIEW: Add the proper number of zeros to the slot index to make them sort in the right order.
@@ -242,7 +244,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             var nameBytes = nameUtf8Bytes.ToArray();
             var names = new byte*[allNames.Count];
 
-            fixed (DataKind* prgkind = kinds)
+            fixed (InternalDataKind* prgkind = kinds)
             fixed (byte* prgbNames = nameBytes)
             fixed (byte** prgname = names)
             fixed (int* prgkeyCard = keyCards)
@@ -266,20 +268,21 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
                 ch.Assert(keyValueSetter != null);
                 var kvSet = MarshalDelegate<KeyValueSetter>(keyValueSetter);
-                using (var cursor = view.GetRowCursor(colIndices.Contains))
+                using (var cursor = view.GetRowCursor(view.Schema.Where(col => colIndices.Contains(col.Index))))
                 {
                     var fillers = new BufferFillerBase[colIndices.Count];
                     var pyColumn = 0;
                     var keyIndex = 0;
                     for (int i = 0; i < colIndices.Count; i++)
                     {
-                        var type = schema.GetColumnType(colIndices[i]);
-                        if (type.ItemType.IsKey && schema.HasKeyNames(colIndices[i], type.ItemType.KeyCount))
+                        var type = schema[colIndices[i]].Type;
+                        var itemType = type.GetItemType();
+                        if ((itemType is KeyDataViewType) && schema[colIndices[i]].HasKeyValues())
                         {
-                            ch.Assert(schema.HasKeyNames(colIndices[i], type.ItemType.KeyCount));
+                            ch.Assert(schema[colIndices[i]].HasKeyValues());
                             var keyValues = default(VBuffer<ReadOnlyMemory<char>>);
-                            schema.GetMetadata(MetadataUtils.Kinds.KeyValues, colIndices[i], ref keyValues);
-                            for (int slot = 0; slot < type.ValueCount; slot++)
+                            schema[colIndices[i]].Annotations.GetValue(AnnotationUtils.Kinds.KeyValues, ref keyValues);
+                            for (int slot = 0; slot < type.GetValueCount(); slot++)
                             {
                                 foreach (var kvp in keyValues.Items())
                                 {
@@ -296,7 +299,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                         fillers[i] = BufferFillerBase.Create(penv, cursor, pyColumn, colIndices[i], kinds[pyColumn], type, setters[pyColumn]);
-                        pyColumn += type.IsVector ? type.VectorSize : 1;
+                        pyColumn += type is VectorDataViewType ? type.GetVectorSize() : 1;
                     }
                     for (int crow = 0; ; crow++)
                     {
@@ -333,40 +336,40 @@ namespace Microsoft.MachineLearning.DotNetBridge
             public delegate void ValuePoker<T>(T value, int col, long index);
 
             protected readonly int _colIndex;
-            protected readonly IRow _input;
+            protected readonly DataViewRow _input;
 
-            protected BufferFillerBase(IRow input, int pyColIndex)
+            protected BufferFillerBase(DataViewRow input, int pyColIndex)
             {
                 _colIndex = pyColIndex;
                 _input = input;
             }
 
-            public static BufferFillerBase Create(EnvironmentBlock* penv, IRow input, int pyCol, int idvCol, DataKind dataKind, ColumnType type, void* setter)
+            public static BufferFillerBase Create(EnvironmentBlock* penv, DataViewRow input, int pyCol, int idvCol, InternalDataKind dataKind, DataViewType type, void* setter)
             {
-                var itemType = type.ItemType;
+                var itemType = type.GetItemType();
                 // We convert the unsigned types to signed types, with -1 indicating missing in Python.
-                if (itemType.KeyCount > 0)
+                if (itemType.GetKeyCount() > 0)
                 {
-                    var keyCount = itemType.KeyCount;
+                    var keyCount = itemType.GetKeyCount();
                     uint keyMax = (uint)keyCount;
-                    switch (itemType.RawKind)
+                    switch (itemType.GetRawKind())
                     {
-                    case DataKind.U1:
+                    case InternalDataKind.U1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
                         ValuePoker<byte> pokeU1 =
                             (byte value, int col, long index) => fnI1(penv, col, index, value > keyMax ? (sbyte)-1 : (sbyte)(value - 1));
                         return new Impl<byte>(input, pyCol, idvCol, type, pokeU1);
-                    case DataKind.U2:
+                    case InternalDataKind.U2:
                         var fnI2 = MarshalDelegate<I2Setter>(setter);
                         ValuePoker<ushort> pokeU2 =
                             (ushort value, int col, long index) => fnI2(penv, col, index, value > keyMax ? (short)-1 : (short)(value - 1));
                         return new Impl<ushort>(input, pyCol, idvCol, type, pokeU2);
-                    case DataKind.U4:
+                    case InternalDataKind.U4:
                         var fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<uint> pokeU4 =
                             (uint value, int col, long index) => fnI4(penv, col, index, value > keyMax ? -1 : (int)(value - 1));
                         return new Impl<uint>(input, pyCol, idvCol, type, pokeU4);
-                    case DataKind.U8:
+                    case InternalDataKind.U8:
                         // We convert U8 key types with key names to I4.
                         fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<ulong> pokeU8 =
@@ -375,26 +378,26 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     }
                 }
                 // Key type with count=0
-                else if (itemType.IsKey)
+                else if (itemType is KeyDataViewType)
                 {
-                    switch (itemType.RawKind)
+                    switch (itemType.GetRawKind())
                     {
-                    case DataKind.U1:
+                    case InternalDataKind.U1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
                         ValuePoker<byte> pokeU1 =
                             (byte value, int col, long index) => fnI1(penv, col, index, (sbyte)(value - 1));
                         return new Impl<byte>(input, pyCol, idvCol, type, pokeU1);
-                    case DataKind.U2:
+                    case InternalDataKind.U2:
                         var fnI2 = MarshalDelegate<I2Setter>(setter);
                         ValuePoker<ushort> pokeU2 =
                             (ushort value, int col, long index) => fnI2(penv, col, index, (short)(value - 1));
                         return new Impl<ushort>(input, pyCol, idvCol, type, pokeU2);
-                    case DataKind.U4:
+                    case InternalDataKind.U4:
                         var fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<uint> pokeU4 =
                             (uint value, int col, long index) => fnI4(penv, col, index, (int)(value - 1));
                         return new Impl<uint>(input, pyCol, idvCol, type, pokeU4);
-                    case DataKind.U8:
+                    case InternalDataKind.U8:
                         // We convert U8 key types with key names to I4.
                         fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<ulong> pokeU8 =
@@ -406,62 +409,62 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 {
                     switch (dataKind)
                     {
-                    case DataKind.R4:
+                    case InternalDataKind.R4:
                         var fnR4 = MarshalDelegate<R4Setter>(setter);
                         ValuePoker<float> pokeR4 =
                             (float value, int col, long index) => fnR4(penv, col, index, value);
                         return new Impl<float>(input, pyCol, idvCol, type, pokeR4);
-                    case DataKind.R8:
+                    case InternalDataKind.R8:
                         var fnR8 = MarshalDelegate<R8Setter>(setter);
                         ValuePoker<double> pokeR8 =
                             (double value, int col, long index) => fnR8(penv, col, index, value);
                         return new Impl<double>(input, pyCol, idvCol, type, pokeR8);
-                    case DataKind.BL:
+                    case InternalDataKind.BL:
                         var fnBl = MarshalDelegate<BLSetter>(setter);
                         ValuePoker<bool> pokeBl =
                             (bool value, int col, long index) => fnBl(penv, col, index, !value ? (byte)0 : value ? (byte)1 : (byte)0xFF);
                         return new Impl<bool>(input, pyCol, idvCol, type, pokeBl);
-                    case DataKind.I1:
+                    case InternalDataKind.I1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
                         ValuePoker<sbyte> pokeI1 =
                             (sbyte value, int col, long index) => fnI1(penv, col, index, value);
                         return new Impl<sbyte>(input, pyCol, idvCol, type, pokeI1);
-                    case DataKind.I2:
+                    case InternalDataKind.I2:
                         var fnI2 = MarshalDelegate<I2Setter>(setter);
                         ValuePoker<short> pokeI2 =
                             (short value, int col, long index) => fnI2(penv, col, index, value);
                         return new Impl<short>(input, pyCol, idvCol, type, pokeI2);
-                    case DataKind.I4:
+                    case InternalDataKind.I4:
                         var fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<int> pokeI4 =
                             (int value, int col, long index) => fnI4(penv, col, index, value);
                         return new Impl<int>(input, pyCol, idvCol, type, pokeI4);
-                    case DataKind.I8:
+                    case InternalDataKind.I8:
                         var fnI8 = MarshalDelegate<I8Setter>(setter);
                         ValuePoker<long> pokeI8 =
                             (long value, int col, long index) => fnI8(penv, col, index, value);
                         return new Impl<long>(input, pyCol, idvCol, type, pokeI8);
-                    case DataKind.U1:
+                    case InternalDataKind.U1:
                         var fnU1 = MarshalDelegate<U1Setter>(setter);
                         ValuePoker<byte> pokeU1 =
                             (byte value, int col, long index) => fnU1(penv, col, index, value);
                         return new Impl<byte>(input, pyCol, idvCol, type, pokeU1);
-                    case DataKind.U2:
+                    case InternalDataKind.U2:
                         var fnU2 = MarshalDelegate<U2Setter>(setter);
                         ValuePoker<ushort> pokeU2 =
                             (ushort value, int col, long index) => fnU2(penv, col, index, value);
                         return new Impl<ushort>(input, pyCol, idvCol, type, pokeU2);
-                    case DataKind.U4:
+                    case InternalDataKind.U4:
                         var fnU4 = MarshalDelegate<U4Setter>(setter);
                         ValuePoker<uint> pokeU4 =
                             (uint value, int col, long index) => fnU4(penv, col, index, value);
                         return new Impl<uint>(input, pyCol, idvCol, type, pokeU4);
-                    case DataKind.U8:
+                    case InternalDataKind.U8:
                         var fnU8 = MarshalDelegate<U8Setter>(setter);
                         ValuePoker<ulong> pokeU8 =
                             (ulong value, int col, long index) => fnU8(penv, col, index, value);
                         return new Impl<ulong>(input, pyCol, idvCol, type, pokeU8);
-                    case DataKind.TX:
+                    case InternalDataKind.TX:
                         var fnTX = MarshalDelegate<TXSetter>(setter);
                         ValuePoker<ReadOnlyMemory<char>> pokeTX =
                             (ReadOnlyMemory<char> value, int col, long index) =>
@@ -494,14 +497,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private readonly ValueGetter<TSrc> _get;
                 private readonly ValuePoker<TSrc> _poker;
 
-                public Impl(IRow input, int pyColIndex, int idvColIndex, ColumnType type, ValuePoker<TSrc> poker)
+                public Impl(DataViewRow input, int pyColIndex, int idvColIndex, DataViewType type, ValuePoker<TSrc> poker)
                     : base(input, pyColIndex)
                 {
                     Contracts.AssertValue(input);
-                    Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.ColumnCount);
+                    Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.Count);
 
-                    if (type.IsVector)
-                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>(type.ItemType.AsPrimitive, input, idvColIndex);
+                    if (type is VectorDataViewType)
+                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>((PrimitiveDataViewType)type.GetItemType(), input, idvColIndex);
                     else
                         _get = RowCursorUtils.GetGetterAs<TSrc>(type, input, idvColIndex);
 
@@ -516,19 +519,21 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         {
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                _poker(_buffer.Values[i], _colIndex + i, _input.Position);
+                                _poker(_buffer.GetValues()[i], _colIndex + i, _input.Position);
                             }
                         }
                         else
                         {
                             int ii = 0;
+                            var values = _buffer.GetValues();
+                            var indices = _buffer.GetIndices();
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                while (ii < _buffer.Count && _buffer.Indices[ii] < i)
+                                while (ii < values.Length && indices[ii] < i)
                                     ii++;
                                 TSrc val = default(TSrc);
-                                if (ii < _buffer.Count && _buffer.Indices[ii] == i)
-                                    val = _buffer.Values[ii];
+                                if (ii < values.Length && indices[ii] == i)
+                                    val = values[ii];
                                 _poker(val, _colIndex + i, _input.Position);
                             }
                         }

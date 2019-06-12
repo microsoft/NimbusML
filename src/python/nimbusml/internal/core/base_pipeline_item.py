@@ -18,7 +18,7 @@ from itertools import chain
 from textwrap import wrap
 
 import six
-from sklearn.utils.fixes import signature
+from nimbusml.utils import signature
 
 from ..utils.data_roles import DataRoles, Role
 from ..utils.data_stream import ViewBasePipelineItem, DataStream, \
@@ -248,7 +248,7 @@ class BasePipelineItem():
     def __init__(self, type=None, random_state=None, **params):
         # The consctuctor is usually called twice.
         # First time from BaseSomething like BaseTransform.
-        # Second from interal classes.
+        # Second from internal classes.
         if hasattr(self, '_BasePipelineItem_already_called'):
             return
         self._BasePipelineItem_already_called = True
@@ -485,7 +485,7 @@ class BasePipelineItem():
                     # current code makes it difficult to guess.
                     # A minor modification in entrypoints.py should do the
                     # trick.
-                    if self.type != "clusterer":
+                    if self.type not in {"clusterer", "anomaly"} :
                         warnings.warn(
                             "Model '{0}' (type='{1}') does not support "
                             "role '{2}' (for developers, check "
@@ -771,23 +771,23 @@ class BasePipelineItem():
         # Needed for learner. % is also used to define feature roles.
         if self.type in {'classifier', 'regressor',
                          'ranker', 'clustering', 'anomaly'}:
-            self.feature_column = getattr(self, attr)
-            if not isinstance(self.feature_column, (str, tuple)):
-                if isinstance(self.feature_column, list):
-                    if len(self.feature_column) == 1:
-                        self.feature_column = self.feature_column[0]
+            self.feature_column_name = getattr(self, attr)
+            if not isinstance(self.feature_column_name, (str, tuple)):
+                if isinstance(self.feature_column_name, list):
+                    if len(self.feature_column_name) == 1:
+                        self.feature_column_name = self.feature_column_name[0]
                     else:
                         # Experiment will merge them.
                         # raise RuntimeError("Too many feature columns.
                         # Use ConcatTransform to merge them: "
                         #     " ConcatTransform() % {0} >
-                        # Role.Feature".format(self.feature_column))
+                        # Role.Feature".format(self.feature_column_name))
                         pass
                 else:
                     raise TypeError(
                         "Feature column type is unexpected: {0}".format(
                             type(
-                                self.feature_column)))
+                                self.feature_column_name)))
 
         self._attr_input = attr
         self._check_inputs()

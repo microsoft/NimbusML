@@ -58,12 +58,12 @@ class Ngram(Component):
     :param ngram_length: Ngram length.
 
     :param skip_length: Maximum number of tokens to skip when constructing an
-        ngram.
+        n-gram.
 
-    :param all_lengths: Whether to include all ngram lengths up to NgramLength
+    :param all_lengths: Whether to include all n-gram lengths up to NgramLength
         or only NgramLength.
 
-    :param max_num_terms: Maximum number of ngrams to store in the dictionary.
+    :param max_num_terms: Maximum number of n-grams to store in the dictionary.
 
     :param weighting: The weighting criteria.
 

@@ -41,7 +41,7 @@
     :param use_blue: Specifies whether to use blue channel. The default value
         is ``True``.
 
-    :param interleave_argb: Whether to separate each channel or
+    :param interleave: Whether to separate each channel or
         interleave in ARGB order. This might be important, for example, if
         you are training
         a convolutional neural network, since this would affect the shape of

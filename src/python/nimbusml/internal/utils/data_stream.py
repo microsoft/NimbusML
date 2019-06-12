@@ -214,7 +214,7 @@ class FileDataStream(DataStream):
             #1   2.2  class  3.0
             exp = Pipeline([
                          OneHotVectorizer(columns = ['text']),
-                         LightGbmRegressor(min_data_per_leaf = 1)
+                         LightGbmRegressor(minimum_example_count_per_leaf = 1)
                         ])
 
             exp.fit(ds, 'y')

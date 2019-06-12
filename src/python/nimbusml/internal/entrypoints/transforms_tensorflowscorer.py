@@ -3,6 +3,7 @@
 Transforms.TensorFlowScorer
 """
 
+import numbers
 
 from ..utils.entrypoints import EntryPoint
 from ..utils.utils import try_set, unlist
@@ -15,17 +16,58 @@ def transforms_tensorflowscorer(
         output_columns,
         output_data=None,
         model=None,
+        label_column=None,
+        tensor_flow_label=None,
+        optimization_operation=None,
+        loss_operation=None,
+        metric_operation=None,
+        batch_size=64,
+        epoch=5,
+        learning_rate_operation=None,
+        learning_rate=0.01,
+        save_location_operation='save/Const',
+        save_operation='save/control_dependency',
+        re_train=False,
+        add_batch_dimension_inputs=False,
         **params):
     """
     **Description**
         Transforms the data using the TensorFlow model.
 
-    :param model_location: TensorFlow model used by the transform. Please see
-        https://www.tensorflow.org/mobile/prepare_models for more
-        details. (inputs).
+    :param model_location: TensorFlow model used by the transform.
+        Please see https://www.tensorflow.org/mobile/prepare_models
+        for more details. (inputs).
     :param input_columns: The names of the model inputs (inputs).
     :param data: Input dataset (inputs).
     :param output_columns: The name of the outputs (inputs).
+    :param label_column: Training labels. (inputs).
+    :param tensor_flow_label: TensorFlow label node. (inputs).
+    :param optimization_operation: The name of the optimization
+        operation in the TensorFlow graph. (inputs).
+    :param loss_operation: The name of the operation in the
+        TensorFlow graph to compute training loss (Optional)
+        (inputs).
+    :param metric_operation: The name of the operation in the
+        TensorFlow graph to compute performance metric during
+        training (Optional) (inputs).
+    :param batch_size: Number of samples to use for mini-batch
+        training. (inputs).
+    :param epoch: Number of training iterations. (inputs).
+    :param learning_rate_operation: The name of the operation in the
+        TensorFlow graph which sets optimizer learning rate
+        (Optional). (inputs).
+    :param learning_rate: Learning rate to use during optimization.
+        (inputs).
+    :param save_location_operation: Name of the input in TensorFlow
+        graph that specifiy the location for saving/restoring models
+        from disk. (inputs).
+    :param save_operation: Name of the input in TensorFlow graph that
+        specifiy the location for saving/restoring models from disk.
+        (inputs).
+    :param re_train: Retrain TensorFlow model. (inputs).
+    :param add_batch_dimension_inputs: Add a batch dimension to the
+        input e.g. input = [224, 224, 3] => [-1, 224, 224, 3].
+        (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -35,7 +77,7 @@ def transforms_tensorflowscorer(
     outputs = {}
 
     if model_location is not None:
-        inputs['Model'] = try_set(
+        inputs['ModelLocation'] = try_set(
             obj=model_location,
             none_acceptable=False,
             is_of_type=str)
@@ -54,6 +96,63 @@ def transforms_tensorflowscorer(
             obj=output_columns,
             none_acceptable=False,
             is_of_type=list)
+    if label_column is not None:
+        inputs['LabelColumn'] = try_set(
+            obj=label_column,
+            none_acceptable=True,
+            is_of_type=str)
+    if tensor_flow_label is not None:
+        inputs['TensorFlowLabel'] = try_set(
+            obj=tensor_flow_label,
+            none_acceptable=True,
+            is_of_type=str)
+    if optimization_operation is not None:
+        inputs['OptimizationOperation'] = try_set(
+            obj=optimization_operation, none_acceptable=True, is_of_type=str)
+    if loss_operation is not None:
+        inputs['LossOperation'] = try_set(
+            obj=loss_operation,
+            none_acceptable=True,
+            is_of_type=str)
+    if metric_operation is not None:
+        inputs['MetricOperation'] = try_set(
+            obj=metric_operation, none_acceptable=True, is_of_type=str)
+    if batch_size is not None:
+        inputs['BatchSize'] = try_set(
+            obj=batch_size,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if epoch is not None:
+        inputs['Epoch'] = try_set(
+            obj=epoch,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if learning_rate_operation is not None:
+        inputs['LearningRateOperation'] = try_set(
+            obj=learning_rate_operation, none_acceptable=True, is_of_type=str)
+    if learning_rate is not None:
+        inputs['LearningRate'] = try_set(
+            obj=learning_rate,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if save_location_operation is not None:
+        inputs['SaveLocationOperation'] = try_set(
+            obj=save_location_operation, none_acceptable=True, is_of_type=str)
+    if save_operation is not None:
+        inputs['SaveOperation'] = try_set(
+            obj=save_operation,
+            none_acceptable=True,
+            is_of_type=str)
+    if re_train is not None:
+        inputs['ReTrain'] = try_set(
+            obj=re_train,
+            none_acceptable=True,
+            is_of_type=bool)
+    if add_batch_dimension_inputs is not None:
+        inputs['AddBatchDimensionInputs'] = try_set(
+            obj=add_batch_dimension_inputs,
+            none_acceptable=True,
+            is_of_type=bool)
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Microsoft.ML;
+using Microsoft.ML.CommandLine;
+using Microsoft.ML.Data;
+using Microsoft.ML.Data.IO;
+using Microsoft.ML.EntryPoints;
+using Microsoft.ML.Internal.Utilities;
 using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.CommandLine;
-using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.Data.IO;
-using Microsoft.ML.Runtime.EntryPoints;
-using Microsoft.ML.Runtime.EntryPoints.JsonUtils;
-using Microsoft.ML.Runtime.Internal.Utilities;
+using Microsoft.ML.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -72,13 +73,13 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             using (var fs = File.OpenWrite(path))
             {
-                saver.SaveData(fs, idv, Utils.GetIdentityPermutation(idv.Schema.ColumnCount)
-                    .Where(x => !idv.Schema.IsHidden(x) && saver.IsColumnSavable(idv.Schema.GetColumnType(x)))
+                saver.SaveData(fs, idv, Utils.GetIdentityPermutation(idv.Schema.Count)
+                    .Where(x => !idv.Schema[x].IsHidden && saver.IsColumnSavable(idv.Schema[x].Type))
                     .ToArray());
             }
         }
 
-        private static void SavePredictorModelToFile(IPredictorModel model, string path, IHost host)
+        private static void SavePredictorModelToFile(PredictorModel model, string path, IHost host)
         {
             using (var fs = File.OpenWrite(path))
                 model.Save(host, fs);
@@ -95,7 +96,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             int? maxThreadsAllowed = Math.Min(args.parallel > 0 ? args.parallel.Value : penv->maxThreadsAllowed, penv->maxThreadsAllowed);
             maxThreadsAllowed = penv->maxThreadsAllowed > 0 ? maxThreadsAllowed : args.parallel;
-            var host = env.Register("RunGraph", args.randomSeed, null, maxThreadsAllowed);
+            var host = env.Register("RunGraph", args.randomSeed, null);
 
             JObject graph;
             try
@@ -107,8 +108,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 throw host.Except(ex, "Failed to parse experiment graph: {0}", ex.Message);
             }
 
-            var mc = host.ComponentCatalog;
-            var runner = new GraphRunner(host, mc, graph["nodes"] as JArray);
+            var runner = new GraphRunner(host, graph["nodes"] as JArray);
 
             var dvNative = new IDataView[cdata];
             try
@@ -145,7 +145,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 {
                                     var extension = Path.GetExtension(path);
                                     if (extension == ".txt")
-                                        dv = TextLoader.ReadFile(host, new TextLoader.Arguments(), new MultiFileSource(path));
+                                        dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
 
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
@@ -155,7 +155,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     Contracts.Assert(iDv < dvNative.Length);
                                     // prefetch all columns
                                     dv = dvNative[iDv++];
-                                    var prefetch = new int[dv.Schema.ColumnCount];
+                                    var prefetch = new int[dv.Schema.Count];
                                     for (int i = 0; i < prefetch.Length; i++)
                                         prefetch[i] = i;
                                     dv = new CacheDataView(host, dv, prefetch);
@@ -167,7 +167,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 if (!string.IsNullOrWhiteSpace(path))
                                 {
                                     using (var fs = File.OpenRead(path))
-                                        pm = new PredictorModel(host, fs);
+                                        pm = new PredictorModelImpl(host, fs);
                                 }
                                 else
                                     throw host.Except("Model must be loaded from a file");
@@ -178,7 +178,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 if (!string.IsNullOrWhiteSpace(path))
                                 {
                                     using (var fs = File.OpenRead(path))
-                                        tm = new TransformModel(host, fs);
+                                        tm = new TransformModelImpl(host, fs);
                                 }
                                 else
                                     throw host.Except("Model must be loaded from a file");
@@ -224,7 +224,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     }
                                     break;
                                 case TlcModule.DataKind.PredictorModel:
-                                    var pm = runner.GetOutput<IPredictorModel>(varName);
+                                    var pm = runner.GetOutput<PredictorModel>(varName);
                                     if (!string.IsNullOrWhiteSpace(path))
                                     {
                                         SavePredictorModelToFile(pm, path, host);
@@ -233,7 +233,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                         throw host.Except("Returning in-memory models is not supported");
                                     break;
                                 case TlcModule.DataKind.TransformModel:
-                                    var tm = runner.GetOutput<ITransformModel>(varName);
+                                    var tm = runner.GetOutput<TransformModel>(varName);
                                     if (!string.IsNullOrWhiteSpace(path))
                                     {
                                         using (var fs = File.OpenWrite(path))
@@ -245,9 +245,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                                 case TlcModule.DataKind.Array:
                                     var objArray = runner.GetOutput<object[]>(varName);
-                                    if (objArray is IPredictorModel[])
+                                    if (objArray is PredictorModel[])
                                     {
-                                        var modelArray = (IPredictorModel[])objArray;
+                                        var modelArray = (PredictorModel[])objArray;
                                         // Save each model separately
                                         for (var i = 0; i < modelArray.Length; i++)
                                         {
@@ -264,7 +264,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                     }
-                    ch.Done();
                 }
             }
             finally
@@ -285,35 +284,32 @@ namespace Microsoft.MachineLearning.DotNetBridge
         private static Dictionary<string, ColumnMetadataInfo> ProcessColumns(ref IDataView view, int maxSlots, IHostEnvironment env)
         {
             Dictionary<string, ColumnMetadataInfo> result = null;
-            List<DropSlotsTransform.Column> drop = null;
-            for (int i = 0; i < view.Schema.ColumnCount; i++)
+            List<SlotsDroppingTransformer.ColumnOptions> drop = null;
+            for (int i = 0; i < view.Schema.Count; i++)
             {
-                if (view.Schema.IsHidden(i))
+                if (view.Schema[i].IsHidden)
                     continue;
 
-                var columnName = view.Schema.GetColumnName(i);
-                var columnType = view.Schema.GetColumnType(i);
-                if (columnType.IsKnownSizeVector)
+                var columnName = view.Schema[i].Name;
+                var columnType = view.Schema[i].Type;
+                if (columnType.IsKnownSizeVector())
                 {
                     Utils.Add(ref result, columnName, new ColumnMetadataInfo(true, null, null));
-                    if (maxSlots > 0 && columnType.ValueCount > maxSlots)
+                    if (maxSlots > 0 && columnType.GetValueCount() > maxSlots)
                     {
                         Utils.Add(ref drop,
-                            new DropSlotsTransform.Column()
-                            {
-                                Name = columnName,
-                                Source = columnName,
-                                Slots = new[] { new DropSlotsTransform.Range() { Min = maxSlots } }
-                            });
+                            new SlotsDroppingTransformer.ColumnOptions(
+                                name: columnName,
+                                slots: (maxSlots, null)));
                     }
                 }
-                else if (columnType.IsKey)
+                else if (columnType is KeyDataViewType)
                 {
                     Dictionary<uint, ReadOnlyMemory<char>> map = null;
-                    if (columnType.KeyCount > 0 && view.Schema.HasKeyNames(i, columnType.KeyCount))
+                    if (columnType.GetKeyCount() > 0 && view.Schema[i].HasKeyValues())
                     {
                         var keyNames = default(VBuffer<ReadOnlyMemory<char>>);
-                        view.Schema.GetMetadata(MetadataUtils.Kinds.KeyValues, i, ref keyNames);
+                        view.Schema[i].Annotations.GetValue(AnnotationUtils.Kinds.KeyValues, ref keyNames);
                         map = keyNames.Items().ToDictionary(kv => (uint)kv.Key, kv => kv.Value);
                     }
                     Utils.Add(ref result, columnName, new ColumnMetadataInfo(false, null, map));
@@ -321,7 +317,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
             }
 
             if (drop != null)
-                view = new DropSlotsTransform(env, new DropSlotsTransform.Arguments() { Column = drop.ToArray() }, view);
+            {
+                var slotDropper = new SlotsDroppingTransformer(env, drop.ToArray());
+                view = slotDropper.Transform(view);
+            }
 
             return result;
         }

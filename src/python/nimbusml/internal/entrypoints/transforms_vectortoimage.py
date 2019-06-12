@@ -18,11 +18,16 @@ def transforms_vectortoimage(
         contains_red=True,
         contains_green=True,
         contains_blue=True,
-        interleave_argb=False,
+        order='ARGB',
+        interleave=False,
         image_width=0,
         image_height=0,
-        offset=None,
-        scale=None,
+        offset=0.0,
+        scale=1.0,
+        default_alpha=255,
+        default_red=0,
+        default_green=0,
+        default_blue=0,
         **params):
     """
     **Description**
@@ -35,12 +40,21 @@ def transforms_vectortoimage(
     :param contains_red: Whether to use red channel (inputs).
     :param contains_green: Whether to use green channel (inputs).
     :param contains_blue: Whether to use blue channel (inputs).
-    :param interleave_argb: Whether to separate each channel or
-        interleave in ARGB order (inputs).
+    :param order: Order of colors. (inputs).
+    :param interleave: Whether to separate each channel or interleave
+        in specified order (inputs).
     :param image_width: Width of the image (inputs).
     :param image_height: Height of the image (inputs).
     :param offset: Offset (pre-scale) (inputs).
     :param scale: Scale factor (inputs).
+    :param default_alpha: Default value for alpha channel. Will be
+        used if ContainsAlpha set to false (inputs).
+    :param default_red: Default value for red channel. Will be used
+        if ContainsRed set to false (inputs).
+    :param default_green: Default value for green channel. Will be
+        used if ContainsGreen set to false (inputs).
+    :param default_blue: Default value for blue channel. Will be used
+        if ContainsBlue set to false (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -80,9 +94,21 @@ def transforms_vectortoimage(
             obj=contains_blue,
             none_acceptable=True,
             is_of_type=bool)
-    if interleave_argb is not None:
-        inputs['InterleaveArgb'] = try_set(
-            obj=interleave_argb,
+    if order is not None:
+        inputs['Order'] = try_set(
+            obj=order,
+            none_acceptable=True,
+            is_of_type=str,
+            values=[
+                'ARGB',
+                'ARBG',
+                'ABRG',
+                'ABGR',
+                'AGRB',
+                'AGBR'])
+    if interleave is not None:
+        inputs['Interleave'] = try_set(
+            obj=interleave,
             none_acceptable=True,
             is_of_type=bool)
     if image_width is not None:
@@ -103,6 +129,26 @@ def transforms_vectortoimage(
     if scale is not None:
         inputs['Scale'] = try_set(
             obj=scale,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if default_alpha is not None:
+        inputs['DefaultAlpha'] = try_set(
+            obj=default_alpha,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if default_red is not None:
+        inputs['DefaultRed'] = try_set(
+            obj=default_red,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if default_green is not None:
+        inputs['DefaultGreen'] = try_set(
+            obj=default_green,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if default_blue is not None:
+        inputs['DefaultBlue'] = try_set(
+            obj=default_blue,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if output_data is not None:

@@ -112,8 +112,8 @@ class MutualInformationSelector(
 
         algo_args = dict(
             column=input_columns,
-            label_column=self._getattr_role(
-                'label_column',
+            label_column_name=self._getattr_role(
+                'label_column_name',
                 all_args),
             slots_in_output=self.slots_in_output,
             num_bins=self.num_bins)

@@ -7,7 +7,7 @@ Building NimbusML from source on Mac
 ## Build
 Run `./build.sh`
 
-This downloads dependencies (.NET SDK, specific versions of Python and Boost), builds native code and managed code, and packages NimbusML into a pip-installable wheel. This produces debug binaries by default, and release versions can be specified by `./build.sh --configuration RlsMacPy3.6` for examle.
+This downloads dependencies (.NET SDK, specific versions of Python and Boost), builds native code and managed code, and packages NimbusML into a pip-installable wheel. This produces debug binaries by default, and release versions can be specified by `./build.sh --configuration RlsMacPy3.7` for examle.
 
 For additional options including running tests and building components independently, see `./build.sh -h`.
 

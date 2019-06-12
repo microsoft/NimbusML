@@ -27,7 +27,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = LogisticRegressionBinaryClassifier(train_threads=1)
+        lr = LogisticRegressionBinaryClassifier(number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train)
         metrics = e.score(X_test, y_test)
@@ -47,7 +47,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = LogisticRegressionClassifier(train_threads=1)
+        lr = LogisticRegressionClassifier(number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())
         metrics = e.score(X_test, y_test)
@@ -67,7 +67,7 @@ class TestPiplineScoreMethod(unittest.TestCase):
         X_train, X_test, y_train, y_test = \
             train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
 
-        lr = FastTreesRegressor(train_threads=1)
+        lr = FastTreesRegressor(number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())
         metrics = e.score(X_test, y_test)
@@ -89,8 +89,8 @@ class TestPiplineScoreMethod(unittest.TestCase):
 
         lr = KMeansPlusPlus(
             n_clusters=2,
-            init_algorithm="Random",
-            train_threads=1)
+            initialization_algorithm="Random",
+            number_of_threads=1)
         e = Pipeline([lr])
         e.fit(X_train, y_train.to_frame())
         metrics = e.score(X_test, y_test)
@@ -115,9 +115,9 @@ class TestPiplineScoreMethod(unittest.TestCase):
         svm = OneClassSvmAnomalyDetector() # noqa
         e = Pipeline([svm])
         e.fit(X_train)
-        if e.nodes[-1].label_column_ is not None:
+        if e.nodes[-1].label_column_name_ is not None:
             raise ValueError("'{0}' should be None".format(
-                e.nodes[-1].label_column_))
+                e.nodes[-1].label_column_name_))
         assert y_test.name == 'Setosa'
         metrics = e.score(X_test, y_test)
         print(metrics)
@@ -156,22 +156,22 @@ class TestPiplineScoreMethod(unittest.TestCase):
         metrics, _ = pipeline.test(eval_stream)
         assert_almost_equal(
             metrics['NDCG@1'][0],
-            43.571429,
-            decimal=5,
+            0.43571429,
+            decimal=7,
             err_msg="NDCG@1 should be %s" %
-                    43.571429)
+                    0.43571429)
         assert_almost_equal(
             metrics['NDCG@2'][0],
-            51.28226,
-            decimal=5,
+            0.5128226,
+            decimal=7,
             err_msg="NDCG@2 should be %s" %
-                    51.28226)
+                    0.5128226)
         assert_almost_equal(
             metrics['NDCG@3'][0],
-            55.168069,
-            decimal=5,
+            0.55168069,
+            decimal=7,
             err_msg="NDCG@3 should be %s" %
-                    55.168069)
+                    0.55168069)
         assert_almost_equal(
             metrics['DCG@1'][0],
             4.688759,
