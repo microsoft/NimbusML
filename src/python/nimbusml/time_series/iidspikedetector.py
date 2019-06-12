@@ -89,3 +89,13 @@ class IidSpikeDetector(core, BaseTransform, TransformerMixin):
         Get the parameters for this operator.
         """
         return core.get_params(self)
+
+    def _nodes_with_presteps(self):
+        """
+        Inserts preprocessing before this one.
+        """
+        from ..preprocessing.schema import TypeConverter
+        return [
+            TypeConverter(
+                result_type='R4')._steal_io(self),
+            self]

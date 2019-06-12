@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from nimbusml.time_series import IidSpikeDetector
 
-X_train = pd.Series([5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5], name="ts", dtype=np.float32)
+X_train = pd.Series([5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5], name="ts")
 
 isd = IidSpikeDetector(confidence=95, pvalue_history_length=2.5) << {'result': 'ts'}
 

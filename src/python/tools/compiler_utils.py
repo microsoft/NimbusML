@@ -120,12 +120,18 @@ int_to_r4_converter = \
     '''from ..schema import TypeConverter
 return [TypeConverter(result_type='R4')._steal_io(self), self]'''
 
+timeseries_to_r4_converter = \
+    '''from ..preprocessing.schema import TypeConverter
+return [TypeConverter(result_type='R4')._steal_io(self), self]'''
+
 _presteps = {
     'MinMaxScaler': int_to_r4_converter,
     'MeanVarianceScaler': int_to_r4_converter,
     'LogMeanVarianceScaler': int_to_r4_converter,
     'Binner': int_to_r4_converter,
     # 'SupervisedBinner': int_to_r4_converter, # not exist in nimbusml
+
+    'IidSpikeDetector': timeseries_to_r4_converter,
 
     'PcaTransformer':
     '''from ..preprocessing.schema import TypeConverter

@@ -19,7 +19,6 @@ print(data.head())
 
 # define the training pipeline
 pipeline = Pipeline([
-    TypeConverter(result_type='R4'),
     IidSpikeDetector(columns={'t2_spikes': 't2'}, pvalue_history_length=5)
 ])
 

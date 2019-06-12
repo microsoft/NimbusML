@@ -16,7 +16,7 @@ from nimbusml.preprocessing.schema import TypeConverter
 class TestIidSpikeDetector(unittest.TestCase):
 
     def test_correct_data_is_marked_as_anomaly(self):
-        X_train = pd.Series([5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5], name="ts", dtype=np.float32)
+        X_train = pd.Series([5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5], name="ts")
         isd = IidSpikeDetector(confidence=95, pvalue_history_length=3) << {'result': 'ts'}
         data = isd.fit_transform(X_train)
 
@@ -30,7 +30,6 @@ class TestIidSpikeDetector(unittest.TestCase):
 
         try:
             pipeline = Pipeline([
-                TypeConverter(result_type='R4'),
                 IidSpikeDetector(columns=['t2', 't3'], pvalue_history_length=5)
             ])
             pipeline.fit_transform(data)
@@ -40,6 +39,24 @@ class TestIidSpikeDetector(unittest.TestCase):
             return
 
         self.fail()
+
+    def test_pre_transform_does_not_convert_non_time_series_columns(self):
+        X_train = pd.DataFrame({
+            'Date': ['2017-01', '2017-02', '2017-03'],
+            'Values': [5.0, 5.0, 5.0]})
+
+        self.assertEqual(len(X_train.dtypes), 2)
+        self.assertEqual(str(X_train.dtypes[0]), 'object')
+        self.assertTrue(str(X_train.dtypes[1]).startswith('float'))
+
+        isd = IidSpikeDetector(confidence=95, pvalue_history_length=3) << 'Values'
+        data = isd.fit_transform(X_train)
+
+        self.assertEqual(len(data.dtypes), 4)
+        self.assertEqual(str(data.dtypes[0]), 'object')
+        self.assertTrue(str(data.dtypes[1]).startswith('float'))
+        self.assertTrue(str(data.dtypes[2]).startswith('float'))
+        self.assertTrue(str(data.dtypes[3]).startswith('float'))
 
 
 if __name__ == '__main__':
