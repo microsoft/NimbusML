@@ -11,12 +11,13 @@ mkdir -p "${DependenciesDir}"
 
 usage()
 {
-    echo "Usage: $0 --configuration <Configuration> [--runTests]"
+    echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests]"
     echo ""
     echo "Options:"
     echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
     echo "  --runTests                        Run tests after build"
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
+    echo "  --includeExtendedTests            Include the extended tests if the tests are run"
     echo "  --buildNativeBridgeOnly           Build only the native bridge code"
     echo "  --skipNativeBridge                Build the DotNet bridge and python wheel but use existing native bridge binaries (e.g. <repo>/x64/DbgLinPy3.7/pybridge.so)"
     exit 1
@@ -30,6 +31,7 @@ else
     __configuration=DbgLinPy3.7
 fi
 __runTests=false
+__runExtendedTests=false
 __buildNativeBridge=true
 __buildDotNetBridge=true
 
@@ -46,6 +48,9 @@ while [ "$1" != "" ]; do
             ;;
         --runtests)
             __runTests=true
+            ;;
+        --includeextendedtests)
+            __runExtendedTests=true
             ;;
         --runtestsonly)
             __buildNativeBridge=false
@@ -268,9 +273,15 @@ then
     PackagePath=${PythonRoot}/lib/python${PythonVersion}/site-packages/nimbusml
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
+    TestsPath3=${__currentScriptDir}/src/python/tests_extended
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
     "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}"
     "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}"
+
+    if [ ${__runExtendedTests} = true ]
+    then 
+        "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
+    fi
 fi
 
 exit $?

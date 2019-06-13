@@ -21,6 +21,7 @@ set BoostRoot=%DependenciesDir%BoostDbg3.7
 set PythonVersion=3.7
 set PythonTag=cp37
 set RunTests=False
+set RunExtendedTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
 
@@ -33,6 +34,10 @@ if /i [%1] == [--runTests]     (
     set RunTests=True
     shift && goto :Arg_Loop
 )
+if /i [%1] == [--includeExtendedTests]     (
+    set RunExtendedTests=True
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [--buildDotNetBridgeOnly]     (
     set BuildDotNetBridgeOnly=True
     shift && goto :Arg_Loop
@@ -43,11 +48,12 @@ if /i [%1] == [--skipDotNetBridge]     (
 ) else goto :Usage
 
 :Usage
-echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
+echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
 echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
+echo "  --includeExtendedTests            Include the extended tests if the tests are run"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
 goto :Exit_Success
@@ -326,6 +332,7 @@ call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
+set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
 call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
@@ -334,6 +341,13 @@ if errorlevel 1 (
 call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath2%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
     goto :Exit_Error
+)
+
+if "%RunExtendedTests%" == "True" (
+    call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    if errorlevel 1 (
+        goto :Exit_Error
+    )
 )
 
 :Exit_Success
