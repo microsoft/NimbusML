@@ -15,7 +15,6 @@ from nimbusml import __file__ as myfile
 
 class TestDocsExamples(unittest.TestCase):
 
-    @unittest.skip
     def test_examples(self):
         this = os.path.abspath(os.path.dirname(__file__))
         fold = os.path.normpath(
