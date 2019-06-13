@@ -15,6 +15,7 @@ from nimbusml import __file__ as myfile
 
 class TestDocsExamples(unittest.TestCase):
 
+    @unittest.skip
     def test_examples(self):
         this = os.path.abspath(os.path.dirname(__file__))
         fold = os.path.normpath(
@@ -33,12 +34,12 @@ class TestDocsExamples(unittest.TestCase):
                 "Unable to find examples in '{0}'".format(fold))
 
         # also include the 'examples_from_dataframe' files
-#        fold_df = os.path.join(fold, 'examples_from_dataframe')
-#        fold_files_df = [(fold_df, _) for _ in os.listdir(
-#            fold_df) if os.path.splitext(_)[-1] == '.py']
-#
-#        # merge details of all examples into one list
-#        fold_files.extend(fold_files_df)
+        fold_df = os.path.join(fold, 'examples_from_dataframe')
+        fold_files_df = [(fold_df, _) for _ in os.listdir(
+            fold_df) if os.path.splitext(_)[-1] == '.py']
+
+        # merge details of all examples into one list
+        fold_files.extend(fold_files_df)
         fold_files.sort()
 
         modpath = os.path.abspath(os.path.dirname(myfile))
