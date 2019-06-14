@@ -558,6 +558,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "TimeSeriesProcessingEntryPoints.SsaChangePointDetector",
+      "NewName": "SsaChangePointDetector",
+      "Module": "time_series",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.PoissonRegressor",
       "NewName": "PoissonRegressionRegressor",
       "Module": "linear_model",
