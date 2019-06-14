@@ -132,6 +132,7 @@ _presteps = {
     # 'SupervisedBinner': int_to_r4_converter, # not exist in nimbusml
 
     'IidSpikeDetector': timeseries_to_r4_converter,
+    'IidChangePointDetector': timeseries_to_r4_converter,
 
     'PcaTransformer':
     '''from ..preprocessing.schema import TypeConverter

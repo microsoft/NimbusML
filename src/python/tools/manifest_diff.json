@@ -546,6 +546,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "TimeSeriesProcessingEntryPoints.IidChangePointDetector",
+      "NewName": "IidChangePointDetector",
+      "Module": "time_series",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.PoissonRegressor",
       "NewName": "PoissonRegressionRegressor",
       "Module": "linear_model",
