@@ -16,7 +16,7 @@ from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
-from nimbusml.time_series import IidSpikeDetector, IidChangePointDetector
+from nimbusml.time_series import IidSpikeDetector, IidChangePointDetector, SsaSpikeDetector
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
@@ -57,6 +57,7 @@ OMITTED_CHECKS = {
     # time series do not currently support sparse matrices
     'IidSpikeDetector': 'check_estimator_sparse_data',
     'IidChangePointDetector': 'check_estimator_sparse_data',
+    'SsaSpikeDetector': 'check_estimator_sparse_data',
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
@@ -186,6 +187,7 @@ INSTANCES = {
     'TakeFilter': TakeFilter(count=100000),
     'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
     'IidChangePointDetector': IidChangePointDetector(columns=['F0']),
+    'SsaSpikeDetector': IidChangePointDetector(columns=['F0']),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,

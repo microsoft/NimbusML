@@ -89,6 +89,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Image_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Indicator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FromKey_df.py" />
@@ -137,6 +138,7 @@
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
     <Compile Include="nimbusml\examples\Image.py" />
     <Compile Include="nimbusml\examples\Indicator.py" />
     <Compile Include="nimbusml\examples\FromKey.py" />
@@ -230,6 +232,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\core\time_series\iidchangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\time_series\iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\time_series\ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\core\time_series\__init__.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_customtextloader.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_dataviewreference.py" />
@@ -579,10 +582,12 @@
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\time_series\test_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\tests\time_series\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\time_series\test_iidspikedetector.py" />
     <Compile Include="nimbusml\tests\time_series\__init__.py" />
     <Compile Include="nimbusml\time_series\iidchangepointdetector.py" />
     <Compile Include="nimbusml\time_series\iidspikedetector.py" />
+    <Compile Include="nimbusml\time_series\ssaspikedetector.py" />
     <Compile Include="nimbusml\time_series\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />

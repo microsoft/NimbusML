@@ -133,6 +133,7 @@ _presteps = {
 
     'IidSpikeDetector': timeseries_to_r4_converter,
     'IidChangePointDetector': timeseries_to_r4_converter,
+    'SsaSpikeDetector': timeseries_to_r4_converter,
 
     'PcaTransformer':
     '''from ..preprocessing.schema import TypeConverter
