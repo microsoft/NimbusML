@@ -58,7 +58,8 @@ OMITTED_CHECKS = {
     # time series do not currently support sparse matrices
     'IidSpikeDetector': 'check_estimator_sparse_data',
     'IidChangePointDetector': 'check_estimator_sparse_data',
-    'SsaSpikeDetector': 'check_estimator_sparse_data',
+    'SsaSpikeDetector': 'check_estimator_sparse_data'
+                        'check_fit2d_1sample', # SSA requires more than one sample
     'SsaChangePointDetector': 'check_estimator_sparse_data'
                               'check_fit2d_1sample', # SSA requires more than one sample
     # bug, low tolerance
@@ -190,7 +191,7 @@ INSTANCES = {
     'TakeFilter': TakeFilter(count=100000),
     'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
     'IidChangePointDetector': IidChangePointDetector(columns=['F0']),
-    'SsaSpikeDetector': IidChangePointDetector(columns=['F0']),
+    'SsaSpikeDetector': SsaSpikeDetector(columns=['F0'], seasonal_window_size=2),
     'SsaChangePointDetector': SsaChangePointDetector(columns=['F0'], seasonal_window_size=2),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
