@@ -8,7 +8,7 @@ Installation Guide
 Supported Platforms 
 -------------------
 
-Release 0.6:
+Release 1.1:
    * Windows 10, Ubuntu 14.04, Ubuntu 16.04, CentOS 7, RHEL 7, Mac OS 10.11, 10.12, 10.13
 
 
