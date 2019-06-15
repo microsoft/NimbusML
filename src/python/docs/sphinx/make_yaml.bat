@@ -1,9 +1,9 @@
 @if not defined _echo @echo off
 if exist %~dp0build (rmdir /S /Q %~dp0build)
-if exist %~dp0..\..\..\..\dependencies\Python3.6 (
-echo "Python3.6 exists"
+if exist %~dp0..\..\..\..\dependencies\Python3.7 (
+echo "Python3.7 exists"
 ) else (
-echo "Please run build.cmd under NimbusML with Python3.6's configuration first"
+echo "Please run build.cmd under NimbusML with Python3.7's configuration first"
 call exit /b
 )
 echo "###Downloading Dependencies######"
