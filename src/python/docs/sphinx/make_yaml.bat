@@ -1,16 +1,16 @@
 @if not defined _echo @echo off
 if exist %~dp0build (rmdir /S /Q %~dp0build)
-if exist %~dp0..\..\..\..\dependencies\Python3.7 (
-echo "Python3.7 exists"
+if exist %~dp0..\..\..\..\dependencies\Python3.6 (
+echo "Python3.6 exists"
 ) else (
-echo "Please run build.cmd under NimbusML with Python3.7's configuration first"
+echo "Please run build.cmd under NimbusML with Python3.6's configuration first"
 call exit /b
 )
 echo "###Downloading Dependencies######"
 echo "Downloading Dependencies "
-set PY=%~dp0..\..\..\..\dependencies\Python3.7\python.exe
-set PYS=%~dp0..\..\..\..\dependencies\Python3.7\Scripts
+set PY=%~dp0..\..\..\..\dependencies\Python3.6\python.exe
 set PYTHONPATH=%~dp0..\..\..\..\python
+call %PY% -m pip -q install pip==9.0.3
 echo "Installing sphinx-docfx-yaml "
 call %PY% -m pip -q install sphinx-docfx-yaml
 echo "Installing sphinx "
@@ -40,7 +40,6 @@ echo "#################################"
 echo "Running make_md.bat"
 echo "Fixing API guide
 echo "#################################"
-:: Todo: //Have a bug here stop iterator
 call make md
 call %py% %~dp0ci_script\fix_apiguide.py
 
@@ -70,6 +69,8 @@ echo.
 echo "#################################"
 echo "Cleaning files"
 echo "#################################"
+call mkdir %~dp0_build\ms_doc_ref\nimbusml\_images\_static
+call xcopy /S /I /Q /Y /F %~dp0ci_script\_static %~dp0_build\ms_doc_ref\nimbusml\_images\_static
 call mkdir %~dp0build
 call move %~dp0_build\ms_doc_ref %~dp0\build\
 call more +29 %~dp0build\ms_doc_ref\nimbusml\index.md >> %~dp0build\ms_doc_ref\nimbusml\overview.md
@@ -77,6 +78,7 @@ call del /Q %~dp0build\ms_doc_ref\nimbusml\*log
 call del /Q %~dp0build\ms_doc_ref\nimbusml\concepts.md
 call del /Q %~dp0build\ms_doc_ref\nimbusml\index.md
 call del /Q %~dp0build\ms_doc_ref\nimbusml\toc.yml
+call rmdir /Q %~dp0build\ms_doc_ref\nimbusml\_static
 :: call rmdir /S /Q %~dp0_build
 
 echo.

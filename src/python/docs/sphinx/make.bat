@@ -1,8 +1,7 @@
 @ECHO OFF
 
 pushd %~dp0
-set PYTHONINTERPRETER=%~dp0..\..\..\..\dependencies\Python3.7\python.exe
-set PYTHONPATH=%~dp0..\..\..\..\Python\
+set PYTHONINTERPRETER=%~dp0..\..\..\..\dependencies\Python3.6\python.exe
 set SPHINXOPTS=-j 4
 
 REM Command file for Sphinx documentation
