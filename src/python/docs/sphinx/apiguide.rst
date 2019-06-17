@@ -50,7 +50,7 @@ Multiclass Classifiers
 ,, :py:class:`OneVsRestClassifier<nimbusml.multiclass.OneVsRestClassifier>` ,, Yes ,, Yes ,,
 
 
-Regressors Classifiers
+Regressors
 """"""""""""""""""""""
 
 ,, Trainer ,,
