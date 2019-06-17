@@ -6,12 +6,11 @@ echo "Python3.7 exists"
 echo "Please run build.cmd under NimbusML with Python3.7's configuration first"
 call exit /b
 )
-echo "###Downloading Dependencies######"
-echo "Downloading Dependencies "
->>>>>>> documentation
 set PY=%~dp0..\..\..\..\dependencies\Python3.7\python.exe
 set PYS=%~dp0..\..\..\..\dependencies\Python3.7\Scripts
 set PYTHONPATH=%~dp0..\..\..\..\python
+echo "###Downloading Dependencies######"
+echo "Downloading Dependencies "
 echo "Installing sphinx-docfx-yaml "
 call %PY% -m pip -q install sphinx-docfx-yaml
 echo "Installing sphinx "
