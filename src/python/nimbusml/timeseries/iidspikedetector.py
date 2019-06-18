@@ -13,7 +13,7 @@ __all__ = ["IidSpikeDetector"]
 from sklearn.base import TransformerMixin
 
 from ..base_transform import BaseTransform
-from ..internal.core.time_series.iidspikedetector import \
+from ..internal.core.timeseries.iidspikedetector import \
     IidSpikeDetector as core
 from ..internal.utils.utils import trace
 

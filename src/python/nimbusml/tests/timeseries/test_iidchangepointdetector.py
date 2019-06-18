@@ -8,7 +8,7 @@ import unittest
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.time_series import IidChangePointDetector
+from nimbusml.timeseries import IidChangePointDetector
 
 
 class TestIidChangePointDetector(unittest.TestCase):

@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.time_series import SsaChangePointDetector
+from nimbusml.timeseries import SsaChangePointDetector
 
 
 class TestSsaChangePointDetector(unittest.TestCase):

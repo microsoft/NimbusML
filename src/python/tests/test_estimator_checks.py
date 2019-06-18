@@ -16,8 +16,8 @@ from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
-from nimbusml.time_series import (IidSpikeDetector, IidChangePointDetector,
-                                  SsaSpikeDetector, SsaChangePointDetector)
+from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
+                                 SsaSpikeDetector, SsaChangePointDetector)
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))

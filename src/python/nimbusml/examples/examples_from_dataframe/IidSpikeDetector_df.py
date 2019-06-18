@@ -1,7 +1,7 @@
 ###############################################################################
 # IidSpikeDetector
 import pandas as pd
-from nimbusml.time_series import IidSpikeDetector
+from nimbusml.timeseries import IidSpikeDetector
 
 X_train = pd.Series([5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5], name="ts")
 
