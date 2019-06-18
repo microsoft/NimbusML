@@ -1,7 +1,7 @@
 ###############################################################################
 # IidChangePointDetector
 import pandas as pd
-from nimbusml.time_series import IidChangePointDetector
+from nimbusml.timeseries import IidChangePointDetector
 
 # Create a sample series with a change
 input_data = [5, 5, 5, 5, 5, 5, 5, 5]

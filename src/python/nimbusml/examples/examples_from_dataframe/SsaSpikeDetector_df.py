@@ -2,7 +2,7 @@
 # SsaSpikeDetector
 import numpy as np
 import pandas as pd
-from nimbusml.time_series import SsaSpikeDetector
+from nimbusml.timeseries import SsaSpikeDetector
 
 # This example creates a time series (list of data with the
 # i-th element corresponding to the i-th time slot). 

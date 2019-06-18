@@ -13,7 +13,7 @@ __all__ = ["SsaSpikeDetector"]
 from sklearn.base import TransformerMixin
 
 from ..base_transform import BaseTransform
-from ..internal.core.time_series.ssaspikedetector import \
+from ..internal.core.timeseries.ssaspikedetector import \
     SsaSpikeDetector as core
 from ..internal.utils.utils import trace
 
