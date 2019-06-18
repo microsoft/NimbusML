@@ -89,3 +89,58 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)
+
+    def partial_fit_transform(self, X, y=None, as_binary_data_stream=False,
+                      **params):
+        """
+        Updateds fitted transform and applies it to data.
+
+        :param X: array-like with shape=[n_samples, n_features] or else
+        :py:class:`nimbusml.FileDataStream`
+        :param y: array-like with shape=[n_samples]
+        :return: pandas.DataFrame
+        """
+        if not hasattr(self, "model_") or self.model_ is None:
+            return fit_transform(X, y, params)
+        
+        # Do not move these imports or the module fails
+        # due to circular references.
+        from ..entrypoints.transforms_nooperation import transforms_nooperation
+        from .entrypoints import Graph
+
+        no_op = transforms_nooperation(data='$data', output_data='$output_data')
+        graph_nodes = [no_op]
+        graph = Graph(
+            dict(data=''), 
+            dict(output_data=''), 
+            False,
+           *(graph_nodes))
+        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+        return out_data
+
+    def partial_fit(self, X, y=None, **params):
+        """
+        Updates fitted transform.
+
+        :param X: array-like with shape=[n_samples, n_features] or else
+        :py:class:`nimbusml.FileDataStream`
+        :param y: array-like with shape=[n_samples]
+        :return: self
+        """
+        if not hasattr(self, "model_") or self.model_ is None:
+            return fit(X, y, params)
+
+        # Do not move these imports or the module fails
+        # due to circular references.
+        from ..entrypoints.transforms_nooperation import transforms_nooperation
+        from .entrypoints import Graph
+
+        no_op = transforms_nooperation(data='$data', output_data='$output_data')
+        graph_nodes = [no_op]
+        graph = Graph(
+            dict(data=''), 
+            dict(output_data=''), 
+            False,
+           *(graph_nodes))
+        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+        return self

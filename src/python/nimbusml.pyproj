@@ -12,7 +12,7 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|Py3.7</InterpreterId>
+    <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
@@ -89,6 +89,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\IidSpikeDetector_df_online.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaChangePointDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Image_df.py" />
@@ -1123,7 +1124,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Py3.7" />
+    <InterpreterReference Include="Global|VisualStudio|MinePy37" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
