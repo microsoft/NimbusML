@@ -5,7 +5,6 @@
 
 import unittest
 
-import numpy as np
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
