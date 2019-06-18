@@ -644,9 +644,9 @@
     <Compile Include="nimbusml\__main__.py" />
     <Compile Include="setup.py" />
     <Compile Include="tests\test_copyright.py" />
-    <Compile Include="tests\test_docs_notebooks.py" />
+    <Compile Include="tests_extended\test_docs_notebooks.py" />
     <Compile Include="tests\test_pyproj.py" />
-    <Compile Include="tests\test_docs_example.py" />
+    <Compile Include="tests_extended\test_docs_example.py" />
     <Compile Include="tools\codegen_checker.py" />
     <Compile Include="tools\code_fixer.py" />
     <Compile Include="tools\compiler_utils.py" />
@@ -698,6 +698,7 @@
     <Folder Include="docs\sphinx\modules\svm\kernel\" />
     <Folder Include="docs\sphinx\_static\" />
     <Folder Include="docs\sphinx\_static\images\" />
+    <Folder Include="tests_extended\" />
     <Folder Include="nimbusml\" />
     <Folder Include="nimbusml\cluster\" />
     <Folder Include="nimbusml\datasets\" />
