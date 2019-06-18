@@ -467,3 +467,77 @@ class BinaryDataStream(DataStream):
                 "Method clone was not overwritten for class '{0}'".format(
                     type(self)))
         return BinaryDataStream(self._filename)
+
+
+class DprepDataStream(DataStream):
+    """
+    Defines a data view.
+    """
+
+    def __init__(self, filename):
+        # REVIEW: would be good to figure out a way to know the schema of the
+        # binary IDV.
+        super(DprepDataStream, self).__init__(DataSchema(""))
+        self._filename = filename
+
+    def __repr__(self):
+        return "DprepDataStream('{2}',\n    '{0}',\n    {1})".format(
+            self._schema, self._roles, self._filename.replace('\\', '\\\\'))
+
+    def save(self, file):
+        copyfile(self._filename, file)
+
+    def to_df(self):
+        # Do not move these imports or the module fails
+        # due to circular references.
+        from ..entrypoints.transforms_nooperation import transforms_nooperation
+        from .entrypoints import Graph
+
+        no_op = transforms_nooperation(
+            data='$data', output_data='$output_data')
+        graph_nodes = [no_op]
+        graph = Graph(
+            dict(
+                data=''), dict(
+                output_data=''), False, *(graph_nodes))
+        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+        return out_data
+
+    def head(self, n=5, skip=0):
+        # Do not move these imports or the module fails
+        # due to circular references.
+        from ..entrypoints.transforms_rowtakefilter import \
+            transforms_rowtakefilter
+        from ..entrypoints.transforms_rowskipfilter import \
+            transforms_rowskipfilter
+        from .entrypoints import Graph
+        if n == 0:
+            raise ValueError("n must be > 0")
+        graph_nodes = []
+        if skip > 0:
+            graph_nodes.append(
+                transforms_rowskipfilter(
+                    data='$data',
+                    output_data='$output_skip',
+                    count=skip))
+        graph_nodes.append(
+            transforms_rowtakefilter(
+                data='$output_skip' if skip > 0 else '$data',
+                output_data='$output_data',
+                count=n))
+        graph = Graph(
+            dict(
+                data=''), dict(
+                output_data=''), False, *(graph_nodes))
+        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+        return out_data
+
+    def clone(self):
+        """
+        Copy/clone the object.
+        """
+        if not isinstance(self, DprepDataStream):
+            raise NotImplementedError(
+                "Method clone was not overwritten for class '{0}'".format(
+                    type(self)))
+        return DprepDataStream(self._filename)

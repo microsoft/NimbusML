@@ -18,6 +18,7 @@ from pandas import DataFrame
 from scipy.sparse import csr_matrix
 from nimbusml.utils import signature
 
+from .data_stream import DprepDataStream
 from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
@@ -399,7 +400,7 @@ class Graph(EntryPoint):
                     concatenated = True
             elif isinstance(X, FileDataStream):
                 self.inputs['file'] = X.filename
-            elif isinstance(X, BinaryDataStream):
+            elif isinstance(X, BinaryDataStream) or isinstance(X, DprepDataStream):
                 if 'input_data' in self.inputs:
                     self.inputs['input_data'] = X._filename
                 elif 'data' in self.inputs:
