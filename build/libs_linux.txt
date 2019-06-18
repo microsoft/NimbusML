@@ -10,3 +10,4 @@ libtensorflow.so
 libtensorflow_framework.so
 System.Drawing.Common.dll
 Microsoft.ML.*
+Microsoft.DPrep.*

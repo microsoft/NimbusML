@@ -10,3 +10,4 @@ libtensorflow.dylib
 libtensorflow_framework.dylib
 System.Drawing.Common.dll
 Microsoft.ML.*
+Microsoft.DPrep.*

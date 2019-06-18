@@ -577,6 +577,8 @@
     <Compile Include="nimbusml\tests\decomposition\test_pcaanomalydetector.py" />
     <Compile Include="nimbusml\tests\decomposition\test_pcatransformer.py" />
     <Compile Include="nimbusml\tests\decomposition\__init__.py" />
+    <Compile Include="nimbusml\tests\dprep\test_prep.py" />
+    <Compile Include="nimbusml\tests\dprep\__init__.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreesbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreestweedieregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_gambinaryclassifier.py" />
@@ -730,6 +732,7 @@
     <Folder Include="docs\sphinx\modules\svm\kernel\" />
     <Folder Include="docs\sphinx\_static\" />
     <Folder Include="docs\sphinx\_static\images\" />
+    <Folder Include="nimbusml\tests\dprep\" />
     <Folder Include="tests_extended\" />
     <Folder Include="nimbusml\" />
     <Folder Include="nimbusml\cluster\" />
