@@ -1,20 +1,21 @@
 @ECHO OFF
 
 pushd %~dp0
-set PYTHONINTERPRETER=%~dp0..\..\..\..\dependencies\Python3.7\python.exe
-set PYTHONPATH=%~dp0..\..\..\..\Python\
+set PYTHONINTERPRETER=%~dp0..\..\..\..\dependencies\Python3.6\python.exe
 set SPHINXOPTS=-j 4
 
 REM Command file for Sphinx documentation
 
 if "%SPHINXBUILD%" == "" (
-	set SPHINXBUILD=%PYTHONINTERPRETER% -msphinx
+	set SPHINXBUILD=%PYTHONINTERPRETER% -m sphinx
 )
+
+:: Todo: Fix the issue here, the installtion guide is not showing correctly
 set SOURCEDIR=.
-set BUILDDIR=_build
+set BUILDDIR=%~dp0_build
 set SPHINXPROJ=microsoftml
 
-if "%1" == "" goto html: 
+if "%1" == "" goto html:
 set format=%1
 goto next:
 
@@ -24,8 +25,8 @@ set format=html
 :next:
 
 @echo remove %BUILDDIR%\%format%
-rmdir /s /q %BUILDDIR%\doctrees
-rmdir /s /q %BUILDDIR%\%format%
+call rmdir /s /q %BUILDDIR%\doctrees
+call rmdir /s /q %BUILDDIR%\%format%
 if exist %BUILDDIR%\_static rmdir /S /Q %BUILDDIR%\_static
 if exist %BUILDDIR%\%format% goto issue:
 
@@ -42,11 +43,11 @@ if errorlevel 9009 (
 	exit /b 1
 )
 
-%SPHINXBUILD% -M %format% %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
+call %SPHINXBUILD% -M %format% %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
 goto end
 
 :help
-%SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
+call %SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
 goto end:
 
 :issue:
