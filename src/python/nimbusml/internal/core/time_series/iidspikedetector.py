@@ -105,11 +105,11 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
         
         # Do not move these imports or the module fails
         # due to circular references.
-        from ..entrypoints.transforms_nooperation import transforms_nooperation
+        from ..entrypoints.timeSeries_onlineLearning import timeSeries_onlineLearning
         from .entrypoints import Graph
 
-        no_op = transforms_nooperation(data='$data', output_data='$output_data')
-        graph_nodes = [no_op]
+        online_node = timeSeries_onlineLearning(model_path=self.mmodel_, data='$data', output_data='$output_data')
+        graph_nodes = [online_node]
         graph = Graph(
             dict(data=''), 
             dict(output_data=''), 
@@ -132,11 +132,11 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
 
         # Do not move these imports or the module fails
         # due to circular references.
-        from ..entrypoints.transforms_nooperation import transforms_nooperation
+        from ..entrypoints.timeSeries_onlineLearning import timeSeries_onlineLearning
         from .entrypoints import Graph
 
-        no_op = transforms_nooperation(data='$data', output_data='$output_data')
-        graph_nodes = [no_op]
+        online_node = timeSeries_onlineLearning(model_path=self.mmodel_, data='$data', output_data='$output_data')
+        graph_nodes = [online_node]
         graph = Graph(
             dict(data=''), 
             dict(output_data=''), 
