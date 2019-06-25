@@ -16,6 +16,8 @@ from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
+from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
+                                 SsaSpikeDetector, SsaChangePointDetector)
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
@@ -53,6 +55,13 @@ OMITTED_CHECKS = {
     # fix pending in PR, bug cant handle csr matrix
     'RangeFilter': 'check_estimators_dtypes, '
                    'check_estimator_sparse_data',
+    # time series do not currently support sparse matrices
+    'IidSpikeDetector': 'check_estimator_sparse_data',
+    'IidChangePointDetector': 'check_estimator_sparse_data',
+    'SsaSpikeDetector': 'check_estimator_sparse_data'
+                        'check_fit2d_1sample', # SSA requires more than one sample
+    'SsaChangePointDetector': 'check_estimator_sparse_data'
+                              'check_fit2d_1sample', # SSA requires more than one sample
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
@@ -180,6 +189,10 @@ INSTANCES = {
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
+    'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
+    'IidChangePointDetector': IidChangePointDetector(columns=['F0']),
+    'SsaSpikeDetector': SsaSpikeDetector(columns=['F0'], seasonal_window_size=2),
+    'SsaChangePointDetector': SsaChangePointDetector(columns=['F0'], seasonal_window_size=2),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,

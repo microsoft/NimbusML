@@ -9,11 +9,13 @@ REM Command file for Sphinx documentation
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=%PYTHONINTERPRETER% -m sphinx
 )
+
+:: Todo: Fix the issue here, the installtion guide is not showing correctly
 set SOURCEDIR=.
 set BUILDDIR=%~dp0_build
 set SPHINXPROJ=microsoftml
 
-if "%1" == "" goto html: 
+if "%1" == "" goto html:
 set format=%1
 goto next:
 

@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="0.13.0" />
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.13.0" />
     <PackageReference Include="Microsoft.ML.Ensemble" Version="0.13.0" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="0.13.0" />
   </ItemGroup>
 
 </Project>
