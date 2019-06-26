@@ -4008,6 +4008,131 @@
       ]
     },
     {
+      "Name": "TimeSeriesProcessingEntryPoints.SsaForecasting",
+      "Desc": "This transform forecasts using Singular Spectrum Analysis (SSA).",
+      "FriendlyName": "SSA Forecast",
+      "ShortName": "forecast",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "Type": "String",
+          "Desc": "The name of the source column.",
+          "Aliases": [
+            "src"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Desc": "The name of the new column.",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Confidence",
+          "Type": "Float",
+          "Desc": "The confidence for spike detection in the range [0, 100].",
+          "Aliases": [
+            "cnf"
+          ],
+          "Required": true,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": 99.0
+        },
+        {
+          "Name": "WindowSize",
+          "Type": "Int",
+          "Desc": "Window size",
+          "Aliases": [
+            "swnd"
+          ],
+          "Required": true,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": 10
+        },
+        {
+          "Name": "SeriesLength",
+          "Type": "Int",
+          "Desc": "Series length",
+          "Aliases": [
+            "slen"
+          ],
+          "Required": true,
+          "SortOrder": 6.0,
+          "IsNullable": false,
+          "Default": 20
+        },
+        {
+          "Name": "TrainSize",
+          "Type": "Int",
+          "Desc": "Train size",
+          "Aliases": [
+            "twnd"
+          ],
+          "Required": true,
+          "SortOrder": 7.0,
+          "IsNullable": false,
+          "Default": 100
+        },
+        {
+          "Name": "DiscountFactor",
+          "Type": "Float",
+          "Desc": "The discount factor in [0, 1]",
+          "Aliases": [
+            "disc"
+          ],
+          "Required": false,
+          "SortOrder": 12.0,
+          "IsNullable": false,
+          "Default": 1.0
+        },
+        {
+          "Name": "IsAdaptive",
+          "Type": "Bool",
+          "Desc": "The flag determing whether the model is adaptive",
+          "Aliases": [
+            "adp"
+          ],
+          "Required": false,
+          "SortOrder": 14.0,
+          "IsNullable": false,
+          "Default": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "TimeSeriesProcessingEntryPoints.SsaSpikeDetector",
       "Desc": "This transform detects the spikes in a seasonal time-series using Singular Spectrum Analysis (SSA).",
       "FriendlyName": "SSA Spike Detection",

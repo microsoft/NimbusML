@@ -564,6 +564,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "TimeSeriesProcessingEntryPoints.SsaForecasting",
+      "NewName": "SsaForecaster",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.PoissonRegressor",
       "NewName": "PoissonRegressionRegressor",
       "Module": "linear_model",
