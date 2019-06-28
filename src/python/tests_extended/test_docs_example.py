@@ -71,7 +71,7 @@ class TestDocsExamples(unittest.TestCase):
                     ]:
                     continue
             # skip for ubuntu 14 tests
-            if platform.linux_distribution()[0] == 'Ubuntu' and platform.linux_distribution()[1][:2] == '14':
+            if platform.linux_distribution()[1] == 'jessie/sid':
                 if name in [
                     # libdl needs to be setup
                     'Image.py',
