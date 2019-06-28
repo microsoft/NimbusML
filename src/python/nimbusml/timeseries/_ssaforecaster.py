@@ -13,7 +13,7 @@ __all__ = ["SsaForecaster"]
 from sklearn.base import TransformerMixin
 
 from ..base_transform import BaseTransform
-from ..internal.core.timeseries.ssaforecaster import SsaForecaster as core
+from ..internal.core.timeseries._ssaforecaster import SsaForecaster as core
 from ..internal.utils.utils import trace
 
 
