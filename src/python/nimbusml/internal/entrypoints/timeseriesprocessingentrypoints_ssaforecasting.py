@@ -15,10 +15,19 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         name,
         output_data=None,
         model=None,
-        confidence=99.0,
-        window_size=10,
-        series_length=20,
-        train_size=100,
+        window_size=0,
+        series_length=0,
+        train_size=0,
+        horizon=0,
+        confidence_level=0.95,
+        forcasting_confident_lower_bound_column_name=None,
+        forcasting_confident_upper_bound_column_name=None,
+        rank_selection_method='Exact',
+        rank=None,
+        max_rank=None,
+        should_stablize=True,
+        should_maintain_info=False,
+        max_growth=None,
         discount_factor=1.0,
         is_adaptive=False,
         **params):
@@ -29,12 +38,38 @@ def timeseriesprocessingentrypoints_ssaforecasting(
     :param source: The name of the source column. (inputs).
     :param data: Input dataset (inputs).
     :param name: The name of the new column. (inputs).
-    :param confidence: The confidence for spike detection in the
-        range [0, 100]. (inputs).
-    :param window_size: Window size (inputs).
-    :param series_length: Series length (inputs).
-    :param train_size: Train size (inputs).
-    :param discount_factor: The discount factor in [0, 1] (inputs).
+    :param window_size: The length of the window on the series for
+        building the trajectory matrix (parameter L). (inputs).
+    :param series_length: The length of series that is kept in buffer
+        for modeling (parameter N). (inputs).
+    :param train_size: The length of series from the begining used
+        for training. (inputs).
+    :param horizon: The number of values to forecast. (inputs).
+    :param confidence_level: The confidence level in [0, 1) for
+        forecasting. (inputs).
+    :param forcasting_confident_lower_bound_column_name: The name of
+        the confidence interval lower bound column. (inputs).
+    :param forcasting_confident_upper_bound_column_name: The name of
+        the confidence interval upper bound column. (inputs).
+    :param rank_selection_method: The rank selection method.
+        (inputs).
+    :param rank: The desired rank of the subspace used for SSA
+        projection (parameter r). This parameter should be in the
+        range in [1, windowSize]. If set to null, the rank is
+        automatically determined based on prediction error
+        minimization. (inputs).
+    :param max_rank: The maximum rank considered during the rank
+        selection process. If not provided (i.e. set to null), it is
+        set to windowSize - 1. (inputs).
+    :param should_stablize: The flag determining whether the model
+        should be stabilized. (inputs).
+    :param should_maintain_info: The flag determining whether the
+        meta information for the model needs to be maintained.
+        (inputs).
+    :param max_growth: The maximum growth on the exponential trend.
+        (inputs).
+    :param discount_factor: The discount factor in [0,1] used for
+        online updates. (inputs).
     :param is_adaptive: The flag determing whether the model is
         adaptive (inputs).
     :param output_data: Transformed dataset (outputs).
@@ -62,11 +97,6 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             none_acceptable=False,
             is_of_type=str,
             is_column=True)
-    if confidence is not None:
-        inputs['Confidence'] = try_set(
-            obj=confidence,
-            none_acceptable=False,
-            is_of_type=numbers.Real)
     if window_size is not None:
         inputs['WindowSize'] = try_set(
             obj=window_size,
@@ -82,6 +112,65 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             obj=train_size,
             none_acceptable=False,
             is_of_type=numbers.Real)
+    if horizon is not None:
+        inputs['Horizon'] = try_set(
+            obj=horizon,
+            none_acceptable=False,
+            is_of_type=numbers.Real)
+    if confidence_level is not None:
+        inputs['ConfidenceLevel'] = try_set(
+            obj=confidence_level,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if forcasting_confident_lower_bound_column_name is not None:
+        inputs['ForcastingConfidentLowerBoundColumnName'] = try_set(
+            obj=forcasting_confident_lower_bound_column_name,
+            none_acceptable=True,
+            is_of_type=str,
+            is_column=True)
+    if forcasting_confident_upper_bound_column_name is not None:
+        inputs['ForcastingConfidentUpperBoundColumnName'] = try_set(
+            obj=forcasting_confident_upper_bound_column_name,
+            none_acceptable=True,
+            is_of_type=str,
+            is_column=True)
+    if rank_selection_method is not None:
+        inputs['RankSelectionMethod'] = try_set(
+            obj=rank_selection_method,
+            none_acceptable=True,
+            is_of_type=str,
+            values=[
+                'Fixed',
+                'Exact',
+                'Fast'])
+    if rank is not None:
+        inputs['Rank'] = try_set(
+            obj=rank,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if max_rank is not None:
+        inputs['MaxRank'] = try_set(
+            obj=max_rank,
+            none_acceptable=True,
+            is_of_type=numbers.Real)
+    if should_stablize is not None:
+        inputs['ShouldStablize'] = try_set(
+            obj=should_stablize,
+            none_acceptable=True,
+            is_of_type=bool)
+    if should_maintain_info is not None:
+        inputs['ShouldMaintainInfo'] = try_set(
+            obj=should_maintain_info,
+            none_acceptable=True,
+            is_of_type=bool)
+    if max_growth is not None:
+        inputs['MaxGrowth'] = try_set(
+            obj=max_growth,
+            none_acceptable=True,
+            is_of_type=dict,
+            field_names=[
+                'TimeSpan',
+                'Growth'])
     if discount_factor is not None:
         inputs['DiscountFactor'] = try_set(
             obj=discount_factor,
