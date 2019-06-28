@@ -17,7 +17,8 @@ from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
-                                 SsaSpikeDetector, SsaChangePointDetector)
+                                 SsaSpikeDetector, SsaChangePointDetector,
+                                 SsaForecaster)
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
@@ -62,6 +63,8 @@ OMITTED_CHECKS = {
                         'check_fit2d_1sample', # SSA requires more than one sample
     'SsaChangePointDetector': 'check_estimator_sparse_data'
                               'check_fit2d_1sample', # SSA requires more than one sample
+    'SsaForecaster': 'check_estimator_sparse_data'
+                     'check_fit2d_1sample', # SSA requires more than one sample
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
@@ -193,6 +196,13 @@ INSTANCES = {
     'IidChangePointDetector': IidChangePointDetector(columns=['F0']),
     'SsaSpikeDetector': SsaSpikeDetector(columns=['F0'], seasonal_window_size=2),
     'SsaChangePointDetector': SsaChangePointDetector(columns=['F0'], seasonal_window_size=2),
+    'SsaForecaster': SsaForecaster(columns=['F0'],
+                                   window_size=2,
+                                   series_length=5,
+                                   train_size=5,
+                                   horizon=1,
+                                   forcasting_confident_lower_bound_column_name="cmin",
+                                   forcasting_confident_upper_bound_column_name="cmax"),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,

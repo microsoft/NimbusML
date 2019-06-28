@@ -89,6 +89,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\SsaForecaster_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaChangePointDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Image_df.py" />
@@ -139,6 +140,7 @@
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
     <Compile Include="nimbusml\examples\Image.py" />
@@ -234,6 +236,8 @@
     <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaforecaster.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
@@ -279,6 +283,7 @@
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_pvaluetransform.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_slidingwindowtransform.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaforecasting.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
@@ -586,6 +591,7 @@
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
