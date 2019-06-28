@@ -140,6 +140,7 @@
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
     <Compile Include="nimbusml\examples\Image.py" />
@@ -588,6 +589,7 @@
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />

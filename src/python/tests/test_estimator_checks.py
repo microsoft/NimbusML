@@ -196,7 +196,13 @@ INSTANCES = {
     'IidChangePointDetector': IidChangePointDetector(columns=['F0']),
     'SsaSpikeDetector': SsaSpikeDetector(columns=['F0'], seasonal_window_size=2),
     'SsaChangePointDetector': SsaChangePointDetector(columns=['F0'], seasonal_window_size=2),
-    'SsaForecaster': SsaForecaster(columns=['F0'], window_size=2),
+    'SsaForecaster': SsaForecaster(columns=['F0'],
+                                   window_size=2,
+                                   series_length=5,
+                                   train_size=5,
+                                   horizon=1,
+                                   forcasting_confident_lower_bound_column_name="cmin",
+                                   forcasting_confident_upper_bound_column_name="cmax"),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,

@@ -24,16 +24,46 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param confidence: The confidence for spike detection in the range [0,
-        100].
+    :param window_size: The length of the window on the series for building the
+        trajectory matrix (parameter L).
 
-    :param window_size: Window size.
+    :param series_length: The length of series that is kept in buffer for
+        modeling (parameter N).
 
-    :param series_length: Series length.
+    :param train_size: The length of series from the begining used for
+        training.
 
-    :param train_size: Train size.
+    :param horizon: The number of values to forecast.
 
-    :param discount_factor: The discount factor in [0, 1].
+    :param confidence_level: The confidence level in [0, 1) for forecasting.
+
+    :param forcasting_confident_lower_bound_column_name: The name of the
+        confidence interval lower bound column.
+
+    :param forcasting_confident_upper_bound_column_name: The name of the
+        confidence interval upper bound column.
+
+    :param rank_selection_method: The rank selection method.
+
+    :param rank: The desired rank of the subspace used for SSA projection
+        (parameter r). This parameter should be in the range in [1,
+        windowSize]. If set to null, the rank is automatically determined based
+        on prediction error minimization.
+
+    :param max_rank: The maximum rank considered during the rank selection
+        process. If not provided (i.e. set to null), it is set to windowSize -
+        1.
+
+    :param should_stablize: The flag determining whether the model should be
+        stabilized.
+
+    :param should_maintain_info: The flag determining whether the meta
+        information for the model needs to be maintained.
+
+    :param max_growth: The maximum growth on the exponential trend.
+
+    :param discount_factor: The discount factor in [0,1] used for online
+        updates.
 
     :param is_adaptive: The flag determing whether the model is adaptive.
 
@@ -44,10 +74,19 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            confidence=99.0,
-            window_size=10,
-            series_length=20,
-            train_size=100,
+            window_size=0,
+            series_length=0,
+            train_size=0,
+            horizon=0,
+            confidence_level=0.95,
+            forcasting_confident_lower_bound_column_name=None,
+            forcasting_confident_upper_bound_column_name=None,
+            rank_selection_method='Exact',
+            rank=None,
+            max_rank=None,
+            should_stablize=True,
+            should_maintain_info=False,
+            max_growth=None,
             discount_factor=1.0,
             is_adaptive=False,
             columns=None,
@@ -58,10 +97,19 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            confidence=confidence,
             window_size=window_size,
             series_length=series_length,
             train_size=train_size,
+            horizon=horizon,
+            confidence_level=confidence_level,
+            forcasting_confident_lower_bound_column_name=forcasting_confident_lower_bound_column_name,
+            forcasting_confident_upper_bound_column_name=forcasting_confident_upper_bound_column_name,
+            rank_selection_method=rank_selection_method,
+            rank=rank,
+            max_rank=max_rank,
+            should_stablize=should_stablize,
+            should_maintain_info=should_maintain_info,
+            max_growth=max_growth,
             discount_factor=discount_factor,
             is_adaptive=is_adaptive,
             **params)
