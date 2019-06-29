@@ -5,7 +5,7 @@ import pandas as pd
 from nimbusml.timeseries import SsaForecaster
 
 # This example creates a time series (list of data with the
-# i-th element corresponding to the i-th time slot).  
+# i-th element corresponding to the i-th time slot).
 
 # Generate sample series data with a recurring pattern
 seasonality_size = 5
