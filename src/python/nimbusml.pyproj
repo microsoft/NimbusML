@@ -228,6 +228,11 @@
     <Compile Include="nimbusml\internal\core\loss\__init__.py" />
     <Compile Include="nimbusml\internal\core\multiclass\_onevsrestclassifier.py" />
     <Compile Include="nimbusml\internal\core\multiclass\__init__.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
