@@ -65,6 +65,7 @@ class TestDocsExamples(unittest.TestCase):
                     'SymSgdBinaryClassifier.py',
                     'SymSgdBinaryClassifier_infert_df.py',
                     # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
+                    'CharTokenizer.py',
                     'WordEmbedding.py',
                     'WordEmbedding_df.py',
                     'NaiveBayesClassifier_df.py'
