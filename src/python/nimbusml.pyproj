@@ -88,6 +88,9 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\GamRegressor_airquality_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\SsaChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Image_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Indicator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FromKey_df.py" />
@@ -109,6 +112,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\OneHotVectorizer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\OnlineGradientDescentRegressor_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\OrdinaryLeastSquaresRegressor_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\IidSpikeDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PcaAnomalyDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PcaTransformer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RangeFilter_df.py" />
@@ -134,6 +138,9 @@
     <Compile Include="nimbusml\examples\GlobalContrastRowScaler.py" />
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
+    <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
     <Compile Include="nimbusml\examples\Image.py" />
     <Compile Include="nimbusml\examples\Indicator.py" />
     <Compile Include="nimbusml\examples\FromKey.py" />
@@ -159,6 +166,7 @@
     <Compile Include="nimbusml\examples\OneVsRestClassifier.py" />
     <Compile Include="nimbusml\examples\OnlineGradientDescentRegressor.py" />
     <Compile Include="nimbusml\examples\OrdinaryLeastSquaresRegressor.py" />
+    <Compile Include="nimbusml\examples\IidSpikeDetector.py" />
     <Compile Include="nimbusml\examples\PcaAnomalyDetector.py" />
     <Compile Include="nimbusml\examples\PcaTransformer.py" />
     <Compile Include="nimbusml\examples\PipelineWithGridSearchCV2.py" />
@@ -181,7 +189,6 @@
     <Compile Include="nimbusml\examples\_Load_Save_Models.py" />
     <Compile Include="nimbusml\examples\_Load_Save_Pipeline.py" />
     <Compile Include="nimbusml\examples\_Load_Save_transforms.py" />
-  	<Compile Include="nimbusml\examples\__init__.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\_ngram.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\_ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />
@@ -219,6 +226,11 @@
     <Compile Include="nimbusml\internal\core\loss\__init__.py" />
     <Compile Include="nimbusml\internal\core\multiclass\_onevsrestclassifier.py" />
     <Compile Include="nimbusml\internal\core\multiclass\__init__.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
@@ -569,6 +581,16 @@
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\__init__.py" />
+    <Compile Include="nimbusml\timeseries\_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\timeseries\_iidspikedetector.py" />
+    <Compile Include="nimbusml\timeseries\_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\timeseries\_ssaspikedetector.py" />
+    <Compile Include="nimbusml\timeseries\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />
     <Compile Include="nimbusml\tests\idv\test_idv.py" />
@@ -741,6 +763,7 @@
     <Folder Include="nimbusml\internal\core\preprocessing\normalization\" />
     <Folder Include="nimbusml\internal\core\preprocessing\schema\" />
     <Folder Include="nimbusml\internal\core\preprocessing\text\" />
+    <Folder Include="nimbusml\internal\core\timeseries\" />
     <Folder Include="nimbusml\internal\entrypoints\" />
     <Folder Include="nimbusml\internal\utils\" />
     <Folder Include="nimbusml\linear_model\" />
@@ -762,6 +785,7 @@
     <Folder Include="nimbusml\tests\multiclass\" />
     <Folder Include="nimbusml\tests\model_summary\" />
     <Folder Include="nimbusml\tests\idv\" />
+    <Folder Include="nimbusml\tests\timeseries\" />
     <Folder Include="nimbusml\tests\pipeline\" />
     <Folder Include="nimbusml\tests\feature_extraction\" />
     <Folder Include="nimbusml\tests\feature_extraction\categorical\" />
@@ -778,6 +802,7 @@
     <Folder Include="nimbusml\tests\preprocessing\text\" />
     <Folder Include="nimbusml\tests\scikit\" />
     <Folder Include="nimbusml\tests\utils\" />
+    <Folder Include="nimbusml\timeseries\" />
     <Folder Include="nimbusml\utils\" />
     <Folder Include="tests\" />
     <Folder Include="tools\" />
