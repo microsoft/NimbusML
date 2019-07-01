@@ -34,6 +34,9 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
 
     :param confidence_level: The confidence level in [0, 1) for forecasting.
 
+    :param variable_horizon: Set this to true horizon will change at prediction
+        time.
+
     :param forcasting_confident_lower_bound_column_name: The name of the
         confidence interval lower bound column.
 
@@ -76,6 +79,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
             train_size=0,
             horizon=0,
             confidence_level=0.95,
+            variable_horizon=False,
             forcasting_confident_lower_bound_column_name=None,
             forcasting_confident_upper_bound_column_name=None,
             rank_selection_method='Exact',
@@ -95,6 +99,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
         self.train_size = train_size
         self.horizon = horizon
         self.confidence_level = confidence_level
+        self.variable_horizon = variable_horizon
         self.forcasting_confident_lower_bound_column_name = forcasting_confident_lower_bound_column_name
         self.forcasting_confident_upper_bound_column_name = forcasting_confident_upper_bound_column_name
         self.rank_selection_method = rank_selection_method
@@ -120,6 +125,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
             train_size=self.train_size,
             horizon=self.horizon,
             confidence_level=self.confidence_level,
+            variable_horizon=self.variable_horizon,
             forcasting_confident_lower_bound_column_name=self.forcasting_confident_lower_bound_column_name,
             forcasting_confident_upper_bound_column_name=self.forcasting_confident_upper_bound_column_name,
             rank_selection_method=self.rank_selection_method,
