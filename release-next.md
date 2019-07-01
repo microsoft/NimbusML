@@ -11,17 +11,17 @@
 
    **Spike Detection Examples**
 
-   - [IID using a pandas Series](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/examples_from_dataframe/IidSpikeDetector_df.py)
-   - [SSA using a pandas Series](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/examples_from_dataframe/SsaSpikeDetector_df.py)
-   - [IID using a FileDataStream](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/IidSpikeDetector.py)
-   - [SSA using a FileDataStream](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/SsaSpikeDetector.py)
+   - [IID using a pandas Series](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/examples_from_dataframe/IidSpikeDetector_df.py)
+   - [SSA using a pandas Series](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/examples_from_dataframe/SsaSpikeDetector_df.py)
+   - [IID using a FileDataStream](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/IidSpikeDetector.py)
+   - [SSA using a FileDataStream](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/SsaSpikeDetector.py)
 
    **Change Point Detection Examples**
 
-   - [IID using a pandas Series](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/examples_from_dataframe/IidChangePointDetector_df.py)
-   - [SSA using a pandas Series](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/examples_from_dataframe/SsaChangePointDetector_df.py)
-   - [IID using a FileDataStream](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/IidChangePointDetector.py)
-   - [SSA using a FileDataStream](https://github.com/microsoft/NimbusML/blob/3c689c63fefbaf0e6592ac3d427d474d53877dc3/src/python/nimbusml/examples/SsaChangePointDetector.py)
+   - [IID using a pandas Series](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/examples_from_dataframe/IidChangePointDetector_df.py)
+   - [SSA using a pandas Series](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/examples_from_dataframe/SsaChangePointDetector_df.py)
+   - [IID using a FileDataStream](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/IidChangePointDetector.py)
+   - [SSA using a FileDataStream](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/SsaChangePointDetector.py)
 
 - **Time Series Forecasting**
    [PR#164](https://github.com/microsoft/NimbusML/pull/164) exposes an API
