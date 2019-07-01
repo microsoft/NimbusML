@@ -1,8 +1,8 @@
-from .iidspikedetector import IidSpikeDetector
-from .iidchangepointdetector import IidChangePointDetector
-from .ssaspikedetector import SsaSpikeDetector
-from .ssachangepointdetector import SsaChangePointDetector
-from .ssaforecaster import SsaForecaster
+from ._iidspikedetector import IidSpikeDetector
+from ._iidchangepointdetector import IidChangePointDetector
+from ._ssaspikedetector import SsaSpikeDetector
+from ._ssachangepointdetector import SsaChangePointDetector
+from ._ssaforecaster import SsaForecaster
 
 __all__ = [
     'IidSpikeDetector',
