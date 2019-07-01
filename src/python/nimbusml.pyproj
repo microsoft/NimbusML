@@ -592,11 +592,10 @@
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\__init__.py" />
-    <Compile Include="nimbusml\timeseries\iidchangepointdetector.py" />
-    <Compile Include="nimbusml\timeseries\iidspikedetector.py" />
-    <Compile Include="nimbusml\timeseries\ssachangepointdetector.py" />
-    <Compile Include="nimbusml\timeseries\ssaforecaster.py" />
-    <Compile Include="nimbusml\timeseries\ssaspikedetector.py" />
+    <Compile Include="nimbusml\timeseries\_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\timeseries\_iidspikedetector.py" />
+    <Compile Include="nimbusml\timeseries\_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\timeseries\_ssaspikedetector.py" />
     <Compile Include="nimbusml\timeseries\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />
