@@ -1839,7 +1839,7 @@ class Pipeline:
             last_node = self.last_node
             last_node._check_implements_method('predict_proba')
 
-        scores = self.predict(X, verbose, **params)
+        scores, _ = self._predict(X, verbose=verbose, **params)
 
         # REVIEW: Consider adding an entry point that extracts the
         # probability column instead.
@@ -1883,7 +1883,7 @@ class Pipeline:
             last_node = self.last_node
             last_node._check_implements_method('decision_function')
 
-        scores = self.predict(X, verbose, **params)
+        scores, _ = self._predict(X, verbose=verbose, **params)
 
         # REVIEW: Consider adding an entry point that extracts the score
         #  column instead.
