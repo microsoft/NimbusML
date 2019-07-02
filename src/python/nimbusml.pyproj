@@ -238,6 +238,17 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\_tensorflowscorer.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaforecaster.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\_tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_customtextloader.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_dataviewreference.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_idataviewarrayconverter.py" />
