@@ -14,7 +14,6 @@ from nimbusml.timeseries import SsaForecaster
 
 class TestSsaForecaster(unittest.TestCase):
 
-    @unittest.skip('ml.net libraries containing timeseries forecasting are not included with nimbusml yet.')
     def test_simple_forecast(self):
         seasonality_size = 5
         seasonal_data = np.arange(seasonality_size)
@@ -39,7 +38,6 @@ class TestSsaForecaster(unittest.TestCase):
 
         self.assertEqual(len(data['fc.0']), 15)
 
-    @unittest.skip('ml.net libraries containing timeseries forecasting are not included with nimbusml yet.')
     def test_multiple_user_specified_columns_is_not_allowed(self):
         path = get_dataset('timeseries').as_filepath()
         data = FileDataStream.read_csv(path)
