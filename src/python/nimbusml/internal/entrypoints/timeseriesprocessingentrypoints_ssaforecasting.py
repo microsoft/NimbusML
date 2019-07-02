@@ -20,6 +20,7 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         train_size=0,
         horizon=0,
         confidence_level=0.95,
+<<<<<<< HEAD
         variable_horizon=False,
         confidence_lower_bound_column=None,
         confidence_upper_bound_column=None,
@@ -27,6 +28,14 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         rank=None,
         max_rank=None,
         should_stabilize=True,
+=======
+        forcasting_confident_lower_bound_column_name=None,
+        forcasting_confident_upper_bound_column_name=None,
+        rank_selection_method='Exact',
+        rank=None,
+        max_rank=None,
+        should_stablize=True,
+>>>>>>> Fixed estimator checks failed from ssa_forecasting's update (#166)
         should_maintain_info=False,
         max_growth=None,
         discount_factor=1.0,
@@ -48,12 +57,19 @@ def timeseriesprocessingentrypoints_ssaforecasting(
     :param horizon: The number of values to forecast. (inputs).
     :param confidence_level: The confidence level in [0, 1) for
         forecasting. (inputs).
+<<<<<<< HEAD
     :param variable_horizon: Set this to true horizon will change at
         prediction time. (inputs).
     :param confidence_lower_bound_column: The name of the confidence
         interval lower bound column. (inputs).
     :param confidence_upper_bound_column: The name of the confidence
         interval upper bound column. (inputs).
+=======
+    :param forcasting_confident_lower_bound_column_name: The name of
+        the confidence interval lower bound column. (inputs).
+    :param forcasting_confident_upper_bound_column_name: The name of
+        the confidence interval upper bound column. (inputs).
+>>>>>>> Fixed estimator checks failed from ssa_forecasting's update (#166)
     :param rank_selection_method: The rank selection method.
         (inputs).
     :param rank: The desired rank of the subspace used for SSA
@@ -64,7 +80,11 @@ def timeseriesprocessingentrypoints_ssaforecasting(
     :param max_rank: The maximum rank considered during the rank
         selection process. If not provided (i.e. set to null), it is
         set to windowSize - 1. (inputs).
+<<<<<<< HEAD
     :param should_stabilize: The flag determining whether the model
+=======
+    :param should_stablize: The flag determining whether the model
+>>>>>>> Fixed estimator checks failed from ssa_forecasting's update (#166)
         should be stabilized. (inputs).
     :param should_maintain_info: The flag determining whether the
         meta information for the model needs to be maintained.
@@ -125,6 +145,7 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             obj=confidence_level,
             none_acceptable=True,
             is_of_type=numbers.Real)
+<<<<<<< HEAD
     if variable_horizon is not None:
         inputs['VariableHorizon'] = try_set(
             obj=variable_horizon,
@@ -139,6 +160,17 @@ def timeseriesprocessingentrypoints_ssaforecasting(
     if confidence_upper_bound_column is not None:
         inputs['ConfidenceUpperBoundColumn'] = try_set(
             obj=confidence_upper_bound_column,
+=======
+    if forcasting_confident_lower_bound_column_name is not None:
+        inputs['ForcastingConfidentLowerBoundColumnName'] = try_set(
+            obj=forcasting_confident_lower_bound_column_name,
+            none_acceptable=True,
+            is_of_type=str,
+            is_column=True)
+    if forcasting_confident_upper_bound_column_name is not None:
+        inputs['ForcastingConfidentUpperBoundColumnName'] = try_set(
+            obj=forcasting_confident_upper_bound_column_name,
+>>>>>>> Fixed estimator checks failed from ssa_forecasting's update (#166)
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -161,9 +193,15 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             obj=max_rank,
             none_acceptable=True,
             is_of_type=numbers.Real)
+<<<<<<< HEAD
     if should_stabilize is not None:
         inputs['ShouldStabilize'] = try_set(
             obj=should_stabilize,
+=======
+    if should_stablize is not None:
+        inputs['ShouldStablize'] = try_set(
+            obj=should_stablize,
+>>>>>>> Fixed estimator checks failed from ssa_forecasting's update (#166)
             none_acceptable=True,
             is_of_type=bool)
     if should_maintain_info is not None:
