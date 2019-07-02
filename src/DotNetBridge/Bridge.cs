@@ -17,7 +17,7 @@ using Microsoft.ML.Trainers.Ensemble;
 using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Transforms;
-using Microsoft.ML.TimeSeries;
+using Microsoft.ML.Transforms.TimeSeries;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -329,7 +329,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
-            env.ComponentCatalog.RegisterAssembly(typeof(ForecastExtensions).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
 
             using (var ch = host.Start("Executing"))
             {
