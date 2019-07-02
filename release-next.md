@@ -45,7 +45,7 @@ None.
 
 ## **Documentation and Samples**
 
-TBD.
+- Sample for CharTokenizer. [PR#153](https://github.com/microsoft/NimbusML/pull/153)
 
 ## **Remarks**
 
