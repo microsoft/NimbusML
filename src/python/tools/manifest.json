@@ -11535,7 +11535,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Logloss"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -11975,6 +11975,18 @@
           "Default": "Auto"
         },
         {
+          "Name": "UnbalancedSets",
+          "Type": "Bool",
+          "Desc": "Use for multi-class classification when training data is not balanced",
+          "Aliases": [
+            "us"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
           "Name": "UseSoftmax",
           "Type": "Bool",
           "Desc": "Use softmax loss for the multi classification.",
@@ -12020,7 +12032,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Error"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12517,7 +12529,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "NormalizedDiscountedCumulativeGain"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12975,7 +12987,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "RootMeanSquaredError"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",

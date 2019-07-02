@@ -26,7 +26,7 @@ def trainers_lightgbmbinaryclassifier(
         unbalanced_sets=False,
         weight_of_positive_examples=1.0,
         sigmoid=0.5,
-        evaluation_metric='Logloss',
+        evaluation_metric='Default',
         maximum_bin_count_per_feature=255,
         verbose=False,
         silent=True,
