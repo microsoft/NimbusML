@@ -27,6 +27,10 @@
    [PR#164](https://github.com/microsoft/NimbusML/pull/164) exposes an API
    for time series forecasting using Singular Spectrum Analysis(SSA).
 
+   **Forecasting Examples**
+   - [Using a pandas Series](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/examples_from_dataframe/SsaForecaster_df.py)
+   - [Using a FileDataStream](https://github.com/microsoft/NimbusML/tree/master/src/python/nimbusml/examples/SsaForecaster.py)
+
 ## **Bug Fixes**
 
 None.
