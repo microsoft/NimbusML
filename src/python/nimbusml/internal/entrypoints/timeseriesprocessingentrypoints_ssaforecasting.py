@@ -21,8 +21,8 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         horizon=0,
         confidence_level=0.95,
         variable_horizon=False,
-        lower_bound_confidence_column=None,
-        upper_bound_confidence_column=None,
+        confidence_lower_bound_column=None,
+        confidence_upper_bound_column=None,
         rank_selection_method='Exact',
         rank=None,
         max_rank=None,
@@ -50,9 +50,9 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         forecasting. (inputs).
     :param variable_horizon: Set this to true horizon will change at
         prediction time. (inputs).
-    :param lower_bound_confidence_column: The name of the confidence
+    :param confidence_lower_bound_column: The name of the confidence
         interval lower bound column. (inputs).
-    :param upper_bound_confidence_column: The name of the confidence
+    :param confidence_upper_bound_column: The name of the confidence
         interval upper bound column. (inputs).
     :param rank_selection_method: The rank selection method.
         (inputs).
@@ -130,15 +130,15 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             obj=variable_horizon,
             none_acceptable=True,
             is_of_type=bool)
-    if lower_bound_confidence_column is not None:
-        inputs['LowerBoundConfidenceColumn'] = try_set(
-            obj=lower_bound_confidence_column,
+    if confidence_lower_bound_column is not None:
+        inputs['ConfidenceLowerBoundColumn'] = try_set(
+            obj=confidence_lower_bound_column,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if upper_bound_confidence_column is not None:
-        inputs['UpperBoundConfidenceColumn'] = try_set(
-            obj=upper_bound_confidence_column,
+    if confidence_upper_bound_column is not None:
+        inputs['ConfidenceUpperBoundColumn'] = try_set(
+            obj=confidence_upper_bound_column,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)

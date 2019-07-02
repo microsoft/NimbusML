@@ -37,10 +37,10 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
     :param variable_horizon: Set this to true horizon will change at prediction
         time.
 
-    :param lower_bound_confidence_column: The name of the confidence interval
+    :param confidence_lower_bound_column: The name of the confidence interval
         lower bound column.
 
-    :param upper_bound_confidence_column: The name of the confidence interval
+    :param confidence_upper_bound_column: The name of the confidence interval
         upper bound column.
 
     :param rank_selection_method: The rank selection method.
@@ -80,8 +80,8 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
             horizon=0,
             confidence_level=0.95,
             variable_horizon=False,
-            lower_bound_confidence_column=None,
-            upper_bound_confidence_column=None,
+            confidence_lower_bound_column=None,
+            confidence_upper_bound_column=None,
             rank_selection_method='Exact',
             rank=None,
             max_rank=None,
@@ -100,8 +100,8 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
         self.horizon = horizon
         self.confidence_level = confidence_level
         self.variable_horizon = variable_horizon
-        self.lower_bound_confidence_column = lower_bound_confidence_column
-        self.upper_bound_confidence_column = upper_bound_confidence_column
+        self.confidence_lower_bound_column = confidence_lower_bound_column
+        self.confidence_upper_bound_column = confidence_upper_bound_column
         self.rank_selection_method = rank_selection_method
         self.rank = rank
         self.max_rank = max_rank
@@ -126,8 +126,8 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
             horizon=self.horizon,
             confidence_level=self.confidence_level,
             variable_horizon=self.variable_horizon,
-            lower_bound_confidence_column=self.lower_bound_confidence_column,
-            upper_bound_confidence_column=self.upper_bound_confidence_column,
+            confidence_lower_bound_column=self.confidence_lower_bound_column,
+            confidence_upper_bound_column=self.confidence_upper_bound_column,
             rank_selection_method=self.rank_selection_method,
             rank=self.rank,
             max_rank=self.max_rank,

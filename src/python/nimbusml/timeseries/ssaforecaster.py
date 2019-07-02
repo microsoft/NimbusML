@@ -40,10 +40,10 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
     :param variable_horizon: Set this to true horizon will change at prediction
         time.
 
-    :param lower_bound_confidence_column: The name of the confidence interval
+    :param confidence_lower_bound_column: The name of the confidence interval
         lower bound column.
 
-    :param upper_bound_confidence_column: The name of the confidence interval
+    :param confidence_upper_bound_column: The name of the confidence interval
         upper bound column.
 
     :param rank_selection_method: The rank selection method.
@@ -83,8 +83,8 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
             horizon=0,
             confidence_level=0.95,
             variable_horizon=False,
-            lower_bound_confidence_column=None,
-            upper_bound_confidence_column=None,
+            confidence_lower_bound_column=None,
+            confidence_upper_bound_column=None,
             rank_selection_method='Exact',
             rank=None,
             max_rank=None,
@@ -107,8 +107,8 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
             horizon=horizon,
             confidence_level=confidence_level,
             variable_horizon=variable_horizon,
-            lower_bound_confidence_column=lower_bound_confidence_column,
-            upper_bound_confidence_column=upper_bound_confidence_column,
+            confidence_lower_bound_column=confidence_lower_bound_column,
+            confidence_upper_bound_column=confidence_upper_bound_column,
             rank_selection_method=rank_selection_method,
             rank=rank,
             max_rank=max_rank,
