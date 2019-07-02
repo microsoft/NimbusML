@@ -21,12 +21,12 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         horizon=0,
         confidence_level=0.95,
         variable_horizon=False,
-        forcasting_confident_lower_bound_column_name=None,
-        forcasting_confident_upper_bound_column_name=None,
+        lower_bound_confidence_column=None,
+        upper_bound_confidence_column=None,
         rank_selection_method='Exact',
         rank=None,
         max_rank=None,
-        should_stablize=True,
+        should_stabilize=True,
         should_maintain_info=False,
         max_growth=None,
         discount_factor=1.0,
@@ -50,10 +50,10 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         forecasting. (inputs).
     :param variable_horizon: Set this to true horizon will change at
         prediction time. (inputs).
-    :param forcasting_confident_lower_bound_column_name: The name of
-        the confidence interval lower bound column. (inputs).
-    :param forcasting_confident_upper_bound_column_name: The name of
-        the confidence interval upper bound column. (inputs).
+    :param lower_bound_confidence_column: The name of the confidence
+        interval lower bound column. (inputs).
+    :param upper_bound_confidence_column: The name of the confidence
+        interval upper bound column. (inputs).
     :param rank_selection_method: The rank selection method.
         (inputs).
     :param rank: The desired rank of the subspace used for SSA
@@ -64,7 +64,7 @@ def timeseriesprocessingentrypoints_ssaforecasting(
     :param max_rank: The maximum rank considered during the rank
         selection process. If not provided (i.e. set to null), it is
         set to windowSize - 1. (inputs).
-    :param should_stablize: The flag determining whether the model
+    :param should_stabilize: The flag determining whether the model
         should be stabilized. (inputs).
     :param should_maintain_info: The flag determining whether the
         meta information for the model needs to be maintained.
@@ -130,15 +130,15 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             obj=variable_horizon,
             none_acceptable=True,
             is_of_type=bool)
-    if forcasting_confident_lower_bound_column_name is not None:
-        inputs['ForcastingConfidentLowerBoundColumnName'] = try_set(
-            obj=forcasting_confident_lower_bound_column_name,
+    if lower_bound_confidence_column is not None:
+        inputs['LowerBoundConfidenceColumn'] = try_set(
+            obj=lower_bound_confidence_column,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
-    if forcasting_confident_upper_bound_column_name is not None:
-        inputs['ForcastingConfidentUpperBoundColumnName'] = try_set(
-            obj=forcasting_confident_upper_bound_column_name,
+    if upper_bound_confidence_column is not None:
+        inputs['UpperBoundConfidenceColumn'] = try_set(
+            obj=upper_bound_confidence_column,
             none_acceptable=True,
             is_of_type=str,
             is_column=True)
@@ -161,9 +161,9 @@ def timeseriesprocessingentrypoints_ssaforecasting(
             obj=max_rank,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if should_stablize is not None:
-        inputs['ShouldStablize'] = try_set(
-            obj=should_stablize,
+    if should_stabilize is not None:
+        inputs['ShouldStabilize'] = try_set(
+            obj=should_stabilize,
             none_acceptable=True,
             is_of_type=bool)
     if should_maintain_info is not None:

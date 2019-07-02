@@ -40,11 +40,11 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
     :param variable_horizon: Set this to true horizon will change at prediction
         time.
 
-    :param forcasting_confident_lower_bound_column_name: The name of the
-        confidence interval lower bound column.
+    :param lower_bound_confidence_column: The name of the confidence interval
+        lower bound column.
 
-    :param forcasting_confident_upper_bound_column_name: The name of the
-        confidence interval upper bound column.
+    :param upper_bound_confidence_column: The name of the confidence interval
+        upper bound column.
 
     :param rank_selection_method: The rank selection method.
 
@@ -57,7 +57,7 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
         process. If not provided (i.e. set to null), it is set to windowSize -
         1.
 
-    :param should_stablize: The flag determining whether the model should be
+    :param should_stabilize: The flag determining whether the model should be
         stabilized.
 
     :param should_maintain_info: The flag determining whether the meta
@@ -83,12 +83,12 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
             horizon=0,
             confidence_level=0.95,
             variable_horizon=False,
-            forcasting_confident_lower_bound_column_name=None,
-            forcasting_confident_upper_bound_column_name=None,
+            lower_bound_confidence_column=None,
+            upper_bound_confidence_column=None,
             rank_selection_method='Exact',
             rank=None,
             max_rank=None,
-            should_stablize=True,
+            should_stabilize=True,
             should_maintain_info=False,
             max_growth=None,
             discount_factor=1.0,
@@ -107,12 +107,12 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
             horizon=horizon,
             confidence_level=confidence_level,
             variable_horizon=variable_horizon,
-            forcasting_confident_lower_bound_column_name=forcasting_confident_lower_bound_column_name,
-            forcasting_confident_upper_bound_column_name=forcasting_confident_upper_bound_column_name,
+            lower_bound_confidence_column=lower_bound_confidence_column,
+            upper_bound_confidence_column=upper_bound_confidence_column,
             rank_selection_method=rank_selection_method,
             rank=rank,
             max_rank=max_rank,
-            should_stablize=should_stablize,
+            should_stabilize=should_stabilize,
             should_maintain_info=should_maintain_info,
             max_growth=max_growth,
             discount_factor=discount_factor,

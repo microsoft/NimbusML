@@ -26,9 +26,7 @@ class TestSsaForecaster(unittest.TestCase):
         training_seasons = 3
         training_size = seasonality_size * training_seasons
 
-        forecaster = SsaForecaster(forcasting_confident_lower_bound_column_name="cmin",
-                                   forcasting_confident_upper_bound_column_name="cmax",
-                                   series_length=8,
+        forecaster = SsaForecaster(series_length=8,
                                    train_size=training_size,
                                    window_size=seasonality_size + 1,
                                    horizon=2) <<   {'fc': 'ts'}
@@ -48,9 +46,7 @@ class TestSsaForecaster(unittest.TestCase):
 
         try:
             pipeline = Pipeline([
-                SsaForecaster(forcasting_confident_lower_bound_column_name="cmin",
-                              forcasting_confident_upper_bound_column_name="cmax",
-                              series_length=8,
+                SsaForecaster(series_length=8,
                               train_size=15,
                               window_size=5,
                               horizon=2,

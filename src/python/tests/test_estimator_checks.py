@@ -200,9 +200,7 @@ INSTANCES = {
                                    window_size=2,
                                    series_length=5,
                                    train_size=5,
-                                   horizon=1,
-                                   forcasting_confident_lower_bound_column_name="cmin",
-                                   forcasting_confident_upper_bound_column_name="cmax"),
+                                   horizon=1),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,
