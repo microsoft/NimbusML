@@ -201,12 +201,9 @@ echo "#################################"
 :: Setting native code build environment
 echo Setting native build environment ...
 set _VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
-set vswhereOutputFile=vswhereOutput.tmp
 
 if exist %_VSWHERE% (
-  %_VSWHERE% -version "[15.0,16.0)" -latest -prerelease -property installationPath > %vswhereOutputFile%
-  for /f "tokens=* delims=" %%i in (%vswhereOutputFile%) do set _VSCOMNTOOLS=%%i\Common7\Tools
-  del %vswhereOutputFile%
+    for /f "usebackq tokens=*" %%i in (`%_VSWHERE% -latest -prerelease -property installationPath`) do set _VSCOMNTOOLS=%%i\Common7\Tools
 )
 if not exist "%_VSCOMNTOOLS%" set _VSCOMNTOOLS=%VS140COMNTOOLS%
 if not exist "%_VSCOMNTOOLS%" goto :MissingVersion
