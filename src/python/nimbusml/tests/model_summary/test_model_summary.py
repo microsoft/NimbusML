@@ -32,7 +32,7 @@ from nimbusml.linear_model import OnlineGradientDescentRegressor
 from nimbusml.linear_model import OrdinaryLeastSquaresRegressor
 from nimbusml.linear_model import PoissonRegressionRegressor
 from nimbusml.linear_model import SgdBinaryClassifier
-from nimbusml.linear_model import SymSgdBinaryClassifier
+#from nimbusml.linear_model import SymSgdBinaryClassifier
 from nimbusml.multiclass import OneVsRestClassifier
 from nimbusml.naive_bayes import NaiveBayesClassifier
 from sklearn.utils.testing import assert_raises
@@ -61,7 +61,9 @@ learners = [
     LogisticRegressionClassifier(),
     OnlineGradientDescentRegressor(),
     SgdBinaryClassifier(),
-    SymSgdBinaryClassifier(),
+    # Error on linux
+    # Unable to load shared library 'SymSgdNative' or one of its dependencies
+    #SymSgdBinaryClassifier(),
     OrdinaryLeastSquaresRegressor(),
     PoissonRegressionRegressor(),
     OneVsRestClassifier(FastLinearBinaryClassifier()),
