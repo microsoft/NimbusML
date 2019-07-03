@@ -278,9 +278,6 @@ for e in epoints:
     # skip SymSgdBinaryClassifier for now, because of crashes.
     if 'SymSgdBinaryClassifier' in class_name:
         continue
-    # skip for now because the ml.net binaries do not contain the SsaForecasting code.
-    if 'SsaForecaster' in class_name:
-        continue
 
     mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
     the_class = getattr(mod, class_name)
