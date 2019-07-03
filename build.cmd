@@ -24,6 +24,7 @@ set RunTests=False
 set RunExtendedTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
+set AzureBuild=False
 
 :Arg_Loop
 if [%1] == [] goto :Build
@@ -45,10 +46,14 @@ if /i [%1] == [--buildDotNetBridgeOnly]     (
 if /i [%1] == [--skipDotNetBridge]     (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
+)
+if /i [%1] == [--azureBuild]     (
+    set AzureBuild=True
+    shift && goto :Arg_Loop
 ) else goto :Usage
 
 :Usage
-echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge]"
+echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
@@ -56,6 +61,7 @@ echo "  --runTests                        Run tests after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "  --azureBuild                      Building in azure devops (adds dotnet CLI to the path)"
 goto :Exit_Success
 
 :Configuration
@@ -153,12 +159,19 @@ if /i [%1] == [DbgWinPy2.7]     (
 echo Installing dotnet SDK ... 
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
 
+set _dotnetRoot=%__currentScriptDir%cli
+
+if "%AzureBuild%" == "True" (
+    :: Add dotnet CLI root to the PATH in azure devops agent
+    echo ##vso[task.prependpath]%_dotnetRoot%
+)
+
 :: Build managed code
 echo ""
 echo "#################################"
 echo "Building DotNet Bridge ... "
 echo "#################################"
-set _dotnet=%__currentScriptDir%cli\dotnet.exe
+set _dotnet=%_dotnetRoot%\dotnet.exe
 
 if "%SkipDotNetBridge%" == "False" ( 
     call "%_dotnet%" build -c %Configuration% -o "%BuildOutputDir%%Configuration%"  --force "%__currentScriptDir%src\DotNetBridge\DotNetBridge.csproj"
