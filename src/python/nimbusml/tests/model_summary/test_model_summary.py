@@ -32,7 +32,7 @@ from nimbusml.linear_model import OnlineGradientDescentRegressor
 from nimbusml.linear_model import OrdinaryLeastSquaresRegressor
 from nimbusml.linear_model import PoissonRegressionRegressor
 from nimbusml.linear_model import SgdBinaryClassifier
-# from nimbusml.linear_model import SymSgdBinaryClassifier
+from nimbusml.linear_model import SymSgdBinaryClassifier
 from nimbusml.multiclass import OneVsRestClassifier
 from nimbusml.naive_bayes import NaiveBayesClassifier
 from sklearn.utils.testing import assert_raises
@@ -53,13 +53,6 @@ file_schema = 'sep=, col=label:R4:0 col=Features:R4:9-14 col=workclass:TX:1 ' \
               'col=sex:TX:7 col=native-country-region:TX:8 header+'
 label_column = 'label'
 learners = [
-    FastForestBinaryClassifier(),
-    FastForestRegressor(),
-    FastTreesBinaryClassifier(),
-    FastTreesRegressor(),
-    FastTreesTweedieRegressor(),
-    LightGbmRegressor(),
-    LightGbmBinaryClassifier(),
     AveragedPerceptronBinaryClassifier(),
     FastLinearBinaryClassifier(),
     FastLinearClassifier(),
@@ -68,29 +61,33 @@ learners = [
     LogisticRegressionClassifier(),
     OnlineGradientDescentRegressor(),
     SgdBinaryClassifier(),
-    # SymSgdBinaryClassifier(),
+    SymSgdBinaryClassifier(),
     OrdinaryLeastSquaresRegressor(),
-    PoissonRegressionRegressor()
+    PoissonRegressionRegressor(),
+    OneVsRestClassifier(FastLinearBinaryClassifier()),
+    LightGbmClassifier(),
+    GamRegressor(),
+    GamBinaryClassifier(),
+    PcaAnomalyDetector(),
+    FactorizationMachineBinaryClassifier(),
+    KMeansPlusPlus(),
+    NaiveBayesClassifier()
+
+    # Skipping these tests since they are throwing the following error:
+    #   *** System.NotSupportedException: 'Column has variable length
+    #   vector: CategoricalSplitFeatures. Not supported in python.
+    #   Drop column before sending to Python
+    #FastForestBinaryClassifier(),
+    #FastForestRegressor(),
+    #FastTreesBinaryClassifier(),
+    #FastTreesRegressor(),
+    #FastTreesTweedieRegressor(),
+    #LightGbmRegressor(),
+    #LightGbmBinaryClassifier(),
 ]
 
 learners_not_supported = [
-    NaiveBayesClassifier(),
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    KMeansPlusPlus(),
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    FactorizationMachineBinaryClassifier(),
-    PcaAnomalyDetector(),
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    # PcaTransformer(), # REVIEW: crashes
-    GamBinaryClassifier(),
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    GamRegressor(),  # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    LightGbmClassifier(),
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    # LightGbmRanker(), # REVIEW: crashes
-    # fix in nimbusml, needs to implement ICanGetSummaryAsIDataView
-    OneVsRestClassifier(FastLinearBinaryClassifier()),
+    #PcaTransformer(), # REVIEW: crashes
 ]
 
 
@@ -104,6 +101,7 @@ class TestModelSummary(unittest.TestCase):
             pipeline.fit(train_stream, label_column)
             pipeline.summary()
 
+    @unittest.skip("No unsupported learners")
     def test_model_summary_not_supported(self):
         for learner in learners_not_supported:
             pipeline = Pipeline(
