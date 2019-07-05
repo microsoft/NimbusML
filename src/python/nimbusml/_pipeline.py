@@ -2210,18 +2210,26 @@ class Pipeline:
                 "is expected ".format(
                     type(model_summary)))
 
-        str_bias = 'Bias'
-        str_classnames = 'ClassNames'
-        str_coefficients = 'Coefficients'
-        str_weights = 'Weights'
-        str_gains = 'Gains'
-        str_support_vectors = 'Support vectors.'
+        col_names = [
+            'Bias',
+            'ClassNames',
+            'Coefficients',
+            'PredictorName',
+            'Summary',
+            'VectorName'
+        ]
+
+        col_name_prefixes = [
+            'Weights',
+            'Gains',
+            'Support vectors.',
+            'VectorData'
+        ]
 
         for col in model_summary.columns:
-            if col in (str_bias, str_classnames, str_coefficients):
+            if col in col_names:
                 pass
-            elif col.startswith(str_weights) or col.startswith(
-                    str_gains) or col.startswith(str_support_vectors):
+            elif any([col.startswith(pre) for pre in col_name_prefixes]):
                 pass
             else:
                 raise TypeError(

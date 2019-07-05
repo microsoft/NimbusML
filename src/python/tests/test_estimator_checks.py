@@ -200,9 +200,7 @@ INSTANCES = {
                                    window_size=2,
                                    series_length=5,
                                    train_size=5,
-                                   horizon=1,
-                                   forcasting_confident_lower_bound_column_name="cmin",
-                                   forcasting_confident_upper_bound_column_name="cmax"),
+                                   horizon=1),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,
@@ -279,9 +277,6 @@ for e in epoints:
         continue
     # skip SymSgdBinaryClassifier for now, because of crashes.
     if 'SymSgdBinaryClassifier' in class_name:
-        continue
-    # skip for now because the ml.net binaries do not contain the SsaForecasting code.
-    if 'SsaForecaster' in class_name:
         continue
 
     mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])

@@ -4086,7 +4086,16 @@
           "Default": 0.95
         },
         {
-          "Name": "ForcastingConfidentLowerBoundColumnName",
+          "Name": "VariableHorizon",
+          "Type": "Bool",
+          "Desc": "Set this to true horizon will change at prediction time.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
+          "Name": "ConfidenceLowerBoundColumn",
           "Type": "String",
           "Desc": "The name of the confidence interval lower bound column.",
           "Aliases": [
@@ -4098,7 +4107,7 @@
           "Default": null
         },
         {
-          "Name": "ForcastingConfidentUpperBoundColumnName",
+          "Name": "ConfidenceUpperBoundColumn",
           "Type": "String",
           "Desc": "The name of the confidence interval upper bound column.",
           "Aliases": [
@@ -4144,7 +4153,7 @@
           "Default": null
         },
         {
-          "Name": "ShouldStablize",
+          "Name": "ShouldStabilize",
           "Type": "Bool",
           "Desc": "The flag determining whether the model should be stabilized.",
           "Required": false,
@@ -11526,7 +11535,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Logloss"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -11966,6 +11975,18 @@
           "Default": "Auto"
         },
         {
+          "Name": "UnbalancedSets",
+          "Type": "Bool",
+          "Desc": "Use for multi-class classification when training data is not balanced",
+          "Aliases": [
+            "us"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
           "Name": "UseSoftmax",
           "Type": "Bool",
           "Desc": "Use softmax loss for the multi classification.",
@@ -12011,7 +12032,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Error"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12508,7 +12529,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "NormalizedDiscountedCumulativeGain"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12966,7 +12987,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "RootMeanSquaredError"
+          "Default": "Default"
         },
         {
           "Name": "MaximumBinCountPerFeature",
