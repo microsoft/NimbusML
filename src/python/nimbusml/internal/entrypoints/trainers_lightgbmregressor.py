@@ -23,7 +23,7 @@ def trainers_lightgbmregressor(
         row_group_column_name=None,
         normalize_features='Auto',
         caching='Auto',
-        evaluation_metric='RootMeanSquaredError',
+        evaluation_metric='Default',
         maximum_bin_count_per_feature=255,
         verbose=False,
         silent=True,

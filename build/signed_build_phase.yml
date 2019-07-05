@@ -28,7 +28,7 @@ phases:
     continueOnError: false
     condition: and(succeeded(), in(variables._SignType, 'real', 'test'))
 
-  - script: ./build.cmd --buildDotNetBridgeOnly --configuration $(BuildConfig)
+  - script: ./build.cmd --buildDotNetBridgeOnly --azureBuild --configuration $(BuildConfig)
     displayName: Build DotNetBridgeOnly
   
   - task: MSBuild@1

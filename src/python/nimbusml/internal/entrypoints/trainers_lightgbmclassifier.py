@@ -23,9 +23,10 @@ def trainers_lightgbmclassifier(
         row_group_column_name=None,
         normalize_features='Auto',
         caching='Auto',
+        unbalanced_sets=False,
         use_softmax=None,
         sigmoid=0.5,
-        evaluation_metric='Error',
+        evaluation_metric='Default',
         maximum_bin_count_per_feature=255,
         verbose=False,
         silent=True,
@@ -65,6 +66,8 @@ def trainers_lightgbmclassifier(
         column (inputs).
     :param caching: Whether trainer should cache input training data
         (inputs).
+    :param unbalanced_sets: Use for multi-class classification when
+        training data is not balanced (inputs).
     :param use_softmax: Use softmax loss for the multi
         classification. (inputs).
     :param sigmoid: Parameter for the sigmoid function. (inputs).
@@ -174,6 +177,11 @@ def trainers_lightgbmclassifier(
                 'Auto',
                 'Memory',
                 'None'])
+    if unbalanced_sets is not None:
+        inputs['UnbalancedSets'] = try_set(
+            obj=unbalanced_sets,
+            none_acceptable=True,
+            is_of_type=bool)
     if use_softmax is not None:
         inputs['UseSoftmax'] = try_set(
             obj=use_softmax,

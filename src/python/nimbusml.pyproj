@@ -231,6 +231,7 @@
     <Compile Include="nimbusml\internal\core\timeseries\_iidchangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\_ssaforecaster.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
