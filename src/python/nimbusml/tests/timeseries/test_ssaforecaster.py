@@ -14,7 +14,6 @@ from nimbusml.timeseries import SsaForecaster
 
 class TestSsaForecaster(unittest.TestCase):
 
-    @unittest.skip('ml.net libraries containing timeseries forecasting are not included with nimbusml yet.')
     def test_simple_forecast(self):
         seasonality_size = 5
         seasonal_data = np.arange(seasonality_size)
@@ -26,9 +25,7 @@ class TestSsaForecaster(unittest.TestCase):
         training_seasons = 3
         training_size = seasonality_size * training_seasons
 
-        forecaster = SsaForecaster(forcasting_confident_lower_bound_column_name="cmin",
-                                   forcasting_confident_upper_bound_column_name="cmax",
-                                   series_length=8,
+        forecaster = SsaForecaster(series_length=8,
                                    train_size=training_size,
                                    window_size=seasonality_size + 1,
                                    horizon=2) <<   {'fc': 'ts'}
@@ -41,16 +38,13 @@ class TestSsaForecaster(unittest.TestCase):
 
         self.assertEqual(len(data['fc.0']), 15)
 
-    @unittest.skip('ml.net libraries containing timeseries forecasting are not included with nimbusml yet.')
     def test_multiple_user_specified_columns_is_not_allowed(self):
         path = get_dataset('timeseries').as_filepath()
         data = FileDataStream.read_csv(path)
 
         try:
             pipeline = Pipeline([
-                SsaForecaster(forcasting_confident_lower_bound_column_name="cmin",
-                              forcasting_confident_upper_bound_column_name="cmax",
-                              series_length=8,
+                SsaForecaster(series_length=8,
                               train_size=15,
                               window_size=5,
                               horizon=2,

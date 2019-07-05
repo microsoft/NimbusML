@@ -78,6 +78,9 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
 
     :param caching: Whether trainer should cache input training data.
 
+    :param unbalanced_sets: Use for multi-class classification when training
+        data is not balanced.
+
     :param use_softmax: Use softmax loss for the multi classification.
 
     :param sigmoid: Parameter for the sigmoid function.
@@ -145,9 +148,10 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             booster=None,
             normalize='Auto',
             caching='Auto',
+            unbalanced_sets=False,
             use_softmax=None,
             sigmoid=0.5,
-            evaluation_metric='Error',
+            evaluation_metric='Default',
             maximum_bin_count_per_feature=255,
             verbose=False,
             silent=True,
@@ -198,6 +202,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             booster=booster,
             normalize=normalize,
             caching=caching,
+            unbalanced_sets=unbalanced_sets,
             use_softmax=use_softmax,
             sigmoid=sigmoid,
             evaluation_metric=evaluation_metric,
