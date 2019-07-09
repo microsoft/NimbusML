@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.2.0" />
     <PackageReference Include="Microsoft.ML.Ensemble" Version="0.14.0" />
     <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.2.0" />
+    <PackageReference Include="Microsoft.DataPrep" Version="0.0.1.5-preview" />
   </ItemGroup>
 
 </Project>
