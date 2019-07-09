@@ -9,6 +9,4 @@ lib_lightgbm.dylib
 libtensorflow.dylib
 libtensorflow_framework.dylib
 System.Drawing.Common.dll
-System.*
-Microsoft.*
-*.dll
+Microsoft.ML.*

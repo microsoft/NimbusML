@@ -9,6 +9,4 @@ libiomp5md.dll
 MklImports.dll
 SymSgdNative.dll
 tensorflow.dll
-System.*
-Microsoft.*
-*.dll
+Microsoft.ML.*
