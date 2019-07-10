@@ -10,4 +10,6 @@ MklImports.dll
 SymSgdNative.dll
 tensorflow.dll
 System.Drawing.Common.dll
+Microsoft.DataPrep.dll
+Microsoft.DPrep.*
 Microsoft.ML.*

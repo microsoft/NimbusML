@@ -161,7 +161,7 @@ private:
         FindClose(findHandle);
     }
 
-    ICLRRuntimeHost2* EnsureClrHost(const wchar_t * libsRoot, const wchar_t * coreclrDirRoot)
+    ICLRRuntimeHost2* EnsureClrHost(const wchar_t * libsRoot, const wchar_t * coreclrDirRoot, const wchar_t * dprepDirRoot)
     {
         if (_host != nullptr)
             return _host;
@@ -170,6 +170,7 @@ private:
         std::wstring tpaList;
         AddDllsToList(libsRoot, tpaList);
         AddDllsToList(coreclrDirRoot, tpaList);
+        AddDllsToList(dprepDirRoot, tpaList);
 
         // Start the CoreCLR.
         HMODULE hmodCore = EnsureCoreClrModule(coreclrDirRoot);
@@ -267,7 +268,7 @@ private:
     }
 
 public:
-    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath)
+    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath, const char *dpreppath)
     {
         if (_getter != nullptr)
             return _getter;
@@ -275,18 +276,13 @@ public:
         std::wstring libsdir = Utf8ToUtf16le(nimbuslibspath);
         ConvertToWinPath(libsdir);
 
-        std::wstring coreclrdir;
-        if (strlen(coreclrpath) != 0)
-        {
-            coreclrdir = Utf8ToUtf16le(coreclrpath);
-            ConvertToWinPath(coreclrdir);
-        }
-        else
-        {
-            coreclrdir = libsdir;
-        }
+        std::wstring coreclrdir = Utf8ToUtf16le(coreclrpath);
+        ConvertToWinPath(coreclrdir);
 
-        ICLRRuntimeHost2* host = EnsureClrHost(libsdir.c_str(), coreclrdir.c_str());
+        std::wstring dprepdir = Utf8ToUtf16le(dpreppath);
+        ConvertToWinPath(dprepdir);
+
+        ICLRRuntimeHost2* host = EnsureClrHost(libsdir.c_str(), coreclrdir.c_str(), dprepdir.c_str());
         if (host == nullptr)
             return nullptr;
 

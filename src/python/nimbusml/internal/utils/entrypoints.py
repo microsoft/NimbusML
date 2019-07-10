@@ -24,7 +24,7 @@ from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
     resolve_output
 from .utils import try_set, set_clr_environment_vars, get_clr_path, \
-    get_nimbusml_libs
+    get_nimbusml_libs, get_dprep_path
 from ..libs.pybridge import px_call
 
 
@@ -451,6 +451,7 @@ class Graph(EntryPoint):
             call_parameters['nimbusmlPath'] = try_set(get_nimbusml_libs(), True, str)
             set_clr_environment_vars()
             call_parameters['dotnetClrPath'] = try_set(get_clr_path(), True, str)
+            call_parameters['dprepPath'] = try_set(get_dprep_path(), True, str)
 
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, six.integer_types)

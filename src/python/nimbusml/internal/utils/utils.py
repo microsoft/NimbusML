@@ -329,6 +329,13 @@ def get_clr_path():
                 "found in {}.".format(libs_root))
         return clr_path
 
+def get_dprep_path():
+    """
+    Return path to .NET DataPrep libs.
+    """
+    from azureml.dataprep.api.engineapi.engine import _get_engine_path
+    return os.path.dirname(_get_engine_path())
+
 def get_nimbusml_libs():
     """
     Return path to NimbusML libs (the ML.NET binaries).
