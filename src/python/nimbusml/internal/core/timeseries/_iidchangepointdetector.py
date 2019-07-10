@@ -69,7 +69,7 @@ class IidChangePointDetector(BasePipelineItem, DefaultSignature):
 
     Example:
        .. literalinclude::
-        /../nimbusml/examples/IidSpikeChangePointDetector.py
+        /../nimbusml/examples/IidChangePointDetector_df.py
               :language: python
     """
 
