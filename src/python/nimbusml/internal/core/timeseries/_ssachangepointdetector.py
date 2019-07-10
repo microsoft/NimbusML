@@ -91,7 +91,7 @@ class SsaChangePointDetector(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/SsaChangePointDetector.py
+       .. literalinclude:: /../nimbusml/examples/SsaChangePointDetector_df.py
               :language: python
     """
 

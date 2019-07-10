@@ -85,7 +85,7 @@ class SsaSpikeDetector(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/SsaSpikeDetector.py
+       .. literalinclude:: /../nimbusml/examples/SsaSpikeDetector_df.py
               :language: python
     """
 
