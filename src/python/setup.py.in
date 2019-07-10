@@ -28,7 +28,6 @@ _install_requires = [
         'pandas>=0.22',
         'scipy>=0.18',
         'scikit-learn>0.19.0',
-        'azureml-dataprep', 
     ]
 
 # dotnetcore2 package is available only for python 3.x
@@ -116,6 +115,7 @@ setup(
             'nose>=1.3', 'pytest>=4.4.0',
             'graphviz', 'imageio',
         ],
+        'dprep': ['azureml-dataprep'],
         'utils': ['graphviz', 'imageio'],
     },
 
