@@ -3,6 +3,7 @@ from .averagedperceptronbinaryclassifier import \
 from .fastlinearbinaryclassifier import FastLinearBinaryClassifier
 from .fastlinearclassifier import FastLinearClassifier
 from .fastlinearregressor import FastLinearRegressor
+from .linearsvmbinaryclassifier import LinearSvmBinaryClassifier
 from .logisticregressionbinaryclassifier import \
     LogisticRegressionBinaryClassifier
 from .logisticregressionclassifier import LogisticRegressionClassifier
@@ -17,6 +18,7 @@ __all__ = [
     'FastLinearBinaryClassifier',
     'FastLinearClassifier',
     'FastLinearRegressor',
+    'LinearSvmBinaryClassifier',
     'LogisticRegressionBinaryClassifier',
     'LogisticRegressionClassifier',
     'OnlineGradientDescentRegressor',

@@ -236,6 +236,14 @@
       "Decision_Function" : true
     },
     {
+      "Name": "Trainers.LinearSvmBinaryClassifier",
+      "NewName": "LinearSvmBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
       "Name": "Transforms.ApproximateBootstrapSampler",
       "NewName": "BootstrapSampler",
       "Module": "preprocessing.filter",

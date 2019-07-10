@@ -89,6 +89,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\LinearSvmBinaryClassifier_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaForecaster_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaChangePointDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
@@ -140,6 +141,7 @@
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
@@ -489,6 +491,7 @@
     <Compile Include="nimbusml\internal\core\linear_model\averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\fastlinearbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\fastlinearregressor.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\logisticregressionclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\sgdbinaryclassifier.py" />
@@ -531,6 +534,7 @@
     <Compile Include="nimbusml\linear_model\averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\fastlinearbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\fastlinearregressor.py" />
+    <Compile Include="nimbusml\linear_model\linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\logisticregressionclassifier.py" />
     <Compile Include="nimbusml\linear_model\sgdbinaryclassifier.py" />
@@ -587,6 +591,7 @@
     <Compile Include="nimbusml\tests\ensemble\__init__.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
+    <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
@@ -860,6 +865,7 @@
     <Content Include="docs\docstrings\LightGbmRegressor.txt" />
     <Content Include="docs\docstrings\LightLda.txt" />
     <Content Include="docs\docstrings\LinearKernel.txt" />
+    <Content Include="docs\docstrings\LinearSvmBinaryClassifier.txt" />
     <Content Include="docs\docstrings\Loader.txt" />
     <Content Include="docs\docstrings\LocalDeepSvmBinaryClassifier.txt" />
     <Content Include="docs\docstrings\LogisticRegressionBinaryClassifier.txt" />
