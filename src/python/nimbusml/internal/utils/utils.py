@@ -306,7 +306,7 @@ def get_clr_path():
     NimbusML.
     """
     if six.PY2:
-        return get_nimbusml_libs()
+        return get_mlnet_path()
     else:
         from dotnetcore2 import runtime as clr_runtime
         libs_root = os.path.join(clr_runtime._get_bin_folder(), 'shared', 
