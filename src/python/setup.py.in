@@ -28,6 +28,7 @@ _install_requires = [
         'pandas>=0.22',
         'scipy>=0.18',
         'scikit-learn>0.19.0',
+        'azureml-dataprep', 
     ]
 
 # dotnetcore2 package is available only for python 3.x

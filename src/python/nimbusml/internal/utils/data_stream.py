@@ -5,6 +5,8 @@
 """
 Owns nimbusml's containers.
 """
+import os
+import tempfile
 from shutil import copyfile
 
 from .data_roles import DataRoles
@@ -469,68 +471,25 @@ class BinaryDataStream(DataStream):
         return BinaryDataStream(self._filename)
 
 
-class DprepDataStream(DataStream):
+class DprepDataStream(BinaryDataStream):
     """
-    Defines a data view.
+    Defines a data view over dprep file.
     """
 
-    def __init__(self, filename):
-        # REVIEW: would be good to figure out a way to know the schema of the
-        # binary IDV.
+    def __init__(self, dataflow=None, filename=None):
+        if dataflow is None and filename is None:
+            raise ValueError('Both dataflow object and filename are None')
         super(DprepDataStream, self).__init__(DataSchema(""))
+        if dataflow is not None:
+            (fd, filename) = tempfile.mkstemp(suffix='.dprep')
+            fl = os.fdopen(fd, "wt")
+            fl.write(dataflow.to_json())
+            fl.close()
         self._filename = filename
 
     def __repr__(self):
         return "DprepDataStream('{2}',\n    '{0}',\n    {1})".format(
             self._schema, self._roles, self._filename.replace('\\', '\\\\'))
-
-    def save(self, file):
-        copyfile(self._filename, file)
-
-    def to_df(self):
-        # Do not move these imports or the module fails
-        # due to circular references.
-        from ..entrypoints.transforms_nooperation import transforms_nooperation
-        from .entrypoints import Graph
-
-        no_op = transforms_nooperation(
-            data='$data', output_data='$output_data')
-        graph_nodes = [no_op]
-        graph = Graph(
-            dict(
-                data=''), dict(
-                output_data=''), False, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
-        return out_data
-
-    def head(self, n=5, skip=0):
-        # Do not move these imports or the module fails
-        # due to circular references.
-        from ..entrypoints.transforms_rowtakefilter import \
-            transforms_rowtakefilter
-        from ..entrypoints.transforms_rowskipfilter import \
-            transforms_rowskipfilter
-        from .entrypoints import Graph
-        if n == 0:
-            raise ValueError("n must be > 0")
-        graph_nodes = []
-        if skip > 0:
-            graph_nodes.append(
-                transforms_rowskipfilter(
-                    data='$data',
-                    output_data='$output_skip',
-                    count=skip))
-        graph_nodes.append(
-            transforms_rowtakefilter(
-                data='$output_skip' if skip > 0 else '$data',
-                output_data='$output_data',
-                count=n))
-        graph = Graph(
-            dict(
-                data=''), dict(
-                output_data=''), False, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
-        return out_data
 
     def clone(self):
         """
