@@ -266,7 +266,10 @@ then
     elif [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
     then
         "${PythonExe}" -m pip install --upgrade pytest-remotedata
-    fi
+    elif [ ${PythonVersion} = 3.7 ]
+    then
+        "${PythonExe}" -m pip install --upgrade azureml-dataprep
+	fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 

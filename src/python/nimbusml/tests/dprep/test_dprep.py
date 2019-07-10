@@ -5,8 +5,8 @@
 
 import unittest
 
-import azureml.dataprep as dprep
 import numpy as np
+import sys
 from nimbusml import Pipeline, FileDataStream, BinaryDataStream, DprepDataStream
 from nimbusml.datasets import get_dataset
 from nimbusml.preprocessing.normalization import MinMaxScaler
@@ -27,9 +27,12 @@ def assert_2d_array_equal(actual, desired):
                 continue
             assert_true(actual[i][y] == desired[i][y])
 
+@unittest.skipIf(sys.version_info[:2] != (3, 7), "azureml-dataprep is not installed.")
 class TestDprep(unittest.TestCase):
 
     def test_fit_transform(self):
+        import azureml.dataprep as dprep
+
         path = get_dataset('infert').as_filepath()
         dflow = dprep.auto_read_file(path=path)
         dprep_data = DprepDataStream(dflow)
