@@ -33,10 +33,7 @@ class TestDprep(unittest.TestCase):
         path = get_dataset('infert').as_filepath()
         dflow = dprep.auto_read_file(path=path)
         dprep_data = DprepDataStream(dflow)
-        file_data = FileDataStream.read_csv(
-            path,
-            sep=',',
-            numeric_dtype=np.float32)  # Error with integer input
+        file_data = FileDataStream.read_csv(path)
 
         xf = MinMaxScaler(columns={'in': 'induced', 'sp': 'spontaneous'})
         pipe = Pipeline([xf])

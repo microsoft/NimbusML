@@ -170,7 +170,6 @@ private:
         std::wstring tpaList;
         AddDllsToList(libsRoot, tpaList);
         AddDllsToList(coreclrDirRoot, tpaList);
-        AddDllsToList(dprepDirRoot, tpaList);
 
         // Start the CoreCLR.
         HMODULE hmodCore = EnsureCoreClrModule(coreclrDirRoot);
@@ -229,7 +228,7 @@ private:
             // TRUSTED_PLATFORM_ASSEMBLIES
             tpaList.c_str(),
             // APP_PATHS
-            libsRoot,
+            dprepDirRoot,
             // AppDomainCompatSwitch
             W("UseLatestBehaviorWhenTFMNotSpecified")
         };

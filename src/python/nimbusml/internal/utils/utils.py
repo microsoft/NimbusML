@@ -301,7 +301,7 @@ def set_clr_environment_vars():
 
 def get_clr_path():
     """
-    Return path to .NET CLR libs.
+    Return path to .NET CLR binaries.
     Use dotnetcore2 package if Python 3.x, otherwise look for libs bundled with
     NimbusML.
     """
@@ -331,14 +331,18 @@ def get_clr_path():
 
 def get_dprep_path():
     """
-    Return path to .NET DataPrep libs.
+    Return path to DataPrep binaries if its installed, None otherwise
     """
-    from azureml.dataprep.api.engineapi.engine import _get_engine_path
-    return os.path.dirname(_get_engine_path())
+    try:
+        from azureml.dataprep.api.engineapi.engine import _get_engine_path
+        return os.path.dirname(_get_engine_path())
+    except ImportError:
+        pass
+    return ''
 
-def get_nimbusml_libs():
+def get_mlnet_path():
     """
-    Return path to NimbusML libs (the ML.NET binaries).
+    Return path to ML.NET binaries.
     """
     return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 
                                         'libs'))

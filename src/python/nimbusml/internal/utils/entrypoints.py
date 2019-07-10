@@ -24,7 +24,7 @@ from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
     resolve_output
 from .utils import try_set, set_clr_environment_vars, get_clr_path, \
-    get_nimbusml_libs, get_dprep_path
+    get_mlnet_path, get_dprep_path
 from ..libs.pybridge import px_call
 
 
@@ -440,18 +440,16 @@ class Graph(EntryPoint):
                 with open(input_graphfilename, 'w') as f:
                     f.write(self.nimbusml_runnable_graph)
 
-            nimbusml_path = os.path.join(os.path.dirname(__file__), "..", "libs")
-            nimbusml_path = os.path.abspath(nimbusml_path)
             call_parameters['verbose'] = try_set(verbose, False, six.integer_types)
             call_parameters['graph'] = try_set(
                 'graph = {%s} %s' %
                 (str(self), code), False, str)
             
-            # Set paths to ML.NET libs (in nimbusml) and to .NET Core CLR libs
-            call_parameters['nimbusmlPath'] = try_set(get_nimbusml_libs(), True, str)
+            # Set paths to .NET Core CLR, ML.NET and DataPrep libs
             set_clr_environment_vars()
-            call_parameters['dotnetClrPath'] = try_set(get_clr_path(), True, str)
-            call_parameters['dprepPath'] = try_set(get_dprep_path(), True, str)
+            call_parameters['dotnetClrPath'] = try_set(get_clr_path(), False, str)
+            call_parameters['mlnetPath'] = try_set(get_mlnet_path(), False, str)
+            call_parameters['dprepPath'] = try_set(get_dprep_path(), False, str)
 
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, six.integer_types)
