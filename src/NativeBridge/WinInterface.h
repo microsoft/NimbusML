@@ -267,19 +267,27 @@ private:
     }
 
 public:
-    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath, const char *dpreppath)
+    FNGETTER EnsureGetter(const char *mlnetpath, const char *coreclrpath, const char *dpreppath)
     {
         if (_getter != nullptr)
             return _getter;
 
-        std::wstring libsdir = Utf8ToUtf16le(nimbuslibspath);
+        std::wstring libsdir = Utf8ToUtf16le(mlnetpath);
         ConvertToWinPath(libsdir);
 
         std::wstring coreclrdir = Utf8ToUtf16le(coreclrpath);
         ConvertToWinPath(coreclrdir);
 
-        std::wstring dprepdir = Utf8ToUtf16le(dpreppath);
-        ConvertToWinPath(dprepdir);
+        std::wstring dprepdir;
+        if (strlen(dpreppath) != 0)
+        {
+            dprepdir = Utf8ToUtf16le(dpreppath);
+            ConvertToWinPath(dprepdir);
+        }
+        else
+        {
+            dprepdir = libsdir;
+        }
 
         ICLRRuntimeHost2* host = EnsureClrHost(libsdir.c_str(), coreclrdir.c_str(), dprepdir.c_str());
         if (host == nullptr)

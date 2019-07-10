@@ -45,14 +45,14 @@ static MlNetInterface *g_mlnetInterface = nullptr;
 static GENERICEXEC g_exec = nullptr;
 
 // Ensure that we have the DotNetBridge managed code entry point.
-GENERICEXEC EnsureExec(const char *nimbuslibspath, const char *coreclrpath, const char *dpreppath)
+GENERICEXEC EnsureExec(const char *mlnetpath, const char *coreclrpath, const char *dpreppath)
 {
     if (g_mlnetInterface == nullptr)
         g_mlnetInterface = new MlNetInterface();
 
     if (g_exec == nullptr)
     {
-        FNGETTER getter = g_mlnetInterface->EnsureGetter(nimbuslibspath, coreclrpath, dpreppath);
+        FNGETTER getter = g_mlnetInterface->EnsureGetter(mlnetpath, coreclrpath, dpreppath);
         if (getter != nullptr)
             g_exec = (GENERICEXEC)getter(FnIdGenericExec);
     }

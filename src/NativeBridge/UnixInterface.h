@@ -144,13 +144,17 @@ public:
     {
     }
 
-    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath, const char *dpreppath)
+    FNGETTER EnsureGetter(const char *mlnetpath, const char *coreclrpath, const char *dpreppath)
     {
         if (_getter != nullptr)
             return _getter;
 
-        std::string libsroot(nimbuslibspath);
+        std::string libsroot(mlnetpath);
         std::string coreclrdir(coreclrpath);
+        if (strlen(dpreppath) == 0) 
+        {
+            dpreppath = mlnetpath;
+        }
         std::string dprepdir(dpreppath);
 
         ICLRRuntimeHost2* host = EnsureClrHost(libsroot.c_str(), coreclrdir.c_str(), dprepdir.c_str());
