@@ -56,7 +56,7 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/IidSpikeDetector_df.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/IidSpikeDetector_df.py
               :language: python
     """
 

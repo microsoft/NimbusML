@@ -76,7 +76,7 @@ class IidChangePointDetector(
 
     Example:
        .. literalinclude::
-        /../nimbusml/examples/IidChangePointDetector_df.py
+        /../nimbusml/examples/examples_from_dataframe/IidChangePointDetector_df.py
               :language: python
     """
 

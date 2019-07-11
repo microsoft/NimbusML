@@ -93,7 +93,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/SsaForecaster_df.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/SsaForecaster_df.py
               :language: python
     """
 

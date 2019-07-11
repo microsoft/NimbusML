@@ -98,7 +98,7 @@ class SsaChangePointDetector(
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/SsaChangePointDetector_df.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/SsaChangePointDetector_df.py
               :language: python
     """
 
