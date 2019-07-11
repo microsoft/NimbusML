@@ -23,7 +23,7 @@
         kernel density estimation
         <https://en.wikipedia.org/wiki/Variable_kernel_density_estimation>`_.
 
-        The `p-value <https://en.wikipedia.org/wiki/P-value`_> score for the
+        The `p-value <https://en.wikipedia.org/wiki/P-value>`_ score for the
         current deviation is calculated based on the
         estimated distribution. The lower its value, the more likely the
         current point is an outlier.

@@ -23,7 +23,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
     .. remarks::
 
         This class implements the transform based on `Singular Spectrum Analysis
-        (SSA)<https://en.wikipedia.org/wiki/Singular_spectrum_analysis>`_.
+        <https://en.wikipedia.org/wiki/Singular_spectrum_analysis>`_ (SSA).
         SSA is a powerful framework for decomposing the time-series into trend,
         seasonality and noise components as well as forecasting the future values
         of the time-series. In principle, SSA performs spectral analysis on the
