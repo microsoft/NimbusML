@@ -68,8 +68,7 @@ class IidChangePointDetector(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude::
-        /../nimbusml/examples/examples_from_dataframe/IidChangePointDetector_df.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/IidChangePointDetector_df.py
               :language: python
     """
 
