@@ -89,7 +89,7 @@ class SsaSpikeDetector(core, BaseTransform, TransformerMixin):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/SsaSpikeDetector_df.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/SsaSpikeDetector_df.py
               :language: python
     """
 
