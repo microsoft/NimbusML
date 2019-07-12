@@ -65,9 +65,18 @@ class TestDocsExamples(unittest.TestCase):
                     'SymSgdBinaryClassifier.py',
                     'SymSgdBinaryClassifier_infert_df.py',
                     # MICROSOFTML_RESOURCE_PATH needs to be setup on linux
+                    'CharTokenizer.py',
                     'WordEmbedding.py',
                     'WordEmbedding_df.py',
                     'NaiveBayesClassifier_df.py'
+                    ]:
+                    continue
+            # skip for ubuntu 14 tests
+            if platform.linux_distribution()[1] == 'jessie/sid':
+                if name in [
+                    # libdl needs to be setup
+                    'Image.py',
+                    'Image_df.py'
                     ]:
                     continue
             # skip for centos7 tests 

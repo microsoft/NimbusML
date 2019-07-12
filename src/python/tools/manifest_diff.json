@@ -236,6 +236,14 @@
       "Decision_Function" : true
     },
     {
+      "Name": "Trainers.LinearSvmBinaryClassifier",
+      "NewName": "LinearSvmBinaryClassifier",
+      "Module": "linear_model",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
       "Name": "Transforms.ApproximateBootstrapSampler",
       "NewName": "BootstrapSampler",
       "Module": "preprocessing.filter",
@@ -542,25 +550,31 @@
     {
       "Name": "TimeSeriesProcessingEntryPoints.IidSpikeDetector",
       "NewName": "IidSpikeDetector",
-      "Module": "time_series",
+      "Module": "timeseries",
       "Type": "Transform"
     },
     {
       "Name": "TimeSeriesProcessingEntryPoints.IidChangePointDetector",
       "NewName": "IidChangePointDetector",
-      "Module": "time_series",
+      "Module": "timeseries",
       "Type": "Transform"
     },
     {
       "Name": "TimeSeriesProcessingEntryPoints.SsaSpikeDetector",
       "NewName": "SsaSpikeDetector",
-      "Module": "time_series",
+      "Module": "timeseries",
       "Type": "Transform"
     },
     {
       "Name": "TimeSeriesProcessingEntryPoints.SsaChangePointDetector",
       "NewName": "SsaChangePointDetector",
-      "Module": "time_series",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
+      "Name": "TimeSeriesProcessingEntryPoints.SsaForecasting",
+      "NewName": "SsaForecaster",
+      "Module": "timeseries",
       "Type": "Transform"
     },
     {

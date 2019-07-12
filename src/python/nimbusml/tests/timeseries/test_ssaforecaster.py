@@ -9,35 +9,34 @@ import numpy as np
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.time_series import SsaSpikeDetector
+from nimbusml.timeseries import SsaForecaster
 
 
-class TestSsaSpikeDetector(unittest.TestCase):
+class TestSsaForecaster(unittest.TestCase):
 
-    def test_correct_data_is_marked_as_spike(self):
+    def test_simple_forecast(self):
         seasonality_size = 5
         seasonal_data = np.arange(seasonality_size)
 
         data = np.tile(seasonal_data, 3)
-        data = np.append(data, [100]) # add a spike
-        data = np.append(data, seasonal_data)
 
         X_train = pd.Series(data, name="ts")
+
         training_seasons = 3
         training_size = seasonality_size * training_seasons
 
-        ssd = SsaSpikeDetector(confidence=95,
-                               pvalue_history_length=8,
-                               training_window_size=training_size,
-                               seasonal_window_size=seasonality_size + 1) << {'result': 'ts'}
+        forecaster = SsaForecaster(series_length=8,
+                                   train_size=training_size,
+                                   window_size=seasonality_size + 1,
+                                   horizon=2) <<   {'fc': 'ts'}
 
-        ssd.fit(X_train)
-        data = ssd.transform(X_train)
+        forecaster.fit(X_train, verbose=1)
+        data = forecaster.transform(X_train)
 
-        self.assertEqual(data.loc[15, 'result.Alert'], 1.0)
+        self.assertEqual(round(data.loc[0, 'fc.0']), 1.0)
+        self.assertEqual(round(data.loc[0, 'fc.1']), 2.0)
 
-        data = data.loc[data['result.Alert'] == 1.0]
-        self.assertEqual(len(data), 1)
+        self.assertEqual(len(data['fc.0']), 15)
 
     def test_multiple_user_specified_columns_is_not_allowed(self):
         path = get_dataset('timeseries').as_filepath()
@@ -45,7 +44,11 @@ class TestSsaSpikeDetector(unittest.TestCase):
 
         try:
             pipeline = Pipeline([
-                SsaSpikeDetector(columns=['t2', 't3'], pvalue_history_length=5)
+                SsaForecaster(series_length=8,
+                              train_size=15,
+                              window_size=5,
+                              horizon=2,
+                              columns=['t2', 't3'])
             ])
             pipeline.fit_transform(data)
 

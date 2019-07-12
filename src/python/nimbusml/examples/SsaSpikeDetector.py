@@ -2,7 +2,7 @@
 # SsaSpikeDetector
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.time_series import SsaSpikeDetector
+from nimbusml.timeseries import SsaSpikeDetector
 
 # data input (as a FileDataStream)
 path = get_dataset('timeseries').as_filepath()

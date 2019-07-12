@@ -5,11 +5,10 @@
 
 import unittest
 
-import numpy as np
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.time_series import IidSpikeDetector
+from nimbusml.timeseries import IidSpikeDetector
 from nimbusml.preprocessing.schema import TypeConverter
 
 

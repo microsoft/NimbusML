@@ -62,7 +62,7 @@ template <class T>
 class PythonObject : public PythonObjectBase
 {
 protected:
-	std::shared_ptr<std::vector<T>> _pData;
+	std::vector<T>* _pData;
 
 	size_t _numRows;
 	size_t _numCols;
@@ -71,7 +71,7 @@ public:
 	PythonObject(const int& kind, size_t numRows = 1, size_t numCols = 1);
 	virtual ~PythonObject();
 	void SetAt(size_t nRow, size_t nCol, const T& value);
-	const std::shared_ptr<std::vector<T> >& GetData() const;
+	const std::vector<T>* GetData() const;
 };
 
 template <class T>
@@ -81,7 +81,7 @@ inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t num
 	_numRows = numRows;
 	_numCols = numCols;
 
-	_pData = std::make_shared<std::vector<T>>();
+	_pData = new std::vector<T>();
 	if (_numRows > 0)
 		_pData->reserve(_numRows*_numCols);
 }
@@ -89,6 +89,7 @@ inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t num
 template <class T>
 inline PythonObject<T>::~PythonObject()
 {
+	delete _pData;
 }
 
 template <class T>
@@ -101,7 +102,7 @@ inline void PythonObject<T>::SetAt(size_t nRow, size_t nCol, const T& value)
 }
 
 template <class T>
-inline const std::shared_ptr<std::vector<T>>& PythonObject<T>::GetData() const
+inline const std::vector<T>* PythonObject<T>::GetData() const
 {
 	return _pData;
 }

@@ -9,33 +9,32 @@ import numpy as np
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.time_series import SsaChangePointDetector
+from nimbusml.timeseries import SsaSpikeDetector
 
 
-class TestSsaChangePointDetector(unittest.TestCase):
+class TestSsaSpikeDetector(unittest.TestCase):
 
-    def test_correct_data_is_marked_as_change_point(self):
+    def test_correct_data_is_marked_as_spike(self):
         seasonality_size = 5
         seasonal_data = np.arange(seasonality_size)
 
         data = np.tile(seasonal_data, 3)
-        data = np.append(data, [0, 100, 200, 300, 400]) # change distribution
+        data = np.append(data, [100]) # add a spike
+        data = np.append(data, seasonal_data)
 
         X_train = pd.Series(data, name="ts")
-
         training_seasons = 3
         training_size = seasonality_size * training_seasons
 
-        cpd = SsaChangePointDetector(confidence=95,
-                                     change_history_length=8,
-                                     training_window_size=training_size,
-                                     seasonal_window_size=seasonality_size + 1) << {'result': 'ts'}
+        ssd = SsaSpikeDetector(confidence=95,
+                               pvalue_history_length=8,
+                               training_window_size=training_size,
+                               seasonal_window_size=seasonality_size + 1) << {'result': 'ts'}
 
-        cpd.fit(X_train, verbose=1)
-        data = cpd.transform(X_train)
+        ssd.fit(X_train)
+        data = ssd.transform(X_train)
 
-
-        self.assertEqual(data.loc[16, 'result.Alert'], 1.0)
+        self.assertEqual(data.loc[15, 'result.Alert'], 1.0)
 
         data = data.loc[data['result.Alert'] == 1.0]
         self.assertEqual(len(data), 1)
@@ -46,7 +45,7 @@ class TestSsaChangePointDetector(unittest.TestCase):
 
         try:
             pipeline = Pipeline([
-                SsaChangePointDetector(columns=['t2', 't3'], change_history_length=5)
+                SsaSpikeDetector(columns=['t2', 't3'], pvalue_history_length=5)
             ])
             pipeline.fit_transform(data)
 
