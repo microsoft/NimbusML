@@ -40,6 +40,8 @@ from .internal.entrypoints.transforms_datasetscorer import \
     transforms_datasetscorer
 from .internal.entrypoints.transforms_featurecombiner import \
     transforms_featurecombiner
+from .internal.entrypoints.transforms_featurecontributioncalculationtransformer import \
+    transforms_featurecontributioncalculationtransformer
 from .internal.entrypoints.transforms_labelcolumnkeybooleanconverter \
     import \
     transforms_labelcolumnkeybooleanconverter
@@ -1692,6 +1694,122 @@ class Pipeline:
                     "If any step in the pipeline has defined Label, "
                     "only fit(X) is allowed or the training becomes "
                     "ambiguous.")
+
+    @trace
+    def calculate_feature_contributions(self, X, y=None,
+                 evaltype='auto', group_id=None,
+                 weight=None,
+                 verbose=0,
+                 top=10,
+                 bottom=10,
+                 normalize=True,
+                 as_binary_data_stream=False, **params):
+        """
+        Apply transforms and test with the final estimator, return metrics
+        """
+        # start the clock!
+        start_time = time.time()
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before test("
+                ").")
+
+        if y is not None:
+            if len(self.steps) > 0:
+                last_node = self.last_node
+                if last_node.type == 'transform':
+                    raise ValueError(
+                        "Pipeline needs a trainer as last step for test()")
+
+        X, y_temp, columns_renamed, feature_columns, label_column, \
+            schema, weights, weight_column = self._preprocess_X_y(
+                X, y, w=weight
+            )
+
+        if (not isinstance(y, (str, tuple))) or (
+                isinstance(X, DataFrame) and isinstance(y, (str, tuple))):
+            y = y_temp
+
+        all_nodes = []
+        inputs = dict([('data', ''), ('predictor_model', self.model)])
+        if isinstance(X, FileDataStream):
+            importtext_node = data_customtextloader(
+                input_file="$file",
+                data="$data",
+                custom_schema=schema.to_string(
+                    add_sep=True))
+            all_nodes = [importtext_node]
+            inputs = dict([('file', ''), ('predictor_model', self.model)])
+
+        score_node = transforms_datasetscorer(
+            data="$data",
+            predictor_model="$predictor_model",
+            scored_data="$scoredvectordata")
+
+        fcc_node = transforms_featurecontributioncalculationtransformer(
+            data="$scoredvectordata",
+            predictor_model="$predictor_model",
+            output_data="$fccData",
+            top=top,
+            bottom=bottom,
+            normalize=normalize)
+        all_nodes.extend([score_node, fcc_node])
+
+        if hasattr(self, 'steps') and len(self.steps) > 0 \
+                and self.last_node.type == 'classifier':
+            convert_label_node = \
+                transforms_predictedlabelcolumnoriginalvalueconverter(
+                    data="$fccData",
+                    predicted_label_column="PredictedLabel",
+                    output_data="$output_data")
+            all_nodes.extend([convert_label_node])
+
+        if y is not None:
+            evaluate_nodes = self._evaluation_infer(
+                evaltype, label_column, group_id, **params)
+            for node in evaluate_nodes:
+                all_nodes.extend([node])
+            output_scores = '' if params.get(
+                'output_scores', False) else '<null>'
+            outputs = OrderedDict(
+                [('output_metrics', ''), ('output_data', output_scores)])
+        else:
+            outputs = dict(output_data="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            as_binary_data_stream,
+            *all_nodes)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, out_data, out_metrics) = graph.run(
+                X=X,
+                y=y,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                telemetry_info=telemetry_info,
+                **params)
+        except RuntimeError as e:
+            self._run_time = time.time() - start_time
+            raise e
+
+        if y is not None:
+            # We need to fix the schema for ranking metrics
+            if evaltype == 'ranking':
+                out_metrics = self._fix_ranking_metrics_schema(out_metrics)
+
+        # stop the clock
+        self._run_time = time.time() - start_time
+        self._write_csv_time = graph._write_csv_time
+        return out_data
 
     @trace
     def _predict(self, X, y=None,
