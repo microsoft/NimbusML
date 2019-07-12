@@ -9,4 +9,6 @@ lib_lightgbm.so
 libtensorflow.so
 libtensorflow_framework.so
 System.Drawing.Common.dll
+Microsoft.DataPrep.dll
+Microsoft.DPrep.*
 Microsoft.ML.*

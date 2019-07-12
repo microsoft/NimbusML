@@ -20,6 +20,7 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 from .internal.utils.data_roles import Role
 from .internal.utils.data_schema import DataSchema
 from .internal.utils.data_stream import BinaryDataStream
+from .internal.utils.data_stream import DprepDataStream
 from .internal.utils.data_stream import FileDataStream
 from .internal.utils.utils import run_tests
 from .pipeline import Pipeline

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
     <DefineConstants>CORECLR</DefineConstants>
@@ -42,5 +42,6 @@
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.2.0" />
     <PackageReference Include="Microsoft.ML.Ensemble" Version="0.14.0" />
     <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.2.0" />
+    <PackageReference Include="Microsoft.DataPrep" Version="0.0.1.5-preview" />
   </ItemGroup>
 </Project>
