@@ -312,7 +312,7 @@ bp::dict EnvironmentBlock::GetData()
 				list.append(obj);
 			}
 			dict[_names[i]] = list;
-            delete column;
+			delete column;
 		}
 		break;
 		case TS:
