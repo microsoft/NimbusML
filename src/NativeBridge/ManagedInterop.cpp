@@ -6,16 +6,22 @@
 #include "DataViewInterop.h"
 #include "ManagedInterop.h"
 
+inline void destroyManagerCObject(PyObject* obj) {
+	auto* b = static_cast<PythonObjectBase*>(PyCapsule_GetPointer(obj, NULL));
+	if (b) { delete b; }
+}
+
 #define SetDict2(cpptype, nptype); \
 		{\
 			PythonObject<cpptype>* col = dynamic_cast<PythonObject<cpptype>*>(column);\
 			auto shrd = col->GetData();\
 			auto* data = shrd->data();\
+			bp::handle<> h(::PyCapsule_New((void*)column, NULL, (PyCapsule_Destructor)&destroyManagerCObject));\
 			dict[_names[i]] = np::from_data(\
 				data,\
 				np::dtype::get_builtin<nptype>(),\
 				bp::make_tuple(shrd->size()),\
-				bp::make_tuple(sizeof(nptype)), bp::object());\
+				bp::make_tuple(sizeof(nptype)), bp::object(h));\
 		}
 
 #define SetDict1(type) SetDict2(type, type)
@@ -25,11 +31,12 @@
 			PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
 			auto shrd = col->GetData();\
 			auto* data = shrd->data();\
+			bp::handle<> h(::PyCapsule_New((void*)column, NULL, (PyCapsule_Destructor)&destroyManagerCObject));\
 			np::ndarray npdata = np::from_data(\
 				data,\
 				np::dtype::get_builtin<type>(),\
 				bp::make_tuple(shrd->size()),\
-				bp::make_tuple(sizeof(float)), bp::object());\
+				bp::make_tuple(sizeof(float)), bp::object(h));\
 			if (keyNames == nullptr)\
 			{\
 				dict[_names[i]] = npdata;\
@@ -305,6 +312,7 @@ bp::dict EnvironmentBlock::GetData()
 				list.append(obj);
 			}
 			dict[_names[i]] = list;
+            delete column;
 		}
 		break;
 		case TS:
