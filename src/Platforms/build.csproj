@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>dummy</AssemblyName>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <Platforms>x64</Platforms>
     <Configurations>DbgWinPy3.7;DbgWinPy3.6;DbgWinPy3.5;DbgWinPy2.7;RlsWinPy3.7;RlsWinPy3.6;RlsWinPy3.5;RlsWinPy2.7;DbgLinPy3.7;DbgLinPy3.6;DbgLinPy3.5;DbgLinPy2.7;RlsLinPy3.7;RlsLinPy3.6;RlsLinPy3.5;RlsLinPy2.7;RlsMacPy3.7;RlsMacPy3.6</Configurations>
     <OutputPath>$(ProjectDir)..\..\x64\$(Configuration)\Platform\</OutputPath>
@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.2.0" />
     <PackageReference Include="Microsoft.ML.Ensemble" Version="0.14.0" />
     <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.2.0" />
+    <PackageReference Include="Microsoft.DataPrep" Version="0.0.1.5-preview" />
   </ItemGroup>
 
 </Project>

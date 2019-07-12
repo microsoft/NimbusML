@@ -9,8 +9,9 @@
 #define PARAM_SEED "seed"
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
-#define PARAM_NIMBUSML_PATH "nimbusmlPath"
+#define PARAM_MLNET_PATH "mlnetPath"
 #define PARAM_DOTNETCLR_PATH "dotnetClrPath"
+#define PARAM_DPREP_PATH "dprepPath"
 #define PARAM_DATA "data"
 
 
@@ -44,14 +45,14 @@ static MlNetInterface *g_mlnetInterface = nullptr;
 static GENERICEXEC g_exec = nullptr;
 
 // Ensure that we have the DotNetBridge managed code entry point.
-GENERICEXEC EnsureExec(const char *nimbuslibspath, const char *coreclrpath)
+GENERICEXEC EnsureExec(const char *mlnetpath, const char *coreclrpath, const char *dpreppath)
 {
     if (g_mlnetInterface == nullptr)
         g_mlnetInterface = new MlNetInterface();
 
     if (g_exec == nullptr)
     {
-        FNGETTER getter = g_mlnetInterface->EnsureGetter(nimbuslibspath, coreclrpath);
+        FNGETTER getter = g_mlnetInterface->EnsureGetter(mlnetpath, coreclrpath, dpreppath);
         if (getter != nullptr)
             g_exec = (GENERICEXEC)getter(FnIdGenericExec);
     }
@@ -70,20 +71,23 @@ bp::dict pxCall(bp::dict& params)
     try
     {
         bp::extract<std::string> graph(params[PARAM_GRAPH]);
-        bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
+        bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
         bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
+        bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
         bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
         std::int32_t i_verbose = std::int32_t(verbose);
-        std::string s_nimbusmlPath = std::string(nimbusmlPath);
+        std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
+        std::string s_dprepPath = std::string(dprepPath);
         std::string s_graph = std::string(graph);
-        const char *nimbuslibspath = s_nimbusmlPath.c_str();
+        const char *mlnetpath = s_mlnetPath.c_str();
         const char *coreclrpath = s_dotnetClrPath.c_str();
+        const char *dpreppath = s_dprepPath.c_str();
 
-        GENERICEXEC exec = EnsureExec(nimbuslibspath, coreclrpath);
+        GENERICEXEC exec = EnsureExec(mlnetpath, coreclrpath, dpreppath);
         if (exec == nullptr)
-            throw std::invalid_argument("Failed to communicate with the managed library. Path searched: "
-                + s_nimbusmlPath + " and " + s_dotnetClrPath);
+            throw std::invalid_argument("Failed to communicate with the managed library. Paths searched: "
+                + s_mlnetPath + " and " + s_dotnetClrPath);
 
         int seed = 42;
         if (params.has_key(PARAM_SEED))

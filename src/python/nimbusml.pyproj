@@ -12,9 +12,10 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|Py3.7</InterpreterId>
+    <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <StartupFile>nimbusml\tests\dprep\test_dprep.py</StartupFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -581,6 +582,8 @@
     <Compile Include="nimbusml\tests\decomposition\test_pcaanomalydetector.py" />
     <Compile Include="nimbusml\tests\decomposition\test_pcatransformer.py" />
     <Compile Include="nimbusml\tests\decomposition\__init__.py" />
+    <Compile Include="nimbusml\tests\dprep\test_dprep.py" />
+    <Compile Include="nimbusml\tests\dprep\__init__.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreesbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreestweedieregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_gambinaryclassifier.py" />
@@ -735,6 +738,7 @@
     <Folder Include="docs\sphinx\modules\svm\kernel\" />
     <Folder Include="docs\sphinx\_static\" />
     <Folder Include="docs\sphinx\_static\images\" />
+    <Folder Include="nimbusml\tests\dprep\" />
     <Folder Include="tests_extended\" />
     <Folder Include="nimbusml\" />
     <Folder Include="nimbusml\cluster\" />
@@ -1136,7 +1140,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Py3.7" />
+    <InterpreterReference Include="Global|VisualStudio|MinePy37" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

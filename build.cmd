@@ -157,7 +157,7 @@ if /i [%1] == [DbgWinPy2.7]     (
 :Build
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
-powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
+powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.701 -InstallDir ./cli"
 
 set _dotnetRoot=%__currentScriptDir%cli
 
@@ -339,6 +339,8 @@ echo "Running tests ... "
 echo "#################################"
 call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
+:: Run azureml-dataprep tests only in pyhon 3.7 as its an optional dependency
+if %PythonVersion% == 3.7 ( call "%PythonExe%" -m pip install --upgrade azureml-dataprep )
 call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
 call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 

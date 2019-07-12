@@ -166,7 +166,7 @@ if [ ${__buildDotNetBridge} = true ]
 then 
     # Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
     echo "Installing dotnet SDK ... "
-    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 2.1.200 -InstallDir ./cli
+    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 2.1.701 -InstallDir ./cli
 
     # Build managed code
     echo "Building managed code ... "
@@ -266,7 +266,10 @@ then
     elif [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
     then
         "${PythonExe}" -m pip install --upgrade pytest-remotedata
-    fi
+    elif [ ${PythonVersion} = 3.7 ]
+    then
+        "${PythonExe}" -m pip install --upgrade azureml-dataprep
+	fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 
