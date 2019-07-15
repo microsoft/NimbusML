@@ -7,10 +7,36 @@
 # computes a model-specific list of per-feature contributions to the score for
 # each example. These contributions can be positive (they make the score
 # higher) or negative (they make the score lower).
+#
+# Feature Contribution Calculation is currently supported for the following
+# models:
+#   - Regression:
+#     - OrdinaryLeastSquaresRegressor
+#     - FastLinearRegressor
+#     - OnlineGradientDescentRegressor
+#     - PoissonRegressionRegressor
+#     - GamRegressor
+#     - LightGbmRegressor
+#     - FastTreesRegressor
+#     - FastForestRegressor
+#     - FastTreesTweedieRegressor
+#   - Binary Classification:
+#     - AveragedPerceptronBinaryClassifier
+#     - LinearSvmBinaryClassifier
+#     - LogisticRegressionBinaryClassifier
+#     - FastLinearBinaryClassifier
+#     - SgdBinaryClassifier
+#     - SymSgdBinaryClassifier
+#     - GamBinaryClassifier
+#     - FastForestBinaryClassifier
+#     - FastTreesBinaryClassifier
+#     - LightGbmBinaryClassifier
+#   - Ranking:
+#     - LightGbmRanker
 
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.linear_model import LogisticRegressionBinaryClassifier, PoissonRegressionRegressor
+from nimbusml.linear_model import LogisticRegressionBinaryClassifier
 from nimbusml.ensemble import FastTreesBinaryClassifier
 
 # data input (as a FileDataStream)
@@ -26,7 +52,7 @@ print(data.head())
 # 4      0          ?  Some-college  ...            0             30
 
 # define the training pipeline with a linear model
-lr_pipeline = Pipeline([PoissonRegressionRegressor(
+lr_pipeline = Pipeline([LogisticRegressionBinaryClassifier(
     feature=['age', 'education-num', 'hours-per-week'], label='label')])
 
 # train the model
