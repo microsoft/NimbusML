@@ -1726,8 +1726,6 @@ class Pipeline:
         :return: dataframe of containing the raw data, predicted label, score,
             probabilities, and feature contributions.
         """
-        # start the clock!
-        start_time = time.time()
         self.verbose = verbose
 
         if not self._is_fitted:
@@ -1735,6 +1733,7 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before test("
                 ").")
 
+        #print(self.last_node.type)
         if y is not None:
             if len(self.steps) > 0:
                 last_node = self.last_node
@@ -1785,17 +1784,7 @@ class Pipeline:
                     output_data="$output_data")
             all_nodes.extend([convert_label_node])
 
-        if y is not None:
-            evaluate_nodes = self._evaluation_infer(
-                evaltype, label_column, group_id, **params)
-            for node in evaluate_nodes:
-                all_nodes.extend([node])
-            output_scores = '' if params.get(
-                'output_scores', False) else '<null>'
-            outputs = OrderedDict(
-                [('output_metrics', ''), ('output_data', output_scores)])
-        else:
-            outputs = dict(output_data="")
+        outputs = dict(output_data="")
 
         graph = Graph(
             inputs,
@@ -1817,17 +1806,8 @@ class Pipeline:
                 telemetry_info=telemetry_info,
                 **params)
         except RuntimeError as e:
-            self._run_time = time.time() - start_time
             raise e
 
-        if y is not None:
-            # We need to fix the schema for ranking metrics
-            if evaltype == 'ranking':
-                out_metrics = self._fix_ranking_metrics_schema(out_metrics)
-
-        # stop the clock
-        self._run_time = time.time() - start_time
-        self._write_csv_time = graph._write_csv_time
         return out_data
 
     @trace
