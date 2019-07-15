@@ -1697,16 +1697,35 @@ class Pipeline:
                     "ambiguous.")
 
     @trace
-    def calculate_feature_contributions(self, X, y=None,
+    def get_feature_contributions(self, X, y=None,
                  evaltype='auto', group_id=None,
                  weight=None,
-                 verbose=0,
                  top=10,
                  bottom=10,
-                 normalize=True,
+                 verbose=0,
                  as_binary_data_stream=False, **params):
         """
-        Apply transforms and test with the final estimator, return metrics
+        Return dataframe with raw data, predictions, and feature contributiuons
+        for the predictions.
+
+        :param X: {array-like [n_samples, n_features],
+            :py:class:`nimbusml.FileDataStream` }
+        :param y: {array-like [n_samples]}
+
+        :param evaltype: the evaluation type for the problem, can be {
+            'binary', 'multiclass', 'regression', 'cluster', 'anomaly',
+            'ranking'}. The default is 'auto'. If model is loaded using the
+            load_model() method, evaltype cannot be 'auto', and therefore
+            must be explicitly specified.
+        :param group_id: the column name for group_id for ranking problem
+        :param weight: the column name for the weight column for each
+            sample.
+        :param top: the number of positive contributions with highest magnitude
+            to report.
+        :param bottom: The number of negative contributions with highest
+            magnitude to report.
+        :return: dataframe of containing the raw data, predicted label, score,
+            probabilities, and feature contributions.
         """
         # start the clock!
         start_time = time.time()
@@ -1755,7 +1774,7 @@ class Pipeline:
             output_data="$fccData",
             top=top,
             bottom=bottom,
-            normalize=normalize)
+            normalize=True)
         all_nodes.extend([score_node, fcc_node])
 
         if hasattr(self, 'steps') and len(self.steps) > 0 \
@@ -2061,7 +2080,7 @@ class Pipeline:
             otherwise None
             in the returned tuple.
         :return: tuple (dataframe of evaluation metrics, dataframe of
-            scores). Is scores are
+            scores). If scores are
             required, set `output_scores`=True, otherwise None is
             returned by default.
         """
