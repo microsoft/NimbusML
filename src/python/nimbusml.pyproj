@@ -177,7 +177,7 @@
     <Compile Include="nimbusml\examples\PipelineWithGridSearchCV2.py" />
     <Compile Include="nimbusml\examples\PipelineWithGridSearchCV1.py" />
     <Compile Include="nimbusml\examples\pipeline.py" />
-    <Compile Include="nu,busml\examples\PipelineWithFeatureCOntributions.py" />
+    <Compile Include="nimbusml\examples\PipelineWithFeatureCOntributions.py" />
     <Compile Include="nimbusml\examples\Poisson.py" />
     <Compile Include="nimbusml\examples\PoissonRegressionRegressor.py" />
     <Compile Include="nimbusml\examples\RangeFilter.py" />
