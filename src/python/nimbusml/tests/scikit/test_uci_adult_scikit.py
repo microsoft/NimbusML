@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import os
 import pickle
 import unittest
 
@@ -111,6 +112,7 @@ class TestUciAdultScikit(unittest.TestCase):
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(ftree)
+        os.remove(ftree.model_)
         ftree2 = pickle.loads(s)
         scores2 = ftree2.predict(X_test)
         accu2 = np.mean(y_test.values.ravel() == scores2.values)
@@ -130,6 +132,7 @@ class TestUciAdultScikit(unittest.TestCase):
         # Unpickle transform and generate output.
         # We should get the exact same output as above
         s = pickle.dumps(cat)
+        os.remove(cat.model_)
         cat2 = pickle.loads(s)
         out2 = cat2.transform(X_train)
         assert_equal(
@@ -158,7 +161,10 @@ class TestUciAdultScikit(unittest.TestCase):
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(pipe)
+        os.remove(cat.model_)
+        os.remove(ftree.model_)
         pipe2 = pickle.loads(s)
+
         scores2 = pipe2.predict(X_test)
         accu2 = np.mean(y_test.values.ravel() == scores2.values)
         assert_equal(

@@ -5,6 +5,7 @@
 import inspect
 import itertools
 import os
+import tempfile
 import time
 import warnings
 from collections import OrderedDict, namedtuple, defaultdict
@@ -2264,6 +2265,36 @@ class Pipeline:
             raise ValueError("file not found %s" % src)
         self.model = src
         self.steps = []
+
+    def __getstate__(self):
+        "Selects what to pickle."
+        odict = {}
+
+        if (hasattr(self, 'model') and 
+            self.model is not None and
+            os.path.isfile(self.model)):
+
+            with open(self.model, "rb") as f:
+                odict['modelbytes'] = f.read()
+
+        return odict
+
+    def __setstate__(self, state):
+        self.steps = []
+        self.model = None
+        self.random_state = None
+
+        "Restore a pickled object."
+        for k, v in state.items():
+            if k != 'modelbytes':
+                setattr(self, k, v)
+
+        if 'modelbytes' in state:
+            (fd, modelfile) = tempfile.mkstemp()
+            fl = os.fdopen(fd, "wb")
+            fl.write(state['modelbytes'])
+            fl.close()
+            self.model = modelfile
 
     @trace
     def score(
