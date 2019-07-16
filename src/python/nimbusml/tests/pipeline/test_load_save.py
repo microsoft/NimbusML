@@ -59,7 +59,7 @@ class TestLoadSave(unittest.TestCase):
 
         metrics, score = model_nimbusml.test(test, test_label, output_scores=True)
         metrics_pickle, score_pickle = model_nimbusml_pickle.test(
-            test, test_label, output_scores=True, evaltype='binary')
+            test, test_label, output_scores=True)
 
         # Save load with pipeline methods
         model_nimbusml.save_model('model.nimbusml.m')
@@ -108,7 +108,7 @@ class TestLoadSave(unittest.TestCase):
 
         metrics, score = model_nimbusml.test(test, test_label, output_scores=True)
         metrics_pickle, score_pickle = model_nimbusml_pickle.test(
-            test, test_label, output_scores=True, evaltype='binary')
+            test, test_label, output_scores=True)
 
         assert_almost_equal(score1.sum().sum(), score2.sum().sum(), decimal=2)
         assert_almost_equal(
@@ -166,7 +166,7 @@ class TestLoadSave(unittest.TestCase):
         os.remove(pickle_filename)
 
         metrics_pickle, score_pickle = model_nimbusml_pickle.test(
-            test, test_label, output_scores=True, evaltype='binary')
+            test, test_label, output_scores=True)
 
         assert_almost_equal(score.sum().sum(),
                             score_pickle.sum().sum(),

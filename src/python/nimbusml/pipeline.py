@@ -2269,6 +2269,9 @@ class Pipeline:
     def __getstate__(self):
         odict = {'export_version': 1}
 
+        if hasattr(self, 'steps'):
+            odict['steps'] = self.steps
+
         if (hasattr(self, 'model') and 
             self.model is not None and
             os.path.isfile(self.model)):
