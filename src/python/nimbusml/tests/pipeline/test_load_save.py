@@ -176,6 +176,52 @@ class TestLoadSave(unittest.TestCase):
                             metrics_pickle.sum().sum(),
                             decimal=2)
 
+    def test_unfitted_pickled_pipeline_can_be_fit(self):
+        pipeline = Pipeline(
+            steps=[
+                ('cat',
+                 OneHotVectorizer() << categorical_columns),
+                ('linear',
+                 FastLinearBinaryClassifier(
+                     shuffle=False,
+                     number_of_threads=1))])
+
+        pipeline.fit(train, label)
+        metrics, score = pipeline.test(test, test_label, output_scores=True)
+
+        # Create a new unfitted pipeline
+        pipeline = Pipeline(
+            steps=[
+                ('cat',
+                 OneHotVectorizer() << categorical_columns),
+                ('linear',
+                 FastLinearBinaryClassifier(
+                     shuffle=False,
+                     number_of_threads=1))])
+
+        pickle_filename = 'nimbusml_model.p'
+
+        # Save with pickle
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(pipeline, f)
+
+        with open(pickle_filename, "rb") as f:
+            pipeline_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
+
+        pipeline_pickle.fit(train, label)
+        metrics_pickle, score_pickle = pipeline_pickle.test(
+            test, test_label, output_scores=True)
+
+        assert_almost_equal(score.sum().sum(),
+                            score_pickle.sum().sum(),
+                            decimal=2)
+
+        assert_almost_equal(metrics.sum().sum(),
+                            metrics_pickle.sum().sum(),
+                            decimal=2)
+
 
 if __name__ == '__main__':
     unittest.main()
