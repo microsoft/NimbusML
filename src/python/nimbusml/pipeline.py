@@ -2267,8 +2267,7 @@ class Pipeline:
         self.steps = []
 
     def __getstate__(self):
-        "Selects what to pickle."
-        odict = {}
+        odict = {'export_version': 1}
 
         if (hasattr(self, 'model') and 
             self.model is not None and
@@ -2289,12 +2288,13 @@ class Pipeline:
             if k != 'modelbytes':
                 setattr(self, k, v)
 
-        if 'modelbytes' in state:
-            (fd, modelfile) = tempfile.mkstemp()
-            fl = os.fdopen(fd, "wb")
-            fl.write(state['modelbytes'])
-            fl.close()
-            self.model = modelfile
+        if state.get('export_version', 0) == 1:
+            if 'modelbytes' in state:
+                (fd, modelfile) = tempfile.mkstemp()
+                fl = os.fdopen(fd, "wb")
+                fl.write(state['modelbytes'])
+                fl.close()
+                self.model = modelfile
 
     @trace
     def score(

@@ -14,7 +14,6 @@ from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.utils import get_X_y
 from numpy.testing import assert_almost_equal
 
-
 train_file = get_dataset('uciadult_train').as_filepath()
 test_file = get_dataset('uciadult_test').as_filepath()
 categorical_columns = [
