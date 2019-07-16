@@ -1766,24 +1766,32 @@ class Pipeline:
             data="$data",
             predictor_model="$predictor_model",
             scored_data="$scoredvectordata")
-
-        fcc_node = transforms_featurecontributioncalculationtransformer(
-            data="$scoredvectordata",
-            predictor_model="$predictor_model",
-            output_data="$fccData",
-            top=top,
-            bottom=bottom,
-            normalize=True)
-        all_nodes.extend([score_node, fcc_node])
+        all_nodes.extend([score_node])
 
         if hasattr(self, 'steps') and len(self.steps) > 0 \
                 and self.last_node.type == 'classifier':
+            fcc_node = transforms_featurecontributioncalculationtransformer(
+                data="$scoredvectordata",
+                predictor_model="$predictor_model",
+                output_data="$fccData",
+                top=top,
+                bottom=bottom,
+                normalize=True)
             convert_label_node = \
                 transforms_predictedlabelcolumnoriginalvalueconverter(
                     data="$fccData",
                     predicted_label_column="PredictedLabel",
                     output_data="$output_data")
-            all_nodes.extend([convert_label_node])
+            all_nodes.extend([fcc_node, convert_label_node])
+        else:
+            fcc_node = transforms_featurecontributioncalculationtransformer(
+                data="$scoredvectordata",
+                predictor_model="$predictor_model",
+                output_data="$output_data",
+                top=top,
+                bottom=bottom,
+                normalize=True)
+            all_nodes.extend([fcc_node])
 
         outputs = dict(output_data="")
 
