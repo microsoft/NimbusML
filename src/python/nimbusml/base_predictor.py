@@ -90,6 +90,10 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         return data
 
     @trace
+    def get_feature_contributions(self, X, **params):
+        return self._invoke_inference_method('get_feature_contributions', X, **params)
+    
+    @trace
     def predict(self, X, **params):
         """
         Predict target value
