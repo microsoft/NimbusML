@@ -1,5 +1,5 @@
 ###############################################################################
-# Pipeline with feature contributions
+# Pipeline with observation level feature contributions
 
 # Scoring a dataset with a trained model produces a score, or prediction, for
 # each example. To understand and explain these predictions it can be useful to
@@ -7,32 +7,6 @@
 # computes a model-specific list of per-feature contributions to the score for
 # each example. These contributions can be positive (they make the score
 # higher) or negative (they make the score lower).
-#
-# Feature Contribution Calculation is currently supported for the following
-# models:
-#   - Regression:
-#     - OrdinaryLeastSquaresRegressor
-#     - FastLinearRegressor
-#     - OnlineGradientDescentRegressor
-#     - PoissonRegressionRegressor
-#     - GamRegressor
-#     - LightGbmRegressor
-#     - FastTreesRegressor
-#     - FastForestRegressor
-#     - FastTreesTweedieRegressor
-#   - Binary Classification:
-#     - AveragedPerceptronBinaryClassifier
-#     - LinearSvmBinaryClassifier
-#     - LogisticRegressionBinaryClassifier
-#     - FastLinearBinaryClassifier
-#     - SgdBinaryClassifier
-#     - SymSgdBinaryClassifier
-#     - GamBinaryClassifier
-#     - FastForestBinaryClassifier
-#     - FastTreesBinaryClassifier
-#     - LightGbmBinaryClassifier
-#   - Ranking:
-#     - LightGbmRanker
 
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
@@ -69,14 +43,11 @@ lr_feature_contributions = lr_model.get_feature_contributions(data)
 print("========== Feature Contributions for Linear Model ==========")
 print(lr_feature_contributions.head())
 #   label  ... PredictedLabel     Score ... FeatureContributions.hours-per-week
-# 0        ...              0 -2.010687 ...                            0.833069
-# 1        ...              0 -1.216163 ...                            0.809928
-# 2        ...              0 -1.248412 ...                            0.485957
-# 3        ...              0 -1.132419 ...                            0.583148
-# 4        ...              0 -1.969522 ...                            0.437361
-
-assert 'FeatureContributions.age' in lr_feature_contributions.columns
-
+# 0     0  ...              0 -2.010687 ...                            0.833069
+# 1     0  ...              0 -1.216163 ...                            0.809928
+# 2     1  ...              0 -1.248412 ...                            0.485957
+# 3     1  ...              0 -1.132419 ...                            0.583148
+# 4     0  ...              0 -1.969522 ...                            0.437361
 
 # define the training pipeline with a tree model
 tree_pipeline = Pipeline([FastTreesBinaryClassifier(
@@ -106,3 +77,9 @@ tree_feature_contributions = tree_model.get_feature_contributions(data)
 # of how much each feature impacted the Score.
 print("========== Feature Contributions for Tree Model ==========")
 print(tree_feature_contributions.head())
+#    label  ... PredictedLabel      Score ... FeatureContributions.hours-per-week
+# 0      0  ...              0 -16.717360 ...                           -0.608664
+# 1      0  ...              0  -7.688200 ...                           -0.541213
+# 2      1  ...              1   1.571164 ...                            0.032862
+# 3      1  ...              1   2.115638 ...                            0.537077
+# 4      0  ...              0 -23.038410 ...                           -0.682764
