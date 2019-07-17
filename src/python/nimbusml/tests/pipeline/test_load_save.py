@@ -149,21 +149,10 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
         metrics, score = model_nimbusml.test(test, test_label, output_scores=True)
 
-        pickle_filename = 'nimbusml_model.p'
-
-        # Save with pickle
-        with open(pickle_filename, 'wb') as f:
-            pickle.dump(model_nimbusml, f)
-
         # Remove the pipeline model from disk so
         # that the unpickled pipeline is forced
         # to get its model from the pickled file.
         os.remove(model_nimbusml.model)
-
-        with open(pickle_filename, "rb") as f:
-            model_nimbusml_pickle = pickle.load(f)
-
-        os.remove(pickle_filename)
 
         metrics_pickle, score_pickle = model_nimbusml_pickle.test(
             test, test_label, output_scores=True)
