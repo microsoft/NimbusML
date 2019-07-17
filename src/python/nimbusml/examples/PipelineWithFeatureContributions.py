@@ -36,8 +36,8 @@
 
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.linear_model import LogisticRegressionBinaryClassifier
 from nimbusml.ensemble import FastTreesBinaryClassifier
+from nimbusml.linear_model import LogisticRegressionBinaryClassifier
 
 # data input (as a FileDataStream)
 path = get_dataset('uciadult_train').as_filepath()
@@ -74,6 +74,9 @@ print(lr_feature_contributions.head())
 # 2        ...              0 -1.248412 ...                            0.485957
 # 3        ...              0 -1.132419 ...                            0.583148
 # 4        ...              0 -1.969522 ...                            0.437361
+
+assert 'FeatureContributions.age' in lr_feature_contributions.columns
+
 
 # define the training pipeline with a tree model
 tree_pipeline = Pipeline([FastTreesBinaryClassifier(

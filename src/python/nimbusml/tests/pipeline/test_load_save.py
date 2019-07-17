@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import os
 import pickle
 import unittest
 
@@ -119,6 +120,30 @@ class TestLoadSave(unittest.TestCase):
             model_nimbusml_load.sum().sum(),
             decimal=2)
 
+    def test_unpickled_pipeline_has_feature_contributions(self):
+        features = ['age', 'education-num', 'hours-per-week']
+        
+        model_nimbusml = Pipeline(
+            steps=[FastLinearBinaryClassifier(feature=features)])
+
+        model_nimbusml.fit(train, label)
+
+        pickle_filename = 'nimbusml_model.p'
+
+        # Save with pickle
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
+
+        feature_contributions = model_nimbusml_pickle.get_feature_contributions(
+            test, test_label)
+
+        assert ['FeatureContributions.' + feature in feature_contributions.columns
+                for feature in features]
 
 if __name__ == '__main__':
     unittest.main()
