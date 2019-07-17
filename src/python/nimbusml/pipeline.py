@@ -1704,8 +1704,39 @@ class Pipeline:
                  verbose=0,
                  as_binary_data_stream=False, **params):
         """
-        Return dataframe with raw data, predictions, and feature contributiuons
-        for the predictions.
+        Calculates observation level feature contributions. Returns dataframe
+        with raw data, predictions, and feature contributiuons for each
+        prediction. Observation level feature contriutions are supported for
+        the following models:
+
+        * Regression:
+
+            * OrdinaryLeastSquaresRegressor
+            * FastLinearRegressor
+            * OnlineGradientDescentRegressor
+            * PoissonRegressionRegressor
+            * GamRegressor
+            * LightGbmRegressor
+            * FastTreesRegressor
+            * FastForestRegressor
+            * FastTreesTweedieRegressor
+
+        * Binary Classification:
+
+            * AveragedPerceptronBinaryClassifier
+            * LinearSvmBinaryClassifier
+            * LogisticRegressionBinaryClassifier
+            * FastLinearBinaryClassifier
+            * SgdBinaryClassifier
+            * SymSgdBinaryClassifier
+            * GamBinaryClassifier
+            * FastForestBinaryClassifier
+            * FastTreesBinaryClassifier
+            * LightGbmBinaryClassifier
+
+        * Ranking:
+
+            * LightGbmRanker
 
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
@@ -1765,32 +1796,16 @@ class Pipeline:
             data="$data",
             predictor_model="$predictor_model",
             scored_data="$scoredvectordata")
-        all_nodes.extend([score_node])
 
-        if hasattr(self, 'steps') and len(self.steps) > 0 \
-                and self.last_node.type == 'classifier':
-            fcc_node = transforms_featurecontributioncalculationtransformer(
-                data="$scoredvectordata",
-                predictor_model="$predictor_model",
-                output_data="$fccData",
-                top=top,
-                bottom=bottom,
-                normalize=True)
-            convert_label_node = \
-                transforms_predictedlabelcolumnoriginalvalueconverter(
-                    data="$fccData",
-                    predicted_label_column="PredictedLabel",
-                    output_data="$output_data")
-            all_nodes.extend([fcc_node, convert_label_node])
-        else:
-            fcc_node = transforms_featurecontributioncalculationtransformer(
-                data="$scoredvectordata",
-                predictor_model="$predictor_model",
-                output_data="$output_data",
-                top=top,
-                bottom=bottom,
-                normalize=True)
-            all_nodes.extend([fcc_node])
+        fcc_node = transforms_featurecontributioncalculationtransformer(
+            data="$scoredvectordata",
+            predictor_model="$predictor_model",
+            output_data="$output_data",
+            top=top,
+            bottom=bottom,
+            normalize=True)
+        
+        all_nodes.extend([score_node, fcc_node])
 
         outputs = dict(output_data="")
 
