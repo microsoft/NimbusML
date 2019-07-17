@@ -106,5 +106,5 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
             raise ValueError("Model is not fitted. Train or load a model before "
                              "export_to_onnx().")
 
-        pipeline = Pipeline(model=self.model_)
+        pipeline = Pipeline([self], model=self.model_)
         pipeline.export_to_onnx(*args, **kwargs)

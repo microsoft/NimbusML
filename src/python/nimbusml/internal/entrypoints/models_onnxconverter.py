@@ -10,14 +10,15 @@ from ..utils.utils import try_set, unlist
 
 def models_onnxconverter(
         onnx,
-        model,
         data_file=None,
         json=None,
         name=None,
         domain=None,
         inputs_to_drop=None,
         outputs_to_drop=None,
+        model=None,
         onnx_version='Stable',
+        predictive_model=None,
         **params):
     """
     **Description**
@@ -40,6 +41,8 @@ def models_onnxconverter(
         "Stable" or "Experimental". If "Experimental" is used,
         produced model can contain components that is not officially
         supported in ONNX standard. (inputs).
+    :param predictive_model: Predictor model that needs to be
+        converted to ONNX format. (inputs).
     """
 
     entrypoint_name = 'Models.OnnxConverter'
@@ -85,7 +88,7 @@ def models_onnxconverter(
     if model is not None:
         inputs['Model'] = try_set(
             obj=model,
-            none_acceptable=False,
+            none_acceptable=True,
             is_of_type=str)
     if onnx_version is not None:
         inputs['OnnxVersion'] = try_set(
@@ -95,6 +98,9 @@ def models_onnxconverter(
             values=[
                 'Stable',
                 'Experimental'])
+    if predictive_model is not None:
+        inputs['PredictiveModel'] = try_set(
+            obj=predictive_model, none_acceptable=True, is_of_type=str)
 
     input_variables = {
         x for x in unlist(inputs.values())

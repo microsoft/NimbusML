@@ -2307,16 +2307,23 @@ class Pipeline:
         # start the clock!
         start_time = time.time()
 
-        onnx_converter_node = models_onnxconverter(
-            onnx=dst,
-            json=dst_json,
-            model="$model",
-            domain=domain,
-            name=name,
-            data_file=data_file,
-            inputs_to_drop=inputs_to_drop,
-            outputs_to_drop=outputs_to_drop,
-            onnx_version=onnx_version)
+        onnx_converter_args = {
+            'onnx': dst,
+            'json': dst_json,
+            'domain': domain,
+            'name': name,
+            'data_file': data_file,
+            'inputs_to_drop': inputs_to_drop,
+            'outputs_to_drop': outputs_to_drop,
+            'onnx_version': onnx_version
+        }
+
+        if (len(self.steps) > 0) and (self.last_node.type != "transform"):
+            onnx_converter_args['predictive_model'] = "$model"
+        else:
+            onnx_converter_args['model'] = "$model"
+
+        onnx_converter_node = models_onnxconverter(**onnx_converter_args)
 
         inputs = dict([('model', self.model)])
         outputs = dict()
