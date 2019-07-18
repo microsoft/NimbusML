@@ -7,7 +7,7 @@ import os
 import pickle
 import unittest
 
-from nimbusml import Pipeline, FileDataStream
+from nimbusml import Pipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
