@@ -2286,9 +2286,8 @@ class Pipeline:
         self.model = None
         self.random_state = None
 
-        "Restore a pickled object."
         for k, v in state.items():
-            if k != 'modelbytes':
+            if k not in {'modelbytes', 'export_version'}:
                 setattr(self, k, v)
 
         if state.get('export_version', 0) == 1:
