@@ -149,10 +149,21 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
         metrics, score = model_nimbusml.test(test, test_label, output_scores=True)
 
+        pickle_filename = 'nimbusml_model.p'
+
+        # Save with pickle
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+
         # Remove the pipeline model from disk so
         # that the unpickled pipeline is forced
         # to get its model from the pickled file.
         os.remove(model_nimbusml.model)
+
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
 
         metrics_pickle, score_pickle = model_nimbusml_pickle.test(
             test, test_label, output_scores=True)
@@ -211,30 +222,109 @@ class TestLoadSave(unittest.TestCase):
                             metrics_pickle.sum().sum(),
                             decimal=2)
 
+    def test_unpickled_pipeline_has_feature_contributions(self):
+        features = ['age', 'education-num', 'hours-per-week']
+        
+        model_nimbusml = Pipeline(
+            steps=[FastLinearBinaryClassifier(feature=features)])
+        model_nimbusml.fit(train, label)
+        fc = model_nimbusml.get_feature_contributions(test)
+
+        # Save with pickle
+        pickle_filename = 'nimbusml_model.p'
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+        # Unpickle model
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        fc_pickle = model_nimbusml_pickle.get_feature_contributions(test)
+
+        assert ['FeatureContributions.' + feature in fc_pickle.columns
+                for feature in features]
+
+        assert [fc['FeatureContributions.' + feature].equals(
+            fc_pickle['FeatureContributions.' + feature])
+                for feature in features]
+
+        os.remove(pickle_filename)
+
+    def test_unpickled_predictor_has_feature_contributions(self):
+        features = ['age', 'education-num', 'hours-per-week']
+        
+        model_nimbusml = FastLinearBinaryClassifier(feature=features)
+        model_nimbusml.fit(train, label)
+        fc = model_nimbusml.get_feature_contributions(test)
+
+        # Save with pickle
+        pickle_filename = 'nimbusml_model.p'
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+        # Unpickle model
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        fc_pickle = model_nimbusml_pickle.get_feature_contributions(test)
+
+        assert ['FeatureContributions.' + feature in fc_pickle.columns
+                for feature in features]
+
+        assert [fc['FeatureContributions.' + feature].equals(
+            fc_pickle['FeatureContributions.' + feature])
+                for feature in features]
+
+        os.remove(pickle_filename)
 
     def test_pipeline_loaded_from_zip_has_feature_contributions(self):
         features = ['age', 'education-num', 'hours-per-week']
         
         model_nimbusml = Pipeline(
             steps=[FastLinearBinaryClassifier(feature=features)])
-
         model_nimbusml.fit(train, label)
+        fc = model_nimbusml.get_feature_contributions(test)
 
         # Save the model to zip
         model_filename = 'nimbusml_model.zip'
         model_nimbusml.save_model(model_filename)
-
         # Load the model from zip
         model_nimbusml_zip = Pipeline()
         model_nimbusml_zip.load_model(model_filename)
 
-        feature_contributions = model_nimbusml_zip.get_feature_contributions(
-            test, test_label)
+        fc_zip = model_nimbusml_zip.get_feature_contributions(test)
+        
+        assert ['FeatureContributions.' + feature in fc_zip.columns
+                for feature in features]
+
+        assert [fc['FeatureContributions.' + feature].equals(
+            fc_zip['FeatureContributions.' + feature])
+                for feature in features]
 
         os.remove(model_filename)
 
-        assert ['FeatureContributions.' + feature in feature_contributions.columns
+    def test_predictor_loaded_from_zip_has_feature_contributions(self):
+        features = ['age', 'education-num', 'hours-per-week']
+        
+        model_nimbusml = FastLinearBinaryClassifier(feature=features)
+        model_nimbusml.fit(train, label)
+        fc = model_nimbusml.get_feature_contributions(test)
+
+        # Save the model to zip
+        model_filename = 'nimbusml_model.zip'
+        model_nimbusml.save_model(model_filename)
+        # Load the model from zip
+        model_nimbusml_zip = Pipeline()
+        model_nimbusml_zip.load_model(model_filename)
+
+        fc_zip = model_nimbusml_zip.get_feature_contributions(test)
+        
+        assert ['FeatureContributions.' + feature in fc_zip.columns
                 for feature in features]
+
+        assert [fc['FeatureContributions.' + feature].equals(
+            fc_zip['FeatureContributions.' + feature])
+                for feature in features]
+
+        os.remove(model_filename)
 
 if __name__ == '__main__':
     unittest.main()
