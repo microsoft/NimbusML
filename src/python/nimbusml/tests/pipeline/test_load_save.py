@@ -7,7 +7,7 @@ import os
 import pickle
 import unittest
 
-from nimbusml import Pipeline
+from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
@@ -141,6 +141,30 @@ class TestLoadSave(unittest.TestCase):
 
         feature_contributions = model_nimbusml_pickle.get_feature_contributions(
             test, test_label)
+
+        assert ['FeatureContributions.' + feature in feature_contributions.columns
+                for feature in features]
+
+    def test_pipeline_loaded_from_zip_has_feature_contributions(self):
+        features = ['age', 'education-num', 'hours-per-week']
+        
+        model_nimbusml = Pipeline(
+            steps=[FastLinearBinaryClassifier(feature=features)])
+
+        model_nimbusml.fit(train, label)
+
+        # Save the model to zip
+        model_filename = 'nimbusml_model.zip'
+        model_nimbusml.save_model(model_filename)
+
+        # Load the model from zip
+        model_nimbusml_zip = Pipeline()
+        model_nimbusml_zip.load_model(model_filename)
+
+        feature_contributions = model_nimbusml_zip.get_feature_contributions(
+            test, test_label)
+
+        os.remove(model_filename)
 
         assert ['FeatureContributions.' + feature in feature_contributions.columns
                 for feature in features]
