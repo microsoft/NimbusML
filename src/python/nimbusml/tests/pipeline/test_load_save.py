@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import os
 import pickle
 import unittest
 
@@ -44,8 +45,14 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
 
         # Save with pickle
-        pickle.dump(model_nimbusml, open('nimbusml_model.p', 'wb'))
-        model_nimbusml_pickle = pickle.load(open("nimbusml_model.p", "rb"))
+        pickle_filename = 'nimbusml_model.p'
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
 
         score1 = model_nimbusml.predict(test).head(5)
         score2 = model_nimbusml_pickle.predict(test).head(5)
@@ -72,6 +79,8 @@ class TestLoadSave(unittest.TestCase):
             model_nimbusml_load.sum().sum(),
             decimal=2)
 
+        os.remove('model.nimbusml.m')
+
     def test_model_datastream(self):
         model_nimbusml = Pipeline(
             steps=[
@@ -85,8 +94,14 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
 
         # Save with pickle
-        pickle.dump(model_nimbusml, open('nimbusml_model.p', 'wb'))
-        model_nimbusml_pickle = pickle.load(open("nimbusml_model.p", "rb"))
+        pickle_filename = 'nimbusml_model.p'
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
 
         score1 = model_nimbusml.predict(test).head(5)
         score2 = model_nimbusml_pickle.predict(test).head(5)
@@ -118,6 +133,94 @@ class TestLoadSave(unittest.TestCase):
             metrics.sum().sum(),
             model_nimbusml_load.sum().sum(),
             decimal=2)
+
+        os.remove('model.nimbusml.m')
+
+    def test_pipeline_saves_complete_model_file_when_pickled(self):
+        model_nimbusml = Pipeline(
+            steps=[
+                ('cat',
+                 OneHotVectorizer() << categorical_columns),
+                ('linear',
+                 FastLinearBinaryClassifier(
+                     shuffle=False,
+                     number_of_threads=1))])
+
+        model_nimbusml.fit(train, label)
+        metrics, score = model_nimbusml.test(test, test_label, output_scores=True)
+
+        pickle_filename = 'nimbusml_model.p'
+
+        # Save with pickle
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(model_nimbusml, f)
+
+        # Remove the pipeline model from disk so
+        # that the unpickled pipeline is forced
+        # to get its model from the pickled file.
+        os.remove(model_nimbusml.model)
+
+        with open(pickle_filename, "rb") as f:
+            model_nimbusml_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
+
+        metrics_pickle, score_pickle = model_nimbusml_pickle.test(
+            test, test_label, output_scores=True)
+
+        assert_almost_equal(score.sum().sum(),
+                            score_pickle.sum().sum(),
+                            decimal=2)
+
+        assert_almost_equal(metrics.sum().sum(),
+                            metrics_pickle.sum().sum(),
+                            decimal=2)
+
+    def test_unfitted_pickled_pipeline_can_be_fit(self):
+        pipeline = Pipeline(
+            steps=[
+                ('cat',
+                 OneHotVectorizer() << categorical_columns),
+                ('linear',
+                 FastLinearBinaryClassifier(
+                     shuffle=False,
+                     number_of_threads=1))])
+
+        pipeline.fit(train, label)
+        metrics, score = pipeline.test(test, test_label, output_scores=True)
+
+        # Create a new unfitted pipeline
+        pipeline = Pipeline(
+            steps=[
+                ('cat',
+                 OneHotVectorizer() << categorical_columns),
+                ('linear',
+                 FastLinearBinaryClassifier(
+                     shuffle=False,
+                     number_of_threads=1))])
+
+        pickle_filename = 'nimbusml_model.p'
+
+        # Save with pickle
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(pipeline, f)
+
+        with open(pickle_filename, "rb") as f:
+            pipeline_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
+
+        pipeline_pickle.fit(train, label)
+        metrics_pickle, score_pickle = pipeline_pickle.test(
+            test, test_label, output_scores=True)
+
+        assert_almost_equal(score.sum().sum(),
+                            score_pickle.sum().sum(),
+                            decimal=2)
+
+        assert_almost_equal(metrics.sum().sum(),
+                            metrics_pickle.sum().sum(),
+                            decimal=2)
 
 
 if __name__ == '__main__':

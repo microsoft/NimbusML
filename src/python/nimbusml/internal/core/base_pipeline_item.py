@@ -375,6 +375,8 @@ class BasePipelineItem():
     def __getstate__(self):
         "Selects what to pickle."
         odict = self.__dict__.copy()
+        odict['export_version'] = 1
+
         if hasattr(self, 'model_') and \
                 self.model_ is not None and os.path.isfile(self.model_):
             with open(self.model_, "rb") as mfile:
@@ -387,8 +389,11 @@ class BasePipelineItem():
     def __setstate__(self, state):
         "Restore a pickled object."
         for k, v in state.items():
-            if k not in {'modelbytes', 'type'}:
+            if k not in {'modelbytes', 'type', 'export_version'}:
                 setattr(self, k, v)
+
+        # Note: modelbytes and type were
+        # added before export_version 1
         if 'modelbytes' in state:
             (fd, modelfile) = tempfile.mkstemp()
             fl = os.fdopen(fd, "wb")
