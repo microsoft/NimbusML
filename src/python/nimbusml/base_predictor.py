@@ -12,7 +12,6 @@ import os
 
 from sklearn.base import BaseEstimator
 from sklearn.utils.multiclass import unique_labels
-from sklearn.utils.validation import check_is_fitted
 
 from . import Pipeline
 from .internal.core.base_pipeline_item import BasePipelineItem
