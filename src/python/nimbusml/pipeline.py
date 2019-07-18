@@ -1696,13 +1696,8 @@ class Pipeline:
                     "ambiguous.")
 
     @trace
-    def get_feature_contributions(self, X, y=None,
-                 evaltype='auto', group_id=None,
-                 weight=None,
-                 top=10,
-                 bottom=10,
-                 verbose=0,
-                 as_binary_data_stream=False, **params):
+    def get_feature_contributions(self, X, top=10, bottom=10, verbose=0, 
+                                  as_binary_data_stream=False, **params):
         """
         Calculates observation level feature contributions. Returns dataframe
         with raw data, predictions, and feature contributiuons for each
@@ -1740,16 +1735,6 @@ class Pipeline:
 
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
-        :param y: {array-like [n_samples]}
-
-        :param evaltype: the evaluation type for the problem, can be {
-            'binary', 'multiclass', 'regression', 'cluster', 'anomaly',
-            'ranking'}. The default is 'auto'. If model is loaded using the
-            load_model() method, evaltype cannot be 'auto', and therefore
-            must be explicitly specified.
-        :param group_id: the column name for group_id for ranking problem
-        :param weight: the column name for the weight column for each
-            sample.
         :param top: the number of positive contributions with highest magnitude
             to report.
         :param bottom: The number of negative contributions with highest
@@ -1761,25 +1746,21 @@ class Pipeline:
 
         if not self._is_fitted:
             raise ValueError(
-                "Model is not fitted. Train or load a model before test("
-                ").")
+                "Model is not fitted. Train or load a model before test().")
 
-        #print(self.last_node.type)
-        if y is not None:
-            if len(self.steps) > 0:
-                last_node = self.last_node
-                if last_node.type == 'transform':
-                    raise ValueError(
-                        "Pipeline needs a trainer as last step for test()")
+        # BUG: If model is loaded from zip file, self.steps is an empty array
+        # so this condition will always evaluate to False. Consequently, this
+        # code will never check if the last node is a transform or not. In any
+        # case, self.last_node will not exist if a model is loaded from zip so
+        # we could not check for it outside of this condition.
+        if len(self.steps) > 0:
+            last_node = self.last_node
+            if last_node.type == 'transform':
+                raise ValueError(
+                    "Pipeline needs a trainer as last step for test()")
 
         X, y_temp, columns_renamed, feature_columns, label_column, \
-            schema, weights, weight_column = self._preprocess_X_y(
-                X, y, w=weight
-            )
-
-        if (not isinstance(y, (str, tuple))) or (
-                isinstance(X, DataFrame) and isinstance(y, (str, tuple))):
-            y = y_temp
+            schema, weights, weight_column = self._preprocess_X_y(X)
 
         all_nodes = []
         inputs = dict([('data', ''), ('predictor_model', self.model)])
@@ -1822,7 +1803,6 @@ class Pipeline:
         try:
             (out_model, out_data, out_metrics) = graph.run(
                 X=X,
-                y=y,
                 random_state=self.random_state,
                 model=self.model,
                 verbose=verbose,
