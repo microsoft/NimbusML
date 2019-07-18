@@ -1702,14 +1702,9 @@ class Pipeline:
         """
         Calculates observation level feature contributions. Returns dataframe
         with raw data, predictions, and feature contributiuons for each
-<<<<<<< HEAD
         prediction. Feature contributions are not supported for transforms, so
         make sure that the last step in a pipeline is a model. Feature
         contriutions are supported for the following models:
-=======
-        prediction. Observation level feature contriutions are supported for
-        the following models:
->>>>>>> 93a46fa251ec5fb0b19d162a21c8780fb75e659a
 
         * Regression:
 
@@ -1755,14 +1750,6 @@ class Pipeline:
             raise ValueError(
                 "Model is not fitted. Train or load a model before test().")
 
-<<<<<<< HEAD
-=======
-        # BUG: If model is loaded from zip file, self.steps is an empty array
-        # so this condition will always evaluate to False. Consequently, this
-        # code will never check if the last node is a transform or not. In any
-        # case, self.last_node will not exist if a model is loaded from zip so
-        # we could not check for it outside of this condition.
->>>>>>> 93a46fa251ec5fb0b19d162a21c8780fb75e659a
         if len(self.steps) > 0:
             last_node = self.last_node
             if last_node.type == 'transform':
