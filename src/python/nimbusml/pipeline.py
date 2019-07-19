@@ -41,6 +41,8 @@ from .internal.entrypoints.transforms_datasetscorer import \
     transforms_datasetscorer
 from .internal.entrypoints.transforms_featurecombiner import \
     transforms_featurecombiner
+from .internal.entrypoints.transforms_featurecontributioncalculationtransformer import \
+    transforms_featurecontributioncalculationtransformer
 from .internal.entrypoints.transforms_labelcolumnkeybooleanconverter \
     import \
     transforms_labelcolumnkeybooleanconverter
@@ -1695,6 +1697,120 @@ class Pipeline:
                     "ambiguous.")
 
     @trace
+    def get_feature_contributions(self, X, top=10, bottom=10, verbose=0, 
+                                  as_binary_data_stream=False, **params):
+        """
+        Calculates observation level feature contributions. Returns dataframe
+        with raw data, predictions, and feature contributiuons for each
+        prediction. Feature contributions are not supported for transforms, so
+        make sure that the last step in a pipeline is a model. Feature
+        contriutions are supported for the following models:
+
+        * Regression:
+
+            * OrdinaryLeastSquaresRegressor
+            * FastLinearRegressor
+            * OnlineGradientDescentRegressor
+            * PoissonRegressionRegressor
+            * GamRegressor
+            * LightGbmRegressor
+            * FastTreesRegressor
+            * FastForestRegressor
+            * FastTreesTweedieRegressor
+
+        * Binary Classification:
+
+            * AveragedPerceptronBinaryClassifier
+            * LinearSvmBinaryClassifier
+            * LogisticRegressionBinaryClassifier
+            * FastLinearBinaryClassifier
+            * SgdBinaryClassifier
+            * SymSgdBinaryClassifier
+            * GamBinaryClassifier
+            * FastForestBinaryClassifier
+            * FastTreesBinaryClassifier
+            * LightGbmBinaryClassifier
+
+        * Ranking:
+
+            * LightGbmRanker
+
+        :param X: {array-like [n_samples, n_features],
+            :py:class:`nimbusml.FileDataStream` }
+        :param top: the number of positive contributions with highest magnitude
+            to report.
+        :param bottom: The number of negative contributions with highest
+            magnitude to report.
+        :return: dataframe of containing the raw data, predicted label, score,
+            probabilities, and feature contributions.
+        """
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before test().")
+
+        if len(self.steps) > 0:
+            last_node = self.last_node
+            if last_node.type == 'transform':
+                raise ValueError(
+                    "Pipeline needs a trainer as last step for test()")
+
+        X, y_temp, columns_renamed, feature_columns, label_column, \
+            schema, weights, weight_column = self._preprocess_X_y(X)
+
+        all_nodes = []
+        inputs = dict([('data', ''), ('predictor_model', self.model)])
+        if isinstance(X, FileDataStream):
+            importtext_node = data_customtextloader(
+                input_file="$file",
+                data="$data",
+                custom_schema=schema.to_string(
+                    add_sep=True))
+            all_nodes = [importtext_node]
+            inputs = dict([('file', ''), ('predictor_model', self.model)])
+
+        score_node = transforms_datasetscorer(
+            data="$data",
+            predictor_model="$predictor_model",
+            scored_data="$scoredvectordata")
+
+        fcc_node = transforms_featurecontributioncalculationtransformer(
+            data="$scoredvectordata",
+            predictor_model="$predictor_model",
+            output_data="$output_data",
+            top=top,
+            bottom=bottom,
+            normalize=True)
+        
+        all_nodes.extend([score_node, fcc_node])
+
+        outputs = dict(output_data="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            as_binary_data_stream,
+            *all_nodes)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, out_data, out_metrics) = graph.run(
+                X=X,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                telemetry_info=telemetry_info,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        return out_data
+
+    @trace
     def _predict(self, X, y=None,
                  evaltype='auto', group_id=None,
                  weight=None,
@@ -1943,7 +2059,7 @@ class Pipeline:
             otherwise None
             in the returned tuple.
         :return: tuple (dataframe of evaluation metrics, dataframe of
-            scores). Is scores are
+            scores). If scores are
             required, set `output_scores`=True, otherwise None is
             returned by default.
         """
