@@ -15,6 +15,7 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from itertools import chain
+from shutil import copyfile
 from textwrap import wrap
 
 import six
@@ -446,6 +447,19 @@ class BasePipelineItem():
         if "columns" in pars:
             res["columns"] = pars
         return res
+
+    @trace
+    def save_model(self, dst):
+        """
+        Save model to file. For more details, please refer to
+        `load/save model </nimbusml/loadsavemodels>`_
+
+        :param dst: filename to be saved with
+
+        """
+        if self.model_ is not None:
+            if os.path.isfile(self.model_):
+                copyfile(self.model_, dst)
 
     def __getitem__(self, cols):
         """
