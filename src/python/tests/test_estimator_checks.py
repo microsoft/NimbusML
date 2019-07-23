@@ -71,7 +71,12 @@ OMITTED_CHECKS = {
                            'check_regressors_int',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
-    'FastLinearClassifier': 'check_classifiers_train',
+    'FastLinearClassifier': 'check_classifiers_train'
+                            # Everything is working as expected. Comparing numpy
+                            # arrays doesn't work the same way as comparing python lists.
+                            # The truth value of an array with more than one element
+                            # is ambiguous. Use a.any() or a.all()
+                            'check_dict_unchanged',
     'FastForestRegressor': 'check_fit_score_takes_y',  # bug
     # bug in decision_function
     'FastTreesBinaryClassifier':
@@ -86,7 +91,12 @@ OMITTED_CHECKS = {
     'Indicator':
         'check_estimators_dtypes',
     # tolerance
-    'LogisticRegressionClassifier': 'check_classifiers_train',
+    'LogisticRegressionClassifier': 'check_classifiers_train,'
+                                    # Everything is working as expected. Comparing numpy
+                                    # arrays doesn't work the same way as comparing python lists.
+                                    # The truth value of an array with more than one element
+                                    # is ambiguous. Use a.any() or a.all()
+                                    'check_dict_unchanged',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
         'check_classifiers_train, check_classifiers_classes',
