@@ -86,7 +86,7 @@ OMITTED_CHECKS = {
     'Indicator':
         'check_estimators_dtypes',
     # tolerance
-    'LogisticRegressionClassifier': 'check_classifiers_train,',
+    'LogisticRegressionClassifier': 'check_classifiers_train',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
         'check_classifiers_train, check_classifiers_classes',
