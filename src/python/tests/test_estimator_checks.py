@@ -71,12 +71,7 @@ OMITTED_CHECKS = {
                            'check_regressors_int',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
-    'FastLinearClassifier': 'check_classifiers_train'
-                            # Everything is working as expected. Comparing numpy
-                            # arrays doesn't work the same way as comparing python lists.
-                            # The truth value of an array with more than one element
-                            # is ambiguous. Use a.any() or a.all()
-                            'check_dict_unchanged',
+    'FastLinearClassifier': 'check_classifiers_train',
     'FastForestRegressor': 'check_fit_score_takes_y',  # bug
     # bug in decision_function
     'FastTreesBinaryClassifier':
@@ -91,12 +86,7 @@ OMITTED_CHECKS = {
     'Indicator':
         'check_estimators_dtypes',
     # tolerance
-    'LogisticRegressionClassifier': 'check_classifiers_train,'
-                                    # Everything is working as expected. Comparing numpy
-                                    # arrays doesn't work the same way as comparing python lists.
-                                    # The truth value of an array with more than one element
-                                    # is ambiguous. Use a.any() or a.all()
-                                    'check_dict_unchanged',
+    'LogisticRegressionClassifier': 'check_classifiers_train,',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
         'check_classifiers_train, check_classifiers_classes',
@@ -300,6 +290,14 @@ for e in epoints:
         estimator = estimator << 'F0'
 
     for check in _yield_all_checks(class_name, estimator):
+        # Skip check_dict_unchanged for estimators which
+        # update the classes_ attribute. For more details
+        # see https://github.com/microsoft/NimbusML/pull/200
+        if (check.__name__ == 'check_dict_unchanged') and \
+            (hasattr(estimator, 'predict_proba') or
+             hasattr(estimator, 'decision_function')):
+            continue
+
         if check.__name__ in OMITTED_CHECKS_ALWAYS:
             continue
         if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
