@@ -11,7 +11,6 @@ __all__ = ["BasePredictor"]
 import os
 
 from sklearn.base import BaseEstimator
-from sklearn.utils.multiclass import unique_labels
 
 from . import Pipeline
 from .internal.core.base_pipeline_item import BasePipelineItem
@@ -39,16 +38,6 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         :param y: array-like with shape=[n_samples]
         :return: self
         """
-        if y is not None and not isinstance(y, (
-                str, tuple)) and self.type in set(
-                ['classifier', 'anomaly']):
-            unique_classes = unique_labels(y)
-            if len(unique_classes) < 2:
-                raise ValueError(
-                    "Classifier can't train when only one class is "
-                    "present.")
-            self.classes_ = unique_classes
-
         # Clear cached summary since it should not
         # retain its value after a new call to fit
         if hasattr(self, 'model_summary_'):
