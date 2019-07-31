@@ -405,7 +405,7 @@ class Graph(EntryPoint):
                     self.inputs['input_data'] = X._filename
                 elif 'data' in self.inputs:
                     self.inputs['data'] = X._filename
-            elif not summary:
+            elif not (summary or params.get('no_input_data')):
                 raise RuntimeError(
                     "data should be a dataframe, FileDataStream or DataView")
 

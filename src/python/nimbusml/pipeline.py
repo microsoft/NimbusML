@@ -1864,8 +1864,11 @@ class Pipeline:
             scored_data="$scoredVectorData")
         all_nodes.extend([score_node])
 
-        if hasattr(self, 'steps') and len(self.steps) > 0 \
-                and self.last_node.type == 'classifier':
+        if hasattr(self, 'steps') \
+           and self.steps is not None \
+           and len(self.steps) > 0 \
+           and self.last_node.type == 'classifier':
+
             select_node = transforms_scorecolumnselector(
                 data="$scoredVectorData",
                 output_data="$scoreColumnsOnlyData", score_column="Score")
@@ -2476,3 +2479,77 @@ class Pipeline:
         else:
             raise ValueError(
                 "cannot generate score for {0}).".format(task_type))
+
+
+    # TODO: also allow support for stuff other than pipelines
+    @classmethod
+    def combine_models(cls, *pipelines, verbose=0, **params):
+        """
+        Combine the models of multiple pipelines
+        in to a single model.
+
+        :param pipelines: the fitted pipelines which
+                          contain the models to join.
+        """
+        if len(pipelines) == 0:
+            raise RuntimeError(
+                "At least one pipeline must be specified.")
+
+        for pipeline in pipelines:
+            if not pipeline._is_fitted:
+                raise RuntimeError(
+                    "Pipeline must be fitted before"
+                    "models can be combined.")
+
+        if len(pipelines) == 1:
+            return pipelines[0].model
+
+        start_time = time.time()
+
+        inputs = {'predictor_model': pipelines[-1].model}
+        transform_models = []
+
+        for index, pipeline in enumerate(pipelines[:-1], start=1):
+            var_name = 'transform_model' + str(index)
+            inputs[var_name] = pipeline.model
+            transform_models.append("$" + var_name)
+
+        combine_models_node = transforms_manyheterogeneousmodelcombiner(
+            transform_models=transform_models,
+            predictor_model='$predictor_model',
+            model='$output_model')
+
+        outputs = dict(output_model="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            False,
+            combine_models_node)
+
+        class_name = cls.__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, _, _) = graph.run(
+                X=None,
+                y=None,
+                random_state=None,
+                model=None,
+                verbose=verbose,
+                is_summary=False,
+                telemetry_info=telemetry_info,
+                no_input_data=True,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        pipeline = Pipeline(model=out_model)
+
+        # stop the clock
+        pipeline._run_time = time.time() - start_time
+        pipeline._write_csv_time = graph._write_csv_time
+
+        return pipeline
+
