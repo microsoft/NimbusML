@@ -50,6 +50,7 @@ phases:
   # Publish build artifacts
   - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Windows'), eq(parameters.name, 'Mac')) }}:
     - task: PublishBuildArtifacts@1
+      condition: always()
       displayName: Publish wheel file to VSTS artifacts
       inputs:
         pathToPublish: $(Build.SourcesDirectory)/target
