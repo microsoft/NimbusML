@@ -1503,7 +1503,12 @@ def parse_arg(argument, inout):
                                  "BoosterParameterFunction",
                                  "ParallelLightGBM",
                                  "AutoMlEngine",
-                                 "SearchTerminator"]:
+                                 "SearchTerminator",
+                                 "EnsembleSubsetSelector",
+                                 "EnsembleFeatureSelector",
+                                 "EnsembleMulticlassSubModelSelector",
+                                 "EnsembleMulticlassDiversityMeasure",
+                                 "EnsembleMulticlassOutputCombiner"]:
                 arg_obj = ComponentArg(argument, inout)
             elif componentKind in ["ClassificationLossFunction",
                                    "RegressionLossFunction",

@@ -1,3 +1,4 @@
+from .ensembleclassifier import EnsembleClassifier
 from .fastforestbinaryclassifier import FastForestBinaryClassifier
 from .fastforestregressor import FastForestRegressor
 from .fasttreesbinaryclassifier import FastTreesBinaryClassifier
@@ -11,6 +12,7 @@ from .lightgbmranker import LightGbmRanker
 from .lightgbmregressor import LightGbmRegressor
 
 __all__ = [
+    'EnsembleClassifier',
     'FastForestBinaryClassifier',
     'FastForestRegressor',
     'FastTreesBinaryClassifier',

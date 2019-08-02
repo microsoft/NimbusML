@@ -244,6 +244,14 @@
       "Decision_Function" : true
     },
     {
+      "Name": "Trainers.EnsembleClassification",
+      "NewName": "EnsembleClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
+      "Decision_Function" : true
+    },
+    {
       "Name": "Transforms.ApproximateBootstrapSampler",
       "NewName": "BootstrapSampler",
       "Module": "preprocessing.filter",
@@ -774,6 +782,51 @@
           "Name": "goss",
           "NewName": "Goss",
           "Module": "ensemble.booster",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleSubsetSelector",
+      "Components": [
+        {
+          "Name": "AllInstanceSelector",
+          "NewName": "AllInstanceSelector",
+          "Desc": "temp",
+          "Module": "ensemble.subset_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BootstrapSelector",
+          "NewName": "BootstrapSelector",
+          "Desc": "temp",
+          "Module": "ensemble.subset_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "RandomPartitionSelector",
+          "NewName": "RandomPartitionSelector",
+          "Desc": "temp",
+          "Module": "ensemble.subset_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleFeatureSelector",
+      "Components": [
+        {
+          "Name": "AllFeatureSelector",
+          "NewName": "AllFeatureSelector",
+          "Desc": "temp",
+          "Module": "ensemble.feature_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "RandomFeatureSelector",
+          "NewName": "RandomFeatureSelector",
+          "Desc": "temp",
+          "Module": "ensemble.feature_selector",
           "Type": "Component"
         }
       ]

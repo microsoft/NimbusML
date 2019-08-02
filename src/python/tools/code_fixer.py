@@ -20,6 +20,11 @@ NG_1 = """from ...base_transform import BaseTransform"""
 NG_1_correct = """from ...base_transform import BaseTransform
 from .extractor import Ngram"""
 
+EC_1 = """from ..base_predictor import BasePredictor"""
+EC_1_correct = """from ..base_predictor import BasePredictor
+from .subset_selector import BootstrapSelector
+from .feature_selector import AllFeatureSelector"""
+
 FM = \
     """import numbers
 from sklearn.base import ClassifierMixin
@@ -91,7 +96,12 @@ signature_fixes = {
     'FactorizationMachineBinaryClassifier': (FM, FM_correct),
     'OneHotHashVectorizer': (OHE, OHE_correct),
     'CustomStopWordsRemover': (cust_stop, cust_stop_correct),
-    'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct)
+    'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct),
+    'EnsembleClassifier': [(EC_1, EC_1_correct),
+                           ('sampling_type = bootstrap_selector',
+                            'sampling_type = BootstrapSelector'),
+                            ("feature_selector = {'Name': 'AllFeatureSelector'}",
+                             "feature_selector = AllFeatureSelector()")]
 }
 
 
