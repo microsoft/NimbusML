@@ -18,6 +18,7 @@ from pandas import Categorical
 from pandas import DataFrame, Series
 from scipy.sparse import csr_matrix
 from sklearn.utils.validation import check_X_y, check_array
+from sklearn.utils.multiclass import unique_labels
 
 from .internal.core.base_pipeline_item import BasePipelineItem
 from .internal.entrypoints.data_customtextloader import \
@@ -1111,6 +1112,8 @@ class Pipeline:
                         i, n.__class__.__name__), TrainedWarning)
                 break
 
+        self._extract_classes(y)
+
         graph, X, y, weights, start_time, schema, telemetry_info, \
             learner_features, _, max_slots = self._fit_graph(
                 X, y, verbose, **params)
@@ -1923,6 +1926,24 @@ class Pipeline:
         self._write_csv_time = graph._write_csv_time
         return out_data, out_metrics
 
+    def _extract_classes(self, y):
+        if ((len(self.steps) > 0) and
+            (self.last_node.type in ['classifier', 'anomaly']) and
+            (y is not None) and
+            (not isinstance(y, (str, tuple)))):
+
+            unique_classes = unique_labels(y)
+            if len(unique_classes) < 2:
+                raise ValueError(
+                    "Classifier can't train when only one class is "
+                    "present.")
+            self._add_classes(unique_classes)
+
+    def _extract_classes_from_headers(self, headers):
+        classes = [x.replace('Score.', '') for x in headers]
+        classes = np.array(classes).astype(self.last_node.classes_.dtype)
+        self._add_classes(classes)
+
     def _add_classes(self, classes):
         # Create classes_ attribute similar to scikit
         # Add both to pipeline and ending classifier
@@ -1974,11 +1995,7 @@ class Pipeline:
         # for multiclass, scores are probabilities
         pcols = [i for i in scores.columns if i.startswith('Score.')]
         if len(pcols) > 0:
-            # [todo]: this is a bug, predict_proba should not change
-            # internal state of pipeline.
-            # test check_dict_unchanged() detects that, commenting line
-            # for now
-            # self._add_classes([x.replace('Score.', '') for x in pcols])
+            self._extract_classes_from_headers(pcols)
             return scores.loc[:, pcols].values
 
         raise ValueError(
@@ -2019,7 +2036,7 @@ class Pipeline:
 
         # for multiclass with n_classes > 2
         if len(scols) > 2:
-            self._add_classes([x.replace('Score.', '') for x in scols])
+            self._extract_classes_from_headers(scols)
             return scores.loc[:, scols].values
 
         raise ValueError(

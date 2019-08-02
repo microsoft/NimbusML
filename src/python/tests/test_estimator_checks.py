@@ -290,6 +290,14 @@ for e in epoints:
         estimator = estimator << 'F0'
 
     for check in _yield_all_checks(class_name, estimator):
+        # Skip check_dict_unchanged for estimators which
+        # update the classes_ attribute. For more details
+        # see https://github.com/microsoft/NimbusML/pull/200
+        if (check.__name__ == 'check_dict_unchanged') and \
+            (hasattr(estimator, 'predict_proba') or
+             hasattr(estimator, 'decision_function')):
+            continue
+
         if check.__name__ in OMITTED_CHECKS_ALWAYS:
             continue
         if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:

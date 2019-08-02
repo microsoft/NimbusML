@@ -956,8 +956,10 @@ class BasePipelineItem():
         """
         if hasattr(node, '_columns') and node._columns is not None:
             self << node._columns
-            setattr(node, node._attr_input,
-                    getattr(node, node._attr_output))
+
+            if hasattr(node, '_attr_output'):
+                setattr(node, node._attr_input,
+                        getattr(node, node._attr_output))
         else:
             # No columns specified. The user plans to fit the pipeline as
             # fit(X, y).
