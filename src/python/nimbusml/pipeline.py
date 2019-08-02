@@ -1833,10 +1833,11 @@ class Pipeline:
             scored_data="$scoredVectorData")
         all_nodes.extend([score_node])
 
-        if hasattr(self, 'steps') \
-           and self.steps is not None \
-           and len(self.steps) > 0 \
-           and self.last_node.type == 'classifier':
+        if (evaltype in ['binary', 'multiclass']) or \
+           (hasattr(self, 'steps')
+            and self.steps is not None
+            and len(self.steps) > 0
+            and self.last_node.type == 'classifier'):
 
             select_node = transforms_scorecolumnselector(
                 data="$scoredVectorData",
