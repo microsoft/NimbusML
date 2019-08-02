@@ -1508,7 +1508,10 @@ def parse_arg(argument, inout):
                                  "EnsembleFeatureSelector",
                                  "EnsembleMulticlassSubModelSelector",
                                  "EnsembleMulticlassDiversityMeasure",
-                                 "EnsembleMulticlassOutputCombiner"]:
+                                 "EnsembleMulticlassOutputCombiner",
+                                 "EnsembleRegressionSubModelSelector",
+                                 "EnsembleRegressionDiversityMeasure",
+                                 "EnsembleRegressionOutputCombiner"]:
                 arg_obj = ComponentArg(argument, inout)
             elif componentKind in ["ClassificationLossFunction",
                                    "RegressionLossFunction",

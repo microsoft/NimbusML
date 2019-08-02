@@ -20,8 +20,8 @@ NG_1 = """from ...base_transform import BaseTransform"""
 NG_1_correct = """from ...base_transform import BaseTransform
 from .extractor import Ngram"""
 
-EC_1 = """from ..base_predictor import BasePredictor"""
-EC_1_correct = """from ..base_predictor import BasePredictor
+ensemble = """from ..base_predictor import BasePredictor"""
+ensemble_correct = """from ..base_predictor import BasePredictor
 from .subset_selector import BootstrapSelector
 from .feature_selector import AllFeatureSelector"""
 
@@ -97,7 +97,12 @@ signature_fixes = {
     'OneHotHashVectorizer': (OHE, OHE_correct),
     'CustomStopWordsRemover': (cust_stop, cust_stop_correct),
     'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct),
-    'EnsembleClassifier': [(EC_1, EC_1_correct),
+    'EnsembleClassifier': [(ensemble, ensemble_correct),
+                           ('sampling_type = bootstrap_selector',
+                            'sampling_type = BootstrapSelector'),
+                            ("feature_selector = {'Name': 'AllFeatureSelector'}",
+                             "feature_selector = AllFeatureSelector()")],
+    'EnsembleRegressor': [(ensemble, ensemble_correct),
                            ('sampling_type = bootstrap_selector',
                             'sampling_type = BootstrapSelector'),
                             ("feature_selector = {'Name': 'AllFeatureSelector'}",

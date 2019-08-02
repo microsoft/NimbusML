@@ -252,6 +252,12 @@
       "Decision_Function" : true
     },
     {
+      "Name": "Trainers.EnsembleRegression",
+      "NewName": "EnsembleRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor"
+    },
+    {
       "Name": "Transforms.ApproximateBootstrapSampler",
       "NewName": "BootstrapSampler",
       "Module": "preprocessing.filter",
