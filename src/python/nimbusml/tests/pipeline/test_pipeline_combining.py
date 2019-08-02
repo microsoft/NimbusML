@@ -21,9 +21,9 @@ train_data = {'c0': ['a', 'b', 'a', 'b'],
 train_df = pd.DataFrame(train_data).astype({'c1': np.float64,
                                             'c2': np.float64})
 
-test_data = {'c0': ['a', 'b'],
-             'c1': [1.5, 2.3],
-             'c2': [2.2, 2.9]}
+test_data = {'c0': ['a', 'b', 'b'],
+             'c1': [1.5, 2.3, 3.7],
+             'c2': [2.2, 4.9, 2.7]}
 test_df = pd.DataFrame(test_data).astype({'c1': np.float64,
                                           'c2': np.float64})
 
@@ -211,7 +211,7 @@ class TestPipelineCombining(unittest.TestCase):
         predictor_pipeline_2.load_model(predictor_pipeline_1.model)
 
         # Combine the newly created Pipelines in to one Pipeline
-        # and use the it to get predictions given the test data.
+        # and use it to get predictions given the test data.
         combined_pipeline = Pipeline.combine_models(transform_pipeline_2,
                                                     predictor_pipeline_2)
         result_2 = combined_pipeline.predict(test_df)
@@ -222,9 +222,105 @@ class TestPipelineCombining(unittest.TestCase):
         self.assertEqual(result_1.loc[1, 'Score'], result_2.loc[1, 'Score'])
 
 
-    @unittest.skip("")
-    def test_same_schema_at_join_point(self):
-        pass
+    def test_passing_in_a_single_transform_returns_new_pipeline(self):
+        transform = OneHotVectorizer() << 'c0'
+        transform.fit(train_df)
+
+        combined_pipeline = Pipeline.combine_models(transform,
+                                                    contains_predictor=False)
+        result = combined_pipeline.transform(test_df)
+
+        self.assertEqual(len(result), 3)
+        self.assertEqual(len(result.columns), 4)
+        self.assertTrue(result.columns[0].startswith('c0.'))
+        self.assertTrue(result.columns[1].startswith('c0.'))
+        self.assertTrue(isinstance(combined_pipeline, Pipeline))
+
+
+    def test_passing_in_a_single_predictor_returns_new_pipeline(self):
+        train_dropped_df = train_df.drop(['c0'], axis=1)
+        test_dropped_df = test_df.drop(['c0'], axis=1)
+
+        predictor = OnlineGradientDescentRegressor(label='c2', feature=['c1'])
+        predictor.fit(train_dropped_df)
+        result_1 = predictor.predict(test_dropped_df)
+
+        combined_pipeline = Pipeline.combine_models(predictor)
+        result_2 = combined_pipeline.predict(test_dropped_df)
+
+        self.assertEqual(result_1[0], result_2.loc[0, 'Score'])
+        self.assertEqual(result_1[1], result_2.loc[1, 'Score'])
+        self.assertTrue(isinstance(combined_pipeline, Pipeline))
+
+
+    def test_passing_in_a_single_pipeline_returns_new_pipeline(self):
+        pipeline = Pipeline([
+            OneHotVectorizer() << 'c0',
+            OnlineGradientDescentRegressor(label='c2', feature=['c0', 'c1'])
+        ])
+        pipeline.fit(train_df)
+        result_1 = pipeline.predict(test_df)
+
+        combined_pipeline = Pipeline.combine_models(pipeline)
+        result_2 = combined_pipeline.predict(test_df)
+
+        self.assertEqual(result_1.loc[0, 'Score'], result_2.loc[0, 'Score'])
+        self.assertEqual(result_1.loc[1, 'Score'], result_2.loc[1, 'Score'])
+        self.assertTrue(isinstance(combined_pipeline, Pipeline))
+
+
+    def test_combine_transform_and_transform(self):
+        transform_1 = RangeFilter(min=0.0, max=4.5) << 'c2'
+        df = transform_1.fit_transform(train_df)
+
+        transform_2 = OneHotVectorizer() << 'c0'
+        transform_2.fit(df)
+
+        df = transform_1.transform(test_df)
+        result_1 = transform_2.transform(df)
+
+        combined_pipeline = Pipeline.combine_models(transform_1,
+                                                    transform_2,
+                                                    contains_predictor=False)
+        result_2 = combined_pipeline.transform(test_df)
+
+        self.assertTrue(result_1.equals(result_2))
+
+
+    def test_combine_transform_and_predictor(self):
+        transform = OneHotVectorizer() << 'c0'
+        df = transform.fit_transform(train_df, as_binary_data_stream=True)
+
+        predictor = OnlineGradientDescentRegressor(label='c2', feature=['c0', 'c1'])
+        predictor.fit(df)
+
+        df = transform.transform(test_df, as_binary_data_stream=True)
+        result_1 = predictor.predict(df)
+
+        combined_pipeline = Pipeline.combine_models(transform, predictor)
+        result_2 = combined_pipeline.predict(test_df)
+
+        self.assertEqual(result_1[0], result_2.loc[0, 'Score'])
+        self.assertEqual(result_1[1], result_2.loc[1, 'Score'])
+
+
+    def test_combine_transform_and_pipeline(self):
+        transform = RangeFilter(min=0.0, max=4.5) << 'c2'
+        df = transform.fit_transform(train_df, as_binary_data_stream=True)
+
+        pipeline = Pipeline([
+            OneHotVectorizer() << 'c0',
+            OnlineGradientDescentRegressor(label='c2', feature=['c0', 'c1'])
+        ])
+        pipeline.fit(df)
+
+        df = transform.transform(test_df, as_binary_data_stream=True)
+        result_1 = pipeline.predict(df)
+
+        combined_pipeline = Pipeline.combine_models(transform, pipeline)
+        result_2 = combined_pipeline.predict(test_df)
+
+        self.assertTrue(result_1.equals(result_2))
 
 
 if __name__ == '__main__':

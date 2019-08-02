@@ -2481,43 +2481,73 @@ class Pipeline:
                 "cannot generate score for {0}).".format(task_type))
 
 
-    # TODO: also allow support for stuff other than pipelines
     @classmethod
-    def combine_models(cls, *pipelines, verbose=0, **params):
+    def combine_models(cls,
+                       *items,
+                       contains_predictor=True,
+                       verbose=0,
+                       **params):
         """
-        Combine the models of multiple pipelines
-        in to a single model.
+        Combine the models of multiple pipelines, transforms
+        and/or predictors in to a single model. The models are
+        combined in the order they are seen.
 
-        :param pipelines: the fitted pipelines which
-                          contain the models to join.
+        :param items: the fitted pipelines, transforms and/or
+            predictors which contain the models to join.
+
+        :param contains_predictor: Set to `True` if the
+            last item contains or is a predictor. Set to
+            `False` if `items` only contains transforms.
+
+        :return: A new Pipeline which is backed by a model that
+            is the combination of all the models passed in
+            through `items`.
         """
-        if len(pipelines) == 0:
+        if len(items) == 0:
             raise RuntimeError(
-                "At least one pipeline must be specified.")
+                'At least one transform, predictor'
+                'or pipeline must be specified.')
 
-        for pipeline in pipelines:
-            if not pipeline._is_fitted:
+        for item in items:
+            if not item._is_fitted:
                 raise RuntimeError(
-                    "Pipeline must be fitted before"
-                    "models can be combined.")
+                    'Item must be fitted before'
+                    'models can be combined.')
 
-        if len(pipelines) == 1:
-            return pipelines[0].model
+        get_model = lambda x: x.model if hasattr(x, 'model') else x.model_
+
+        if len(items) == 1:
+            return Pipeline(model=get_model(items[0]))
 
         start_time = time.time()
 
-        inputs = {'predictor_model': pipelines[-1].model}
+        nodes = []
+        inputs = {}
         transform_models = []
 
-        for index, pipeline in enumerate(pipelines[:-1], start=1):
+        for index, item in enumerate(items[:-1], start=1):
             var_name = 'transform_model' + str(index)
-            inputs[var_name] = pipeline.model
+            inputs[var_name] = get_model(item)
             transform_models.append("$" + var_name)
 
-        combine_models_node = transforms_manyheterogeneousmodelcombiner(
-            transform_models=transform_models,
-            predictor_model='$predictor_model',
-            model='$output_model')
+        if contains_predictor:
+            inputs['predictor_model'] = get_model(items[-1])
+
+            combine_models_node = transforms_manyheterogeneousmodelcombiner(
+                transform_models=transform_models,
+                predictor_model='$predictor_model',
+                model='$output_model')
+            nodes.append(combine_models_node)
+
+        else:
+            var_name = 'transform_model' + str(len(items))
+            inputs[var_name] = get_model(items[-1])
+            transform_models.append("$" + var_name)
+
+            combine_models_node = transforms_modelcombiner(
+                models=transform_models,
+                output_model='$output_model')
+            nodes.append(combine_models_node)
 
         outputs = dict(output_model="")
 
@@ -2525,7 +2555,7 @@ class Pipeline:
             inputs,
             outputs,
             False,
-            combine_models_node)
+            *nodes)
 
         class_name = cls.__name__
         method_name = inspect.currentframe().f_code.co_name
