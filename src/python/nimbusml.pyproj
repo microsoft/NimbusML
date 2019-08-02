@@ -12,7 +12,7 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|MyPy37</InterpreterId>
+    <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <StartupFile>nimbusml\tests\dprep\test_dprep.py</StartupFile>
@@ -1171,7 +1171,6 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|VisualStudio|MinePy37" />
-    <InterpreterReference Include="Global|VisualStudio|MyPy37" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
