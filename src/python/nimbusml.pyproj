@@ -58,6 +58,12 @@
     <Compile Include="nimbusml\ensemble\output_combiner\regressormedian.py" />
     <Compile Include="nimbusml\ensemble\output_combiner\regressorstacking.py" />
     <Compile Include="nimbusml\ensemble\output_combiner\__init__.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\classifierallselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\classifierbestdiverseselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\classifierbestperformanceselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\regressorallselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\regressorbestdiverseselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\regressorbestperformanceselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\allinstanceselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\bootstrapselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\randompartitionselector.py" />
@@ -246,6 +252,12 @@
     <Compile Include="nimbusml\internal\core\ensemble\output_combiner\regressormedian.py" />
     <Compile Include="nimbusml\internal\core\ensemble\output_combiner\regressorstacking.py" />
     <Compile Include="nimbusml\internal\core\ensemble\output_combiner\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\classifierallselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\classifierbestdiverseselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\classifierbestperformanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorallselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorbestdiverseselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorbestperformanceselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\subset_selector\allinstanceselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\subset_selector\bootstrapselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\subset_selector\randompartitionselector.py" />
@@ -798,6 +810,7 @@
     <Folder Include="nimbusml\ensemble\booster\" />
     <Folder Include="nimbusml\ensemble\feature_selector\" />
     <Folder Include="nimbusml\ensemble\output_combiner\" />
+    <Folder Include="nimbusml\ensemble\sub_model_selector\" />
     <Folder Include="nimbusml\ensemble\subset_selector\" />
     <Folder Include="nimbusml\examples\" />
     <Folder Include="nimbusml\examples\examples_from_dataframe\" />
@@ -816,6 +829,7 @@
     <Folder Include="nimbusml\internal\core\ensemble\booster\" />
     <Folder Include="nimbusml\internal\core\ensemble\feature_selector\" />
     <Folder Include="nimbusml\internal\core\ensemble\output_combiner\" />
+    <Folder Include="nimbusml\internal\core\ensemble\sub_model_selector\" />
     <Folder Include="nimbusml\internal\core\ensemble\subset_selector\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\categorical\" />

@@ -904,6 +904,62 @@
       ]
     },
     {
+      "Kind": "EnsembleMulticlassSubModelSelector",
+      "Components": [
+        {
+          "Name": "AllSelectorMultiClass",
+          "NewName": "ClassifierAllSelector",
+          "Desc": "Combines all the models to create the output. This is the default submodel selector.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestDiverseSelectorMultiClass",
+          "NewName": "ClassifierBestDiverseSelector",
+          "Desc": "Combines the models whose predictions are as diverse as possible.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestPerformanceSelectorMultiClass",
+          "NewName": "ClassifierBestPerformanceSelector",
+          "Desc": "Combines only the models with the best performance.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleRegressionSubModelSelector",
+      "Components": [
+        {
+          "Name": "AllSelector",
+          "NewName": "RegressorAllSelector",
+          "Desc": "Combines all the models to create the output. This is the default submodel selector.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestDiverseSelectorRegression",
+          "NewName": "RegressorBestDiverseSelector",
+          "Desc": "Combines the models whose predictions are as diverse as possible.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestPerformanceRegressionSelector",
+          "NewName": "RegressorBestPerformanceSelector",
+          "Desc": "Combines only the models with the best performance.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleRegressionSubModelSelector",
+      "Components": []
+    },
+    {
       "Kind": "NgramExtractor",
       "Components": [
         {
