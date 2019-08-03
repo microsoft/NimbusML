@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from nimbusml.datasets import get_dataset
 from nimbusml.ensemble import EnsembleClassifier
+from nimbusml.ensemble.output_combiner import ClassifierVoting
+from nimbusml.ensemble.sub_model_selector import ClassifierBestPerformanceSelector
 from sklearn.model_selection import train_test_split
 
 # use 'iris' data set to create test and train data
@@ -17,7 +19,9 @@ df.drop(['Species'], inplace=True, axis=1)
 
 X_train, X_test, y_train, y_test = \
     train_test_split(df.loc[:, df.columns != 'Label'], df['Label'])
-lr = EnsembleClassifier(num_models=3).fit(X_train, y_train)
+lr = EnsembleClassifier(num_models=3,
+                        sub_model_selector_type=ClassifierBestPerformanceSelector(),
+                        output_combiner=ClassifierVoting()).fit(X_train, y_train)
 
 scores = lr.predict(X_test)
 scores = pd.to_numeric(scores)

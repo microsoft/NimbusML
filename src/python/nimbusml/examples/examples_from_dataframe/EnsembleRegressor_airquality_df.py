@@ -3,6 +3,8 @@
 import numpy as np
 from nimbusml.datasets import get_dataset
 from nimbusml.ensemble import EnsembleRegressor
+from nimbusml.ensemble.output_combiner import RegressorMedian
+from nimbusml.ensemble.sub_model_selector import RegressorBestPerformanceSelector
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
@@ -19,9 +21,12 @@ X_train, X_test, y_train, y_test = train_test_split(
     df.loc[:, df.columns != 'Ozone'], df['Ozone'])
 
 # train a model and score
-flinear = EnsembleRegressor(num_models=3).fit(X_train, y_train)
-scores = flinear.predict(X_test)
+linear = EnsembleRegressor(
+    num_models=3,
+    sub_model_selector_type=RegressorBestPerformanceSelector(),
+    output_combiner=RegressorMedian()).fit(X_train, y_train)
+scores = linear.predict(X_test)
 
 # evaluate the model
 print('R-squared fit:', r2_score(y_test, scores, ))
-# R-squared fit: 0.12144964995862884
+# R-squared fit: 0.11879293242417299

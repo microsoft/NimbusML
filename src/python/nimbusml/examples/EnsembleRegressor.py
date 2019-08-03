@@ -4,6 +4,8 @@ from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.ensemble import EnsembleRegressor
+from nimbusml.ensemble.output_combiner import RegressorMedian
+from nimbusml.ensemble.sub_model_selector import RegressorBestPerformanceSelector
 
 # data input (as a FileDataStream)
 path = get_dataset('infert').as_filepath()
@@ -19,7 +21,9 @@ print(data.head())
 # define the training pipeline
 pipeline = Pipeline([
     OneHotVectorizer(columns={'edu': 'education'}),
-    EnsembleRegressor(feature=['induced', 'edu'], label='age', num_models=3)
+    EnsembleRegressor(feature=['induced', 'edu'], label='age', num_models=3,
+                      sub_model_selector_type=RegressorBestPerformanceSelector(),
+                      output_combiner=RegressorMedian())
 ])
 
 # train, predict, and evaluate
@@ -29,14 +33,14 @@ metrics, predictions = pipeline.fit(data).test(data, output_scores=True)
 # print predictions
 print(predictions.head())
 #        Score
-# 0  26.046741
-# 1  26.046741
-# 2  29.225840
-# 3  29.225840
-# 4  33.849384
+# 0  24.243475
+# 1  24.243475
+# 2  24.978357
+# 3  24.978357
+# 4  33.913101
 
 # print evaluation metrics
 print(metrics)
-#    L1(avg)    L2(avg)  RMS(avg)  Loss-fn(avg)  R Squared
-# 0  4.69884  33.346123   5.77461     33.346124  -0.214011
+#     L1(avg)    L2(avg)  RMS(avg)  Loss-fn(avg)  R Squared
+# 0  4.498702  31.549082  5.616857     31.549082  -0.148587
 

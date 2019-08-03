@@ -5,6 +5,7 @@ from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.ensemble import EnsembleClassifier
 from nimbusml.ensemble.output_combiner import ClassifierVoting
+from nimbusml.ensemble.sub_model_selector import ClassifierBestPerformanceSelector
 
 # data input (as a FileDataStream)
 path = get_dataset('infert').as_filepath()
@@ -24,6 +25,7 @@ pipeline = Pipeline([
     EnsembleClassifier(feature=['age', 'edu', 'parity'],
                        label='induced',
                        num_models=3,
+                       sub_model_selector_type=ClassifierBestPerformanceSelector(),
                        output_combiner=ClassifierVoting())
 ])
 
@@ -33,16 +35,16 @@ metrics, predictions = pipeline.fit(data).test(data, output_scores=True)
 
 # print predictions
 print(predictions.head())
-#    PredictedLabel   Score.0   Score.1   Score.2
-# 0               2  0.202721  0.186598  0.628115
-# 1               0  0.716737  0.190289  0.092974
-# 2               2  0.201026  0.185602  0.624761
-# 3               0  0.423328  0.235074  0.365649
-# 4               0  0.577509  0.220827  0.201664
+#    PredictedLabel  Score.0  Score.1  Score.2
+# 0               2      0.0      0.0      1.0
+# 1               0      1.0      0.0      0.0
+# 2               2      0.0      0.0      1.0
+# 3               0      1.0      0.0      0.0
+# 4               0      1.0      0.0      0.0
 
 # print evaluation metrics
 print(metrics)
-#    Accuracy(micro-avg)  Accuracy(macro-avg)  Log-loss  ...  (class 0)  ...
-# 0             0.612903             0.417519  0.846467  ...   0.504007  ...
+#    Accuracy(micro-avg)  Accuracy(macro-avg)   Log-loss  ...  (class 0)  ...
+# 0             0.612903             0.417519  13.369849  ...   1.449179  ...
 # (class 1)  (class 2)
-#  1.244033   1.439364
+# 29.967468  28.937894
