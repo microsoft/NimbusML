@@ -17,7 +17,7 @@ from ....utils.utils import trace
 class AllFeatureSelector(Component):
     """
     **Description**
-        temp
+        Selects all features for each trainer in the ensemble
 
     :param params: Additional arguments sent to compute engine.
 

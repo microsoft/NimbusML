@@ -18,7 +18,7 @@ from ...internal.utils.utils import trace
 class RandomFeatureSelector(core):
     """
     **Description**
-        temp
+        Selects a random subset of features for each trainer in the ensemble
 
     :param features_selection_proportion: The proportion of features to be
         selected. The range is 0.0-1.0.

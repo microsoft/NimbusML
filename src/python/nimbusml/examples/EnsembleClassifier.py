@@ -4,6 +4,7 @@ from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.ensemble import EnsembleClassifier
+from nimbusml.ensemble.output_combiner import ClassifierVoting
 
 # data input (as a FileDataStream)
 path = get_dataset('infert').as_filepath()
@@ -22,7 +23,8 @@ pipeline = Pipeline([
     OneHotVectorizer(columns={'edu': 'education'}),
     EnsembleClassifier(feature=['age', 'edu', 'parity'],
                        label='induced',
-                       num_models=3)
+                       num_models=3,
+                       output_combiner=ClassifierVoting())
 ])
 
 # train, predict, and evaluate

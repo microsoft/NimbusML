@@ -26,27 +26,43 @@ class EnsembleClassifier(
         BasePipelineItem,
         DefaultSignatureWithRoles):
     """
+
     **Description**
-        Train multiclass ensemble.
+    Train a multi class ensemble model
 
-    :param sampling_type: Sampling Type.
+    .. remarks::
 
-    :param num_models: Number of models per batch. If not specified, will
-        default to 50 if there is only one base predictor, or the number of
-        base predictors otherwise.
 
-    :param sub_model_selector_type: Algorithm to prune the base learners for
-        selective Ensemble.
+
+    :param sampling_type: .
+
+    :param num_models: .
+
+    :param sub_model_selector_type: :output_combiner:.
 
     :param output_combiner: Output combiner.
 
-    :param normalize: If ``Auto``, the choice to normalize depends on the
-        preference declared by the algorithm. This is the default choice. If
-        ``No``, no normalization is performed. If ``Yes``, normalization always
-        performed. If ``Warn``, if normalization is needed by the algorithm, a
-        warning message is displayed but normalization is not performed. If
-        normalization is performed, a ``MaxMin`` normalizer is used. This
-        normalizer preserves sparsity by mapping zero to zero.
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling ensures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MinMax`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
 
     :param caching: Whether trainer should cache input training data.
 
@@ -61,6 +77,18 @@ class EnsembleClassifier(
 
     :param params: Additional arguments sent to compute engine.
 
+    .. seealso::
+        :py:class:`EnsembleRegressor
+        <nimbusml.ensemble.EnsembleRegressor>`,
+        :py:class:`EnsembleClassifier
+        <nimbusml.ensemble.EnsembleClassifier>`
+
+
+    .. index:: models, linear, SDCA, stochastic, classification, regression
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/FEnsembleClassifier.py
+              :language: python
     """
 
     @trace

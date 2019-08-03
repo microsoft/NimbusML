@@ -19,7 +19,7 @@ from ....utils.utils import trace, try_set
 class RandomPartitionSelector(Component):
     """
     **Description**
-        temp
+        Randomly partitions the rows for each trainer in the ensemble
 
     :param feature_selector: The Feature selector.
 
