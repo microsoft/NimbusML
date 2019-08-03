@@ -2452,11 +2452,7 @@ class Pipeline:
 
 
     @classmethod
-    def combine_models(cls,
-                       *items,
-                       contains_predictor=True,
-                       verbose=0,
-                       **params):
+    def combine_models(cls, *items, **params):
         """
         Combine the models of multiple pipelines, transforms
         and/or predictors in to a single model. The models are
@@ -2468,6 +2464,7 @@ class Pipeline:
         :param contains_predictor: Set to `True` if the
             last item contains or is a predictor. Set to
             `False` if `items` only contains transforms.
+            The default is True.
 
         :return: A new Pipeline which is backed by a model that
             is the combination of all the models passed in
@@ -2483,6 +2480,9 @@ class Pipeline:
                 raise RuntimeError(
                     'Item must be fitted before'
                     'models can be combined.')
+
+        contains_predictor = params.get('contains_predictor', True)
+        verbose = params.get('verbose', 0)
 
         get_model = lambda x: x.model if hasattr(x, 'model') else x.model_
 
