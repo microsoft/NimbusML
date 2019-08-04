@@ -15,7 +15,7 @@
 
   <ItemGroup>
       <FilesToSign Include="$(OutDir)**/DotNetBridge.dll">
-        <Authenticode>Microsoft</Authenticode>
+        <Authenticode>Microsoft400</Authenticode>
       </FilesToSign>
   </ItemGroup>
 
