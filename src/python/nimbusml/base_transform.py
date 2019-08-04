@@ -8,6 +8,8 @@ Base class for all the transforms.
 
 __all__ = ["BaseTransform"]
 
+import os
+
 from sklearn.base import BaseEstimator
 
 from . import Pipeline
@@ -70,6 +72,15 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
         self.model_ = pipeline.model
         set_shape(self, X)
         return self
+
+    @property
+    def _is_fitted(self):
+        """
+        Tells if the transform was trained.
+        """
+        return (hasattr(self, 'model_') and
+                self.model_ and
+                os.path.isfile(self.model_))
 
     @trace
     def transform(self, X, as_binary_data_stream=False, **params):
