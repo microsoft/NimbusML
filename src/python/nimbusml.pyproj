@@ -899,6 +899,8 @@
     <Content Include="docs\docstrings\Binner.txt" />
     <Content Include="docs\docstrings\BootstrapSampler.txt" />
     <Content Include="docs\docstrings\CharTokenizer.txt" />
+    <Content Include="docs\docstrings\ClassifierBestPerformanceSelector.txt" />
+    <Content Include="docs\docstrings\ClassifierWeightedAverage.txt" />
     <Content Include="docs\docstrings\ColumnConcatenator.txt" />
     <Content Include="docs\docstrings\ColumnDropper.txt" />
     <Content Include="docs\docstrings\ColumnDuplicator.txt" />
@@ -909,6 +911,7 @@
     <Content Include="docs\docstrings\DnnFeaturizer.txt" />
     <Content Include="docs\docstrings\DssmFeaturizer.txt" />
     <Content Include="docs\docstrings\EnsembleClassifier.txt" />
+    <Content Include="docs\docstrings\EnsembleRegressor.txt" />
     <Content Include="docs\docstrings\ExponentialAverage.txt" />
     <Content Include="docs\docstrings\Expression.txt" />
     <Content Include="docs\docstrings\FactorizationMachineBinaryClassifier.txt" />
@@ -975,6 +978,7 @@
     <Content Include="docs\docstrings\Pvalue.txt" />
     <Content Include="docs\docstrings\RangeFilter.txt" />
     <Content Include="docs\docstrings\RbfKernel.txt" />
+    <Content Include="docs\docstrings\RegressorBestPerformanceSelector.txt" />
     <Content Include="docs\docstrings\Resizer.txt" />
     <Content Include="docs\docstrings\Sentiment.txt" />
     <Content Include="docs\docstrings\SgdBinaryClassifier.txt" />

@@ -956,8 +956,28 @@
       ]
     },
     {
-      "Kind": "EnsembleRegressionSubModelSelector",
-      "Components": []
+      "Kind": "EnsembleMulticlassDiversityMeasure",
+      "Components": [
+        {
+          "Name": "MultiDisagreementDiversityMeasure",
+          "NewName": "ClassifierDisagreementDiversityMeasure"
+          "Desc": "A measure of disagreement in predictions between a pair of classifiers, averaged over all pairs",
+          "Module": "ensemble.sub_model_selector.diversity_measure",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleRegressionDiversityMeasure",
+      "Components": [
+        {
+          "Name": "RegressionDisagreementDiversityMeasure",
+          "NewName": "RegressorDisagreementDiversityMeasure"
+          "Desc": "A measure of absolute value of disagreement in predictions between a pair of regressors, averaged over all pairs",
+          "Module": "ensemble.sub_model_selector.diversity_measure",
+          "Type": "Component"
+        }
+      ]
     },
     {
       "Kind": "NgramExtractor",
