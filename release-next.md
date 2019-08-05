@@ -9,7 +9,7 @@
 
 - **Feature Contributions**
 
-  [PR#196](https://github.com/microsoft/NimbusML/pull/196) added support for observation level feature contributions. Exposes an API that provides scores for how much each feature influenced a particular prediction, thereby allowing users to inspect which features were most important in making the prediction.
+  [PR#196](https://github.com/microsoft/NimbusML/pull/196) Added support for observation level feature contributions. Exposes an API that provides scores for how much each feature influenced a particular prediction, thereby allowing users to inspect which features were most important in making the prediction.
 
 - **Add `classes_` to Pipeline**
 
@@ -32,6 +32,18 @@
 
    [PR#181](https://github.com/microsoft/NimbusML/pull/181) Added support for
    dataflow objects as a datasource for pipeline training/testing.
+   
+- **Ensemble Training**
+
+  [PR#207](https://github.com/microsoft/NimbusML/pull/207) Enabled training of
+  Ensemble models by adding `nimbusml.ensemble.EnsembleRegressor` and 
+  `nimbusml.ensemble.EnsembleClassifier`. Added components needed
+  to create ensemble models as new modules in `nimbusml.ensemble`. These
+  components are passed as arguments to the ensemble trainers.
+  - Preprocessing components for training multiple models to ensemble in 
+  `nimbusml.ensemble.subset_selector` and  `nimbusml.ensemble.feature_selector`.
+  - Post training components to create the ensemble from the trained models in
+  `nimbusml.ensemble.sub_model_selector` and `nimbusml.ensemble.output_combiner`.
 
 ## **Bug Fixes**
 
