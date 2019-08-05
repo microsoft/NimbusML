@@ -28,7 +28,17 @@
    [PR#208](https://github.com/microsoft/NimbusML/pull/208) Add support for
    combining models from transforms, predictors and pipelines in to one model.
 
+- **Azureml-Dataprep integration**
+
+   [PR#181](https://github.com/microsoft/NimbusML/pull/181) Added support for
+   dataflow objects as a datasource for pipeline training/testing.
+
 ## **Bug Fixes**
+
+- **Fixed memory leak**
+
+   The [PR#184](https://github.com/microsoft/NimbusML/pull/184) fixed potentially
+   large memory leak when transforming pandas dataframe.
 
 - **Remove Stored References To `X` and `y`**
 
