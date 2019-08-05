@@ -356,7 +356,6 @@ class TestPipelineCombining(unittest.TestCase):
 
         result_2 = result_2['PredictedLabel'].astype(np.float64)
         self.assertTrue(result_1.equals(result_2))
-        self.assertTrue(result_2.equals(y))
 
 
     def test_combine_with_classifier_trained_with_joined_X_and_y(self):
@@ -380,7 +379,6 @@ class TestPipelineCombining(unittest.TestCase):
 
         result_2 = result_2['PredictedLabel'].astype(np.float64)
         self.assertTrue(result_1.equals(result_2))
-        self.assertTrue(result_1.equals(infert_df['case']))
 
 
     def test_combine_with_classifier_trained_with_filedatastream(self):
