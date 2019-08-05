@@ -33,6 +33,10 @@
    [PR#181](https://github.com/microsoft/NimbusML/pull/181) Added support for
    dataflow objects as a datasource for pipeline training/testing.
    
+- **Linear SVM Binary Classifier**
+  [PR#180](https://github.com/microsoft/NimbusML/pull/180) Added
+  `LinearSvmBinaryClassifier` in `nimbusml.linear_mode`.
+   
 - **Ensemble Training**
 
   [PR#207](https://github.com/microsoft/NimbusML/pull/207) Enabled training of
@@ -75,6 +79,10 @@ None.
 ## **Documentation and Samples**
 
 [Feature Contributions Example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/PipelineWithFeatureContributions.py)
+
+LinearSvmBinaryClassifier Examples:
+- [FileDataStream example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/LinearSvmBinaryClassifier.py)
+- [DataFrame example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/examples_from_dataframe/LinearSvmBinaryClassifier_df.py)
   
 
 ## **Remarks**
