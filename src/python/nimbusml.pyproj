@@ -652,6 +652,8 @@
     <Compile Include="nimbusml\tests\decomposition\__init__.py" />
     <Compile Include="nimbusml\tests\dprep\test_dprep.py" />
     <Compile Include="nimbusml\tests\dprep\__init__.py" />
+    <Compile Include="nimbusml\tests\ensemble\test_ensembleclassifier.py" />
+    <Compile Include="nimbusml\tests\ensemble\test_ensembleregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreesbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreestweedieregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_gambinaryclassifier.py" />
