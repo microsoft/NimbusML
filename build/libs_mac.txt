@@ -6,7 +6,7 @@ libMklImports.dylib
 libSymSgdNative.dylib
 lib_lightgbm.dylib
 libtensorflow.dylib
-libtensorflow_framework.dylib
+libtensorflow_framework.1.dylib
 System.Drawing.Common.dll
 TensorFlow.NET.dll
 Microsoft.DataPrep.dll
