@@ -1,7 +1,7 @@
 Google.Protobuf.dll
 Newtonsoft.Json.dll
 CpuMathNative.dll
-FactorizationMachineNative.dll
+MatrixFactorizationNative.dll
 FastTreeNative.dll
 LdaNative.dll
 lib_lightgbm.dll
