@@ -302,24 +302,13 @@ def write_api(entrypoint, kind="node", pkg_path=None, overwrite=False):
     dots = "..."
     if "." in class_dir:
         dots = "...."
-    class_imports = [
+    imports = [
         arg.get_import(
             prefix=(
                     "%sentrypoints." %
                     dots)) for arg in visible_args if
         arg.get_import() is not None]
-    class_imports = '\n'.join(class_imports)
-
-    dots = "..."
-    if "." in class_dir:
-        dots = "...."
-    core_class_imports = [
-        arg.get_import(
-            prefix=(
-                    "%sentrypoints." %
-                    dots)) for arg in visible_args if
-        arg.get_import() is not None]
-    core_class_imports = '\n'.join(core_class_imports)
+    imports = '\n'.join(imports)
 
     # write the class to a file
     py_path = module_to_path(class_dir, pkg_path)
@@ -377,7 +366,7 @@ def write_api(entrypoint, kind="node", pkg_path=None, overwrite=False):
         class_file,
         class_dir,
         banner,
-        core_class_imports,
+        imports,
         class_args,
         core_args_map,
         entrypoint_args_map,
@@ -1503,7 +1492,15 @@ def parse_arg(argument, inout):
                                  "BoosterParameterFunction",
                                  "ParallelLightGBM",
                                  "AutoMlEngine",
-                                 "SearchTerminator"]:
+                                 "SearchTerminator",
+                                 "EnsembleSubsetSelector",
+                                 "EnsembleFeatureSelector",
+                                 "EnsembleMulticlassSubModelSelector",
+                                 "EnsembleMulticlassDiversityMeasure",
+                                 "EnsembleMulticlassOutputCombiner",
+                                 "EnsembleRegressionSubModelSelector",
+                                 "EnsembleRegressionDiversityMeasure",
+                                 "EnsembleRegressionOutputCombiner"]:
                 arg_obj = ComponentArg(argument, inout)
             elif componentKind in ["ClassificationLossFunction",
                                    "RegressionLossFunction",
