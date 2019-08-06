@@ -3,9 +3,11 @@ libCpuMathNative.dylib
 libFastTreeNative.dylib
 libLdaNative.dylib
 libMklImports.dylib
+libMklProxyNative.dylib
 libSymSgdNative.dylib
 lib_lightgbm.dylib
 libtensorflow.dylib
+libonnxruntime.dylib
 libtensorflow_framework.1.dylib
 System.Drawing.Common.dll
 TensorFlow.NET.dll

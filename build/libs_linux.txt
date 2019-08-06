@@ -3,10 +3,12 @@ libCpuMathNative.so
 libFastTreeNative.so
 libLdaNative.so
 libMklImports.so
+libMklProxyNative.so
 libSymSgdNative.so
 lib_lightgbm.so
 libtensorflow.so
 libtensorflow_framework.so.1
+libonnxruntime.so
 System.Drawing.Common.dll
 TensorFlow.NET.dll
 Microsoft.DataPrep.dll
