@@ -1,6 +1,5 @@
 Newtonsoft.Json.dll
 libCpuMathNative.so
-libMatrixFactorizationNative.so
 libFastTreeNative.so
 libLdaNative.so
 libMklImports.so

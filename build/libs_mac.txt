@@ -1,6 +1,5 @@
 Newtonsoft.Json.dll
 libCpuMathNative.dylib
-libMatrixFactorizationNative.dylib
 libFastTreeNative.dylib
 libLdaNative.dylib
 libMklImports.dylib
