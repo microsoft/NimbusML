@@ -25,7 +25,7 @@ def trainers_lightgbmranker(
         caching='Auto',
         custom_gains=[0, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095],
         sigmoid=0.5,
-        evaluation_metric='Default',
+        evaluation_metric='NormalizedDiscountedCumulativeGain',
         maximum_bin_count_per_feature=255,
         verbose=False,
         silent=True,
