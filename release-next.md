@@ -9,7 +9,11 @@
 
 - **Feature Contributions**
 
-  [PR#196](https://github.com/microsoft/NimbusML/pull/196) Added support for observation level feature contributions. Exposes an API that provides scores for how much each feature influenced a particular prediction, thereby allowing users to inspect which features were most important in making the prediction.
+  [PR#196](https://github.com/microsoft/NimbusML/pull/196) Added support for
+  observation level feature contributions. Exposes an API
+  `Pipeline.get_feature_contributions()` that provides scores for how much
+  each feature influenced a particular prediction, thereby allowing users to
+  inspect which features were most important in making the prediction.
 
 - **Add `classes_` to Pipeline**
 
@@ -35,7 +39,7 @@
    
 - **Linear SVM Binary Classifier**
   [PR#180](https://github.com/microsoft/NimbusML/pull/180) Added
-  `LinearSvmBinaryClassifier` in `nimbusml.linear_mode`.
+  `LinearSvmBinaryClassifier` in `nimbusml.linear_model`.
    
 - **Ensemble Training**
 
