@@ -22,38 +22,111 @@ from .subset_selector import BootstrapSelector
 
 class EnsembleRegressor(core, BasePredictor, RegressorMixin):
     """
+
     **Description**
-        Train regression ensemble.
+    Train a regression ensemble model
+
+    .. remarks::
+        An Ensemble is a set of models, each trained on a sample of the
+        training set. Training an ensemble instead of a single model can boost
+        the accuracy of a given algorithm.
+
+        The quality of an Ensemble depends on two factors; Accuracy and
+        Diversity. Ensemble can be analogous to Teamwork. If every team member
+        is diverse and competent, then the team can perform very well. Here a
+        team member is a base learner and the team is the Ensemble. In the case
+        of regression ensembles, the base learner is an
+        ``OnlineGradientDescentRegressor``.
+
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
     :param label: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param sampling_type: Sampling Type.
+    :param sampling_type: Specifies how the training samples are created:
 
-    :param num_models: Number of models per batch. If not specified, will
-        default to 50 if there is only one base predictor, or the number of
-        base predictors otherwise.
+        * ``BootstrapSelector``: takes a bootstrap sample of the training set
+          (sampling with replacement). This is the default method.
+        * ``RandomPartitionSelector``: randomly partitions the training set
+          into subsets.
+        * ``AllSelector``: every model is trained using the whole training set.
 
-    :param sub_model_selector_type: Algorithm to prune the base learners for
-        selective Ensemble.
+        Each of these Subset Selectors has two options for selecting features:
+        * ``AllFeatureSelector``: selects all the features. This is the default
+          method.
+        * ``RandomFeatureSelector``: selects a random subset of the features
+          for each model.
+
+    :param num_models: indicates the number models to train, i.e. the number of
+        subsets of the training set to sample. The default value is 50. If
+        batches are used then this indicates the number of models per batch.
+
+    :param sub_model_selector_type: Determines the efficient set of models the
+    ``output_combiner`` uses, and removes the least significant models. This is
+    used to improve the accuracy and reduce the model size. This is also called
+    pruning.
+
+        * ``RegressorAllSelector``: does not perform any pruning and selects
+          all models in the ensemble to combine to create the output. This is
+          the default submodel selector.
+        * ``RegressorBestDiverseSelector``: combines models whose predictions
+          are as diverse as possible. Currently, only diagreement diversity is
+          supported.
+        * ``RegressorBestPerformanceSelector``: combines only the models with
+          the best performance according to the specified metric. The metric
+          can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or
+          ``"RSquared"``.
+
+
+    :output_combiner: indicates how to combine the predictions of the different
+        models into a single prediction. There are five available output
+        combiners for clasification:
+
+        * ``RegressorAverage``: computes the average of the scores produced by
+          the trained models.
+        * ``RegressorMedian``: computes the median of the scores produced by
+          the trained models.
+        * ``RegressorStacking``: computes the output by training a model on a
+          training set where each instance is a vector containing the outputs
+          of the different models on a training instance, and the instance's
+          label.
 
     :param output_combiner: Output combiner.
 
-    :param normalize: If ``Auto``, the choice to normalize depends on the
-        preference declared by the algorithm. This is the default choice. If
-        ``No``, no normalization is performed. If ``Yes``, normalization always
-        performed. If ``Warn``, if normalization is needed by the algorithm, a
-        warning message is displayed but normalization is not performed. If
-        normalization is performed, a ``MaxMin`` normalizer is used. This
-        normalizer preserves sparsity by mapping zero to zero.
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling ensures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MinMax`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
 
     :param caching: Whether trainer should cache input training data.
 
     :param train_parallel: All the base learners will run asynchronously if the
         value is true.
 
-    :param batch_size: Batch size.
+    :param batch_size: train the models iteratively on subsets of the training
+        set of this size. When using this option, it is assumed that the
+        training set is randomized enough so that every batch is a random
+        sample of instances. The default value is -1, indicating using the
+        whole training set. If the value is changed to an integer greater than
+        0, the number of trained models is the number of batches (the size of
+        the training set divided by the batch size), times ``num_models``.
 
     :param show_metrics: True, if metrics for each model need to be evaluated
         and shown in comparison table. This is done by using validation set if
@@ -61,6 +134,43 @@ class EnsembleRegressor(core, BasePredictor, RegressorMixin):
 
     :param params: Additional arguments sent to compute engine.
 
+    .. seealso::
+        * Subset selectors:
+        :py:class:`AllInstanceSelector
+        <nimbusml.ensemble.subset_selector.AllInstanceSelector>`,
+        :py:class:`BootstrapSelector
+        <nimbusml.ensemble.subset_selector.BootstrapSelector>`,
+        :py:class:`RandomPartitionSelector
+        <nimbusml.ensemble.subset_selector.RandomPartitionSelector>`
+
+        * Feature selectors:
+        :py:class:`AllFeatureSelector
+        <nimbusml.ensemble.feature_selector.AllFeatureSelector>`,
+        :py:class:`RandomFeatureSelector
+        <nimbusml.ensemble.feature_selector.RandomFeatureSelector>`
+
+        * Submodel selectors:
+        :py:class:`RegressorAllSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorAllSelector>`,
+        :py:class:`RegressorBestDiverseSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorBestDiverseSelector>`,
+        :py:class:`RegressorBestPerformanceSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorBestPerformanceSelector>`
+
+        * Output combiners:
+        :py:class:`RegressorAverage
+        <nimbusml.ensemble.output_combiner.RegressorAverage>`,
+        :py:class:`RegressorMedian
+        <nimbusml.ensemble.output_combiner.RegressorMedian>`,
+        :py:class:`RegressorStacking
+        <nimbusml.ensemble.output_combiner.RegressorStacking>`
+
+
+    .. index:: models, ensemble, classification
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/EnsembleRegressor.py
+              :language: python
     """
 
     @trace

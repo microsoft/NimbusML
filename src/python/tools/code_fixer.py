@@ -25,6 +25,12 @@ ensemble_correct = """from ..base_predictor import BasePredictor
 from .subset_selector import BootstrapSelector
 from .feature_selector import AllFeatureSelector"""
 
+diverse_selector = """from ...internal.utils.utils import trace"""
+classifier_diverse_selector = """from ...internal.utils.utils import trace
+from .diversity_measure import ClassifierDisagreement"""
+regressor_diverse_selector = """from ...internal.utils.utils import trace
+from .diversity_measure import RegressorDisagreement"""
+
 FM = \
     """import numbers
 from sklearn.base import ClassifierMixin
@@ -106,7 +112,15 @@ signature_fixes = {
                            ('sampling_type = bootstrap_selector',
                             'sampling_type = BootstrapSelector'),
                             ("feature_selector = {'Name': 'AllFeatureSelector'}",
-                             "feature_selector = AllFeatureSelector()")]
+                             "feature_selector = AllFeatureSelector()")],
+    'ClassifierBestDiverseSelector': [(diverse_selector,
+                                         classifier_diverse_selector),
+                                        ('diversity_metric_type = None',
+                                         'diversity_metric_type = ClassifierDisagreement()')],
+    'RegressorBestDiverseSelector': [(diverse_selector,
+                                         regressor_diverse_selector),
+                                        ('diversity_metric_type = None',
+                                         'diversity_metric_type = RegressorDisagreement()')]
 }
 
 

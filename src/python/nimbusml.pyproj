@@ -12,7 +12,7 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
+    <InterpreterId>Global|VisualStudio|MyPy37</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <StartupFile>nimbusml\tests\dprep\test_dprep.py</StartupFile>
@@ -65,6 +65,11 @@
     <Compile Include="nimbusml\ensemble\sub_model_selector\regressorbestdiverseselector.py" />
     <Compile Include="nimbusml\ensemble\sub_model_selector\regressorbestperformanceselector.py" />
     <Compile Include="nimbusml\ensemble\sub_model_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\classifierdisagreement.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\regressordisagreement.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="nimbusml\ensemble\subset_selector\allinstanceselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\bootstrapselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\randompartitionselector.py" />
@@ -260,6 +265,9 @@
     <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorbestdiverseselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorbestperformanceselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\classifierdisagreement.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\regressordisagreement.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\__init__.py" />
     <Compile Include="nimbusml\internal\core\ensemble\subset_selector\allinstanceselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\subset_selector\bootstrapselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\subset_selector\randompartitionselector.py" />
@@ -813,6 +821,7 @@
     <Folder Include="nimbusml\ensemble\feature_selector\" />
     <Folder Include="nimbusml\ensemble\output_combiner\" />
     <Folder Include="nimbusml\ensemble\sub_model_selector\" />
+    <Folder Include="nimbusml\ensemble\sub_model_selector\diversity_measure\" />
     <Folder Include="nimbusml\ensemble\subset_selector\" />
     <Folder Include="nimbusml\examples\" />
     <Folder Include="nimbusml\examples\examples_from_dataframe\" />
@@ -832,6 +841,7 @@
     <Folder Include="nimbusml\internal\core\ensemble\feature_selector\" />
     <Folder Include="nimbusml\internal\core\ensemble\output_combiner\" />
     <Folder Include="nimbusml\internal\core\ensemble\sub_model_selector\" />
+    <Folder Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\" />
     <Folder Include="nimbusml\internal\core\ensemble\subset_selector\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\categorical\" />
@@ -1214,6 +1224,7 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|VisualStudio|MinePy37" />
+    <InterpreterReference Include="Global|VisualStudio|MyPy37" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

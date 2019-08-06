@@ -13,6 +13,7 @@ __all__ = ["RegressorBestDiverseSelector"]
 from ...internal.core.ensemble.sub_model_selector.regressorbestdiverseselector import \
     RegressorBestDiverseSelector as core
 from ...internal.utils.utils import trace
+from .diversity_measure import RegressorDisagreement
 
 
 class RegressorBestDiverseSelector(core):
@@ -37,7 +38,7 @@ class RegressorBestDiverseSelector(core):
     @trace
     def __init__(
             self,
-            diversity_metric_type=None,
+            diversity_metric_type=RegressorDisagreement(),
             learners_selection_proportion=0.5,
             validation_dataset_proportion=0.3,
             **params):

@@ -13,6 +13,7 @@ __all__ = ["ClassifierBestDiverseSelector"]
 from ...internal.core.ensemble.sub_model_selector.classifierbestdiverseselector import \
     ClassifierBestDiverseSelector as core
 from ...internal.utils.utils import trace
+from .diversity_measure import ClassifierDisagreement
 
 
 class ClassifierBestDiverseSelector(core):
@@ -37,7 +38,7 @@ class ClassifierBestDiverseSelector(core):
     @trace
     def __init__(
             self,
-            diversity_metric_type=None,
+            diversity_metric_type=ClassifierDisagreement(),
             learners_selection_proportion=0.5,
             validation_dataset_proportion=0.3,
             **params):

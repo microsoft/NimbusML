@@ -960,7 +960,7 @@
       "Components": [
         {
           "Name": "MultiDisagreementDiversityMeasure",
-          "NewName": "ClassifierDisagreementDiversityMeasure"
+          "NewName": "ClassifierDisagreement",
           "Desc": "A measure of disagreement in predictions between a pair of classifiers, averaged over all pairs",
           "Module": "ensemble.sub_model_selector.diversity_measure",
           "Type": "Component"
@@ -972,7 +972,7 @@
       "Components": [
         {
           "Name": "RegressionDisagreementDiversityMeasure",
-          "NewName": "RegressorDisagreementDiversityMeasure"
+          "NewName": "RegressorDisagreement",
           "Desc": "A measure of absolute value of disagreement in predictions between a pair of regressors, averaged over all pairs",
           "Module": "ensemble.sub_model_selector.diversity_measure",
           "Type": "Component"

@@ -27,18 +27,75 @@ class EnsembleClassifier(core, BasePredictor, ClassifierMixin):
     Train a multi class ensemble model
 
     .. remarks::
+        An Ensemble is a set of models, each trained on a sample of the
+        training set. Training an ensemble instead of a single model can boost
+        the accuracy of a given algorithm.
 
+        The quality of an Ensemble depends on two factors; Accuracy and
+        Diversity. Ensemble can be analogous to Teamwork. If every team member
+        is diverse and competent, then the team can perform very well. Here a
+        team member is a base learner and the team is the Ensemble. In the case
+        of classification ensembles, the base learner is a
+        ``LogisticRegressionClassifier``.
 
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
 
     :param label: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param sampling_type: .
+    :param sampling_type: Specifies how the training samples are created:
 
-    :param num_models: .
+        * ``BootstrapSelector``: takes a bootstrap sample of the training set
+          (sampling with replacement). This is the default method.
+        * ``RandomPartitionSelector``: randomly partitions the training set
+          into subsets.
+        * ``AllSelector``: every model is trained using the whole training set.
 
-    :param sub_model_selector_type: :output_combiner:.
+        Each of these Subset Selectors has two options for selecting features:
+        * ``AllFeatureSelector``: selects all the features. This is the default
+          method.
+        * ``RandomFeatureSelector``: selects a random subset of the features
+          for each model.
+
+    :param num_models: indicates the number models to train, i.e. the number of
+        subsets of the training set to sample. The default value is 50. If
+        batches are used then this indicates the number of models per batch.
+
+    :param sub_model_selector_type: Determines the efficient set of models the
+    ``output_combiner`` uses, and removes the least significant models. This is
+    used to improve the accuracy and reduce the model size. This is also called
+    pruning.
+
+        * ``ClassifierAllSelector``: does not perform any pruning and selects
+          all models in the ensemble to combine to create the output. This is
+          the default submodel selector.
+        * ``ClassifierBestDiverseSelector``: combines models whose predictions
+          are as diverse as possible. Currently, only diagreement diversity is
+          supported.
+        * ``ClassifierBestPerformanceSelector``: combines only the models with
+          the best performance according some metric. The metric can be
+          ``"AccuracyMicro"``, ``"AccuracyMacro"``,    ``"LogLoss"``,
+          or ``"LogLossReduction"``.
+
+
+    :output_combiner: indicates how to combine the predictions of the different
+        models into a single prediction. There are five available output
+        combiners for clasification:
+
+        * ``ClassifierAverage``: computes the average of the scores produced by
+          the trained models.
+        * ``ClassifierMedian``: computes the median of the scores produced by
+          the trained models.
+        * ``ClassifierStacking``: computes the output by training a model on a
+          training set where each instance is a vector containing the outputs
+          of the different models on a training instance, and the instance's
+          label.
+        * ``ClassifierVoting``: computes the fraction of positive predictions
+          for each class from all the trained models, and outputs the class
+          with the largest number.
+        * ``ClassifierWeightedAverage``: computes the weighted average of the
+        outputs of the trained models, weighted by the specified metric. The
+          metric can be ``"AccuracyMicroAvg"`` or ``"AccuracyMacroAvg"``.
 
     :param output_combiner: Output combiner.
 
@@ -69,7 +126,13 @@ class EnsembleClassifier(core, BasePredictor, ClassifierMixin):
     :param train_parallel: All the base learners will run asynchronously if the
         value is true.
 
-    :param batch_size: Batch size.
+    :param batch_size: train the models iteratively on subsets of the training
+        set of this size. When using this option, it is assumed that the
+        training set is randomized enough so that every batch is a random
+        sample of instances. The default value is -1, indicating using the
+        whole training set. If the value is changed to an integer greater than
+        0, the number of trained models is the number of batches (the size of
+        the training set divided by the batch size), times ``num_models``.
 
     :param show_metrics: True, if metrics for each model need to be evaluated
         and shown in comparison table. This is done by using validation set if
@@ -78,16 +141,45 @@ class EnsembleClassifier(core, BasePredictor, ClassifierMixin):
     :param params: Additional arguments sent to compute engine.
 
     .. seealso::
-        :py:class:`EnsembleRegressor
-        <nimbusml.ensemble.EnsembleRegressor>`,
-        :py:class:`EnsembleClassifier
-        <nimbusml.ensemble.EnsembleClassifier>`
+        * Subset selectors:
+        :py:class:`AllInstanceSelector
+        <nimbusml.ensemble.subset_selector.AllInstanceSelector>`,
+        :py:class:`BootstrapSelector
+        <nimbusml.ensemble.subset_selector.BootstrapSelector>`,
+        :py:class:`RandomPartitionSelector
+        <nimbusml.ensemble.subset_selector.RandomPartitionSelector>`
+
+        * Feature selectors:
+        :py:class:`AllFeatureSelector
+        <nimbusml.ensemble.feature_selector.AllFeatureSelector>`,
+        :py:class:`RandomFeatureSelector
+        <nimbusml.ensemble.feature_selector.RandomFeatureSelector>`
+
+        * Submodel selectors:
+        :py:class:`ClassifierAllSelector
+        <nimbusml.ensemble.sub_model_selector.ClassifierAllSelector>`,
+        :py:class:`ClassifierBestDiverseSelector
+        <nimbusml.ensemble.sub_model_selector.ClassifierBestDiverseSelector>`,
+        :py:class:`ClassifierBestPerformanceSelector
+        <nimbusml.ensemble.sub_model_selector.ClassifierBestPerformanceSelector>`
+
+        * Output combiners:
+        :py:class:`ClassifierAverage
+        <nimbusml.ensemble.output_combiner.ClassifierAverage>`,
+        :py:class:`ClassifierMedian
+        <nimbusml.ensemble.output_combiner.ClassifierMedian>`,
+        :py:class:`ClassifierStacking
+        <nimbusml.ensemble.output_combiner.ClassifierStacking>`,
+        :py:class:`ClassifierVoting
+        <nimbusml.ensemble.output_combiner.ClassifierVoting>`,
+        :py:class:`ClassifierWeightedAverage
+        <nimbusml.ensemble.output_combiner.ClassifierWeightedAverage>`
 
 
-    .. index:: models, linear, SDCA, stochastic, classification, regression
+    .. index:: models, ensemble, classification
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/FEnsembleClassifier.py
+       .. literalinclude:: /../nimbusml/examples/EnsembleClassifier.py
               :language: python
     """
 

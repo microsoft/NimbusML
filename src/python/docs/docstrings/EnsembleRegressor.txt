@@ -43,7 +43,8 @@
 	      all models in the ensemble to combine to create the output. This is
 		  the default submodel selector.
 		* ``RegressorBestDiverseSelector``: combines models whose predictions
-		  are as diverse as possible.
+		  are as diverse as possible. Currently, only diagreement diversity is
+		  supported.
 		* ``RegressorBestPerformanceSelector``: combines only the models with
 		  the best performance according to the specified metric. The metric
 		  can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or

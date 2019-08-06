@@ -17,11 +17,14 @@ from ....utils.utils import trace, try_set
 
 class RegressorBestPerformanceSelector(Component):
     """
-    **Description**
-        Combines only the models with the best performance.
 
-    :param metric_name: The metric type to be used to find the best
-        performance.
+    **Description**
+    Computes the weighted average of the outputs of the trained models
+
+
+    :param metric_name: the metric type to be used to find the weights for
+        each model. Can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or
+        ``"RSquared"``.
 
     :param learners_selection_proportion: The proportion of best base learners
         to be selected. The range is 0.0-1.0.
@@ -32,6 +35,30 @@ class RegressorBestPerformanceSelector(Component):
 
     :param params: Additional arguments sent to compute engine.
 
+    .. seealso::
+        :py:class:`EnsembleRegressor
+        <nimbusml.ensemble.EnsembleRegressor>`
+
+        * Submodel selectors:
+        :py:class:`RegressorAllSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorAllSelector>`,
+        :py:class:`RegressorBestDiverseSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorBestDiverseSelector>`
+
+        * Output combiners:
+        :py:class:`RegressorAverage
+        <nimbusml.ensemble.output_combiner.RegressorAverage>`,
+        :py:class:`RegressorMedian
+        <nimbusml.ensemble.output_combiner.RegressorMedian>`,
+        :py:class:`RegressorStacking
+        <nimbusml.ensemble.output_combiner.RegressorStacking>`
+
+
+    .. index:: models, ensemble, classification
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/EnsembleClassifier.py
+              :language: python
     """
 
     @trace
