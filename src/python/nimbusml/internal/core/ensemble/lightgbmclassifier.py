@@ -143,7 +143,7 @@ class LightGbmClassifier(
             unbalanced_sets=False,
             use_softmax=None,
             sigmoid=0.5,
-            evaluation_metric='Default',
+            evaluation_metric='Error',
             maximum_bin_count_per_feature=255,
             verbose=False,
             silent=True,

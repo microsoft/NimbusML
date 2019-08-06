@@ -9,6 +9,7 @@ libiomp5md.dll
 MklImports.dll
 SymSgdNative.dll
 tensorflow.dll
+TensorFlow.NET.dll
 System.Drawing.Common.dll
 Microsoft.DataPrep.dll
 Microsoft.DPrep.*
