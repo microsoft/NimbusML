@@ -62,6 +62,7 @@ while [ "$1" != "" ]; do
             __buildNativeBridge=false
             __buildDotNetBridge=false
             __runTests=true
+            __installPythonPackages=true
             ;;
         --buildnativebridgeonly)
             __buildDotNetBridge=false
