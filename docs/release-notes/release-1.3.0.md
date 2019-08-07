@@ -87,7 +87,14 @@ None.
 LinearSvmBinaryClassifier Examples:
 - [FileDataStream example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/LinearSvmBinaryClassifier.py)
 - [DataFrame example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/examples_from_dataframe/LinearSvmBinaryClassifier_df.py)
-  
+
+EnsembleClassifier Examples:
+- [FileDataStream example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/EnsembleClassifier.py)
+- [DataFrame example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/examples_from_dataframe/EnsembleClassifier_iris_df.py)
+
+EnsembleRegressor Examples:
+- [FileDataStream example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/EnsembleRegressor.py)
+- [DataFrame example](https://github.com/microsoft/NimbusML/blob/master/src/python/nimbusml/examples/examples_from_dataframe/EnsembleRegressor_airquality_df.py)
 
 ## **Remarks**
 
