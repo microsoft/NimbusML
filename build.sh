@@ -279,6 +279,7 @@ then
 	fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
+fi
 
 if [ ${__runTests} = true ]
 then 
