@@ -1913,9 +1913,10 @@ class Pipeline:
             self._add_classes(unique_classes)
 
     def _extract_classes_from_headers(self, headers):
-        classes = [x.replace('Score.', '') for x in headers]
-        classes = np.array(classes).astype(self.last_node.classes_.dtype)
-        self._add_classes(classes)
+        if hasattr(self.last_node, 'classes_'):
+            classes = [x.replace('Score.', '') for x in headers]
+            classes = np.array(classes).astype(self.last_node.classes_.dtype)
+            self._add_classes(classes)
 
     def _add_classes(self, classes):
         # Create classes_ attribute similar to scikit
