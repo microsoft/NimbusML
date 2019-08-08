@@ -75,8 +75,7 @@ class IidChangePointDetector(
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude::
-        /../nimbusml/examples/IidSpikeChangePointDetector.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/IidChangePointDetector_df.py
               :language: python
     """
 
