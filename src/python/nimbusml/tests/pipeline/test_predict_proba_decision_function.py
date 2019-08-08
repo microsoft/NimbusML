@@ -155,7 +155,7 @@ class TestPredictProba(unittest.TestCase):
 
     def test_predict_proba_multiclass_3class_no_y_input_implies_no_classes_attribute(self):
         X_train = X_train_3class_int.join(y_train_3class_int)
-        X_test = X_test_3class_int.join(y_test_3class_int)
+        X_test = X_test_3class_int.join(y_test_3class_int) 
 
         clf = FastLinearClassifier(number_of_threads=1, label='Label')
         clf.fit(X_train)
