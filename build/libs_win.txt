@@ -10,6 +10,7 @@ MklProxyNative.dll
 SymSgdNative.dll
 tensorflow.dll
 TensorFlow.NET.dll
+NumSharp.Core.dll
 System.Drawing.Common.dll
 Microsoft.DataPrep.dll
 Microsoft.DPrep.*

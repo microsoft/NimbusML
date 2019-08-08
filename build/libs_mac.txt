@@ -11,6 +11,7 @@ libonnxruntime.dylib
 libtensorflow_framework.1.dylib
 System.Drawing.Common.dll
 TensorFlow.NET.dll
+NumSharp.Core.dll
 Microsoft.DataPrep.dll
 Microsoft.DPrep.*
 Microsoft.ML.*
