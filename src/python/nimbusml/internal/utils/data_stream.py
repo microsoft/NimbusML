@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 """
-Owns pytlc's containers.
+Owns nimbusml's containers.
 """
 import os
 import tempfile

@@ -229,6 +229,7 @@
     <Compile Include="nimbusml\examples\_Load_Save_Models.py" />
     <Compile Include="nimbusml\examples\_Load_Save_Pipeline.py" />
     <Compile Include="nimbusml\examples\_Load_Save_transforms.py" />
+    <Compile Include="nimbusml\examples\__init__.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\_ngram.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\_ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />

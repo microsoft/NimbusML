@@ -58,9 +58,6 @@ while [ "$1" != "" ]; do
         --includeextendedtests)
             __runExtendedTests=true
             ;;
-        --includeextendedtests)
-            __runExtendedTests=true
-            ;;
         --runtestsonly)
             __buildNativeBridge=false
             __buildDotNetBridge=false

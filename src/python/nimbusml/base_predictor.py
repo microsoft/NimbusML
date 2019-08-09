@@ -43,11 +43,6 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         if hasattr(self, 'model_summary_'):
             delattr(self, 'model_summary_')
 
-        # Clear cached summary since it should not
-        # retain its value after a new call to fit
-        if hasattr(self, 'model_summary_'):
-            delattr(self, 'model_summary_')
-
         pipeline = Pipeline([self])
         try:
             pipeline.fit(X, y, **params)
