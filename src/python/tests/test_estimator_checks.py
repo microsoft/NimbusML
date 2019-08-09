@@ -8,6 +8,8 @@ run check_estimator tests
 import json
 import os
 
+from nimbusml.ensemble import EnsembleClassifier
+from nimbusml.ensemble import EnsembleRegressor
 from nimbusml.ensemble import LightGbmBinaryClassifier
 from nimbusml.ensemble import LightGbmClassifier
 from nimbusml.ensemble import LightGbmRanker
@@ -73,6 +75,10 @@ OMITTED_CHECKS = {
     # dimensional arrays, tolerance
     'FastLinearClassifier': 'check_classifiers_train',
     'FastForestRegressor': 'check_fit_score_takes_y',  # bug
+    'EnsembleClassifier': 'check_supervised_y_2d, '
+                          'check_classifiers_train',
+    'EnsembleRegressor': 'check_supervised_y_2d, '
+                         'check_regressors_train',
     # bug in decision_function
     'FastTreesBinaryClassifier':
         'check_decision_proba_consistency',
@@ -181,6 +187,8 @@ NOBINARY_CHECKS = [
     'check_classifiers_train']
 
 INSTANCES = {
+    'EnsembleClassifier': EnsembleClassifier(num_models=3),
+    'EnsembleRegressor': EnsembleRegressor(num_models=3),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
@@ -290,6 +298,14 @@ for e in epoints:
         estimator = estimator << 'F0'
 
     for check in _yield_all_checks(class_name, estimator):
+        # Skip check_dict_unchanged for estimators which
+        # update the classes_ attribute. For more details
+        # see https://github.com/microsoft/NimbusML/pull/200
+        if (check.__name__ == 'check_dict_unchanged') and \
+            (hasattr(estimator, 'predict_proba') or
+             hasattr(estimator, 'decision_function')):
+            continue
+
         if check.__name__ in OMITTED_CHECKS_ALWAYS:
             continue
         if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:

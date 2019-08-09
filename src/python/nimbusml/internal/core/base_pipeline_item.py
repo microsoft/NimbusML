@@ -15,6 +15,7 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from itertools import chain
+from shutil import copyfile
 from textwrap import wrap
 
 import six
@@ -375,6 +376,8 @@ class BasePipelineItem():
     def __getstate__(self):
         "Selects what to pickle."
         odict = self.__dict__.copy()
+        odict['export_version'] = 1
+
         if hasattr(self, 'model_') and \
                 self.model_ is not None and os.path.isfile(self.model_):
             with open(self.model_, "rb") as mfile:
@@ -387,8 +390,11 @@ class BasePipelineItem():
     def __setstate__(self, state):
         "Restore a pickled object."
         for k, v in state.items():
-            if k not in {'modelbytes', 'type'}:
+            if k not in {'modelbytes', 'type', 'export_version'}:
                 setattr(self, k, v)
+
+        # Note: modelbytes and type were
+        # added before export_version 1
         if 'modelbytes' in state:
             (fd, modelfile) = tempfile.mkstemp()
             fl = os.fdopen(fd, "wb")
@@ -441,6 +447,19 @@ class BasePipelineItem():
         if "columns" in pars:
             res["columns"] = pars
         return res
+
+    @trace
+    def save_model(self, dst):
+        """
+        Save model to file. For more details, please refer to
+        `load/save model </nimbusml/loadsavemodels>`_
+
+        :param dst: filename to be saved with
+
+        """
+        if self.model_ is not None:
+            if os.path.isfile(self.model_):
+                copyfile(self.model_, dst)
 
     def __getitem__(self, cols):
         """
@@ -937,8 +956,10 @@ class BasePipelineItem():
         """
         if hasattr(node, '_columns') and node._columns is not None:
             self << node._columns
-            setattr(node, node._attr_input,
-                    getattr(node, node._attr_output))
+
+            if hasattr(node, '_attr_output'):
+                setattr(node, node._attr_input,
+                        getattr(node, node._attr_output))
         else:
             # No columns specified. The user plans to fit the pipeline as
             # fit(X, y).

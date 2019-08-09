@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.testing import assert_greater, assert_less
 
 
-class TestFastLinearRegressor(unittest.TestCase):
+class TestLightGbmRegressor(unittest.TestCase):
 
     def test_lightgbmregressor(self):
         np.random.seed(0)

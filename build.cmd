@@ -21,6 +21,7 @@ set BoostRoot=%DependenciesDir%BoostDbg3.7
 set PythonVersion=3.7
 set PythonTag=cp37
 set RunTests=False
+set InstallPythonPackages=False
 set RunExtendedTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
@@ -33,6 +34,15 @@ if /i [%1] == [--configuration] (
 )
 if /i [%1] == [--runTests]     (
     set RunTests=True
+    set InstallPythonPackages=True
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [--installPythonPackages]     (
+    set InstallPythonPackages=True
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [--includeExtendedTests]     (
+    set RunExtendedTests=True
     shift && goto :Arg_Loop
 )
 if /i [%1] == [--includeExtendedTests]     (
@@ -58,6 +68,7 @@ echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
+echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
@@ -157,7 +168,14 @@ if /i [%1] == [DbgWinPy2.7]     (
 :Build
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
-powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.200 -InstallDir ./cli"
+powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.701 -InstallDir ./cli"
+
+set _dotnetRoot=%__currentScriptDir%cli
+
+if "%AzureBuild%" == "True" (
+    :: Add dotnet CLI root to the PATH in azure devops agent
+    echo ##vso[task.prependpath]%_dotnetRoot%
+)
 
 set _dotnetRoot=%__currentScriptDir%cli
 
@@ -328,6 +346,19 @@ md "%__currentScriptDir%target"
 copy "%__currentScriptDir%src\python\dist\%WheelFile%" "%__currentScriptDir%target\%WheelFile%"
 echo Python package successfully created: %__currentScriptDir%target\%WheelFile%
 
+if "%InstallPythonPackages%" == "True" (
+    echo ""
+    echo "#################################"
+    echo "Installing python packages ... "
+    echo "#################################"
+    call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
+    :: Run azureml-dataprep tests only in pyhon 3.7 as its an optional dependency
+    if %PythonVersion% == 3.7 ( call "%PythonExe%" -m pip install --upgrade azureml-dataprep )
+    call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
+    call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
+)
+
 if "%RunTests%" == "False" ( 
     goto :Exit_Success
 )
@@ -337,11 +368,6 @@ echo ""
 echo "#################################"
 echo "Running tests ... "
 echo "#################################"
-call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
-if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
-call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
-call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
-
 set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests

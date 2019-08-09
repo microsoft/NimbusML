@@ -144,15 +144,20 @@ public:
     {
     }
 
-    FNGETTER EnsureGetter(const char *nimbuslibspath, const char *coreclrpath)
+    FNGETTER EnsureGetter(const char *mlnetpath, const char *coreclrpath, const char *dpreppath)
     {
         if (_getter != nullptr)
             return _getter;
 
-        std::string libsroot(nimbuslibspath);
+        std::string libsroot(mlnetpath);
         std::string coreclrdir(coreclrpath);
+        if (strlen(dpreppath) == 0) 
+        {
+            dpreppath = mlnetpath;
+        }
+        std::string dprepdir(dpreppath);
 
-        ICLRRuntimeHost2* host = EnsureClrHost(libsroot.c_str(), coreclrdir.c_str());
+        ICLRRuntimeHost2* host = EnsureClrHost(libsroot.c_str(), coreclrdir.c_str(), dprepdir.c_str());
         if (host == nullptr)
             return nullptr;
 
@@ -246,7 +251,7 @@ private:
         closedir(dir);
     }
 
-    ICLRRuntimeHost2* EnsureClrHost(const char * libsRoot, const char * coreclrDirRoot)
+    ICLRRuntimeHost2* EnsureClrHost(const char * libsRoot, const char * coreclrDirRoot, const char * dprepDirRoot)
     {
         if (_host != nullptr)
             return _host;
@@ -284,7 +289,7 @@ private:
             // TRUSTED_PLATFORM_ASSEMBLIES
             tpaList.c_str(),
             // APP_PATHS
-            libsRoot,
+            dprepDirRoot,
             // AppDomainCompatSwitch
             W("UseLatestBehaviorWhenTFMNotSpecified")
         };

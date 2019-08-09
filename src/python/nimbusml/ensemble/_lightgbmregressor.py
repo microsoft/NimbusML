@@ -141,7 +141,7 @@ class LightGbmRegressor(core, BasePredictor, RegressorMixin):
             booster=None,
             normalize='Auto',
             caching='Auto',
-            evaluation_metric='Default',
+            evaluation_metric='RootMeanSquaredError',
             maximum_bin_count_per_feature=255,
             verbose=False,
             silent=True,

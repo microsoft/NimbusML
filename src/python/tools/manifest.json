@@ -2275,9 +2275,10 @@
           "Name": "Model",
           "Type": "TransformModel",
           "Desc": "Model that needs to be converted to ONNX format.",
-          "Required": true,
+          "Required": false,
           "SortOrder": 10.0,
-          "IsNullable": false
+          "IsNullable": false,
+          "Default": null
         },
         {
           "Name": "OnnxVersion",
@@ -2293,6 +2294,15 @@
           "SortOrder": 11.0,
           "IsNullable": false,
           "Default": "Stable"
+        },
+        {
+          "Name": "PredictiveModel",
+          "Type": "PredictorModel",
+          "Desc": "Predictor model that needs to be converted to ONNX format.",
+          "Required": false,
+          "SortOrder": 12.0,
+          "IsNullable": false,
+          "Default": null
         }
       ],
       "Outputs": []
@@ -11535,7 +11545,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "Logloss"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -11552,7 +11562,43 @@
         {
           "Name": "Verbose",
           "Type": "Bool",
-          "Desc": "Verbose",
+          "Desc": "Use for binary classification when training data is not balanced.",
+          "Aliases": [
+            "us"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
+          "Name": "WeightOfPositiveExamples",
+          "Type": "Float",
+          "Desc": "Control the balance of positive and negative weights, useful for unbalanced classes. A typical value to consider: sum(negative cases) / sum(positive cases).",
+          "Aliases": [
+            "ScalePosWeight"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": 1.0
+        },
+        {
+          "Name": "NumberOfThreads",
+          "Type": "Int",
+          "Desc": "Number of parallel threads used to run LightGBM.",
+          "Aliases": [
+            "sigmoid"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": 0.5
+        },
+        {
+          "Name": "EarlyStoppingRound",
+          "Type": "Int",
+          "Desc": "Rounds of early stopping, 0 will disable it.",
           "Aliases": [
             "v"
           ],
@@ -11569,30 +11615,6 @@
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": true
-        },
-        {
-          "Name": "NumberOfThreads",
-          "Type": "Int",
-          "Desc": "Number of parallel threads used to run LightGBM.",
-          "Aliases": [
-            "nt"
-          ],
-          "Required": false,
-          "SortOrder": 150.0,
-          "IsNullable": true,
-          "Default": null
-        },
-        {
-          "Name": "EarlyStoppingRound",
-          "Type": "Int",
-          "Desc": "Rounds of early stopping, 0 will disable it.",
-          "Aliases": [
-            "es"
-          ],
-          "Required": false,
-          "SortOrder": 150.0,
-          "IsNullable": false,
-          "Default": 0
         },
         {
           "Name": "BatchSize",
@@ -12032,7 +12054,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "Error"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12529,7 +12551,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "NormalizedDiscountedCumulativeGain"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12987,7 +13009,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "RootMeanSquaredError"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -18374,6 +18396,87 @@
       ]
     },
     {
+      "Name": "Transforms.FeatureContributionCalculationTransformer",
+      "Desc": "For each data point, calculates the contribution of individual features to the model prediction.",
+      "FriendlyName": "Feature Contribution Calculation",
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "The predictor model to apply to data",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "FeatureColumn",
+          "Type": "String",
+          "Desc": "Name of feature column",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": "Features"
+        },
+        {
+          "Name": "Top",
+          "Type": "Int",
+          "Desc": "Number of top contributions",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": 10
+        },
+        {
+          "Name": "Bottom",
+          "Type": "Int",
+          "Desc": "Number of bottom contributions",
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": 10
+        },
+        {
+          "Name": "Normalize",
+          "Type": "Bool",
+          "Desc": "Whether or not output of Features contribution should be normalized",
+          "Aliases": [
+            "norm"
+          ],
+          "Required": false,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": true
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "Transforms.FeatureSelectorByCount",
       "Desc": "Selects the slots for which the count of non-default values is greater than or equal to a threshold.",
       "FriendlyName": "Count Feature Selection Transform",
@@ -22339,66 +22442,6 @@
           "IsNullable": false
         },
         {
-          "Name": "LabelColumn",
-          "Type": "String",
-          "Desc": "Training labels.",
-          "Aliases": [
-            "label"
-          ],
-          "Required": false,
-          "SortOrder": 4.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "TensorFlowLabel",
-          "Type": "String",
-          "Desc": "TensorFlow label node.",
-          "Aliases": [
-            "TFLabel"
-          ],
-          "Required": false,
-          "SortOrder": 5.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "OptimizationOperation",
-          "Type": "String",
-          "Desc": "The name of the optimization operation in the TensorFlow graph.",
-          "Aliases": [
-            "OptimizationOp"
-          ],
-          "Required": false,
-          "SortOrder": 6.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "LossOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph to compute training loss (Optional)",
-          "Aliases": [
-            "LossOp"
-          ],
-          "Required": false,
-          "SortOrder": 7.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "MetricOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph to compute performance metric during training (Optional)",
-          "Aliases": [
-            "MetricOp"
-          ],
-          "Required": false,
-          "SortOrder": 8.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
           "Name": "BatchSize",
           "Type": "Int",
           "Desc": "Number of samples to use for mini-batch training.",
@@ -22406,60 +22449,6 @@
           "SortOrder": 9.0,
           "IsNullable": false,
           "Default": 64
-        },
-        {
-          "Name": "Epoch",
-          "Type": "Int",
-          "Desc": "Number of training iterations.",
-          "Required": false,
-          "SortOrder": 10.0,
-          "IsNullable": false,
-          "Default": 5
-        },
-        {
-          "Name": "LearningRateOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph which sets optimizer learning rate (Optional).",
-          "Required": false,
-          "SortOrder": 11.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "LearningRate",
-          "Type": "Float",
-          "Desc": "Learning rate to use during optimization.",
-          "Required": false,
-          "SortOrder": 12.0,
-          "IsNullable": false,
-          "Default": 0.01
-        },
-        {
-          "Name": "SaveLocationOperation",
-          "Type": "String",
-          "Desc": "Name of the input in TensorFlow graph that specifiy the location for saving/restoring models from disk.",
-          "Required": false,
-          "SortOrder": 13.0,
-          "IsNullable": false,
-          "Default": "save/Const"
-        },
-        {
-          "Name": "SaveOperation",
-          "Type": "String",
-          "Desc": "Name of the input in TensorFlow graph that specifiy the location for saving/restoring models from disk.",
-          "Required": false,
-          "SortOrder": 14.0,
-          "IsNullable": false,
-          "Default": "save/control_dependency"
-        },
-        {
-          "Name": "ReTrain",
-          "Type": "Bool",
-          "Desc": "Retrain TensorFlow model.",
-          "Required": false,
-          "SortOrder": 15.0,
-          "IsNullable": false,
-          "Default": false
         },
         {
           "Name": "AddBatchDimensionInputs",
