@@ -349,8 +349,8 @@
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaforecasting.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_trainers_ensembleclassification.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_trainers_ensembleregression.py" />
+    <Compile Include="nimbusml\internal\entrypoints\trainers_ensembleclassification.py" />
+    <Compile Include="nimbusml\internal\entrypoints\trainers_ensembleregression.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestregressor.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fasttreebinaryclassifier.py" />
