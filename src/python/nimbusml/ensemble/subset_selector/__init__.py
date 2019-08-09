@@ -1,6 +1,6 @@
-from .allinstanceselector import AllInstanceSelector
-from .bootstrapselector import BootstrapSelector
-from .randompartitionselector import RandomPartitionSelector
+from ._allinstanceselector import AllInstanceSelector
+from ._bootstrapselector import BootstrapSelector
+from ._randompartitionselector import RandomPartitionSelector
 
 __all__ = [
     'AllInstanceSelector',

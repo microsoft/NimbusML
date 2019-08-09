@@ -1,11 +1,11 @@
-from .classifieraverage import ClassifierAverage
-from .classifiermedian import ClassifierMedian
-from .classifierstacking import ClassifierStacking
-from .classifiervoting import ClassifierVoting
-from .classifierweightedaverage import ClassifierWeightedAverage
-from .regressoraverage import RegressorAverage
-from .regressormedian import RegressorMedian
-from .regressorstacking import RegressorStacking
+from ._classifieraverage import ClassifierAverage
+from ._classifiermedian import ClassifierMedian
+from ._classifierstacking import ClassifierStacking
+from ._classifiervoting import ClassifierVoting
+from ._classifierweightedaverage import ClassifierWeightedAverage
+from ._regressoraverage import RegressorAverage
+from ._regressormedian import RegressorMedian
+from ._regressorstacking import RegressorStacking
 
 __all__ = [
     'ClassifierAverage',

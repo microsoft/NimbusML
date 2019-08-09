@@ -1,5 +1,5 @@
-from .classifierdisagreement import ClassifierDisagreement
-from .regressordisagreement import RegressorDisagreement
+from ._classifierdisagreement import ClassifierDisagreement
+from ._regressordisagreement import RegressorDisagreement
 
 __all__ = [
     'ClassifierDisagreement',

@@ -1,9 +1,9 @@
-from .classifierallselector import ClassifierAllSelector
-from .classifierbestdiverseselector import ClassifierBestDiverseSelector
-from .classifierbestperformanceselector import ClassifierBestPerformanceSelector
-from .regressorallselector import RegressorAllSelector
-from .regressorbestdiverseselector import RegressorBestDiverseSelector
-from .regressorbestperformanceselector import RegressorBestPerformanceSelector
+from ._classifierallselector import ClassifierAllSelector
+from ._classifierbestdiverseselector import ClassifierBestDiverseSelector
+from ._classifierbestperformanceselector import ClassifierBestPerformanceSelector
+from ._regressorallselector import RegressorAllSelector
+from ._regressorbestdiverseselector import RegressorBestDiverseSelector
+from ._regressorbestperformanceselector import RegressorBestPerformanceSelector
 
 __all__ = [
     'ClassifierAllSelector',
