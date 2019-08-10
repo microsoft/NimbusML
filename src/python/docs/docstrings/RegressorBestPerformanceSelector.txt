@@ -1,0 +1,36 @@
+    """
+
+	**Description**
+    Computes the weighted average of the outputs of the trained models
+
+
+    :param metric_name: the metric type to be used to find the weights for
+        each model. Can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or
+		``"RSquared"``.
+    
+
+    .. seealso::
+	    :py:class:`EnsembleRegressor
+        <nimbusml.ensemble.EnsembleRegressor>`
+
+		* Submodel selectors:
+		:py:class:`RegressorAllSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorAllSelector>`,
+		:py:class:`RegressorBestDiverseSelector
+        <nimbusml.ensemble.sub_model_selector.RegressorBestDiverseSelector>`
+		
+		* Output combiners:
+		:py:class:`RegressorAverage
+        <nimbusml.ensemble.output_combiner.RegressorAverage>`,
+		:py:class:`RegressorMedian
+        <nimbusml.ensemble.output_combiner.RegressorMedian>`,
+		:py:class:`RegressorStacking
+        <nimbusml.ensemble.output_combiner.RegressorStacking>`
+
+
+    .. index:: models, ensemble, classification
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/EnsembleClassifier.py
+              :language: python
+    """
