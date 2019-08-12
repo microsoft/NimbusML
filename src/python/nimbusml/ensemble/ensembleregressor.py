@@ -77,8 +77,7 @@ class EnsembleRegressor(core, BasePredictor, RegressorMixin):
           can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or
           ``"RSquared"``.
 
-
-    :output_combiner: indicates how to combine the predictions of the different
+    :param output_combiner: indicates how to combine the predictions of the different
         models into a single prediction. There are five available output
         combiners for clasification:
 
@@ -90,8 +89,6 @@ class EnsembleRegressor(core, BasePredictor, RegressorMixin):
           training set where each instance is a vector containing the outputs
           of the different models on a training instance, and the instance's
           label.
-
-    :param output_combiner: Output combiner.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -166,7 +163,7 @@ class EnsembleRegressor(core, BasePredictor, RegressorMixin):
         <nimbusml.ensemble.output_combiner.RegressorStacking>`
 
 
-    .. index:: models, ensemble, classification
+    .. index:: models, ensemble, regression
 
     Example:
        .. literalinclude:: /../nimbusml/examples/EnsembleRegressor.py
