@@ -26,11 +26,11 @@ class LinearSvmBinaryClassifier(
     .. remarks::
         Linear SVM implements an algorithm that finds a hyperplane in the
         feature space for binary classification, by solving an SVM problem.
-        For instance, with feature values *f_0, f_1,..., f_{D-1}*, the
+        For instance, with feature values $f_0, f_1,..., f_{D-1}$, the
         prediction is given by determining what side of the hyperplane the
         point falls into. That is the same as the sign of the feautures'
-        weighted sum, i.e. *\sum_{i = 0}^{D-1} \left(w_i * f_i \right) + b*,
-        where *w_0, w_1,..., w_{D-1}* are the weights computed by the
+        weighted sum, i.e. $\sum_{i = 0}^{D-1} \left(w_i * f_i \right) + b$,
+        where $w_0, w_1,..., w_{D-1}$ are the weights computed by the
         algorithm, and *b* is the bias computed by the algorithm.
 
         This algorithm implemented is the PEGASOS method, which alternates
