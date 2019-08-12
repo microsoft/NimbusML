@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Microsoft.DataPrep.Common;
 using Microsoft.ML;
 using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
@@ -146,7 +147,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     var extension = Path.GetExtension(path);
                                     if (extension == ".txt")
                                         dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
-
+                                    else if(extension == ".dprep")
+                                        dv = DataFlow.FromDPrepFile(path).ToDataView();
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
                                 }

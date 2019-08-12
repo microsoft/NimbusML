@@ -56,40 +56,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
 
     :param output_columns: The name of the outputs.
 
-    :param label_column: Training labels.
-
-    :param tensor_flow_label: TensorFlow label node.
-
-    :param optimization_operation: The name of the optimization operation in
-        the TensorFlow graph.
-
-    :param loss_operation: The name of the operation in the TensorFlow graph to
-        compute training loss (Optional).
-
-    :param metric_operation: The name of the operation in the TensorFlow graph
-        to compute performance metric during training (Optional).
-
     :param batch_size: Number of samples to use for mini-batch training.
-
-    :param epoch: Number of training iterations.
-
-    :param learning_rate_operation: The name of the operation in the TensorFlow
-        graph which sets optimizer learning rate (Optional).
-
-    :param learning_rate: Determines the size of the step taken in the
-        direction of the gradient in each step of the learning process.  This
-        determines how fast or slow the learner converges on the optimal
-        solution. If the step size is too big, you might overshoot the optimal
-        solution.  If the step size is too small, training takes longer to
-        converge to the best solution.
-
-    :param save_location_operation: Name of the input in TensorFlow graph that
-        specifiy the location for saving/restoring models from disk.
-
-    :param save_operation: Name of the input in TensorFlow graph that specifiy
-        the location for saving/restoring models from disk.
-
-    :param re_train: Retrain TensorFlow model.
 
     :param add_batch_dimension_inputs: Add a batch dimension to the input e.g.
         input = [224, 224, 3] => [-1, 224, 224, 3].
@@ -109,18 +76,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             model_location,
             input_columns=None,
             output_columns=None,
-            label_column=None,
-            tensor_flow_label=None,
-            optimization_operation=None,
-            loss_operation=None,
-            metric_operation=None,
             batch_size=64,
-            epoch=5,
-            learning_rate_operation=None,
-            learning_rate=0.01,
-            save_location_operation='save/Const',
-            save_operation='save/control_dependency',
-            re_train=False,
             add_batch_dimension_inputs=False,
             columns=None,
             **params):
@@ -144,18 +100,7 @@ class TensorFlowScorer(core, BaseTransform, TransformerMixin):
             model_location=model_location,
             input_columns=input_columns,
             output_columns=output_columns,
-            label_column=label_column,
-            tensor_flow_label=tensor_flow_label,
-            optimization_operation=optimization_operation,
-            loss_operation=loss_operation,
-            metric_operation=metric_operation,
             batch_size=batch_size,
-            epoch=epoch,
-            learning_rate_operation=learning_rate_operation,
-            learning_rate=learning_rate,
-            save_location_operation=save_location_operation,
-            save_operation=save_operation,
-            re_train=re_train,
             add_batch_dimension_inputs=add_batch_dimension_inputs,
             **params)
         self._columns = columns

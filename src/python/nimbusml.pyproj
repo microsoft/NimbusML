@@ -12,9 +12,10 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|Py3.7</InterpreterId>
+    <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <StartupFile>nimbusml\tests\dprep\test_dprep.py</StartupFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -45,6 +46,36 @@
     <Compile Include="nimbusml\ensemble\booster\_gbdt.py" />
     <Compile Include="nimbusml\ensemble\booster\_goss.py" />
     <Compile Include="nimbusml\ensemble\booster\__init__.py" />
+    <Compile Include="nimbusml\ensemble\feature_selector\_allfeatureselector.py" />
+    <Compile Include="nimbusml\ensemble\feature_selector\_randomfeatureselector.py" />
+    <Compile Include="nimbusml\ensemble\feature_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_classifieraverage.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_classifiermedian.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_classifierstacking.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_classifiervoting.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_classifierweightedaverage.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_regressoraverage.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_regressormedian.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\_regressorstacking.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\__init__.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\_classifierallselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\_classifierbestdiverseselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\_classifierbestperformanceselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\_regressorallselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\_regressorbestdiverseselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\_regressorbestperformanceselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\_classifierdisagreement.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\_regressordisagreement.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="nimbusml\ensemble\subset_selector\_allinstanceselector.py" />
+    <Compile Include="nimbusml\ensemble\subset_selector\_bootstrapselector.py" />
+    <Compile Include="nimbusml\ensemble\subset_selector\_randompartitionselector.py" />
+    <Compile Include="nimbusml\ensemble\subset_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\_ensembleclassifier.py" />
+    <Compile Include="nimbusml\ensemble\_ensembleregressor.py" />
     <Compile Include="nimbusml\ensemble\_fastforestbinaryclassifier.py" />
     <Compile Include="nimbusml\ensemble\_fastforestregressor.py" />
     <Compile Include="nimbusml\ensemble\_fasttreesbinaryclassifier.py" />
@@ -67,6 +98,7 @@
     <Compile Include="nimbusml\examples\ColumnSelector.py" />
     <Compile Include="nimbusml\examples\CountSelector.py" />
     <Compile Include="nimbusml\examples\CV.py" />
+    <Compile Include="nimbusml\examples\EnsembleClassifier.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\AveragedPerceptronBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Binner_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\BootStrapSample_df.py" />
@@ -74,6 +106,8 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\ColumnConcatenator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\ColumnDuplicator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Concat_Drop_Select_Columns_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\EnsembleClassifier_iris_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\EnsembleRegressor_airquality_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FactorizationMachineBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FastForestBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FastForestRegressor_airquality_df.py" />
@@ -89,6 +123,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\LinearSvmBinaryClassifier_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaForecaster_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaChangePointDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
@@ -124,6 +159,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\WordEmbedding_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\__init__.py" />
     <Compile Include="nimbusml\examples\Exp.py" />
+    <Compile Include="nimbusml\examples\EnsembleRegressor.py" />
     <Compile Include="nimbusml\examples\FactorizationMachineBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\FastForestBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\FastForestRegressor.py" />
@@ -140,6 +176,7 @@
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
+    <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
@@ -174,6 +211,7 @@
     <Compile Include="nimbusml\examples\PipelineWithGridSearchCV2.py" />
     <Compile Include="nimbusml\examples\PipelineWithGridSearchCV1.py" />
     <Compile Include="nimbusml\examples\pipeline.py" />
+    <Compile Include="nimbusml\examples\PipelineWithFeatureContributions.py" />
     <Compile Include="nimbusml\examples\Poisson.py" />
     <Compile Include="nimbusml\examples\PoissonRegressionRegressor.py" />
     <Compile Include="nimbusml\examples\RangeFilter.py" />
@@ -191,6 +229,7 @@
     <Compile Include="nimbusml\examples\_Load_Save_Models.py" />
     <Compile Include="nimbusml\examples\_Load_Save_Pipeline.py" />
     <Compile Include="nimbusml\examples\_Load_Save_transforms.py" />
+    <Compile Include="nimbusml\examples\__init__.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\_ngram.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\_ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />
@@ -207,6 +246,34 @@
     <Compile Include="nimbusml\internal\core\ensemble\booster\_gbdt.py" />
     <Compile Include="nimbusml\internal\core\ensemble\booster\_goss.py" />
     <Compile Include="nimbusml\internal\core\ensemble\booster\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\feature_selector\_allfeatureselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\feature_selector\_randomfeatureselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\feature_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_classifieraverage.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_classifiermedian.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_classifierstacking.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_classifiervoting.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_classifierweightedaverage.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_regressoraverage.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_regressormedian.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\_regressorstacking.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\_classifierallselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\_classifierbestdiverseselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\_classifierbestperformanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\_regressorallselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\_regressorbestdiverseselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\_regressorbestperformanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\_classifierdisagreement.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\_regressordisagreement.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\_allinstanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\_bootstrapselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\_randompartitionselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\_ensembleclassifier.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\_ensembleregressor.py" />
     <Compile Include="nimbusml\internal\core\ensemble\_gambinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\ensemble\_gamregressor.py" />
     <Compile Include="nimbusml\internal\core\ensemble\_lightgbmranker.py" />
@@ -228,27 +295,17 @@
     <Compile Include="nimbusml\internal\core\loss\__init__.py" />
     <Compile Include="nimbusml\internal\core\multiclass\_onevsrestclassifier.py" />
     <Compile Include="nimbusml\internal\core\multiclass\__init__.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\_columndropper.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\_tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_iidchangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssaforecaster.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\_tensorflowscorer.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\_iidchangepointdetector.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\_iidspikedetector.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\_ssaforecaster.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\_tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_customtextloader.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_dataviewreference.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_idataviewarrayconverter.py" />
@@ -292,6 +349,8 @@
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaforecasting.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_ssaspikedetector.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_averagedperceptronbinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\entrypoints\trainers_ensembleclassification.py" />
+    <Compile Include="nimbusml\internal\entrypoints\trainers_ensembleregression.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fastforestregressor.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_fasttreebinaryclassifier.py" />
@@ -416,13 +475,18 @@
     <Compile Include="nimbusml\internal\entrypoints\_ensemblemulticlassoutputcombiner_multivoting.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensemblemulticlassoutputcombiner_multiweightedaverage.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensemblemulticlasssubmodelselector_allselectormulticlass.py" />
+    <Compile Include="nimbusml\internal\entrypoints\_ensemblemulticlasssubmodelselector_bestdiverseselectormulticlass.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensemblemulticlasssubmodelselector_bestperformanceselectormulticlass.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensembleregressiondiversitymeasure_regressiondisagreementdiversitymeasure.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensembleregressionoutputcombiner_average.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensembleregressionoutputcombiner_median.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensembleregressionoutputcombiner_regressionstacking.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensembleregressionsubmodelselector_allselector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\_ensembleregressionsubmodelselector_bestdiverseselectorregression.py" />
     <Compile Include="nimbusml\internal\entrypoints\_ensembleregressionsubmodelselector_bestperformanceregressionselector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\_ensemblesubsetselector_allinstanceselector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\_ensemblesubsetselector_bootstrapselector.py" />
+    <Compile Include="nimbusml\internal\entrypoints\_ensemblesubsetselector_randompartitionselector.py" />
     <Compile Include="nimbusml\internal\entrypoints\_fasttreetrainer_fasttreebinaryclassification.py" />
     <Compile Include="nimbusml\internal\entrypoints\_fasttreetrainer_fasttreeranking.py" />
     <Compile Include="nimbusml\internal\entrypoints\_fasttreetrainer_fasttreeregression.py" />
@@ -498,6 +562,7 @@
     <Compile Include="nimbusml\internal\core\linear_model\_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_fastlinearbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_fastlinearregressor.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\_linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_logisticregressionclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_sgdbinaryclassifier.py" />
@@ -519,7 +584,6 @@
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\_minmaxscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnconcatenator.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\schema\_columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnselector.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_typeconverter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\__init__.py" />
@@ -541,6 +605,7 @@
     <Compile Include="nimbusml\linear_model\_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_fastlinearbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_fastlinearregressor.py" />
+    <Compile Include="nimbusml\linear_model\_linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_logisticregressionclassifier.py" />
     <Compile Include="nimbusml\linear_model\_sgdbinaryclassifier.py" />
@@ -585,6 +650,10 @@
     <Compile Include="nimbusml\tests\decomposition\test_pcaanomalydetector.py" />
     <Compile Include="nimbusml\tests\decomposition\test_pcatransformer.py" />
     <Compile Include="nimbusml\tests\decomposition\__init__.py" />
+    <Compile Include="nimbusml\tests\dprep\test_dprep.py" />
+    <Compile Include="nimbusml\tests\dprep\__init__.py" />
+    <Compile Include="nimbusml\tests\ensemble\test_ensembleclassifier.py" />
+    <Compile Include="nimbusml\tests\ensemble\test_ensembleregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreesbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_fasttreestweedieregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_gambinaryclassifier.py" />
@@ -595,6 +664,8 @@
     <Compile Include="nimbusml\tests\ensemble\__init__.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
+    <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
+    <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
@@ -606,8 +677,8 @@
     <Compile Include="nimbusml\timeseries\_iidchangepointdetector.py" />
     <Compile Include="nimbusml\timeseries\_iidspikedetector.py" />
     <Compile Include="nimbusml\timeseries\_ssachangepointdetector.py" />
-    <Compile Include="nimbusml\timeseries\_ssaspikedetector.py" />
     <Compile Include="nimbusml\timeseries\_ssaforecaster.py" />
+    <Compile Include="nimbusml\timeseries\_ssaspikedetector.py" />
     <Compile Include="nimbusml\timeseries\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />
@@ -738,6 +809,7 @@
     <Folder Include="docs\sphinx\modules\svm\kernel\" />
     <Folder Include="docs\sphinx\_static\" />
     <Folder Include="docs\sphinx\_static\images\" />
+    <Folder Include="nimbusml\tests\dprep\" />
     <Folder Include="tests_extended\" />
     <Folder Include="nimbusml\" />
     <Folder Include="nimbusml\cluster\" />
@@ -749,6 +821,11 @@
     <Folder Include="nimbusml\decomposition\" />
     <Folder Include="nimbusml\ensemble\" />
     <Folder Include="nimbusml\ensemble\booster\" />
+    <Folder Include="nimbusml\ensemble\feature_selector\" />
+    <Folder Include="nimbusml\ensemble\output_combiner\" />
+    <Folder Include="nimbusml\ensemble\sub_model_selector\" />
+    <Folder Include="nimbusml\ensemble\sub_model_selector\diversity_measure\" />
+    <Folder Include="nimbusml\ensemble\subset_selector\" />
     <Folder Include="nimbusml\examples\" />
     <Folder Include="nimbusml\examples\examples_from_dataframe\" />
     <Folder Include="nimbusml\feature_extraction\" />
@@ -764,6 +841,11 @@
     <Folder Include="nimbusml\internal\core\decomposition\" />
     <Folder Include="nimbusml\internal\core\ensemble\" />
     <Folder Include="nimbusml\internal\core\ensemble\booster\" />
+    <Folder Include="nimbusml\internal\core\ensemble\feature_selector\" />
+    <Folder Include="nimbusml\internal\core\ensemble\output_combiner\" />
+    <Folder Include="nimbusml\internal\core\ensemble\sub_model_selector\" />
+    <Folder Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\" />
+    <Folder Include="nimbusml\internal\core\ensemble\subset_selector\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\categorical\" />
     <Folder Include="nimbusml\internal\core\feature_extraction\image\" />
@@ -830,6 +912,8 @@
     <Content Include="docs\docstrings\Binner.txt" />
     <Content Include="docs\docstrings\BootstrapSampler.txt" />
     <Content Include="docs\docstrings\CharTokenizer.txt" />
+    <Content Include="docs\docstrings\ClassifierBestPerformanceSelector.txt" />
+    <Content Include="docs\docstrings\ClassifierWeightedAverage.txt" />
     <Content Include="docs\docstrings\ColumnConcatenator.txt" />
     <Content Include="docs\docstrings\ColumnDropper.txt" />
     <Content Include="docs\docstrings\ColumnDuplicator.txt" />
@@ -839,6 +923,8 @@
     <Content Include="docs\docstrings\Dart.txt" />
     <Content Include="docs\docstrings\DnnFeaturizer.txt" />
     <Content Include="docs\docstrings\DssmFeaturizer.txt" />
+    <Content Include="docs\docstrings\EnsembleClassifier.txt" />
+    <Content Include="docs\docstrings\EnsembleRegressor.txt" />
     <Content Include="docs\docstrings\ExponentialAverage.txt" />
     <Content Include="docs\docstrings\Expression.txt" />
     <Content Include="docs\docstrings\FactorizationMachineBinaryClassifier.txt" />
@@ -868,6 +954,7 @@
     <Content Include="docs\docstrings\LightGbmRegressor.txt" />
     <Content Include="docs\docstrings\LightLda.txt" />
     <Content Include="docs\docstrings\LinearKernel.txt" />
+    <Content Include="docs\docstrings\LinearSvmBinaryClassifier.txt" />
     <Content Include="docs\docstrings\Loader.txt" />
     <Content Include="docs\docstrings\LocalDeepSvmBinaryClassifier.txt" />
     <Content Include="docs\docstrings\LogisticRegressionBinaryClassifier.txt" />
@@ -904,6 +991,7 @@
     <Content Include="docs\docstrings\Pvalue.txt" />
     <Content Include="docs\docstrings\RangeFilter.txt" />
     <Content Include="docs\docstrings\RbfKernel.txt" />
+    <Content Include="docs\docstrings\RegressorBestPerformanceSelector.txt" />
     <Content Include="docs\docstrings\Resizer.txt" />
     <Content Include="docs\docstrings\Sentiment.txt" />
     <Content Include="docs\docstrings\SgdBinaryClassifier.txt" />
@@ -1139,7 +1227,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Py3.7" />
+    <InterpreterReference Include="Global|VisualStudio|MinePy37" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

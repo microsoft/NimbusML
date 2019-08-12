@@ -28,6 +28,14 @@ features, labels = split_features_and_label(df, 'Label')
 X_train, X_test, y_train, y_test = \
     train_test_split(features, labels)
 
+# 3 class dataset with integer labels
+np.random.seed(0)
+df = get_dataset("iris").as_df()
+df.drop(['Species'], inplace=True, axis=1)
+features_3class_int, labels_3class_int = split_features_and_label(df, 'Label')
+X_train_3class_int, X_test_3class_int, y_train_3class_int, y_test_3class_int = \
+    train_test_split(features_3class_int, labels_3class_int)
+
 # 3 class dataset with string labels
 np.random.seed(0)
 df = get_dataset("iris").as_df()
@@ -112,8 +120,63 @@ class TestPredictProba(unittest.TestCase):
             s,
             38.0,
             decimal=4,
-            err_msg=invalid_decision_function_output)
+            err_msg=invalid_predict_proba_output)
         assert_equal(set(clf.classes_), {'Blue', 'Green', 'Red'})
+
+    def test_pass_predict_proba_multiclass_with_pipeline_adds_classes(self):
+        clf = FastLinearClassifier(number_of_threads=1)
+        pipeline = Pipeline([clf])
+        pipeline.fit(X_train_3class, y_train_3class)
+
+        expected_classes = {'Blue', 'Green', 'Red'}
+        assert_equal(set(clf.classes_), expected_classes)
+        assert_equal(set(pipeline.classes_), expected_classes)
+
+        s = pipeline.predict_proba(X_test_3class).sum()
+        assert_almost_equal(
+            s,
+            38.0,
+            decimal=4,
+            err_msg=invalid_predict_proba_output)
+
+        assert_equal(set(clf.classes_),  expected_classes)
+        assert_equal(set(pipeline.classes_),  expected_classes)
+
+    def test_pass_predict_proba_multiclass_3class_retains_classes_type(self):
+        clf = FastLinearClassifier(number_of_threads=1)
+        clf.fit(X_train_3class_int, y_train_3class_int)
+        s = clf.predict_proba(X_test_3class_int).sum()
+        assert_almost_equal(
+            s,
+            38.0,
+            decimal=4,
+            err_msg=invalid_predict_proba_output)
+        assert_equal(set(clf.classes_), {0, 1, 2})
+
+    def test_predict_proba_multiclass_3class_no_y_input_implies_no_classes_attribute(self):
+        X_train = X_train_3class_int.join(y_train_3class_int)
+        X_test = X_test_3class_int.join(y_test_3class_int) 
+
+        clf = FastLinearClassifier(number_of_threads=1, label='Label')
+        clf.fit(X_train)
+
+        if hasattr(clf, 'classes_'):
+            # The classes_ attribute is currently not supported
+            # when fitting when there is no y input specified.
+            self.fail("classes_ attribute not expected.")
+
+        s = clf.predict_proba(X_test).sum()
+        assert_almost_equal(
+            s,
+            38.0,
+            decimal=4,
+            err_msg=invalid_predict_proba_output)
+
+        if hasattr(clf, 'classes_'):
+            # The classes_ attribute is currently not supported
+            # when predicting when there was no y input specified
+            # during fitting.
+            self.fail("classes_ attribute not expected.")
 
     def test_fail_predict_proba_multiclass_with_pipeline(self):
         check_unsupported_predict_proba(self, Pipeline(
@@ -173,6 +236,61 @@ class TestDecisionFunction(unittest.TestCase):
             decimal=4,
             err_msg=invalid_decision_function_output)
         assert_equal(set(clf.classes_), {'Blue', 'Green', 'Red'})
+
+    def test_pass_decision_function_multiclass_with_pipeline_adds_classes(self):
+        clf = FastLinearClassifier(number_of_threads=1)
+        pipeline = Pipeline([clf])
+        pipeline.fit(X_train_3class, y_train_3class)
+
+        expected_classes = {'Blue', 'Green', 'Red'}
+        assert_equal(set(clf.classes_), expected_classes)
+        assert_equal(set(pipeline.classes_), expected_classes)
+
+        s = pipeline.decision_function(X_test_3class).sum()
+        assert_almost_equal(
+            s,
+            38.0,
+            decimal=4,
+            err_msg=invalid_decision_function_output)
+
+        assert_equal(set(clf.classes_), expected_classes)
+        assert_equal(set(pipeline.classes_), expected_classes)
+
+    def test_pass_decision_function_multiclass_3class_retains_classes_type(self):
+        clf = FastLinearClassifier(number_of_threads=1)
+        clf.fit(X_train_3class_int, y_train_3class_int)
+        s = clf.decision_function(X_test_3class_int).sum()
+        assert_almost_equal(
+            s,
+            38.0,
+            decimal=4,
+            err_msg=invalid_decision_function_output)
+        assert_equal(set(clf.classes_), {0, 1, 2})
+
+    def test_decision_function_multiclass_3class_no_y_input_implies_no_classes_attribute(self):
+        X_train = X_train_3class_int.join(y_train_3class_int)
+        X_test = X_test_3class_int.join(y_test_3class_int)
+
+        clf = FastLinearClassifier(number_of_threads=1, label='Label')
+        clf.fit(X_train)
+
+        if hasattr(clf, 'classes_'):
+            # The classes_ attribute is currently not supported
+            # when fitting when there is no y input specified.
+            self.fail("classes_ attribute not expected.")
+
+        s = clf.decision_function(X_test).sum()
+        assert_almost_equal(
+            s,
+            38.0,
+            decimal=4,
+            err_msg=invalid_decision_function_output)
+
+        if hasattr(clf, 'classes_'):
+            # The classes_ attribute is currently not supported
+            # when predicting when there was no y input specified
+            # during fitting.
+            self.fail("classes_ attribute not expected.")
 
     def test_fail_decision_function_multiclass(self):
         check_unsupported_decision_function(

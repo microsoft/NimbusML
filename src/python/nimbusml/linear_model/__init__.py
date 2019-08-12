@@ -1,8 +1,11 @@
-from ._averagedperceptronbinaryclassifier import AveragedPerceptronBinaryClassifier
+from ._averagedperceptronbinaryclassifier import \
+    AveragedPerceptronBinaryClassifier
 from ._fastlinearbinaryclassifier import FastLinearBinaryClassifier
 from ._fastlinearclassifier import FastLinearClassifier
 from ._fastlinearregressor import FastLinearRegressor
-from ._logisticregressionbinaryclassifier import LogisticRegressionBinaryClassifier
+from ._linearsvmbinaryclassifier import LinearSvmBinaryClassifier
+from ._logisticregressionbinaryclassifier import \
+    LogisticRegressionBinaryClassifier
 from ._logisticregressionclassifier import LogisticRegressionClassifier
 from ._onlinegradientdescentregressor import OnlineGradientDescentRegressor
 from ._ordinaryleastsquaresregressor import OrdinaryLeastSquaresRegressor
@@ -15,12 +18,13 @@ __all__ = [
     'FastLinearBinaryClassifier',
     'FastLinearClassifier',
     'FastLinearRegressor',
+    'LinearSvmBinaryClassifier',
     'LogisticRegressionBinaryClassifier',
     'LogisticRegressionClassifier',
     'OnlineGradientDescentRegressor',
     'OrdinaryLeastSquaresRegressor',
     'PoissonRegressionRegressor',
     'SgdBinaryClassifier',
-    'SymSgdBinaryClassifier',
+    'SymSgdBinaryClassifier'
 ]
 

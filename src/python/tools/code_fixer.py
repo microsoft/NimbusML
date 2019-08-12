@@ -20,6 +20,17 @@ NG_1 = """from ...base_transform import BaseTransform"""
 NG_1_correct = """from ...base_transform import BaseTransform
 from .extractor import Ngram"""
 
+ensemble = """from ..base_predictor import BasePredictor"""
+ensemble_correct = """from ..base_predictor import BasePredictor
+from .subset_selector import BootstrapSelector
+from .feature_selector import AllFeatureSelector"""
+
+diverse_selector = """from ...internal.utils.utils import trace"""
+classifier_diverse_selector = """from ...internal.utils.utils import trace
+from .diversity_measure import ClassifierDisagreement"""
+regressor_diverse_selector = """from ...internal.utils.utils import trace
+from .diversity_measure import RegressorDisagreement"""
+
 FM = \
     """import numbers
 from sklearn.base import ClassifierMixin
@@ -91,7 +102,25 @@ signature_fixes = {
     'FactorizationMachineBinaryClassifier': (FM, FM_correct),
     'OneHotHashVectorizer': (OHE, OHE_correct),
     'CustomStopWordsRemover': (cust_stop, cust_stop_correct),
-    'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct)
+    'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct),
+    'EnsembleClassifier': [(ensemble, ensemble_correct),
+                           ('sampling_type = bootstrap_selector',
+                            'sampling_type = BootstrapSelector'),
+                            ("feature_selector = {'Name': 'AllFeatureSelector'}",
+                             "feature_selector = AllFeatureSelector()")],
+    'EnsembleRegressor': [(ensemble, ensemble_correct),
+                           ('sampling_type = bootstrap_selector',
+                            'sampling_type = BootstrapSelector'),
+                            ("feature_selector = {'Name': 'AllFeatureSelector'}",
+                             "feature_selector = AllFeatureSelector()")],
+    'ClassifierBestDiverseSelector': [(diverse_selector,
+                                         classifier_diverse_selector),
+                                        ('diversity_metric_type = None',
+                                         'diversity_metric_type = ClassifierDisagreement()')],
+    'RegressorBestDiverseSelector': [(diverse_selector,
+                                         regressor_diverse_selector),
+                                        ('diversity_metric_type = None',
+                                         'diversity_metric_type = RegressorDisagreement()')]
 }
 
 
