@@ -54,11 +54,8 @@ class RegressorBestPerformanceSelector(core):
         <nimbusml.ensemble.output_combiner.RegressorStacking>`
 
 
-    .. index:: models, ensemble, classification
+    .. index:: models, ensemble, regression
 
-    Example:
-       .. literalinclude:: /../nimbusml/examples/EnsembleClassifier.py
-              :language: python
     """
 
     @trace
