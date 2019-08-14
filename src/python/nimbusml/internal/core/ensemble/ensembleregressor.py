@@ -60,9 +60,9 @@ class EnsembleRegressor(
         batches are used then this indicates the number of models per batch.
 
     :param sub_model_selector_type: Determines the efficient set of models the
-        ``output_combiner`` uses, and removes the least significant models. This is
-        used to improve the accuracy and reduce the model size. This is also called
-        pruning.
+        ``output_combiner`` uses, and removes the least significant models.
+        This is used to improve the accuracy and reduce the model size. This is
+        also called pruning.
 
         * ``RegressorAllSelector``: does not perform any pruning and selects
           all models in the ensemble to combine to create the output. This is
@@ -75,9 +75,9 @@ class EnsembleRegressor(
           can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or
           ``"RSquared"``.
 
-    :param output_combiner: Indicates how to combine the predictions of the different
-        models into a single prediction. There are five available output
-        combiners for clasification:
+    :param output_combiner: Indicates how to combine the predictions of the
+        different models into a single prediction. There are five available
+        output combiners for clasification:
 
         * ``RegressorAverage``: computes the average of the scores produced by
           the trained models.
