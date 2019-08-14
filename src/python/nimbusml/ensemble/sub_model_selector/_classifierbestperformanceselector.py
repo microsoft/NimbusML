@@ -58,9 +58,6 @@ class ClassifierBestPerformanceSelector(core):
 
     .. index:: models, ensemble, classification
 
-    Example:
-       .. literalinclude:: /../nimbusml/examples/EnsembleClassifier.py
-              :language: python
     """
 
     @trace

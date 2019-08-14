@@ -51,7 +51,7 @@
 		  ``"RSquared"``.
 	
 
-	:output_combiner: indicates how to combine the predictions of the different
+	:param output_combiner: indicates how to combine the predictions of the different
 	    models into a single prediction. There are five available output
 		combiners for clasification:
 
@@ -126,7 +126,7 @@
         <nimbusml.ensemble.output_combiner.RegressorStacking>`
 
 
-    .. index:: models, ensemble, classification
+    .. index:: models, ensemble, regression
 
     Example:
        .. literalinclude:: /../nimbusml/examples/EnsembleRegressor.py
