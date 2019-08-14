@@ -77,8 +77,7 @@ class EnsembleClassifier(
           ``"AccuracyMicro"``, ``"AccuracyMacro"``,    ``"LogLoss"``,
           or ``"LogLossReduction"``.
 
-
-    :output_combiner: indicates how to combine the predictions of the different
+    :param output_combiner: indicates how to combine the predictions of the different
         models into a single prediction. There are five available output
         combiners for clasification:
 
@@ -96,8 +95,6 @@ class EnsembleClassifier(
         * ``ClassifierWeightedAverage``: computes the weighted average of the
         outputs of the trained models, weighted by the specified metric. The
           metric can be ``"AccuracyMicroAvg"`` or ``"AccuracyMacroAvg"``.
-
-    :param output_combiner: Output combiner.
 
     :param normalize: Specifies the type of automatic normalization used:
 

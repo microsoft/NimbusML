@@ -13,7 +13,7 @@ __all__ = [
     'ClassifierStacking',
     'ClassifierVoting',
     'ClassifierWeightedAverage',
-    'ClassifierAverage',
-    'ClassifierMedian',
-    'ClassifierStacking'
+    'RegressorAverage',
+    'RegressorMedian',
+    'RegressorStacking'
 ]
