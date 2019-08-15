@@ -67,9 +67,7 @@
     <Compile Include="nimbusml\ensemble\sub_model_selector\__init__.py" />
     <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\classifierdisagreement.py" />
     <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\regressordisagreement.py" />
-    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\__init__.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\allinstanceselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\bootstrapselector.py" />
     <Compile Include="nimbusml\ensemble\subset_selector\randompartitionselector.py" />
