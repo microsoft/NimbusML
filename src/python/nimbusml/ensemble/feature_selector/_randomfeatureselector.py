@@ -10,7 +10,7 @@ RandomFeatureSelector
 __all__ = ["RandomFeatureSelector"]
 
 
-from ...internal.core.ensemble.feature_selector.randomfeatureselector import \
+from ...internal.core.ensemble.feature_selector._randomfeatureselector import \
     RandomFeatureSelector as core
 from ...internal.utils.utils import trace
 

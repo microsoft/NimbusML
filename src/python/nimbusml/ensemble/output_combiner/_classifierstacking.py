@@ -10,7 +10,7 @@ ClassifierStacking
 __all__ = ["ClassifierStacking"]
 
 
-from ...internal.core.ensemble.output_combiner.classifierstacking import \
+from ...internal.core.ensemble.output_combiner._classifierstacking import \
     ClassifierStacking as core
 from ...internal.utils.utils import trace
 

@@ -13,7 +13,7 @@ __all__ = ["LinearSvmBinaryClassifier"]
 from sklearn.base import ClassifierMixin
 
 from ..base_predictor import BasePredictor
-from ..internal.core.linear_model.linearsvmbinaryclassifier import \
+from ..internal.core.linear_model._linearsvmbinaryclassifier import \
     LinearSvmBinaryClassifier as core
 from ..internal.utils.utils import trace
 

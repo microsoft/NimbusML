@@ -13,7 +13,7 @@ __all__ = ["IidChangePointDetector"]
 from sklearn.base import TransformerMixin
 
 from ..base_transform import BaseTransform
-from ..internal.core.timeseries.iidchangepointdetector import \
+from ..internal.core.timeseries._iidchangepointdetector import \
     IidChangePointDetector as core
 from ..internal.utils.utils import trace
 

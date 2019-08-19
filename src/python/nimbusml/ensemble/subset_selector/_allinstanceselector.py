@@ -10,7 +10,7 @@ AllInstanceSelector
 __all__ = ["AllInstanceSelector"]
 
 
-from ...internal.core.ensemble.subset_selector.allinstanceselector import \
+from ...internal.core.ensemble.subset_selector._allinstanceselector import \
     AllInstanceSelector as core
 from ...internal.utils.utils import trace
 

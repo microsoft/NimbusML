@@ -10,7 +10,7 @@ BootstrapSelector
 __all__ = ["BootstrapSelector"]
 
 
-from ...internal.core.ensemble.subset_selector.bootstrapselector import \
+from ...internal.core.ensemble.subset_selector._bootstrapselector import \
     BootstrapSelector as core
 from ...internal.utils.utils import trace
 

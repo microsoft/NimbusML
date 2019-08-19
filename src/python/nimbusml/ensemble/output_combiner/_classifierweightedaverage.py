@@ -10,7 +10,7 @@ ClassifierWeightedAverage
 __all__ = ["ClassifierWeightedAverage"]
 
 
-from ...internal.core.ensemble.output_combiner.classifierweightedaverage import \
+from ...internal.core.ensemble.output_combiner._classifierweightedaverage import \
     ClassifierWeightedAverage as core
 from ...internal.utils.utils import trace
 

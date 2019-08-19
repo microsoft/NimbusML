@@ -10,7 +10,7 @@ ClassifierBestPerformanceSelector
 __all__ = ["ClassifierBestPerformanceSelector"]
 
 
-from ...internal.core.ensemble.sub_model_selector.classifierbestperformanceselector import \
+from ...internal.core.ensemble.sub_model_selector._classifierbestperformanceselector import \
     ClassifierBestPerformanceSelector as core
 from ...internal.utils.utils import trace
 

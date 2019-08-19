@@ -10,7 +10,7 @@ ClassifierAllSelector
 __all__ = ["ClassifierAllSelector"]
 
 
-from ...internal.core.ensemble.sub_model_selector.classifierallselector import \
+from ...internal.core.ensemble.sub_model_selector._classifierallselector import \
     ClassifierAllSelector as core
 from ...internal.utils.utils import trace
 

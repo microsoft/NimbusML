@@ -10,7 +10,7 @@ RegressorBestPerformanceSelector
 __all__ = ["RegressorBestPerformanceSelector"]
 
 
-from ...internal.core.ensemble.sub_model_selector.regressorbestperformanceselector import \
+from ...internal.core.ensemble.sub_model_selector._regressorbestperformanceselector import \
     RegressorBestPerformanceSelector as core
 from ...internal.utils.utils import trace
 

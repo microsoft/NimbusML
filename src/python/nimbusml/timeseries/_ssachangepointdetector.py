@@ -13,7 +13,7 @@ __all__ = ["SsaChangePointDetector"]
 from sklearn.base import TransformerMixin
 
 from ..base_transform import BaseTransform
-from ..internal.core.timeseries.ssachangepointdetector import \
+from ..internal.core.timeseries._ssachangepointdetector import \
     SsaChangePointDetector as core
 from ..internal.utils.utils import trace
 

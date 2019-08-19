@@ -10,7 +10,7 @@ RegressorAllSelector
 __all__ = ["RegressorAllSelector"]
 
 
-from ...internal.core.ensemble.sub_model_selector.regressorallselector import \
+from ...internal.core.ensemble.sub_model_selector._regressorallselector import \
     RegressorAllSelector as core
 from ...internal.utils.utils import trace
 

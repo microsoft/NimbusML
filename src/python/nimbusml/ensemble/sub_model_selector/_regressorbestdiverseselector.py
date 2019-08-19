@@ -10,7 +10,7 @@ RegressorBestDiverseSelector
 __all__ = ["RegressorBestDiverseSelector"]
 
 
-from ...internal.core.ensemble.sub_model_selector.regressorbestdiverseselector import \
+from ...internal.core.ensemble.sub_model_selector._regressorbestdiverseselector import \
     RegressorBestDiverseSelector as core
 from ...internal.utils.utils import trace
 from .diversity_measure import RegressorDisagreement

@@ -10,7 +10,7 @@ RegressorDisagreement
 __all__ = ["RegressorDisagreement"]
 
 
-from ....internal.core.ensemble.sub_model_selector.diversity_measure.regressordisagreement import \
+from ....internal.core.ensemble.sub_model_selector.diversity_measure._regressordisagreement import \
     RegressorDisagreement as core
 from ....internal.utils.utils import trace
 

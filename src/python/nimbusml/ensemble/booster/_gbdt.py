@@ -10,7 +10,7 @@ Gbdt
 __all__ = ["Gbdt"]
 
 
-from ...internal.core.ensemble.booster.gbdt import Gbdt as core
+from ...internal.core.ensemble.booster._gbdt import Gbdt as core
 from ...internal.utils.utils import trace
 
 

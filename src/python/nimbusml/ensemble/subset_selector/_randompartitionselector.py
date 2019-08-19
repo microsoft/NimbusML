@@ -10,7 +10,7 @@ RandomPartitionSelector
 __all__ = ["RandomPartitionSelector"]
 
 
-from ...internal.core.ensemble.subset_selector.randompartitionselector import \
+from ...internal.core.ensemble.subset_selector._randompartitionselector import \
     RandomPartitionSelector as core
 from ...internal.utils.utils import trace
 

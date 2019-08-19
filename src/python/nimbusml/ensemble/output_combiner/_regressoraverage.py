@@ -10,7 +10,7 @@ RegressorAverage
 __all__ = ["RegressorAverage"]
 
 
-from ...internal.core.ensemble.output_combiner.regressoraverage import \
+from ...internal.core.ensemble.output_combiner._regressoraverage import \
     RegressorAverage as core
 from ...internal.utils.utils import trace
 

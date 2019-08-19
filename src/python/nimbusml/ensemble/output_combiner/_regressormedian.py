@@ -10,7 +10,7 @@ RegressorMedian
 __all__ = ["RegressorMedian"]
 
 
-from ...internal.core.ensemble.output_combiner.regressormedian import \
+from ...internal.core.ensemble.output_combiner._regressormedian import \
     RegressorMedian as core
 from ...internal.utils.utils import trace
 

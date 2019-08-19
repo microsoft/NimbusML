@@ -10,7 +10,7 @@ ClassifierBestDiverseSelector
 __all__ = ["ClassifierBestDiverseSelector"]
 
 
-from ...internal.core.ensemble.sub_model_selector.classifierbestdiverseselector import \
+from ...internal.core.ensemble.sub_model_selector._classifierbestdiverseselector import \
     ClassifierBestDiverseSelector as core
 from ...internal.utils.utils import trace
 from .diversity_measure import ClassifierDisagreement

@@ -10,7 +10,7 @@ ClassifierAverage
 __all__ = ["ClassifierAverage"]
 
 
-from ...internal.core.ensemble.output_combiner.classifieraverage import \
+from ...internal.core.ensemble.output_combiner._classifieraverage import \
     ClassifierAverage as core
 from ...internal.utils.utils import trace
 
