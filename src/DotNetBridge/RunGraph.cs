@@ -147,8 +147,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     var extension = Path.GetExtension(path);
                                     if (extension == ".txt")
                                         dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
-                                    else if(extension == ".dprep")
+                                    else if (extension == ".dprep")
+                                    {
+                                        DPrepSettings.Instance.PythonPath = BytesToString(penv->pythonPath);
                                         dv = DataFlow.FromDPrepFile(path).ToDataView();
+                                    }
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
                                 }
