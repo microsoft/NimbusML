@@ -242,6 +242,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
             // Call back to provide cancel flag.
             [FieldOffset(0x28)]
             public readonly void* checkCancel;
+
+            // Path to python executable.
+            [FieldOffset(0x30)]
+            public readonly sbyte* pythonPath;
 #pragma warning restore 649 // never assigned
         }
 
