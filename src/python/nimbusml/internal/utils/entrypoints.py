@@ -5,6 +5,7 @@
 """
 definition of classes for the entities in the entrypoint manifest.json
 """
+import sys
 import functools
 import json
 import os
@@ -257,8 +258,6 @@ class Graph(EntryPoint):
             self,
             X,
             y=None,
-            seed=None,
-            parallel=None,
             max_slots=-1,
             random_state=None,
             verbose=1,
@@ -266,39 +265,13 @@ class Graph(EntryPoint):
         """
         run graph
         """
-        code = ""
-        if parallel is not None:
-            if isinstance(parallel, six.integer_types):
-                code += "parallel = {} ".format(parallel)
-            else:
-                raise TypeError("parallel is not of 'int' type.")
-        if seed is not None:
-            if isinstance(seed, six.integer_types):
-                code += "seed = {} ".format(seed)
-            else:
-                raise TypeError("seed is not of 'int' type.")
-        if parallel is not None:
-            if isinstance(parallel, six.integer_types):
-                code += "parallel = {} ".format(parallel)
-            else:
-                raise TypeError("parallel is not of 'int' type.")
-        if max_slots is not None:
-            if isinstance(max_slots, six.integer_types):
-                code += "maxSlots = {} ".format(max_slots)
-            else:
-                raise TypeError("max_slots is not of 'int' type.")
-
-        if params.get("dryrun") is not None:
-            ret = 'graph = {%s} %s' % (str(self), code)
-        else:
-            ret = self.idv_bridge(X, y, code, random_state, verbose, **params)
+        ret = self.idv_bridge(X, y, random_state, max_slots, verbose, **params)
         return ret
 
     def _try_call_bridge(
             self,
             px_call,
             call_parameters,
-            code,
             verbose,
             concatenated,
             output_modelfilename):
@@ -323,9 +296,9 @@ class Graph(EntryPoint):
                             type(od), ','.join(od))
                 if isinstance(verbose, six.integer_types) and verbose >= 2:
                     raise BridgeRuntimeError(
-                        "{0}.\n--CODE--\n{1}\n--GRAPH--\n{2}\n--DATA--\n{3}"
-                        "\n--\nconcatenated={4}".format(
-                            str(e), code, str(self), vars, concatenated),
+                        "{0}.\n--GRAPH--\n{1}\n--DATA--\n{2}"
+                        "\n--\nconcatenated={3}".format(
+                            str(e),  str(self), vars, concatenated),
                         model=output_modelfilename)
                 else:
                     raise BridgeRuntimeError(
@@ -347,7 +320,7 @@ class Graph(EntryPoint):
             return None
         return pieces[0].replace("sep=", "").strip()
 
-    def idv_bridge(self, X, y, code, random_state=None, verbose=1, **params):
+    def idv_bridge(self, X, y, random_state=None, max_slots=-1, verbose=1, **params):
         output_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
@@ -441,22 +414,20 @@ class Graph(EntryPoint):
                     f.write(self.nimbusml_runnable_graph)
 
             call_parameters['verbose'] = try_set(verbose, False, six.integer_types)
-            call_parameters['graph'] = try_set(
-                'graph = {%s} %s' %
-                (str(self), code), False, str)
+            call_parameters['graph'] = try_set(str(self), False, str)
             
             # Set paths to .NET Core CLR, ML.NET and DataPrep libs
             set_clr_environment_vars()
             call_parameters['dotnetClrPath'] = try_set(get_clr_path(), False, str)
             call_parameters['mlnetPath'] = try_set(get_mlnet_path(), False, str)
             call_parameters['dprepPath'] = try_set(get_dprep_path(), False, str)
+            call_parameters['pythonPath'] = try_set(sys.executable, False, str)
 
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, six.integer_types)
             ret = self._try_call_bridge(
                 px_call,
                 call_parameters,
-                code,
                 verbose,
                 concatenated,
                 output_modelfilename)

@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.DataPrep.Common;
 using Microsoft.ML;
-using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
 using Microsoft.ML.Data.IO;
 using Microsoft.ML.EntryPoints;
@@ -27,29 +26,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
         // std:null specifier in a graph, used to redirect output to std::null
         const string STDNULL = "<null>";
 
-        private sealed class RunGraphArgs
-        {
-#pragma warning disable 649 // never assigned
-            [Argument(ArgumentType.AtMostOnce)]
-            public string graph;
-
-            [Argument(ArgumentType.LastOccurenceWins, HelpText = "Desired degree of parallelism in the data pipeline", ShortName = "conc")]
-            public int? parallel;
-
-            [Argument(ArgumentType.AtMostOnce, HelpText = "Random seed", ShortName = "seed")]
-            public int? randomSeed;
-
-            [Argument(ArgumentType.AtMostOnce, ShortName = "lab")]
-            public string labelColumn; //not used
-
-            [Argument(ArgumentType.Multiple, ShortName = "feat")]
-            public string[] featureColumn; //not used
-
-            [Argument(ArgumentType.AtMostOnce, HelpText = "Max slots to return for vector valued columns (<=0 to return all)")]
-            public int maxSlots = -1;
-
-#pragma warning restore 649 // never assigned
-        }
 
         private static void SaveIdvToFile(IDataView idv, string path, IHost host)
         {
@@ -90,19 +66,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
             Contracts.AssertValue(env);
 
-            var args = new RunGraphArgs();
-            string err = null;
-            if (!CmdParser.ParseArguments(env, graphStr, args, e => err = err ?? e))
-                throw env.Except(err);
-
-            int? maxThreadsAllowed = Math.Min(args.parallel > 0 ? args.parallel.Value : penv->maxThreadsAllowed, penv->maxThreadsAllowed);
-            maxThreadsAllowed = penv->maxThreadsAllowed > 0 ? maxThreadsAllowed : args.parallel;
-            var host = env.Register("RunGraph", args.randomSeed, null);
+            var host = env.Register("RunGraph", penv->seed, null);
 
             JObject graph;
             try
             {
-                graph = JObject.Parse(args.graph);
+                graph = JObject.Parse(graphStr);
             }
             catch (JsonReaderException ex)
             {
@@ -149,7 +118,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                         dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
                                     else if (extension == ".dprep")
                                     {
-                                        DPrepSettings.PythonPath = "path_to_be_set";
+                                        DPrepSettings.Instance.PythonPath = BytesToString(penv->pythonPath);
                                         dv = DataFlow.FromDPrepFile(path).ToDataView();
                                     }
                                     else
@@ -224,7 +193,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     }
                                     else
                                     {
-                                        var infos = ProcessColumns(ref idv, args.maxSlots, host);
+                                        var infos = ProcessColumns(ref idv, penv->maxSlots, host);
                                         SendViewToNative(ch, penv, idv, infos);
                                     }
                                     break;

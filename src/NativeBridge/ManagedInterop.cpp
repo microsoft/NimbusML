@@ -77,15 +77,16 @@ EnvironmentBlock::~EnvironmentBlock()
 		FillDead(_vset[i]);
 }
 
-EnvironmentBlock::EnvironmentBlock(int verbosity, int maxThreadsAllowed, int seed)
+EnvironmentBlock::EnvironmentBlock(int verbosity, int seed, int maxSlots, const char* pythonPath)
 {
 	// Assert that this class doesn't have a vtable.
 	assert(offsetof(EnvironmentBlock, verbosity) == 0);
 
 	this->_errCode = PyErrorCode_NoError;
 	this->verbosity = verbosity;
-	this->maxThreadsAllowed = maxThreadsAllowed;
 	this->seed = seed;
+	this->maxSlots = maxSlots;
+	this->pythonPath = pythonPath;
 	this->_kindMask = (1 << Warning) | (1 << Error);
 	if (verbosity > 0)
 		this->_kindMask |= (1 << Info);

@@ -66,6 +66,9 @@ private:
 	// The random seed.
 	int seed;
 
+	// Indicates max slots allowed. Less than one means default all.
+	int maxSlots;
+
 	// The message sink.
 	MESSAGESINK messageSink;
 
@@ -75,14 +78,14 @@ private:
 	// The model sink.
 	MODELSINK modelSink;
 
-	// Indicates max threads allowed. Less than one means default (maximal).
-	int maxThreadsAllowed;
-
 	// Check cancellation flag.
 	CHECKCANCEL checkCancel;
 
+	// Path to python executable.
+	const char* pythonPath;
+
 public:
-	EnvironmentBlock(int verbosity = 0, int maxThreadsAllowed = 0, int seed = 42);
+	EnvironmentBlock(int verbosity = 0, int seed = 42, int maxSlots = -1, const char* pythonPath = NULL);
 	~EnvironmentBlock();
 	PyErrorCode GetErrorCode() { return _errCode; }
 	std::string GetErrorMessage() { return _errMessage; }

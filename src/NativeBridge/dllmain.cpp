@@ -7,11 +7,13 @@
 #include "ManagedInterop.h"
 
 #define PARAM_SEED "seed"
+#define PARAM_MAX_SLOTS "maxSlots"
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
 #define PARAM_MLNET_PATH "mlnetPath"
 #define PARAM_DOTNETCLR_PATH "dotnetClrPath"
 #define PARAM_DPREP_PATH "dprepPath"
+#define PARAM_PYTHON_PATH "pythonPath"
 #define PARAM_DATA "data"
 
 
@@ -74,11 +76,12 @@ bp::dict pxCall(bp::dict& params)
         bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
         bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
         bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
+        bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
         bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
-        std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
         std::string s_dprepPath = std::string(dprepPath);
+        std::string s_pythonPath = std::string(pythonPath);
         std::string s_graph = std::string(graph);
         const char *mlnetpath = s_mlnetPath.c_str();
         const char *coreclrpath = s_dotnetClrPath.c_str();
@@ -93,7 +96,11 @@ bp::dict pxCall(bp::dict& params)
         if (params.has_key(PARAM_SEED))
             seed = bp::extract<int>(params[PARAM_SEED]);
 
-        EnvironmentBlock env(i_verbose, 0, seed);
+        int max_slots = -1;
+        if (params.has_key(PARAM_MAX_SLOTS))
+            max_slots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+
+        EnvironmentBlock env(std::int32_t(verbose), seed, max_slots, s_pythonPath.c_str());
         int retCode;
         if (params.has_key(PARAM_DATA) && bp::extract<bp::dict>(params[PARAM_DATA]).check())
         {
