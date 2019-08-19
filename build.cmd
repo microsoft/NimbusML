@@ -59,7 +59,7 @@ if /i [%1] == [--azureBuild]     (
 ) else goto :Usage
 
 :Usage
-echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
+echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--installPythonPackages] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"

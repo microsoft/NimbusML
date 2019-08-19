@@ -81,8 +81,11 @@ private:
 	// Check cancellation flag.
 	CHECKCANCEL checkCancel;
 
+	// Path to python executable
+	const char* pythonPath;
+
 public:
-	EnvironmentBlock(int verbosity = 0, int maxThreadsAllowed = 0, int seed = 42);
+	EnvironmentBlock(int verbosity = 0, int maxThreadsAllowed = 0, int seed = 42, const char* pythonPath = NULL);
 	~EnvironmentBlock();
 	PyErrorCode GetErrorCode() { return _errCode; }
 	std::string GetErrorMessage() { return _errMessage; }

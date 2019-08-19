@@ -57,14 +57,14 @@ class EnsembleClassifier(
         * ``RandomFeatureSelector``: selects a random subset of the features
           for each model.
 
-    :param num_models: indicates the number models to train, i.e. the number of
+    :param num_models: Indicates the number models to train, i.e. the number of
         subsets of the training set to sample. The default value is 50. If
         batches are used then this indicates the number of models per batch.
 
     :param sub_model_selector_type: Determines the efficient set of models the
-    ``output_combiner`` uses, and removes the least significant models. This is
-    used to improve the accuracy and reduce the model size. This is also called
-    pruning.
+        ``output_combiner`` uses, and removes the least significant models.
+        This is used to improve the accuracy and reduce the model size. This is
+        also called pruning.
 
         * ``ClassifierAllSelector``: does not perform any pruning and selects
           all models in the ensemble to combine to create the output. This is
@@ -77,10 +77,9 @@ class EnsembleClassifier(
           ``"AccuracyMicro"``, ``"AccuracyMacro"``,    ``"LogLoss"``,
           or ``"LogLossReduction"``.
 
-
-    :output_combiner: indicates how to combine the predictions of the different
-        models into a single prediction. There are five available output
-        combiners for clasification:
+    :param output_combiner: Indicates how to combine the predictions of the
+        different models into a single prediction. There are five available
+        outputcombiners for clasification:
 
         * ``ClassifierAverage``: computes the average of the scores produced by
           the trained models.
@@ -96,8 +95,6 @@ class EnsembleClassifier(
         * ``ClassifierWeightedAverage``: computes the weighted average of the
         outputs of the trained models, weighted by the specified metric. The
           metric can be ``"AccuracyMicroAvg"`` or ``"AccuracyMacroAvg"``.
-
-    :param output_combiner: Output combiner.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -126,7 +123,7 @@ class EnsembleClassifier(
     :param train_parallel: All the base learners will run asynchronously if the
         value is true.
 
-    :param batch_size: train the models iteratively on subsets of the training
+    :param batch_size: Train the models iteratively on subsets of the training
         set of this size. When using this option, it is assumed that the
         training set is randomized enough so that every batch is a random
         sample of instances. The default value is -1, indicating using the

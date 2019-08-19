@@ -11,7 +11,7 @@ mkdir -p "${DependenciesDir}"
 
 usage()
 {
-    echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests]"
+    echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests] [--installPythonPackages]"
     echo ""
     echo "Options:"
     echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
