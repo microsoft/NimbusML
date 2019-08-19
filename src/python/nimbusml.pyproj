@@ -46,6 +46,7 @@
     <Compile Include="nimbusml\ensemble\booster\_gbdt.py" />
     <Compile Include="nimbusml\ensemble\booster\_goss.py" />
     <Compile Include="nimbusml\ensemble\booster\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\ensemble\feature_selector\_allfeatureselector.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\_randomfeatureselector.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\__init__.py" />
@@ -87,6 +88,49 @@
     <Compile Include="nimbusml\ensemble\_lightgbmclassifier.py" />
     <Compile Include="nimbusml\ensemble\_lightgbmranker.py" />
     <Compile Include="nimbusml\ensemble\_lightgbmregressor.py" />
+=======
+    <Compile Include="nimbusml\ensemble\feature_selector\allfeatureselector.py" />
+    <Compile Include="nimbusml\ensemble\feature_selector\randomfeatureselector.py" />
+    <Compile Include="nimbusml\ensemble\feature_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\classifieraverage.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\classifiermedian.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\classifierstacking.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\classifiervoting.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\classifierweightedaverage.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\regressoraverage.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\regressormedian.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\regressorstacking.py" />
+    <Compile Include="nimbusml\ensemble\output_combiner\__init__.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\classifierallselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\classifierbestdiverseselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\classifierbestperformanceselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\regressorallselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\regressorbestdiverseselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\regressorbestperformanceselector.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\classifierdisagreement.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\regressordisagreement.py" />
+    <Compile Include="nimbusml\ensemble\sub_model_selector\diversity_measure\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="nimbusml\ensemble\subset_selector\allinstanceselector.py" />
+    <Compile Include="nimbusml\ensemble\subset_selector\bootstrapselector.py" />
+    <Compile Include="nimbusml\ensemble\subset_selector\randompartitionselector.py" />
+    <Compile Include="nimbusml\ensemble\subset_selector\__init__.py" />
+    <Compile Include="nimbusml\ensemble\ensembleclassifier.py" />
+    <Compile Include="nimbusml\ensemble\ensembleregressor.py" />
+    <Compile Include="nimbusml\ensemble\fastforestbinaryclassifier.py" />
+    <Compile Include="nimbusml\ensemble\fastforestregressor.py" />
+    <Compile Include="nimbusml\ensemble\fasttreesbinaryclassifier.py" />
+    <Compile Include="nimbusml\ensemble\fasttreesregressor.py" />
+    <Compile Include="nimbusml\ensemble\fasttreestweedieregressor.py" />
+    <Compile Include="nimbusml\ensemble\gambinaryclassifier.py" />
+    <Compile Include="nimbusml\ensemble\gamregressor.py" />
+    <Compile Include="nimbusml\ensemble\lightgbmbinaryclassifier.py" />
+    <Compile Include="nimbusml\ensemble\lightgbmclassifier.py" />
+    <Compile Include="nimbusml\ensemble\lightgbmranker.py" />
+    <Compile Include="nimbusml\ensemble\lightgbmregressor.py" />
+>>>>>>> master
     <Compile Include="nimbusml\ensemble\__init__.py" />
     <Compile Include="nimbusml\examples\AveragedPerceptronBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\Binner.py" />
@@ -246,6 +290,7 @@
     <Compile Include="nimbusml\internal\core\ensemble\booster\_gbdt.py" />
     <Compile Include="nimbusml\internal\core\ensemble\booster\_goss.py" />
     <Compile Include="nimbusml\internal\core\ensemble\booster\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\internal\core\ensemble\feature_selector\_allfeatureselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\feature_selector\_randomfeatureselector.py" />
     <Compile Include="nimbusml\internal\core\ensemble\feature_selector\__init__.py" />
@@ -279,6 +324,41 @@
     <Compile Include="nimbusml\internal\core\ensemble\_lightgbmranker.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\_ngram.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\_ngramhash.py" />
+=======
+    <Compile Include="nimbusml\internal\core\ensemble\feature_selector\allfeatureselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\feature_selector\randomfeatureselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\feature_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\classifieraverage.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\classifiermedian.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\classifierstacking.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\classifiervoting.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\classifierweightedaverage.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\regressoraverage.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\regressormedian.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\regressorstacking.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\output_combiner\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\classifierallselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\classifierbestdiverseselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\classifierbestperformanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorallselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorbestdiverseselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\regressorbestperformanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\classifierdisagreement.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\regressordisagreement.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\sub_model_selector\diversity_measure\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\allinstanceselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\bootstrapselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\randompartitionselector.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\subset_selector\__init__.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\ensembleclassifier.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\ensembleregressor.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\gambinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\gamregressor.py" />
+    <Compile Include="nimbusml\internal\core\ensemble\lightgbmranker.py" />
+    <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\ngram.py" />
+    <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\ngramhash.py" />
+>>>>>>> master
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\__init__.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\_lightlda.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\_customstopwordsremover.py" />
@@ -295,6 +375,7 @@
     <Compile Include="nimbusml\internal\core\loss\__init__.py" />
     <Compile Include="nimbusml\internal\core\multiclass\_onevsrestclassifier.py" />
     <Compile Include="nimbusml\internal\core\multiclass\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\_takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnduplicator.py" />
@@ -305,6 +386,18 @@
     <Compile Include="nimbusml\internal\core\timeseries\_ssachangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssaforecaster.py" />
     <Compile Include="nimbusml\internal\core\timeseries\_ssaspikedetector.py" />
+=======
+    <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\iidchangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\iidspikedetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\ssachangepointdetector.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\ssaforecaster.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\ssaspikedetector.py" />
+>>>>>>> master
     <Compile Include="nimbusml\internal\core\timeseries\__init__.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_customtextloader.py" />
     <Compile Include="nimbusml\internal\entrypoints\data_dataviewreference.py" />
@@ -559,6 +652,7 @@
     <Compile Include="nimbusml\internal\core\feature_selection\_countselector.py" />
     <Compile Include="nimbusml\internal\core\feature_selection\_mutualinformationselector.py" />
     <Compile Include="nimbusml\internal\core\feature_selection\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\internal\core\linear_model\_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_fastlinearbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_fastlinearregressor.py" />
@@ -566,6 +660,15 @@
     <Compile Include="nimbusml\internal\core\linear_model\_logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_logisticregressionclassifier.py" />
     <Compile Include="nimbusml\internal\core\linear_model\_sgdbinaryclassifier.py" />
+=======
+    <Compile Include="nimbusml\internal\core\linear_model\averagedperceptronbinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\fastlinearbinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\fastlinearregressor.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\linearsvmbinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\logisticregressionbinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\logisticregressionclassifier.py" />
+    <Compile Include="nimbusml\internal\core\linear_model\sgdbinaryclassifier.py" />
+>>>>>>> master
     <Compile Include="nimbusml\internal\core\linear_model\__init__.py" />
     <Compile Include="nimbusml\internal\core\naive_bayes\_naivebayesclassifier.py" />
     <Compile Include="nimbusml\internal\core\naive_bayes\__init__.py" />
@@ -583,9 +686,15 @@
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\_meanvariancescaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\_minmaxscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_columnselector.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\_typeconverter.py" />
+=======
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\columnconcatenator.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\columnselector.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\typeconverter.py" />
+>>>>>>> master
     <Compile Include="nimbusml\internal\core\preprocessing\schema\__init__.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\_tokey.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\text\_chartokenizer.py" />
@@ -602,6 +711,7 @@
     <Compile Include="nimbusml\internal\utils\utils.py" />
     <Compile Include="nimbusml\internal\utils\__init__.py" />
     <Compile Include="nimbusml\internal\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\linear_model\_averagedperceptronbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_fastlinearbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_fastlinearregressor.py" />
@@ -609,6 +719,15 @@
     <Compile Include="nimbusml\linear_model\_logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\linear_model\_logisticregressionclassifier.py" />
     <Compile Include="nimbusml\linear_model\_sgdbinaryclassifier.py" />
+=======
+    <Compile Include="nimbusml\linear_model\averagedperceptronbinaryclassifier.py" />
+    <Compile Include="nimbusml\linear_model\fastlinearbinaryclassifier.py" />
+    <Compile Include="nimbusml\linear_model\fastlinearregressor.py" />
+    <Compile Include="nimbusml\linear_model\linearsvmbinaryclassifier.py" />
+    <Compile Include="nimbusml\linear_model\logisticregressionbinaryclassifier.py" />
+    <Compile Include="nimbusml\linear_model\logisticregressionclassifier.py" />
+    <Compile Include="nimbusml\linear_model\sgdbinaryclassifier.py" />
+>>>>>>> master
     <Compile Include="nimbusml\linear_model\__init__.py" />
     <Compile Include="nimbusml\naive_bayes\_naivebayesclassifier.py" />
     <Compile Include="nimbusml\naive_bayes\__init__.py" />
@@ -674,11 +793,19 @@
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\__init__.py" />
+<<<<<<< HEAD
     <Compile Include="nimbusml\timeseries\_iidchangepointdetector.py" />
     <Compile Include="nimbusml\timeseries\_iidspikedetector.py" />
     <Compile Include="nimbusml\timeseries\_ssachangepointdetector.py" />
     <Compile Include="nimbusml\timeseries\_ssaforecaster.py" />
     <Compile Include="nimbusml\timeseries\_ssaspikedetector.py" />
+=======
+    <Compile Include="nimbusml\timeseries\iidchangepointdetector.py" />
+    <Compile Include="nimbusml\timeseries\iidspikedetector.py" />
+    <Compile Include="nimbusml\timeseries\ssachangepointdetector.py" />
+    <Compile Include="nimbusml\timeseries\ssaforecaster.py" />
+    <Compile Include="nimbusml\timeseries\ssaspikedetector.py" />
+>>>>>>> master
     <Compile Include="nimbusml\timeseries\__init__.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />
