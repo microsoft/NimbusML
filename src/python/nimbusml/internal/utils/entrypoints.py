@@ -307,6 +307,9 @@ class Graph(EntryPoint):
         return pieces[0].replace("sep=", "").strip()
 
     def run(self, X, y=None, max_slots=-1, random_state=None, verbose=1, **params):
+        if params.get("dryrun") is not None:
+            return 'graph = %s' % (str(self))
+
         output_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
