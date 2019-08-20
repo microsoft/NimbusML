@@ -209,12 +209,12 @@ invalid_decision_function_output = 'Invalid sum of scores ' \
 class TestDecisionFunction(unittest.TestCase):
     def test_pass_decision_function_binary(self):
         assert_almost_equal(decfun_sum(FactorizationMachineBinaryClassifier(
-        )), -32.618393, decimal=5, err_msg=invalid_decision_function_output)
+        )), -30.231644, decimal=5, err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_binary_with_pipeline(self):
         assert_almost_equal(
             decfun_sum(Pipeline([FactorizationMachineBinaryClassifier(
-            )])), -32.618393, decimal=5,
+            )])), -30.231644, decimal=5,
             err_msg=invalid_decision_function_output)
 
     def test_pass_decision_function_multiclass(self):
