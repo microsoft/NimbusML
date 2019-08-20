@@ -3,7 +3,7 @@ using Microsoft.DataPrep.Common;
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
-    internal class DprepLoader
+    internal class DprepLoader1
     {
         public static IDataView Load(string pythonPath, string path)
         {
