@@ -276,7 +276,7 @@ then
         "${PythonExe}" -m pip install --upgrade pytest-remotedata
     elif [ ${PythonVersion} = 3.7 ]
     then
-        "${PythonExe}" -m pip install --upgrade azureml-dataprep
+        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.12"
 	fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
