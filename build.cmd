@@ -311,6 +311,14 @@ copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\py
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+	:: remove dataprep dlls as its not supported in python 2.7
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.ProgramSynthesis.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DataPrep.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\ExcelDataReader.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.WindowsAzure.Storage.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
 ) else (
     for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )

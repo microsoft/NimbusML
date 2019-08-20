@@ -306,7 +306,7 @@ class Graph(EntryPoint):
             return None
         return pieces[0].replace("sep=", "").strip()
 
-    def run(self, X, y, max_slots=-1, random_state=None, verbose=1, **params):
+    def run(self, X, y=None, max_slots=-1, random_state=None, verbose=1, **params):
         output_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
@@ -400,7 +400,7 @@ class Graph(EntryPoint):
                     f.write(self.nimbusml_runnable_graph)
 
             call_parameters['verbose'] = try_set(verbose, False, six.integer_types)
-            call_parameters['graph'] = try_set('graph = {%s}' % str(self), False, str)
+            call_parameters['graph'] = try_set(str(self), False, str)
             
             # Set paths to .NET Core CLR, ML.NET and DataPrep libs
             set_clr_environment_vars()
