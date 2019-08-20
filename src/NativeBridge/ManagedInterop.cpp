@@ -69,6 +69,7 @@ EnvironmentBlock::~EnvironmentBlock()
 	// fill with dead values.
 	FillDead(this->verbosity);
 	FillDead(this->seed);
+	FillDead(this->maxSlots);
 	FillDead(this->messageSink);
 	FillDead(this->modelSink);
 	FillDead(this->checkCancel);
@@ -77,14 +78,14 @@ EnvironmentBlock::~EnvironmentBlock()
 		FillDead(_vset[i]);
 }
 
-EnvironmentBlock::EnvironmentBlock(int verbosity, int maxThreadsAllowed, int seed, const char* pythonPath)
+EnvironmentBlock::EnvironmentBlock(int verbosity, int maxSlots, int seed, const char* pythonPath)
 {
 	// Assert that this class doesn't have a vtable.
 	assert(offsetof(EnvironmentBlock, verbosity) == 0);
 
 	this->_errCode = PyErrorCode_NoError;
 	this->verbosity = verbosity;
-	this->maxThreadsAllowed = maxThreadsAllowed;
+	this->maxSlots = maxSlots;
 	this->seed = seed;
 	this->pythonPath = pythonPath;
 	this->_kindMask = (1 << Warning) | (1 << Error);

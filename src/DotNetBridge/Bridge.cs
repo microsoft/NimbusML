@@ -230,8 +230,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
             [FieldOffset(0x18)]
             public readonly void* modelSink;
 
+            //Max slots to return for vector valued columns(<=0 to return all).
             [FieldOffset(0x20)]
-            public readonly int maxThreadsAllowed;
+            public readonly int maxSlots;
 
             // Call back to provide cancel flag.
             [FieldOffset(0x28)]

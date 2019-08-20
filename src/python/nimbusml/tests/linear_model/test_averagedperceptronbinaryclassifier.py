@@ -37,7 +37,7 @@ class TestAveragedPerceptronBinaryClassifier(unittest.TestCase):
     def test_averagedperceptron(self):
         accuracy = get_accuracy(self, AveragedPerceptronBinaryClassifier())
         # Accuracy depends on column Unnamed0 (index).
-        assert_greater(accuracy, 0.94, "accuracy should be %s" % 0.94)
+        assert_greater(accuracy, 0.93, "accuracy should be greater than %s" % 0.93)
 
     def test_averagedperceptron_supported_losses(self):
         # bug: 'exp' fails on this test

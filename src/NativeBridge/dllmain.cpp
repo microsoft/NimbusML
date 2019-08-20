@@ -7,6 +7,7 @@
 #include "ManagedInterop.h"
 
 #define PARAM_SEED "seed"
+#define PARAM_MAX_SLOTS "max_slots"
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
 #define PARAM_MLNET_PATH "mlnetPath"
@@ -96,7 +97,11 @@ bp::dict pxCall(bp::dict& params)
         if (params.has_key(PARAM_SEED))
             seed = bp::extract<int>(params[PARAM_SEED]);
 
-        EnvironmentBlock env(i_verbose, 0, seed, s_pythonPath.c_str());
+		int maxSlots = -1;
+		if (params.has_key(PARAM_MAX_SLOTS))
+			maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+		
+		EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
         if (params.has_key(PARAM_DATA) && bp::extract<bp::dict>(params[PARAM_DATA]).check())
         {

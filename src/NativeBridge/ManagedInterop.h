@@ -75,8 +75,8 @@ private:
 	// The model sink.
 	MODELSINK modelSink;
 
-	// Indicates max threads allowed. Less than one means default (maximal).
-	int maxThreadsAllowed;
+	// Max slots to return for vector valued columns(<=0 to return all).
+	int maxSlots;
 
 	// Check cancellation flag.
 	CHECKCANCEL checkCancel;
@@ -85,7 +85,7 @@ private:
 	const char* pythonPath;
 
 public:
-	EnvironmentBlock(int verbosity = 0, int maxThreadsAllowed = 0, int seed = 42, const char* pythonPath = NULL);
+	EnvironmentBlock(int verbosity = 0, int maxSlots = -1, int seed = 42, const char* pythonPath = NULL);
 	~EnvironmentBlock();
 	PyErrorCode GetErrorCode() { return _errCode; }
 	std::string GetErrorMessage() { return _errMessage; }

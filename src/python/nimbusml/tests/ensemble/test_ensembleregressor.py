@@ -33,7 +33,7 @@ class TestEnsembleRegressor(unittest.TestCase):
         scores = ensemble.predict(X_test)
 
         r2 = r2_score(y_test, scores)
-        assert_greater(r2, 0.11, "should be greater than %s" % 0.11)
+        assert_greater(r2, 0.105, "should be greater than %s" % 0.105)
         assert_less(r2, 0.13, "sum should be less than %s" % 0.13)
 
         ensemble_with_options = EnsembleRegressor(

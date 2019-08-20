@@ -32,10 +32,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
 #pragma warning disable 649 // never assigned
             [Argument(ArgumentType.AtMostOnce)]
             public string graph;
-
-            [Argument(ArgumentType.AtMostOnce, HelpText = "Max slots to return for vector valued columns (<=0 to return all)")]
-            public int maxSlots = -1;
-
 #pragma warning restore 649 // never assigned
         }
 
@@ -207,7 +203,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     }
                                     else
                                     {
-                                        var infos = ProcessColumns(ref idv, args.maxSlots, host);
+                                        var infos = ProcessColumns(ref idv, penv->maxSlots, host);
                                         SendViewToNative(ch, penv, idv, infos);
                                     }
                                     break;
