@@ -96,7 +96,7 @@ class TestSweep(unittest.TestCase):
         grid.fit(X, y)
         assert grid.best_params_[
             'learner'].__class__.__name__ == 'FastLinearBinaryClassifier'
-        assert grid.best_params_['learner__number_of_threads'] == 4
+        assert grid.best_params_['learner__number_of_threads'] == 1
 
     @unittest.skipIf(
         six.PY2,
