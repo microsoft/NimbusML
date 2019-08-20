@@ -28,16 +28,12 @@ _install_requires = [
         'pandas>=0.22',
         'scipy>=0.18',
         'scikit-learn>0.19.0',
+        # dotnetcore2 package is available only for python 3.x
+        "dotnetcore2>=2.1.2;python_version>='3.0'",
+        "decorator;python_version<'3.0'",
+        "enum;python_version<'3.0'",
+        "funcsigs>=1.0.2;python_version<'3.0'",
     ]
-
-# dotnetcore2 package is available only for python 3.x
-if sys.version_info.major == 3:
-    _install_requires.append('dotnetcore2>=2.1.2')
-
-if sys.version_info[0:2] == (2,7):
-    _install_requires.append('decorator')
-    _install_requires.append('enum')
-    _install_requires.append('funcsigs>=1.0.2')
 
 setup(
     name='nimbusml',
