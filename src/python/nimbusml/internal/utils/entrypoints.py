@@ -5,6 +5,7 @@
 """
 definition of classes for the entities in the entrypoint manifest.json
 """
+import sys
 import functools
 import json
 import os
@@ -450,6 +451,7 @@ class Graph(EntryPoint):
             call_parameters['dotnetClrPath'] = try_set(get_clr_path(), False, str)
             call_parameters['mlnetPath'] = try_set(get_mlnet_path(), False, str)
             call_parameters['dprepPath'] = try_set(get_dprep_path(), False, str)
+            call_parameters['pythonPath'] = try_set(sys.executable, False, str)
 
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, six.integer_types)

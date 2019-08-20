@@ -11,11 +11,12 @@ mkdir -p "${DependenciesDir}"
 
 usage()
 {
-    echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests]"
+    echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests] [--installPythonPackages]"
     echo ""
     echo "Options:"
     echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
     echo "  --runTests                        Run tests after build"
+    echo "  --installPythonPackages           Install python packages after build"
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
     echo "  --includeExtendedTests            Include the extended tests if the tests are run"
     echo "  --buildNativeBridgeOnly           Build only the native bridge code"
@@ -31,6 +32,7 @@ else
     __configuration=DbgLinPy3.7
 fi
 __runTests=false
+__installPythonPackages=false
 __runExtendedTests=false
 __buildNativeBridge=true
 __buildDotNetBridge=true
@@ -48,6 +50,10 @@ while [ "$1" != "" ]; do
             ;;
         --runtests)
             __runTests=true
+            __installPythonPackages=true
+            ;;
+        --installPythonPackages)
+            __installPythonPackages=true
             ;;
         --includeextendedtests)
             __runExtendedTests=true
@@ -56,6 +62,7 @@ while [ "$1" != "" ]; do
             __buildNativeBridge=false
             __buildDotNetBridge=false
             __runTests=true
+            __installPythonPackages=true
             ;;
         --buildnativebridgeonly)
             __buildDotNetBridge=false
@@ -247,11 +254,11 @@ then
     echo Python package successfully created: ${__currentScriptDir}/target/${WheelFile}
 fi
 
-if [ ${__runTests} = true ]
-then 
+if [ ${__installPythonPackages} = true ]
+then
     echo ""
     echo "#################################"
-    echo "Running tests ... "
+    echo "Installing Python packages ... "
     echo "#################################"
     Wheel=${__currentScriptDir}/target/nimbusml-${ProductVersion}-${PythonTag}-none-${PlatName}.whl
     if [ ! -f ${Wheel} ]
@@ -269,11 +276,18 @@ then
         "${PythonExe}" -m pip install --upgrade pytest-remotedata
     elif [ ${PythonVersion} = 3.7 ]
     then
-        "${PythonExe}" -m pip install --upgrade azureml-dataprep
+        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.12"
 	fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
+fi
 
+if [ ${__runTests} = true ]
+then 
+    echo ""
+    echo "#################################"
+    echo "Running tests ... "
+    echo "#################################"
     PackagePath=${PythonRoot}/lib/python${PythonVersion}/site-packages/nimbusml
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests

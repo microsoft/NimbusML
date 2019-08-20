@@ -997,6 +997,7 @@
     <Content Include="docs\docstrings\SkipFilter.txt" />
     <Content Include="docs\docstrings\SlidingWindow.txt" />
     <Content Include="docs\docstrings\SsaChangePointDetector.txt" />
+    <Content Include="docs\docstrings\SsaForecaster.txt" />
     <Content Include="docs\docstrings\SsaSpikeDetector.txt" />
     <Content Include="docs\docstrings\SsweEmbedding.txt" />
     <Content Include="docs\docstrings\SupervisedBinner.txt" />

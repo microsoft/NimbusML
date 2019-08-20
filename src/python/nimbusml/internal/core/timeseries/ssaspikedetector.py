@@ -42,7 +42,7 @@ class SsaSpikeDetector(BasePipelineItem, DefaultSignature):
         kernel density estimation
         <https://en.wikipedia.org/wiki/Variable_kernel_density_estimation>`_.
 
-        The `p-value <https://en.wikipedia.org/wiki/P-value`_> score for the
+        The `p-value <https://en.wikipedia.org/wiki/P-value>`_ score for the
         current deviation is calculated based on the
         estimated distribution. The lower its value, the more likely the
         current point is an outlier.
@@ -85,7 +85,7 @@ class SsaSpikeDetector(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/SsaSpikeDetector.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/SsaSpikeDetector_df.py
               :language: python
     """
 

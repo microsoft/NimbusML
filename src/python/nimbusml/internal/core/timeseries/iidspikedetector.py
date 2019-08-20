@@ -28,7 +28,7 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
         distribution. `Adaptive kernel density estimation
         <https://en.wikipedia.org/wiki/Variable_kernel_density_estimation>`_
         is used to model the distribution.
-        The `p-value <https://en.wikipedia.org/wiki/P-value`_> score
+        The `p-value <https://en.wikipedia.org/wiki/P-value>`_ score
         indicates the likelihood of the current observation according to
         the estimated distribution. The lower its value, the more likely the
         current point is an outlier.
@@ -56,7 +56,7 @@ class IidSpikeDetector(BasePipelineItem, DefaultSignature):
     .. index:: models, timeseries, transform
 
     Example:
-       .. literalinclude:: /../nimbusml/examples/IidSpikePointDetector.py
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/IidSpikeDetector_df.py
               :language: python
     """
 

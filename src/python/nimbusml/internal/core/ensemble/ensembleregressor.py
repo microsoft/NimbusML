@@ -55,14 +55,14 @@ class EnsembleRegressor(
         * ``RandomFeatureSelector``: selects a random subset of the features
           for each model.
 
-    :param num_models: indicates the number models to train, i.e. the number of
+    :param num_models: Indicates the number models to train, i.e. the number of
         subsets of the training set to sample. The default value is 50. If
         batches are used then this indicates the number of models per batch.
 
     :param sub_model_selector_type: Determines the efficient set of models the
-    ``output_combiner`` uses, and removes the least significant models. This is
-    used to improve the accuracy and reduce the model size. This is also called
-    pruning.
+        ``output_combiner`` uses, and removes the least significant models.
+        This is used to improve the accuracy and reduce the model size. This is
+        also called pruning.
 
         * ``RegressorAllSelector``: does not perform any pruning and selects
           all models in the ensemble to combine to create the output. This is
@@ -75,10 +75,9 @@ class EnsembleRegressor(
           can be ``"L1"``, ``"L2"``, ``"Rms"``, or ``"Loss"``, or
           ``"RSquared"``.
 
-
-    :output_combiner: indicates how to combine the predictions of the different
-        models into a single prediction. There are five available output
-        combiners for clasification:
+    :param output_combiner: Indicates how to combine the predictions of the
+        different models into a single prediction. There are five available
+        output combiners for clasification:
 
         * ``RegressorAverage``: computes the average of the scores produced by
           the trained models.
@@ -88,8 +87,6 @@ class EnsembleRegressor(
           training set where each instance is a vector containing the outputs
           of the different models on a training instance, and the instance's
           label.
-
-    :param output_combiner: Output combiner.
 
     :param normalize: Specifies the type of automatic normalization used:
 
@@ -118,7 +115,7 @@ class EnsembleRegressor(
     :param train_parallel: All the base learners will run asynchronously if the
         value is true.
 
-    :param batch_size: train the models iteratively on subsets of the training
+    :param batch_size: Train the models iteratively on subsets of the training
         set of this size. When using this option, it is assumed that the
         training set is randomized enough so that every batch is a random
         sample of instances. The default value is -1, indicating using the
@@ -164,7 +161,7 @@ class EnsembleRegressor(
         <nimbusml.ensemble.output_combiner.RegressorStacking>`
 
 
-    .. index:: models, ensemble, classification
+    .. index:: models, ensemble, regression
 
     Example:
        .. literalinclude:: /../nimbusml/examples/EnsembleRegressor.py
