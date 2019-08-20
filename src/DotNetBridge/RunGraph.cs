@@ -33,18 +33,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
             [Argument(ArgumentType.AtMostOnce)]
             public string graph;
 
-            [Argument(ArgumentType.LastOccurenceWins, HelpText = "Desired degree of parallelism in the data pipeline", ShortName = "conc")]
-            public int? parallel;
-
-            [Argument(ArgumentType.AtMostOnce, HelpText = "Random seed", ShortName = "seed")]
-            public int? randomSeed;
-
-            [Argument(ArgumentType.AtMostOnce, ShortName = "lab")]
-            public string labelColumn; //not used
-
-            [Argument(ArgumentType.Multiple, ShortName = "feat")]
-            public string[] featureColumn; //not used
-
             [Argument(ArgumentType.AtMostOnce, HelpText = "Max slots to return for vector valued columns (<=0 to return all)")]
             public int maxSlots = -1;
 
@@ -95,9 +83,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             if (!CmdParser.ParseArguments(env, graphStr, args, e => err = err ?? e))
                 throw env.Except(err);
 
-            int? maxThreadsAllowed = Math.Min(args.parallel > 0 ? args.parallel.Value : penv->maxThreadsAllowed, penv->maxThreadsAllowed);
-            maxThreadsAllowed = penv->maxThreadsAllowed > 0 ? maxThreadsAllowed : args.parallel;
-            var host = env.Register("RunGraph", args.randomSeed, null);
+            var host = env.Register("RunGraph", penv->seed, null);
 
             JObject graph;
             try

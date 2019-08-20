@@ -55,7 +55,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
         public RmlEnvironment(Bridge.CheckCancelled checkDelegate, int? seed = null, bool verbose = false)
             : this(RandomUtils.Create(seed), verbose)
         {
-
             CheckCancelled = checkDelegate;
         }
 

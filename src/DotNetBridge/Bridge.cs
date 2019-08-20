@@ -186,12 +186,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
             Generic = 2,
         }
 
-#if !CORECLR
-        // The hosting code invokes this to get a specific entry point.
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private delegate IntPtr NativeFnGetter(FnId id);
-#endif
-
         #region Callbacks to native
 
         // Call back to provide messages to native code.
@@ -252,41 +246,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private unsafe delegate int NativeGeneric(EnvironmentBlock* penv, sbyte* psz, int cdata, DataSourceBlock** ppdata);
 
-#if !CORECLR
-        private static NativeFnGetter FnGetter;
-#endif
         private static NativeGeneric FnGeneric;
 
         private static TDel MarshalDelegate<TDel>(void* pv)
         {
             Contracts.Assert(typeof(TDel).IsSubclassOf(typeof(Delegate)));
             Contracts.Assert(pv != null);
-#if CORECLR
             return Marshal.GetDelegateForFunctionPointer<TDel>((IntPtr)pv);
-#else
-            return (TDel)(object)Marshal.GetDelegateForFunctionPointer((IntPtr)pv, typeof(TDel));
-#endif
         }
-
-#if !CORECLR
-        /// <summary>
-        /// This is the bootstrapping entry point. It's labeled private but is actually invoked from the native
-        /// code to poke the address of the FnGetter callback into the address encoded in the string parameter.
-        /// This odd way of doing things is because the most convenient way to call an initial managed method
-        /// imposes the signature of Func{string, int}, which doesn't allow us to return a function adress.
-        /// </summary>
-        private static unsafe int GetFnGetterCallback(string addr)
-        {
-            if (FnGetter == null)
-                Interlocked.CompareExchange(ref FnGetter, (NativeFnGetter)GetFn, null);
-            long a = long.Parse(addr);
-            IntPtr* p = null;
-            IntPtr** pp = &p;
-            *(long*)pp = a;
-            *p = Marshal.GetFunctionPointerForDelegate(FnGetter);
-            return 1;
-        }
-#endif
 
         /// <summary>
         /// This is the main FnGetter function. Given an FnId value, it returns a native-callable
@@ -397,7 +364,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     // Wrap the data sets.
                     ch.Trace("Wrapping native data sources");
                     ch.Trace("Executing");
-                    ExecCore(penv, host, ch, graph, cdata, ppdata);
+                    RunGraphCore(penv, host, graph, cdata, ppdata);
                 }
                 catch (Exception e)
                 {
@@ -418,24 +385,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
             }
             return 0;
-        }
-
-        private static void CheckModel(IHost host, byte** ppModelBin, long* pllModelBinLen, int i)
-        {
-            host.CheckParam(
-                ppModelBin != null && ppModelBin[i] != null
-                && pllModelBinLen != null && pllModelBinLen[i] > 0, "pModelBin", "Model is missing");
-        }
-
-        private static void ExecCore(EnvironmentBlock* penv, IHost host, IChannel ch, string graph, int cdata, DataSourceBlock** ppdata)
-        {
-            Contracts.AssertValue(ch);
-            ch.AssertValue(host);
-            ch.AssertNonEmpty(graph);
-            ch.Assert(cdata >= 0);
-            ch.Assert(ppdata != null || cdata == 0);
-
-            RunGraphCore(penv, host, graph, cdata, ppdata);
         }
 
         /// <summary>
@@ -483,25 +432,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             if (cch == 0)
                 return null;
-#if CORECLR
-
             return Encoding.UTF8.GetString((byte*)psz, cch);
-#else
-            if (cch <= 0)
-                return "";
-
-            var decoder = Encoding.UTF8.GetDecoder();
-            var chars = new char[decoder.GetCharCount((byte*)psz, cch, true)];
-            int bytesUsed;
-            int charsUsed;
-            bool complete;
-            fixed (char* pchars = chars)
-                decoder.Convert((byte*)psz, cch, pchars, chars.Length, true, out bytesUsed, out charsUsed, out complete);
-            Contracts.Assert(bytesUsed == cch);
-            Contracts.Assert(charsUsed == chars.Length);
-            Contracts.Assert(complete);
-            return new string(chars);
-#endif
         }
 
         /// <summary>
