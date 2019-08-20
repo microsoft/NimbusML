@@ -148,7 +148,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     if (extension == ".txt")
                                         dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
                                     else if (extension == ".dprep")
-                                        dv = Load(BytesToString(penv->pythonPath), path);
+                                        dv = LoadDprepFile(BytesToString(penv->pythonPath), path);
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
                                 }
@@ -283,7 +283,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             }
         }
 
-        private static IDataView Load(string pythonPath, string path)
+        private static IDataView LoadDprepFile(string pythonPath, string path)
         {
             DPrepSettings.Instance.PythonPath = pythonPath;
             return DataFlow.FromDPrepFile(path).ToDataView();
