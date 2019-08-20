@@ -557,7 +557,6 @@ class CV:
                 X=X,
                 y=y,
                 random_state=pipeline.random_state,
-                seed=pipeline.random_state,
                 w=weights,
                 verbose=verbose,
                 telemetry_info=telemetry_info,

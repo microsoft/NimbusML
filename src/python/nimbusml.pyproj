@@ -14,7 +14,7 @@
     <Name>nimbusml</Name>
     <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
     <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
-    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <StartupFile>nimbusml\tests\dprep\test_dprep.py</StartupFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
