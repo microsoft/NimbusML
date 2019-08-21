@@ -71,6 +71,7 @@ OMITTED_CHECKS = {
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
                            'check_regressors_int, '
+                           # todo: investigate
                            'check_regressors_train',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
@@ -94,7 +95,7 @@ OMITTED_CHECKS = {
         'check_estimators_dtypes',
     # tolerance
     'LogisticRegressionClassifier': 'check_classifiers_train',
-    # tolerance
+    # todo: investigate
     'OnlineGradientDescentRegressor': 'check_regressors_train',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
