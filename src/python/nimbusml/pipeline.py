@@ -1819,8 +1819,9 @@ class Pipeline:
                 isinstance(X, DataFrame) and isinstance(y, (str, tuple))):
             y = y_temp
 
-        model_zip = ZipFile(self.model)
-        is_transformer_chain = any('TransformerChain' in item
+        is_transformer_chain = False
+        with ZipFile(self.model) as model_zip:
+            is_transformer_chain = any('TransformerChain' in item
                                    for item in model_zip.namelist())
 
         all_nodes = []
