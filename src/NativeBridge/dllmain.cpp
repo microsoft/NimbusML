@@ -76,15 +76,15 @@ bp::dict pxCall(bp::dict& params)
         bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
         bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
         bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
-		bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
-		bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
+        bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
+        bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
         std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
         std::string s_dprepPath = std::string(dprepPath);
         std::string s_pythonPath = std::string(pythonPath);
-		std::string s_graph = std::string(graph);
-		const char *mlnetpath = s_mlnetPath.c_str();
+        std::string s_graph = std::string(graph);
+        const char *mlnetpath = s_mlnetPath.c_str();
         const char *coreclrpath = s_dotnetClrPath.c_str();
         const char *dpreppath = s_dprepPath.c_str();
 
@@ -97,11 +97,11 @@ bp::dict pxCall(bp::dict& params)
         if (params.has_key(PARAM_SEED))
             seed = bp::extract<int>(params[PARAM_SEED]);
 
-		int maxSlots = -1;
-		if (params.has_key(PARAM_MAX_SLOTS))
-			maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
-		
-		EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
+        int maxSlots = -1;
+        if (params.has_key(PARAM_MAX_SLOTS))
+            maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+
+        EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
         if (params.has_key(PARAM_DATA) && bp::extract<bp::dict>(params[PARAM_DATA]).check())
         {

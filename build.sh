@@ -220,13 +220,13 @@ then
 		fi	
 		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 		# remove dataprep dlls as its not supported in python 2.7
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
-		rm -rf "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
     else
 		libs_txt=libs_linux.txt
 		if [ "$(uname -s)" = "Darwin" ]
