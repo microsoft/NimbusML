@@ -70,7 +70,7 @@ OMITTED_CHECKS = {
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
-                           'check_regressors_int',
+                           'check_regressors_int, '
                            'check_regressors_train',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
