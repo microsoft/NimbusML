@@ -318,6 +318,12 @@
       ]
     },
     {
+      "Name": "Models.DatasetTransformer",
+      "NewName": "DatasetTransformer",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.FieldAwareFactorizationMachineBinaryClassifier",
       "NewName": "FactorizationMachineBinaryClassifier",
       "Module": "decomposition",
