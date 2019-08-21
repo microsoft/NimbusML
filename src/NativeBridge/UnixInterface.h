@@ -151,7 +151,7 @@ public:
 
         std::string libsroot(mlnetpath);
         std::string coreclrdir(coreclrpath);
-        if (strlen(dpreppath) == 0) 
+        if (strlen(dpreppath) == 0)
         {
             dpreppath = mlnetpath;
         }

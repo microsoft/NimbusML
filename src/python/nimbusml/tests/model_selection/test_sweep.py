@@ -18,7 +18,7 @@ from nimbusml.feature_extraction.categorical import OneHotHashVectorizer, \
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.feature_extraction.text import WordEmbedding
 from nimbusml.feature_extraction.text.extractor import Ngram
-from nimbusml.linear_model import FastLinearBinaryClassifier
+from nimbusml.linear_model import FastLinearBinaryClassifier, AveragedPerceptronBinaryClassifier
 from nimbusml.utils import get_X_y
 from sklearn.model_selection import GridSearchCV
 from sklearn.utils.testing import assert_raises
@@ -68,12 +68,8 @@ class TestSweep(unittest.TestCase):
             'learner__number_of_trees': 1}
 
     def test_learners_sweep(self):
-        # grid search over 2 learners, even though pipe defined with
-        # FastTreesBinaryClassifier
-        # FastLinearBinaryClassifier learner wins, meaning we grid searched
-        # over it
+        # grid search over 2 learners
         np.random.seed(0)
-
         df = pd.DataFrame(dict(education=['A', 'A', 'A', 'A', 'B', 'A', 'B'],
                                workclass=['X', 'Y', 'X', 'X', 'X', 'Y', 'Y'],
                                y=[1, 0, 1, 1, 0, 1, 0]))
@@ -86,17 +82,13 @@ class TestSweep(unittest.TestCase):
 
         param_grid = dict(
             learner=[
-                FastLinearBinaryClassifier(),
-                FastTreesBinaryClassifier()],
-            learner__number_of_threads=[
-                1,
-                4])
+                AveragedPerceptronBinaryClassifier(),
+                FastTreesBinaryClassifier()])
         grid = GridSearchCV(pipe, param_grid)
 
         grid.fit(X, y)
         assert grid.best_params_[
-            'learner'].__class__.__name__ == 'FastLinearBinaryClassifier'
-        assert grid.best_params_['learner__number_of_threads'] == 1
+            'learner'].__class__.__name__ == 'AveragedPerceptronBinaryClassifier'
 
     @unittest.skipIf(
         six.PY2,

@@ -254,52 +254,10 @@ class Graph(EntryPoint):
             '"nodes"',
             '"Nodes"')
 
-    def run(
-            self,
-            X,
-            y=None,
-            seed=None,
-            parallel=None,
-            max_slots=-1,
-            random_state=None,
-            verbose=1,
-            **params):
-        """
-        run graph
-        """
-        code = ""
-        if parallel is not None:
-            if isinstance(parallel, six.integer_types):
-                code += "parallel = {} ".format(parallel)
-            else:
-                raise TypeError("parallel is not of 'int' type.")
-        if seed is not None:
-            if isinstance(seed, six.integer_types):
-                code += "seed = {} ".format(seed)
-            else:
-                raise TypeError("seed is not of 'int' type.")
-        if parallel is not None:
-            if isinstance(parallel, six.integer_types):
-                code += "parallel = {} ".format(parallel)
-            else:
-                raise TypeError("parallel is not of 'int' type.")
-        if max_slots is not None:
-            if isinstance(max_slots, six.integer_types):
-                code += "maxSlots = {} ".format(max_slots)
-            else:
-                raise TypeError("max_slots is not of 'int' type.")
-
-        if params.get("dryrun") is not None:
-            ret = 'graph = {%s} %s' % (str(self), code)
-        else:
-            ret = self.idv_bridge(X, y, code, random_state, verbose, **params)
-        return ret
-
     def _try_call_bridge(
             self,
             px_call,
             call_parameters,
-            code,
             verbose,
             concatenated,
             output_modelfilename):
@@ -324,9 +282,9 @@ class Graph(EntryPoint):
                             type(od), ','.join(od))
                 if isinstance(verbose, six.integer_types) and verbose >= 2:
                     raise BridgeRuntimeError(
-                        "{0}.\n--CODE--\n{1}\n--GRAPH--\n{2}\n--DATA--\n{3}"
-                        "\n--\nconcatenated={4}".format(
-                            str(e), code, str(self), vars, concatenated),
+                        "{0}.\n--GRAPH--\n{1}\n--DATA--\n{2}"
+                        "\n--\nconcatenated={3}".format(
+                            str(e), str(self), vars, concatenated),
                         model=output_modelfilename)
                 else:
                     raise BridgeRuntimeError(
@@ -348,12 +306,15 @@ class Graph(EntryPoint):
             return None
         return pieces[0].replace("sep=", "").strip()
 
-    def idv_bridge(self, X, y, code, random_state=None, verbose=1, **params):
+    def run(self, X, y=None, max_slots=-1, random_state=None, verbose=1, **params):
+        if params.get("dryrun") is not None:
+            return 'graph = %s' % (str(self))
+
         output_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
 
-        # Ideally, idv_bridge shouldn't care if it's running CV
+        # Ideally, run_graph shouldn't care if it's running CV
         # or a regular pipeline. That required changing the idv_bridge to be
         # more flexible (e.g. changing return value, changing input
         # structure, etc.) In my first attempt, this approach caused
@@ -442,9 +403,7 @@ class Graph(EntryPoint):
                     f.write(self.nimbusml_runnable_graph)
 
             call_parameters['verbose'] = try_set(verbose, False, six.integer_types)
-            call_parameters['graph'] = try_set(
-                'graph = {%s} %s' %
-                (str(self), code), False, str)
+            call_parameters['graph'] = try_set(str(self), False, str)
             
             # Set paths to .NET Core CLR, ML.NET and DataPrep libs
             set_clr_environment_vars()
@@ -455,10 +414,13 @@ class Graph(EntryPoint):
 
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, six.integer_types)
+
+            if max_slots:
+                call_parameters['max_slots'] = try_set(max_slots, False, six.integer_types)
+
             ret = self._try_call_bridge(
                 px_call,
                 call_parameters,
-                code,
                 verbose,
                 concatenated,
                 output_modelfilename)
