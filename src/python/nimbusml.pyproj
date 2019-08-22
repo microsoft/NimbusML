@@ -293,6 +293,7 @@
     <Compile Include="nimbusml\internal\core\loss\__init__.py" />
     <Compile Include="nimbusml\internal\core\multiclass\onevsrestclassifier.py" />
     <Compile Include="nimbusml\internal\core\multiclass\__init__.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\datasettransformer.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
@@ -611,6 +612,7 @@
     <Compile Include="nimbusml\naive_bayes\naivebayesclassifier.py" />
     <Compile Include="nimbusml\naive_bayes\__init__.py" />
     <Compile Include="nimbusml\pipeline.py" />
+    <Compile Include="nimbusml\preprocessing\datasettransformer.py" />
     <Compile Include="nimbusml\preprocessing\filter\bootstrapsampler.py" />
     <Compile Include="nimbusml\preprocessing\filter\rangefilter.py" />
     <Compile Include="nimbusml\preprocessing\filter\skipfilter.py" />
@@ -666,6 +668,7 @@
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
+    <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />

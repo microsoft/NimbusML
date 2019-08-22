@@ -260,7 +260,14 @@ def load_json(file_path):
         return json.loads(content_without_comments)
 
 
-skip_epoints = set(['OneVsRestClassifier', 'TreeFeaturizer'])
+skip_epoints = set([
+    'OneVsRestClassifier',
+    'TreeFeaturizer',
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    'SymSgdBinaryClassifier',
+    'DatasetTransformer'
+])
+
 epoints = []
 my_path = os.path.realpath(__file__)
 my_dir = os.path.dirname(my_path)
@@ -286,9 +293,6 @@ for e in epoints:
     print("======== now Estimator is %s =========== " % class_name)
     # skip LighGbm for now, because of random crashes.
     if 'LightGbm' in class_name:
-        continue
-    # skip SymSgdBinaryClassifier for now, because of crashes.
-    if 'SymSgdBinaryClassifier' in class_name:
         continue
 
     mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])

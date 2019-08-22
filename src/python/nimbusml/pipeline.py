@@ -599,6 +599,14 @@ class Pipeline:
             output_data=output_data,
             output_model=output_model,
             strategy_iosklearn=strategy_iosklearn)
+
+        for node in enumerate([n for n in transform_nodes
+                               if n.name == 'Models.DatasetTransformer']):
+            input_name = 'dataset_transformer_model' + str(node[0])
+            inputs[input_name] = node[1].inputs['TransformModel']
+            node[1].inputs['TransformModel'] = '$' + input_name
+            node[1].input_variables.add(node[1].inputs['TransformModel'])
+
         graph_nodes['transform_nodes'] = transform_nodes
         return graph_nodes, feature_columns, inputs, transform_nodes, \
             columns_out
@@ -778,9 +786,13 @@ class Pipeline:
         graph_nodes = list(itertools.chain(*graph_nodes.values()))
 
         # combine output models
-        transform_models = [node.outputs["Model"]
-                            for node in graph_nodes if
-                            "Model" in node.outputs]
+        transform_models = []
+        for node in graph_nodes:
+            if node.name == 'Models.DatasetTransformer':
+                transform_models.append(node.inputs['TransformModel'])
+            elif "Model" in node.outputs:
+                transform_models.append(node.outputs["Model"])
+
         if learner_node and len(
                 transform_models) > 0:  # no need to combine if there is
             #  only 1 model
