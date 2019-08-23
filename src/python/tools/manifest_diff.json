@@ -537,6 +537,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.LpNormalizer",
+      "NewName": "LpScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.OrdinaryLeastSquaresRegressor",
       "NewName": "OrdinaryLeastSquaresRegressor",
       "Module": "linear_model",
