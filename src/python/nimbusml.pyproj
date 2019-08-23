@@ -122,6 +122,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\LinearSvmBinaryClassifier_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\LpScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaForecaster_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaChangePointDetector_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\SsaSpikeDetector_df.py" />
@@ -670,6 +671,7 @@
     <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
+    <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
