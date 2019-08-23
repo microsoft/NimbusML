@@ -17302,6 +17302,63 @@
       ]
     },
     {
+      "Name": "Transforms.CategoryImputer",
+      "Desc": "Turns the given column into a column of its string representation",
+      "FriendlyName": "CategoryImputer Transform",
+      "ShortName": "CategoryImputer",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "Type": "String",
+          "Desc": "Input column",
+          "Aliases": [
+            "src"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Destination",
+          "Type": "String",
+          "Desc": "Output column, if not specified defaults to the input",
+          "Aliases": [
+            "dst"
+          ],
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "Transforms.CharacterTokenizer",
       "Desc": "Character-oriented tokenizer where text is considered a sequence of characters.",
       "FriendlyName": "Character Tokenizer Transform",
@@ -18078,6 +18135,102 @@
       ]
     },
     {
+      "Name": "Transforms.DateTimeSplitter",
+      "Desc": "Splits a date time value into each individual component",
+      "FriendlyName": "DateTime Transform",
+      "ShortName": "DateTimeTransform",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "Type": "String",
+          "Desc": "Input column",
+          "Aliases": [
+            "src"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Prefix",
+          "Type": "String",
+          "Desc": "Output column prefix",
+          "Aliases": [
+            "pre"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "ColumnsToDrop",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Enum",
+              "Values": [
+                "Year",
+                "Month",
+                "Day",
+                "Hour",
+                "Minute",
+                "Second",
+                "AmPm",
+                "Hour12",
+                "DayOfWeek",
+                "DayOfQuarter",
+                "DayOfYear",
+                "WeekOfMonth",
+                "QuarterOfYear",
+                "HalfOfYear",
+                "WeekIso",
+                "YearIso",
+                "MonthLabel",
+                "AmPmLbl",
+                "DayOfWeekLabel",
+                "HolidayName",
+                "IsPaidTimeOff"
+              ]
+            }
+          },
+          "Desc": "Columns to drop after the DateTime Expansion",
+          "Aliases": [
+            "drop"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "Transforms.Dictionarizer",
       "Desc": "Converts input values (words, numbers, etc.) to index in a dictionary.",
       "FriendlyName": "Term Transform",
@@ -18486,7 +18639,6 @@
         },
         {
           "Name": "LabelColumnName",
-          "PassAs": "LabelColumn",
           "Type": "String",
           "Desc": "Column to use for labels",
           "Aliases": [
@@ -22848,6 +23000,62 @@
           "SortOrder": 114.0,
           "IsNullable": false,
           "Default": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.ToString",
+      "Desc": "Turns the given column into a column of its string representation",
+      "FriendlyName": "ToString Transform",
+      "ShortName": "ToStringTransform",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "Type": "String",
+          "Desc": "Input column",
+          "Aliases": [
+            "src"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Destination",
+          "Type": "String",
+          "Desc": "Output column",
+          "Aliases": [
+            "dst"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
         }
       ],
       "Outputs": [
