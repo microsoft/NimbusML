@@ -19,6 +19,7 @@ from pandas import DataFrame, Series
 from scipy.sparse import csr_matrix
 from sklearn.utils.validation import check_X_y, check_array
 from sklearn.utils.multiclass import unique_labels
+from zipfile import ZipFile
 
 from .internal.core.base_pipeline_item import BasePipelineItem
 from .internal.entrypoints.data_customtextloader import \
@@ -40,6 +41,8 @@ from .internal.entrypoints.models_regressionevaluator import \
 from .internal.entrypoints.models_summarizer import models_summarizer
 from .internal.entrypoints.transforms_datasetscorer import \
     transforms_datasetscorer
+from .internal.entrypoints.transforms_datasettransformscorer import \
+    transforms_datasettransformscorer
 from .internal.entrypoints.transforms_featurecombiner import \
     transforms_featurecombiner
 from .internal.entrypoints.transforms_featurecontributioncalculationtransformer import \
@@ -596,6 +599,14 @@ class Pipeline:
             output_data=output_data,
             output_model=output_model,
             strategy_iosklearn=strategy_iosklearn)
+
+        for node in enumerate([n for n in transform_nodes
+                               if n.name == 'Models.DatasetTransformer']):
+            input_name = 'dataset_transformer_model' + str(node[0])
+            inputs[input_name] = node[1].inputs['TransformModel']
+            node[1].inputs['TransformModel'] = '$' + input_name
+            node[1].input_variables.add(node[1].inputs['TransformModel'])
+
         graph_nodes['transform_nodes'] = transform_nodes
         return graph_nodes, feature_columns, inputs, transform_nodes, \
             columns_out
@@ -775,9 +786,13 @@ class Pipeline:
         graph_nodes = list(itertools.chain(*graph_nodes.values()))
 
         # combine output models
-        transform_models = [node.outputs["Model"]
-                            for node in graph_nodes if
-                            "Model" in node.outputs]
+        transform_models = []
+        for node in graph_nodes:
+            if node.name == 'Models.DatasetTransformer':
+                transform_models.append(node.inputs['TransformModel'])
+            elif "Model" in node.outputs:
+                transform_models.append(node.outputs["Model"])
+
         if learner_node and len(
                 transform_models) > 0:  # no need to combine if there is
             #  only 1 model
@@ -1816,22 +1831,44 @@ class Pipeline:
                 isinstance(X, DataFrame) and isinstance(y, (str, tuple))):
             y = y_temp
 
-        all_nodes = []
-        inputs = dict([('data', ''), ('predictor_model', self.model)])
-        if isinstance(X, FileDataStream):
-            importtext_node = data_customtextloader(
-                input_file="$file",
-                data="$data",
-                custom_schema=schema.to_string(
-                    add_sep=True))
-            all_nodes = [importtext_node]
-            inputs = dict([('file', ''), ('predictor_model', self.model)])
+        is_transformer_chain = False
+        with ZipFile(self.model) as model_zip:
+            is_transformer_chain = any('TransformerChain' in item
+                                   for item in model_zip.namelist())
 
-        score_node = transforms_datasetscorer(
-            data="$data",
-            predictor_model="$predictor_model",
-            scored_data="$scoredVectorData")
-        all_nodes.extend([score_node])
+        all_nodes = []
+        if is_transformer_chain:
+            inputs = dict([('data', ''), ('transform_model', self.model)])
+            if isinstance(X, FileDataStream):
+                importtext_node = data_customtextloader(
+                    input_file="$file",
+                    data="$data",
+                    custom_schema=schema.to_string(
+                        add_sep=True))
+                all_nodes = [importtext_node]
+                inputs = dict([('file', ''), ('transform_model', self.model)])
+
+            score_node = transforms_datasettransformscorer(
+                data="$data",
+                transform_model="$transform_model",
+                scored_data="$scoredVectorData")
+            all_nodes.extend([score_node])
+        else:
+            inputs = dict([('data', ''), ('predictor_model', self.model)])
+            if isinstance(X, FileDataStream):
+                importtext_node = data_customtextloader(
+                    input_file="$file",
+                    data="$data",
+                    custom_schema=schema.to_string(
+                        add_sep=True))
+                all_nodes = [importtext_node]
+                inputs = dict([('file', ''), ('predictor_model', self.model)])
+
+            score_node = transforms_datasetscorer(
+                data="$data",
+                predictor_model="$predictor_model",
+                scored_data="$scoredVectorData")
+            all_nodes.extend([score_node])
 
         if (evaltype in ['binary', 'multiclass']) or \
            (hasattr(self, 'steps')
@@ -1888,6 +1925,10 @@ class Pipeline:
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
+
+        if is_transformer_chain:
+            out_data['PredictedLabel'] = out_data['PredictedLabel']*1
+
 
         if y is not None:
             # We need to fix the schema for ranking metrics
