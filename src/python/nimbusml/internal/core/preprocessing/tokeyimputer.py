@@ -13,15 +13,13 @@ __all__ = ["ToKeyImputer"]
 from ...entrypoints.transforms_categoryimputer import \
     transforms_categoryimputer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, DefaultSignature
+from ..base_pipeline_item import BasePipelineItem, SingleOutputSignature
 
 
-class ToKeyImputer(BasePipelineItem, DefaultSignature):
+class ToKeyImputer(BasePipelineItem, SingleOutputSignature):
     """
     **Description**
-        Turns the given column into a column of its string representation
-
-    :param destination: Output column, if not specified defaults to the input.
+        Fills in missing values in a column based on the most frequent value
 
     :param params: Additional arguments sent to compute engine.
 
@@ -30,12 +28,9 @@ class ToKeyImputer(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            destination=None,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
-
-        self.destination = destination
 
     @property
     def _entrypoint(self):
@@ -43,9 +38,44 @@ class ToKeyImputer(BasePipelineItem, DefaultSignature):
 
     @trace
     def _get_node(self, **all_args):
+
+        input_columns = self.input
+        if input_columns is None and 'input' in all_args:
+            input_columns = all_args['input']
+        if 'input' in all_args:
+            all_args.pop('input')
+
+        output_columns = self.output
+        if output_columns is None and 'output' in all_args:
+            output_columns = all_args['output']
+        if 'output' in all_args:
+            all_args.pop('output')
+
+        # validate input
+        if input_columns is None:
+            raise ValueError(
+                "'None' input passed when it cannot be none.")
+
+        if not isinstance(input_columns, list):
+            raise ValueError(
+                "input has to be a list of strings, instead got %s" %
+                type(input_columns))
+
+        # validate output
+        if output_columns is None:
+            raise ValueError(
+                "'None' output passed when it cannot be none.")
+
+        if not isinstance(output_columns, list):
+            raise ValueError(
+                "output has to be a string, instead got %s" %
+                type(output_columns))
+
         algo_args = dict(
-            source=self.source,
-            destination=self.destination)
+            column=[
+                dict(
+                    Source=i, Name=o) for i, o in zip(
+                    input_columns, output_columns)] if input_columns else None)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

@@ -24,8 +24,6 @@ class ToString(core, BaseTransform, TransformerMixin):
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param destination: Output column.
-
     :param params: Additional arguments sent to compute engine.
 
     """
@@ -33,7 +31,6 @@ class ToString(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            destination,
             columns=None,
             **params):
 
@@ -42,7 +39,6 @@ class ToString(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            destination=destination,
             **params)
         self._columns = columns
 

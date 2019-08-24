@@ -3,26 +3,25 @@
 Transforms.CategoryImputer
 """
 
+import numbers
 
 from ..utils.entrypoints import EntryPoint
 from ..utils.utils import try_set, unlist
 
 
 def transforms_categoryimputer(
-        source,
+        column,
         data,
         output_data=None,
         model=None,
-        destination=None,
         **params):
     """
     **Description**
-        Turns the given column into a column of its string representation
+        Fills in missing values in a column based on the most frequent value
 
-    :param source: Input column (inputs).
+    :param column: New column definition (optional form: name:src)
+        (inputs).
     :param data: Input dataset (inputs).
-    :param destination: Output column, if not specified defaults to
-        the input (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -31,20 +30,20 @@ def transforms_categoryimputer(
     inputs = {}
     outputs = {}
 
-    if source is not None:
-        inputs['Source'] = try_set(
-            obj=source,
+    if column is not None:
+        inputs['Column'] = try_set(
+            obj=column,
             none_acceptable=False,
-            is_of_type=str,
-            is_column=True)
+            is_of_type=dict,
+            is_column=True,
+            field_names=[
+                'Name',
+                'Source'])
     if data is not None:
         inputs['Data'] = try_set(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if destination is not None:
-        inputs['Destination'] = try_set(
-            obj=destination, none_acceptable=True, is_of_type=str)
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

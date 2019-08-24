@@ -3,15 +3,15 @@
 Transforms.ToString
 """
 
+import numbers
 
 from ..utils.entrypoints import EntryPoint
 from ..utils.utils import try_set, unlist
 
 
 def transforms_tostring(
-        source,
+        column,
         data,
-        destination,
         output_data=None,
         model=None,
         **params):
@@ -19,9 +19,9 @@ def transforms_tostring(
     **Description**
         Turns the given column into a column of its string representation
 
-    :param source: Input column (inputs).
+    :param column: New column definition (optional form: name:src)
+        (inputs).
     :param data: Input dataset (inputs).
-    :param destination: Output column (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -30,20 +30,18 @@ def transforms_tostring(
     inputs = {}
     outputs = {}
 
-    if source is not None:
-        inputs['Source'] = try_set(
-            obj=source,
+    if column is not None:
+        inputs['Column'] = try_set(
+            obj=column,
             none_acceptable=False,
-            is_of_type=str,
-            is_column=True)
+            is_of_type=dict,
+            is_column=True,
+            field_names=[
+                'Name',
+                'Source'])
     if data is not None:
         inputs['Data'] = try_set(
             obj=data,
-            none_acceptable=False,
-            is_of_type=str)
-    if destination is not None:
-        inputs['Destination'] = try_set(
-            obj=destination,
             none_acceptable=False,
             is_of_type=str)
     if output_data is not None:

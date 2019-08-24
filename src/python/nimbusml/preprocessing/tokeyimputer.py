@@ -20,11 +20,9 @@ from ..internal.utils.utils import trace
 class ToKeyImputer(core, BaseTransform, TransformerMixin):
     """
     **Description**
-        Turns the given column into a column of its string representation
+        Fills in missing values in a column based on the most frequent value
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
-
-    :param destination: Output column, if not specified defaults to the input.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -33,7 +31,6 @@ class ToKeyImputer(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            destination=None,
             columns=None,
             **params):
 
@@ -42,7 +39,6 @@ class ToKeyImputer(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            destination=destination,
             **params)
         self._columns = columns
 
