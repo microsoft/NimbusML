@@ -739,6 +739,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.NGramTranslator",
+      "NewName": "NGramExtractor",
+      "Module": "feature_extraction.text",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.WordEmbeddings",
       "NewName": "WordEmbedding",
       "Module": "feature_extraction.text",

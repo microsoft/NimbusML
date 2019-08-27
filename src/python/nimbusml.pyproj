@@ -177,6 +177,7 @@
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
     <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\LpScaler.py" />
+    <Compile Include="nimbusml\examples\NGramExtractor.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
@@ -234,6 +235,7 @@
     <Compile Include="nimbusml\feature_extraction\text\extractor\ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />
     <Compile Include="nimbusml\feature_extraction\text\lightlda.py" />
+    <Compile Include="nimbusml\feature_extraction\text\ngramextractor.py" />
     <Compile Include="nimbusml\feature_extraction\text\stopwords\customstopwordsremover.py" />
     <Compile Include="nimbusml\feature_extraction\text\stopwords\predefinedstopwordsremover.py" />
     <Compile Include="nimbusml\feature_extraction\text\stopwords\__init__.py" />
@@ -281,6 +283,7 @@
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\ngramhash.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\__init__.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\lightlda.py" />
+    <Compile Include="nimbusml\internal\core\feature_extraction\text\ngramextractor.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\customstopwordsremover.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\predefinedstopwordsremover.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\__init__.py" />
