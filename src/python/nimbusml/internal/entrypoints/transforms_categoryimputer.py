@@ -3,7 +3,6 @@
 Transforms.CategoryImputer
 """
 
-import numbers
 
 from ..utils.entrypoints import EntryPoint
 from ..utils.utils import try_set, unlist
@@ -34,11 +33,8 @@ def transforms_categoryimputer(
         inputs['Column'] = try_set(
             obj=column,
             none_acceptable=False,
-            is_of_type=dict,
-            is_column=True,
-            field_names=[
-                'Name',
-                'Source'])
+            is_of_type=list,
+            is_column=True)
     if data is not None:
         inputs['Data'] = try_set(
             obj=data,

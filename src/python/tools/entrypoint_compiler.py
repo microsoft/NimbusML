@@ -217,9 +217,6 @@ def write_api(entrypoint, kind="node", pkg_path=None, overwrite=False):
     class_type = entrypoint['Type']
     class_file = class_name.lower()
 
-    if class_name != 'ToKeyImputer' and class_name != 'RangeFilter' :
-        return
-
     doc_builder = DocBuilder()
     doc_builder.class_name = class_name
     doc_builder.class_module = class_dir
@@ -897,13 +894,13 @@ def write_core_class(
     if class_name in {'ColumnConcatenator'}:
         base_class = "BasePipelineItem"
         baseclass_sig = ", MultiOutputsSignature"
-    elif class_name in {'RangeFilter', 'ToString'}:
+    elif class_name in {'RangeFilter'}:
         base_class = "BasePipelineItem"
         baseclass_sig = ", SingleInputAsStringSignature"
     elif class_name == 'OneHotVectorizer':
         base_class = "BasePipelineItem"
         baseclass_sig = ", EqualInputOutputSignature"
-    elif class_name in {'NGramFeaturizer', 'OneHotHashVectorizer', 'ToKeyImputer'}:
+    elif class_name in {'NGramFeaturizer', 'OneHotHashVectorizer'}:
         base_class = "BasePipelineItem"
         baseclass_sig = ", SingleOutputSignature"
     elif class_name in {'Filter', 'ColumnDropper', 'TakeFilter',
@@ -1136,9 +1133,8 @@ def write_core_class(
                 # see if Name is among the fields
                 name_field = [
                     f for f in arg_type['Fields'] if f['Name'] == 'Name']
-                if (source_field[0]['Type'] != 'String' and 
-                    source_field[0]['Type']['Kind'] != 'Array') or \
-                    name_field[0]['Type'] != 'String':
+                if source_field[0]['Type']['Kind'] != 'Array' or \
+                        name_field[0]['Type'] != 'String':
                     print('unknown column type')
                 else:
                     tail_snip0 = indent(dedent("""
@@ -2044,10 +2040,7 @@ if __name__ == '__main__':
     script_args = arg_parser.parse_args()
     pkg_path = os.path.join(my_dir, r'..\nimbusml')
 
-    script_args.check_manual_changes = False
-    script_args.generate_entrypoints = False
-    script_args.generate_api = True
-    
+   
     if script_args.check_manual_changes:
         verbose = False
         if script_args.folder == 'temp':

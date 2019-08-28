@@ -9,6 +9,7 @@ lib_lightgbm.so
 libtensorflow.so
 libtensorflow_framework.so.1
 libonnxruntime.so
+Featurizers.dll
 System.Drawing.Common.dll
 TensorFlow.NET.dll
 NumSharp.Core.dll

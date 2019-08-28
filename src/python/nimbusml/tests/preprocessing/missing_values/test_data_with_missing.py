@@ -166,7 +166,7 @@ class TestDataWithMissing(unittest.TestCase):
         data = DataFrame(data)
 
         # Check ToKeyImputer
-        xf = ToKeyImputer(columns={'f0.out': 'f0'})
+        xf = ToKeyImputer(columns={'f0.out': 'f0', 'f1.out': 'f1'})
         result = xf.fit_transform(data)
         assert_equal(result.loc[2, 'f0.out'], 4)
         assert_equal(len(result), 4)

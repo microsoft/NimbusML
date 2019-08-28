@@ -17310,33 +17310,36 @@
         {
           "Name": "Column",
           "Type": {
-            "Kind": "Struct",
-            "Fields": [
-              {
-                "Name": "Name",
-                "Type": "String",
-                "Desc": "Name of the new column",
-                "Aliases": [
-                  "name"
-                ],
-                "Required": false,
-                "SortOrder": 150.0,
-                "IsNullable": false,
-                "Default": null
-              },
-              {
-                "Name": "Source",
-                "Type": "String",
-                "Desc": "Name of the source column",
-                "Aliases": [
-                  "src"
-                ],
-                "Required": false,
-                "SortOrder": 150.0,
-                "IsNullable": false,
-                "Default": null
-              }
-            ]
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
           },
           "Desc": "New column definition (optional form: name:src)",
           "Aliases": [
@@ -23046,33 +23049,36 @@
         {
           "Name": "Column",
           "Type": {
-            "Kind": "Struct",
-            "Fields": [
-              {
-                "Name": "Name",
-                "Type": "String",
-                "Desc": "Name of the new column",
-                "Aliases": [
-                  "name"
-                ],
-                "Required": false,
-                "SortOrder": 150.0,
-                "IsNullable": false,
-                "Default": null
-              },
-              {
-                "Name": "Source",
-                "Type": "String",
-                "Desc": "Name of the source column",
-                "Aliases": [
-                  "src"
-                ],
-                "Required": false,
-                "SortOrder": 150.0,
-                "IsNullable": false,
-                "Default": null
-              }
-            ]
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
           },
           "Desc": "New column definition (optional form: name:src)",
           "Aliases": [

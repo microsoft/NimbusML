@@ -13,10 +13,10 @@ __all__ = ["ToKeyImputer"]
 from ...entrypoints.transforms_categoryimputer import \
     transforms_categoryimputer
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, SingleOutputSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class ToKeyImputer(BasePipelineItem, SingleOutputSignature):
+class ToKeyImputer(BasePipelineItem, DefaultSignature):
     """
     **Description**
         Fills in missing values in a column based on the most frequent value
@@ -63,12 +63,11 @@ class ToKeyImputer(BasePipelineItem, SingleOutputSignature):
 
         # validate output
         if output_columns is None:
-            raise ValueError(
-                "'None' output passed when it cannot be none.")
+            output_columns = input_columns
 
         if not isinstance(output_columns, list):
             raise ValueError(
-                "output has to be a string, instead got %s" %
+                "output has to be a list of strings, instead got %s" %
                 type(output_columns))
 
         algo_args = dict(

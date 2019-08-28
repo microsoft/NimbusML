@@ -1,27 +1,32 @@
 ###############################################################################
-# ToString
-from nimbusml import FileDataStream, Pipeline
+# ToKey
+import numpy
+from nimbusml import FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.preprocessing import ToString, ToKey
+from nimbusml.preprocessing import ToString
 
 # data input (as a FileDataStream)
-path = get_dataset('topics').as_filepath()
+path = get_dataset('infert').as_filepath()
 
-# load data
-data = FileDataStream.read_csv(path, sep=',')
+data = FileDataStream.read_csv(path, sep=',', numeric_dtype=numpy.float32,
+                               names={0: 'id'})
+print(data.head())
+#    age  case education   id  induced  parity  pooled.stratum  spontaneous ...
+# 0  26.0   1.0    0-5yrs  1.0      1.0     6.0             3.0         2.0 ...
+# 1  42.0   1.0    0-5yrs  2.0      1.0     1.0             1.0         0.0 ...
+# 2  39.0   1.0    0-5yrs  3.0      2.0     6.0             4.0         0.0 ...
+# 3  34.0   1.0    0-5yrs  4.0      2.0     4.0             2.0         0.0  ..
+# 4  35.0   1.0   6-11yrs  5.0      1.0     3.0            32.0         1.0  ..
 
 # transform usage
-pipeline = Pipeline([
-    ToKey(columns=['review_reverse']),
-    ToString(columns=['review_reverse'])
-])
+xf = ToString(columns={'id_1': 'id', 'age_1': 'age'})
 
 # fit and transform
-output = pipeline.fit_transform(data)
-print(output.head())
-#   label                              review                   review_reverse
-# 0      1  animals birds cats dogs fish horse   radiation galaxy universe duck
-# 1      0    horse birds house fish duck cats  space galaxy universe radiation
-# 2      1         car truck driver bus pickup                       bus pickup
-# 3      0   car truck driver bus pickup horse                        car truck
-# 4      1     car truck  car truck driver bus                     pickup horse
+features = xf.fit_transform(data)
+print(features.head())
+#    age  case    edu_1 education   id  id_1  induced  parity  ...
+# 0  26.0   1.0   0-5yrs    0-5yrs  1.0     0      1.0     6.0 ...
+# 1  42.0   1.0   0-5yrs    0-5yrs  2.0     1      1.0     1.0 ...
+# 2  39.0   1.0   0-5yrs    0-5yrs  3.0     2      2.0     6.0 ...
+# 3  34.0   1.0   0-5yrs    0-5yrs  4.0     3      2.0     4.0 ...
+# 4  35.0   1.0  6-11yrs   6-11yrs  5.0     4      1.0     3.0 ...

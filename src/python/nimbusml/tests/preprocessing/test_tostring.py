@@ -10,7 +10,7 @@ from pandas import DataFrame
 from nimbusml.preprocessing import ToString
 
 
-class TestFromKey(unittest.TestCase):
+class TestToString(unittest.TestCase):
 
     def test_tostring(self):
         data={'f0': [4, 4, -1, 9],

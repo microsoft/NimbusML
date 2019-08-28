@@ -10,8 +10,7 @@ path = get_dataset('infert').as_filepath()
 data = FileDataStream.read_csv(path, sep=',')
 
 # transform usage
-xf = DateTimeSplitter(prefix='dt',
-    columns={'education_copy': 'education'})
+xf = DateTimeSplitter(prefix='dt_') << 'age'
 
 # fit and transform
 features = xf.fit_transform(data)

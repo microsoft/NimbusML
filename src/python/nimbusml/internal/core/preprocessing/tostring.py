@@ -12,10 +12,10 @@ __all__ = ["ToString"]
 
 from ...entrypoints.transforms_tostring import transforms_tostring
 from ...utils.utils import trace
-from ..base_pipeline_item import BasePipelineItem, SingleInputAsStringSignature
+from ..base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class ToString(BasePipelineItem, SingleInputAsStringSignature):
+class ToString(BasePipelineItem, DefaultSignature):
     """
     **Description**
         Turns the given column into a column of its string representation
@@ -44,9 +44,9 @@ class ToString(BasePipelineItem, SingleInputAsStringSignature):
         if 'input' in all_args:
             all_args.pop('input')
 
-        output_column = self.output
-        if output_column is None and 'output' in all_args:
-            output_column = all_args['output']
+        output_columns = self.output
+        if output_columns is None and 'output' in all_args:
+            output_columns = all_args['output']
         if 'output' in all_args:
             all_args.pop('output')
 
@@ -61,14 +61,13 @@ class ToString(BasePipelineItem, SingleInputAsStringSignature):
                 type(input_columns))
 
         # validate output
-        if output_column is None:
-            raise ValueError(
-                "'None' output passed when it cannot be none.")
+        if output_columns is None:
+            output_columns = input_columns
 
-        if not isinstance(output_column, str):
+        if not isinstance(output_columns, list):
             raise ValueError(
-                "output has to be a string, instead got %s" %
-                type(output_column))
+                "output has to be a list of strings, instead got %s" %
+                type(output_columns))
 
         algo_args = dict(
             column=[

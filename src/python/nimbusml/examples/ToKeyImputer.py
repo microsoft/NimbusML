@@ -1,5 +1,5 @@
 ###############################################################################
-# ToKeyImputer
+# ToKey
 import numpy
 from nimbusml import FileDataStream
 from nimbusml.datasets import get_dataset
@@ -19,7 +19,7 @@ print(data.head())
 # 4  35.0   1.0   6-11yrs  5.0      1.0     3.0            32.0         1.0  ..
 
 # transform usage
-xf = ToKeyImputer() << 'id'
+xf = ToKeyImputer(columns={'id_1': 'id', 'edu_1': 'education'})
 
 # fit and transform
 features = xf.fit_transform(data)
