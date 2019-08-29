@@ -162,7 +162,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
             throw std::invalid_argument("data type is not supported " + std::to_string(kind));
         }
 
-        if (pdata->keyCards[i] >= 0)
+        if (pdata->keyCards && (pdata->keyCards[i] >= 0))
         {
             _vKeyValues.push_back(new PythonObject<std::string>(TX, pdata->keyCards[i], 1));
             _columnToKeyMap.push_back(numKeys++);

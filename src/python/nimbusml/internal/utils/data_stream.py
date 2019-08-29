@@ -419,7 +419,7 @@ class BinaryDataStream(DataStream):
         # Do not move these imports or the module fails
         # due to circular references.
         from ..entrypoints.transforms_nooperation import transforms_nooperation
-        from .entrypoints import Graph
+        from .entrypoints import Graph, DataOutputFormat
 
         no_op = transforms_nooperation(
             data='$data', output_data='$output_data')
@@ -427,7 +427,7 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), False, *(graph_nodes))
+                output_data=''), DataOutputFormat.Default, *(graph_nodes))
         (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
         return out_data
 
@@ -438,7 +438,7 @@ class BinaryDataStream(DataStream):
             transforms_rowtakefilter
         from ..entrypoints.transforms_rowskipfilter import \
             transforms_rowskipfilter
-        from .entrypoints import Graph
+        from .entrypoints import Graph, DataOutputFormat
         if n == 0:
             raise ValueError("n must be > 0")
         graph_nodes = []
@@ -456,7 +456,7 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), False, *(graph_nodes))
+                output_data=''), DataOutputFormat.Default, *(graph_nodes))
         (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
         return out_data
 

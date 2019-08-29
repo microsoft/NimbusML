@@ -669,6 +669,7 @@
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
+    <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
