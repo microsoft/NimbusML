@@ -55,7 +55,7 @@ def transforms_featureselectorbymutualinformation(
             none_acceptable=False,
             is_of_type=str)
     if label_column_name is not None:
-        inputs['LabelColumn'] = try_set(
+        inputs['LabelColumnName'] = try_set(
             obj=label_column_name,
             none_acceptable=True,
             is_of_type=str,
