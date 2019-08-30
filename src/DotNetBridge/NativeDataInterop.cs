@@ -93,6 +93,47 @@ namespace Microsoft.MachineLearning.DotNetBridge
             }
         }
 
+        private static unsafe void PrintDataView(IDataView view)
+        {
+            var schema = view.Schema;
+            var colIndices = new List<int>();
+
+            for (int col = 0; col < schema.Count; col++)
+            {
+                if (schema[col].IsHidden)
+                    continue;
+
+                colIndices.Add(col);
+            }
+
+            using (var cursor = view.GetRowCursor(view.Schema.Where(col => colIndices.Contains(col.Index))))
+            {
+                var type = schema[colIndices[0]].Type;
+
+                ValueGetter<VBuffer<ReadOnlyMemory<char>>> _getVec =
+                    RowCursorUtils.GetVecGetterAs<ReadOnlyMemory<char>>((PrimitiveDataViewType)type.GetItemType(), cursor, colIndices[0]);
+                VBuffer<ReadOnlyMemory<char>> _buffer = new VBuffer<ReadOnlyMemory<char>>();
+
+                for (int crow = 0; ; crow++)
+                {
+                    // Advance to the next row.
+                    if (!cursor.MoveNext())
+                        break;
+
+                    string rowOutput = "[";
+
+                    _getVec(ref _buffer);
+                    for (int i = 0; i < _buffer.Length; i++)
+                    {
+                        rowOutput += _buffer.GetValues()[i] + ", ";
+                    }
+                    rowOutput += "]";
+
+                    System.Console.WriteLine(rowOutput);
+                }
+            }
+        }
+
         private static unsafe void SendViewToNative(IChannel ch, EnvironmentBlock* penv, IDataView view, Dictionary<string, ColumnMetadataInfo> infos = null)
         {
             Contracts.AssertValue(ch);
@@ -116,6 +157,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             var expandCols = new HashSet<int>();
             var allNames = new HashSet<string>();
+
+            // Only works with WordTokenizer_df.py
+            PrintDataView(view);
 
             for (int col = 0; col < schema.Count; col++)
             {

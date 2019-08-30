@@ -721,6 +721,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.WordTokenizer",
+      "NewName": "WordTokenizer",
+      "Module": "preprocessing.text",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.LightLda",
       "NewName": "LightLda",
       "Module": "feature_extraction.text",
