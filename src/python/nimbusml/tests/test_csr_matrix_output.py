@@ -10,7 +10,7 @@ import pandas as pd
 from nimbusml import Pipeline
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.preprocessing.schema import ColumnConcatenator, ColumnDropper
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix 
 
 
 class TestCsrMatrixOutput(unittest.TestCase):
