@@ -16,7 +16,7 @@ class TestDateTimeSplitter(unittest.TestCase):
         df = pandas.DataFrame(data=dict(dt=[i for i in range(8)]))
         dt = DateTimeSplitter(prefix='dt_') << 'dt'
         result = dt.fit_transform(df)
-        assert_equal(0, 1, "to be fixed")
+        assert_equal(result['dt_Year'][0], 1970, "it should have been year of 1970")
 
 
 if __name__ == '__main__':
