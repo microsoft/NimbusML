@@ -23,6 +23,23 @@
     Fix a bug with the classes_ attribute when no y input is specified during fitting.
     This addresses [issue 216](https://github.com/microsoft/NimbusML/issues/216)
 
+- **Fixed Add NumSharp.Core.dll **
+
+    [PR#220](https://github.com/microsoft/NimbusML/pull/220)
+    Fixed a bug that prevented running TensorFlowScorer.
+    This addresses [issue 219](https://github.com/microsoft/NimbusML/issues/219)
+
+- **Fixed Enable scoring of ML.NET models saved with new TransformerChain format **
+
+    [PR#230](https://github.com/microsoft/NimbusML/pull/230)
+    Fixed error loading a model that was saved with mlnet auto-train.
+    This addresses [issue 201](https://github.com/microsoft/NimbusML/issues/201)
+
+- **Fixed Pass python path to Dprep package **
+
+    [PR#232](https://github.com/microsoft/NimbusML/pull/232)
+    Enable passing python executable to dataprep package, so dataprep can execute python transformations
+
 ## **Breaking Changes**
 
 None.
