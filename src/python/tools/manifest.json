@@ -18486,7 +18486,6 @@
         },
         {
           "Name": "LabelColumnName",
-          "PassAs": "LabelColumn",
           "Type": "String",
           "Desc": "Column to use for labels",
           "Aliases": [
