@@ -481,6 +481,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.LpNormalizer",
+      "NewName": "LpNormalizer",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.MissingValuesRowDropper",
       "NewName": "Filter",
       "Module": "preprocessing.missing_values",
