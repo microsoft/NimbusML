@@ -16,7 +16,7 @@ from nimbusml.ensemble import LightGbmRanker
 from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
-from nimbusml.preprocessing import TensorFlowScorer
+from nimbusml.preprocessing import TensorFlowScorer, DateTimeSplitter
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
@@ -191,6 +191,7 @@ NOBINARY_CHECKS = [
     'check_classifiers_train']
 
 INSTANCES = {
+    'DateTimeSplitter': DateTimeSplitter(prefix='dt'),
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
@@ -265,7 +266,11 @@ skip_epoints = set([
     'TreeFeaturizer',
     # skip SymSgdBinaryClassifier for now, because of crashes.
     'SymSgdBinaryClassifier',
-    'DatasetTransformer'
+    'DatasetTransformer',
+    # Temporarily skip these tests
+    'DateTimeSplitter',
+    'ToKeyImputer',
+    'ToString'
 ])
 
 epoints = []
