@@ -69,7 +69,7 @@ class LinearSvmBinaryClassifier(
 
     :param caching: Whether trainer should cache input training data.
 
-    :param lambda_: Regularizer constant.
+    :param regularization: Regularizer constant.
 
     :param perform_projection: Perform projection to unit-ball? Typically used
         with batch size > 1.
@@ -105,7 +105,7 @@ class LinearSvmBinaryClassifier(
             self,
             normalize='Auto',
             caching='Auto',
-            lambda_=0.001,
+            regularization=0.001,
             perform_projection=False,
             number_of_iterations=1,
             initial_weights_diameter=0.0,
@@ -119,7 +119,7 @@ class LinearSvmBinaryClassifier(
 
         self.normalize = normalize
         self.caching = caching
-        self.lambda_ = lambda_
+        self.regularization = regularization
         self.perform_projection = perform_projection
         self.number_of_iterations = number_of_iterations
         self.initial_weights_diameter = initial_weights_diameter
@@ -146,7 +146,7 @@ class LinearSvmBinaryClassifier(
                 all_args),
             normalize_features=self.normalize,
             caching=self.caching,
-            lambda_=self.lambda_,
+            regularization=self.regularization,
             perform_projection=self.perform_projection,
             number_of_iterations=self.number_of_iterations,
             initial_weights_diameter=self.initial_weights_diameter,

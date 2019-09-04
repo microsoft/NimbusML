@@ -17,7 +17,7 @@ def trainers_linearsvmbinaryclassifier(
         example_weight_column_name=None,
         normalize_features='Auto',
         caching='Auto',
-        lambda_=0.001,
+        regularization=0.001,
         perform_projection=False,
         number_of_iterations=1,
         initial_weights_diameter=0.0,
@@ -41,7 +41,7 @@ def trainers_linearsvmbinaryclassifier(
         column (inputs).
     :param caching: Whether trainer should cache input training data
         (inputs).
-    :param lambda_: Regularizer constant (inputs).
+    :param regularization: Regularizer constant (inputs).
     :param perform_projection: Perform projection to unit-ball?
         Typically used with batch size > 1. (inputs).
     :param number_of_iterations: Number of iterations (inputs).
@@ -105,9 +105,9 @@ def trainers_linearsvmbinaryclassifier(
                 'Auto',
                 'Memory',
                 'None'])
-    if lambda_ is not None:
+    if regularization is not None:
         inputs['Lambda'] = try_set(
-            obj=lambda_,
+            obj=regularization,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if perform_projection is not None:
