@@ -15,8 +15,8 @@ class TestToString(unittest.TestCase):
 
     def test_tostring(self):
         data={'f0': [4, 4, -1, 9],
-              'f1': [5, 5, 3.1, -0.23]}
-              'f1': [6, 6.7, np.nan, np.nan]}
+              'f1': [5, 5, 3.1, -0.23],
+              'f2': [6, 6.7, np.nan, np.nan]}
         data = DataFrame(data).astype({'f0': np.int32,
                                        'f1': np.float32,
                                        'f2': np.float64})
