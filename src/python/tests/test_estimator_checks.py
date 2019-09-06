@@ -52,6 +52,12 @@ OMITTED_CHECKS = {
     # I8 should not have NA values
     'CountSelector':
         'check_estimators_dtypes',
+    # DateTimeSplitter does not work with floating point types.
+    'DateTimeSplitter':
+        'check_transformer_general, check_pipeline_consistency'
+        'check_estimators_pickle, check_estimators_dtypes'
+        'check_dict_unchanged, check_dtype_object, check_fit_score_takes_y'
+        'check_transformer_data_not_an_array',
     # by design returns smaller number of rows
     'SkipFilter': 'check_transformer_general, '
                   'check_transformer_data_not_an_array',
@@ -153,6 +159,13 @@ OMITTED_CHECKS = {
         'check_estimators_overwrite_params, \
         check_estimator_sparse_data, check_estimators_pickle, '
         'check_estimators_nan_inf',
+    'ToKeyImputer': 'check_estimator_sparse_data',
+    # Most of these skipped tests are failing because the checks
+    # require numerical types. ToString returns object types.
+    # TypeError: ufunc 'isfinite' not supported for the input types
+    'ToString': 'check_estimator_sparse_data, check_pipeline_consistency'
+        'check_transformer_data_not_an_array, check_estimators_pickle'
+        'check_transformer_general',
 }
 
 OMITTED_CHECKS_TUPLE = (
@@ -191,7 +204,7 @@ NOBINARY_CHECKS = [
     'check_classifiers_train']
 
 INSTANCES = {
-    'DateTimeSplitter': DateTimeSplitter(prefix='dt'),
+    'DateTimeSplitter': DateTimeSplitter(prefix='dt', columns=['F0']),
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
@@ -267,10 +280,6 @@ skip_epoints = set([
     # skip SymSgdBinaryClassifier for now, because of crashes.
     'SymSgdBinaryClassifier',
     'DatasetTransformer',
-    # Temporarily skip these tests
-    'DateTimeSplitter',
-    'ToKeyImputer',
-    'ToString'
 ])
 
 epoints = []
