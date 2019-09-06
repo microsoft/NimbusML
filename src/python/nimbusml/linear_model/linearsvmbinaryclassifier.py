@@ -78,7 +78,9 @@ class LinearSvmBinaryClassifier(
 
     :param caching: Whether trainer should cache input training data.
 
-    :param regularization: Regularizer constant.
+    :param l2_regularization: L2 regularization weight. This also controls the
+        learning rate, with the learning rate being inversely proportional to
+        the regularization weight.
 
     :param perform_projection: Perform projection to unit-ball? Typically used
         with batch size > 1.
@@ -114,7 +116,7 @@ class LinearSvmBinaryClassifier(
             self,
             normalize='Auto',
             caching='Auto',
-            regularization=0.001,
+            l2_regularization=0.001,
             perform_projection=False,
             number_of_iterations=1,
             initial_weights_diameter=0.0,
@@ -147,7 +149,7 @@ class LinearSvmBinaryClassifier(
             self,
             normalize=normalize,
             caching=caching,
-            regularization=regularization,
+            l2_regularization=l2_regularization,
             perform_projection=perform_projection,
             number_of_iterations=number_of_iterations,
             initial_weights_diameter=initial_weights_diameter,
