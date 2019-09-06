@@ -279,7 +279,7 @@ skip_epoints = set([
     'TreeFeaturizer',
     # skip SymSgdBinaryClassifier for now, because of crashes.
     'SymSgdBinaryClassifier',
-    'DatasetTransformer',
+    'DatasetTransformer'
 ])
 
 epoints = []
