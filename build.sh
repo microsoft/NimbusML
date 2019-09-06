@@ -52,7 +52,7 @@ while [ "$1" != "" ]; do
             __runTests=true
             __installPythonPackages=true
             ;;
-        --installPythonPackages)
+        --installpythonpackages)
             __installPythonPackages=true
             ;;
         --includeextendedtests)
