@@ -27,6 +27,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
         // std:null specifier in a graph, used to redirect output to std::null
         const string STDNULL = "<null>";
 
+        // graph output format specifier, used to output to a sparse csr matrix
+        const string CSR_MATRIX = "<csr>";
+
         private static void SaveIdvToFile(IDataView idv, string path, IHost host)
         {
             if (path == STDNULL)
@@ -183,14 +186,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     throw host.ExceptNotSupp("File handle outputs not yet supported.");
                                 case TlcModule.DataKind.DataView:
                                     var idv = runner.GetOutput<IDataView>(varName);
-                                    if (!string.IsNullOrWhiteSpace(path))
+                                    if (path == CSR_MATRIX)
+                                    {
+                                        SendViewToNativeAsCsr(ch, penv, idv);
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(path))
                                     {
                                         SaveIdvToFile(idv, path, host);
                                     }
                                     else
                                     {
                                         var infos = ProcessColumns(ref idv, penv->maxSlots, host);
-                                        SendViewToNative(ch, penv, idv, infos);
+                                        SendViewToNativeAsDataFrame(ch, penv, idv, infos);
                                     }
                                     break;
                                 case TlcModule.DataKind.PredictorModel:
