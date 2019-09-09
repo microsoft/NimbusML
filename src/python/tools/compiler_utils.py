@@ -128,6 +128,7 @@ _presteps = {
     'MinMaxScaler': int_to_r4_converter,
     'MeanVarianceScaler': int_to_r4_converter,
     'LogMeanVarianceScaler': int_to_r4_converter,
+    'LpScaler': int_to_r4_converter,
     'Binner': int_to_r4_converter,
     'Filter': int_to_r4_converter,
     'Handler': int_to_r4_converter,
