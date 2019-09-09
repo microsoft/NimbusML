@@ -93,7 +93,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             }
         }
 
-        private static unsafe void SendViewToNative(IChannel ch, EnvironmentBlock* penv, IDataView view, Dictionary<string, ColumnMetadataInfo> infos = null)
+        private static unsafe void SendViewToNativeAsDataFrame(IChannel ch, EnvironmentBlock* penv, IDataView view, Dictionary<string, ColumnMetadataInfo> infos = null)
         {
             Contracts.AssertValue(ch);
             Contracts.Assert(penv != null);
@@ -313,6 +313,135 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             fillers[i].Set();
                         }
                     }
+                }
+            }
+        }
+
+        private static unsafe void SendViewToNativeAsCsr(IChannel ch, EnvironmentBlock* penv, IDataView view)
+        {
+            Contracts.AssertValue(ch);
+            Contracts.Assert(penv != null);
+            Contracts.AssertValue(view);
+            if (penv->dataSink == null)
+            {
+                // Environment doesn't want any data!
+                return;
+            }
+
+            var dataSink = MarshalDelegate<DataSink>(penv->dataSink);
+
+            var schema = view.Schema;
+            var colIndices = new List<int>();
+            var outputDataKind = InternalDataKind.R4;
+
+            int numOutputRows = 0;
+            int numOutputCols = 0;
+
+            for (int col = 0; col < schema.Count; col++)
+            {
+                if (schema[col].IsHidden)
+                    continue;
+
+                var fullType = schema[col].Type;
+                var itemType = fullType.GetItemType();
+                int valueCount = fullType.GetValueCount();
+
+                if (valueCount == 0)
+                {
+                    throw ch.ExceptNotSupp("Column has variable length vector: " +
+                        schema[col].Name + ". Not supported in python. Drop column before sending to Python");
+                }
+
+                if (itemType.IsStandardScalar())
+                {
+                    switch (itemType.GetRawKind())
+                    {
+                    default:
+                        throw Contracts.Except("Data type {0} not supported", itemType.GetRawKind());
+
+                    case InternalDataKind.I1:
+                    case InternalDataKind.I2:
+                    case InternalDataKind.U1:
+                    case InternalDataKind.U2:
+                    case InternalDataKind.R4:
+                        break;
+
+                    case InternalDataKind.I4:
+                    case InternalDataKind.U4:
+                    case InternalDataKind.R8:
+                        outputDataKind = InternalDataKind.R8;
+                        break;
+                    }
+                }
+                else
+                {
+                    throw Contracts.Except("Data type {0} not supported", itemType.GetRawKind());
+                }
+
+                colIndices.Add(col);
+                numOutputCols += valueCount;
+            }
+
+            var allNames = new HashSet<string>();
+            var nameIndices = new List<int>();
+            var nameUtf8Bytes = new List<Byte>();
+
+            AddUniqueName("data", allNames, nameIndices, nameUtf8Bytes);
+            AddUniqueName("indices", allNames, nameIndices, nameUtf8Bytes);
+            AddUniqueName("indptr", allNames, nameIndices, nameUtf8Bytes);
+            AddUniqueName("shape", allNames, nameIndices, nameUtf8Bytes);
+
+            var kindList = new List<InternalDataKind> {outputDataKind,
+                                                       InternalDataKind.I4,
+                                                       InternalDataKind.I4,
+                                                       InternalDataKind.I4};
+
+            var kinds = kindList.ToArray();
+            var nameBytes = nameUtf8Bytes.ToArray();
+            var names = new byte*[allNames.Count];
+
+            fixed (InternalDataKind* prgkind = kinds)
+            fixed (byte* prgbNames = nameBytes)
+            fixed (byte** prgname = names)
+            {
+                for (int iid = 0; iid < names.Length; iid++)
+                    names[iid] = prgbNames + nameIndices[iid];
+
+                DataViewBlock block;
+                block.ccol = allNames.Count;
+                block.crow = view.GetRowCount() ?? 0;
+                block.names = (sbyte**)prgname;
+                block.kinds = prgkind;
+                block.keyCards = null;
+
+                dataSink(penv, &block, out var setters, out var keyValueSetter);
+
+                if (setters == null) return;
+
+                using (var cursor = view.GetRowCursor(view.Schema.Where(col => colIndices.Contains(col.Index))))
+                {
+                    CsrData csrData = new CsrData(penv, setters, outputDataKind);
+                    var fillers = new CsrFillerBase[colIndices.Count];
+
+                    for (int i = 0; i < colIndices.Count; i++)
+                    {
+                        var type = schema[colIndices[i]].Type;
+                        fillers[i] = CsrFillerBase.Create(penv, cursor, colIndices[i], type, outputDataKind, csrData);
+                    }
+
+                    for (;; numOutputRows++)
+                    {
+                        if (!cursor.MoveNext()) break;
+
+                        for (int i = 0; i < fillers.Length; i++)
+                        {
+                            fillers[i].Set();
+                        }
+
+                        csrData.IncrementRow();
+                    }
+
+                    csrData.SetShape(numOutputRows, numOutputCols);
                 }
             }
         }
@@ -543,6 +672,235 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         TSrc value = default(TSrc);
                         _get(ref value);
                         _poker(value, _colIndex, _input.Position);
+                    }
+                }
+            }
+        }
+
+        private unsafe class CsrData
+        {
+            private const int DataCol = 0;
+            private const int IndicesCol = 1;
+            private const int IndPtrCol = 2;
+            private const int ShapeCol = 3;
+
+            private readonly R4Setter _r4DataSetter;
+            private readonly R8Setter _r8DataSetter;
+            private readonly I4Setter _indicesSetter;
+            private readonly I4Setter _indptrSetter;
+            private readonly I4Setter _shapeSetter;
+
+            public int col;
+
+            private int _row;
+            private int _index;
+
+            private EnvironmentBlock* _penv;
+
+            public CsrData(EnvironmentBlock* penv, void** setters, InternalDataKind outputDataKind)
+            {
+                col = 0;
+
+                _row = 0;
+                _index = 0;
+                _penv = penv;
+
+                if (outputDataKind == InternalDataKind.R4)
+                {
+                    _r4DataSetter = MarshalDelegate<R4Setter>(setters[DataCol]);
+                    _r8DataSetter = null;
+                }
+                else if(outputDataKind == InternalDataKind.R8)
+                {
+                    _r4DataSetter = null;
+                    _r8DataSetter = MarshalDelegate<R8Setter>(setters[DataCol]);
+                }
+
+                _indicesSetter = MarshalDelegate<I4Setter>(setters[IndicesCol]);
+                _indptrSetter = MarshalDelegate<I4Setter>(setters[IndPtrCol]);
+                _shapeSetter = MarshalDelegate<I4Setter>(setters[ShapeCol]);
+
+                _indptrSetter(_penv, IndPtrCol, 0, 0);
+            }
+
+            public void AppendR4(float value, int col)
+            {
+                _r4DataSetter(_penv, DataCol, _index, value);
+                _indicesSetter(_penv, IndicesCol, _index, col);
+                _index++;
+            }
+
+            public void AppendR8(double value, int col)
+            {
+                _r8DataSetter(_penv, DataCol, _index, value);
+                _indicesSetter(_penv, IndicesCol, _index, col);
+                _index++;
+            }
+
+            public void IncrementRow()
+            {
+                col = 0;
+                _row++;
+
+                _indptrSetter(_penv, IndPtrCol, _row, _index);
+            }
+
+            public void SetShape(int m, int n)
+            {
+                _shapeSetter(_penv, ShapeCol, 0, m);
+                _shapeSetter(_penv, ShapeCol, 1, n);
+            }
+        }
+
+        private abstract unsafe class CsrFillerBase
+        {
+            public delegate void DataAppender<T>(T value, int col);
+
+            protected CsrFillerBase() {}
+
+            public static CsrFillerBase Create(EnvironmentBlock* penv,
+                                               DataViewRow input,
+                                               int idvCol,
+                                               DataViewType idvColType,
+                                               InternalDataKind outputDataKind,
+                                               CsrData csrData)
+            {
+                if (outputDataKind == InternalDataKind.R4)
+                {
+                    switch (idvColType.GetItemType().GetRawKind())
+                    {
+                    case InternalDataKind.I1:
+                        DataAppender<sbyte> appendI1 = (sbyte val, int i) => csrData.AppendR4((float)val, i);
+                        return new CsrFiller<sbyte>(input, idvCol, idvColType, appendI1, csrData);
+                    case InternalDataKind.I2:
+                        DataAppender<short> appendI2 = (short val, int i) => csrData.AppendR4((float)val, i);
+                        return new CsrFiller<short>(input, idvCol, idvColType, appendI2, csrData);
+                    case InternalDataKind.U1:
+                        DataAppender<byte> appendU1 = (byte val, int i) => csrData.AppendR4((float)val, i);
+                        return new CsrFiller<byte>(input, idvCol, idvColType, appendU1, csrData);
+                    case InternalDataKind.U2:
+                        DataAppender<ushort> appendU2 = (ushort val, int i) => csrData.AppendR4((float)val, i);
+                        return new CsrFiller<ushort>(input, idvCol, idvColType, appendU2, csrData);
+                    case InternalDataKind.R4:
+                        DataAppender<float> appendR4 = (float val, int i) => csrData.AppendR4((float)val, i);
+                        return new CsrFiller<float>(input, idvCol, idvColType, appendR4, csrData);
+                    default:
+                        throw Contracts.Except("Source data type not supported");
+                    }
+                }
+                else if (outputDataKind == InternalDataKind.R8)
+                {
+                    switch (idvColType.GetItemType().GetRawKind())
+                    {
+                    case InternalDataKind.I1:
+                        DataAppender<sbyte> appendI1 = (sbyte val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<sbyte>(input, idvCol, idvColType, appendI1, csrData);
+                    case InternalDataKind.I2:
+                        DataAppender<short> appendI2 = (short val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<short>(input, idvCol, idvColType, appendI2, csrData);
+                    case InternalDataKind.I4:
+                        DataAppender<int> appendI4 = (int val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<int>(input, idvCol, idvColType, appendI4, csrData);
+                    case InternalDataKind.U1:
+                        DataAppender<byte> appendU1 = (byte val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<byte>(input, idvCol, idvColType, appendU1, csrData);
+                    case InternalDataKind.U2:
+                        DataAppender<ushort> appendU2 = (ushort val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<ushort>(input, idvCol, idvColType, appendU2, csrData);
+                    case InternalDataKind.U4:
+                        DataAppender<uint> appendU4 = (uint val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<uint>(input, idvCol, idvColType, appendU4, csrData);
+                    case InternalDataKind.R4:
+                        DataAppender<float> appendR4 = (float val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<float>(input, idvCol, idvColType, appendR4, csrData);
+                    case InternalDataKind.R8:
+                        DataAppender<double> appendR8 = (double val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<double>(input, idvCol, idvColType, appendR8, csrData);
+                    default:
+                        throw Contracts.Except("Source data type not supported");
+                    }
+                }
+
+                throw Contracts.Except("Target data type not supported.");
+            }
+
+            public abstract void Set();
+
+            private sealed class CsrFiller<TSrc> : CsrFillerBase
+            {
+                private readonly ValueGetter<VBuffer<TSrc>> _getVec;
+                private readonly ValueGetter<TSrc> _get;
+                private VBuffer<TSrc> _buffer;
+
+                private CsrData _csrData;
+                private readonly DataAppender<TSrc> _dataAppender;
+
+                private readonly IEqualityComparer<TSrc> comparer = EqualityComparer<TSrc>.Default;
+
+                public CsrFiller(DataViewRow input,
+                                 int idvColIndex,
+                                 DataViewType type,
+                                 DataAppender<TSrc> dataAppender,
+                                 CsrData csrData)
+                    : base()
+                {
+                    Contracts.AssertValue(input);
+                    Contracts.Assert(0 <= idvColIndex && idvColIndex < input.Schema.Count);
+
+                    if (type is VectorDataViewType)
+                        _getVec = RowCursorUtils.GetVecGetterAs<TSrc>((PrimitiveDataViewType)type.GetItemType(), input, idvColIndex);
+                    else
+                        _get = RowCursorUtils.GetGetterAs<TSrc>(type, input, idvColIndex);
+
+                    _csrData = csrData;
+                    _dataAppender = dataAppender;
+                }
+
+                public bool IsDefault(TSrc t)
+                {
+                    return comparer.Equals(t, default(TSrc));
+                }
+
+                public override void Set()
+                {
+                    if (_getVec != null)
+                    {
+                        _getVec(ref _buffer);
+                        if (_buffer.IsDense)
+                        {
+                            var values = _buffer.GetValues();
+
+                            for (int i = 0; i < values.Length; i++)
+                            {
+                                if (!IsDefault(values[i]))
+                                    _dataAppender(values[i], _csrData.col);
+
+                                _csrData.col++;
+                            }
+                        }
+                        else
+                        {
+                            var values = _buffer.GetValues();
+                            var indices = _buffer.GetIndices();
+
+                            for (int i = 0; i < values.Length; i++)
+                            {
+                                if (!IsDefault(values[i]))
+                                    _dataAppender(values[i], _csrData.col + indices[i]);
+                            }
+
+                            _csrData.col += _buffer.Length;
+                        }
+                    }
+                    else
+                    {
+                        TSrc value = default(TSrc);
+                        _get(ref value);
+
+                        if (!IsDefault(value))
+                            _dataAppender(value, _csrData.col);
+
+                        _csrData.col++;
                     }
                 }
             }
