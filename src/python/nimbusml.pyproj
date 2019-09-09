@@ -118,7 +118,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\Filter_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GamBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GamRegressor_airquality_df.py" />
-    <Compile Include="nimbusml\examples\examples_from_dataframe\LpNormalizer_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\LpScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
@@ -171,7 +171,7 @@
     <Compile Include="nimbusml\examples\Filter.py" />
     <Compile Include="nimbusml\examples\GamBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\GamRegressor.py" />
-    <Compile Include="nimbusml\examples\LpNormalizer.py" />
+    <Compile Include="nimbusml\examples\LpScaler.py" />
     <Compile Include="nimbusml\examples\GlobalContrastRowScaler.py" />
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
@@ -298,7 +298,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\datasettransformer.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpnormalizer.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
@@ -629,7 +629,7 @@
     <Compile Include="nimbusml\preprocessing\normalization\binner.py" />
     <Compile Include="nimbusml\preprocessing\normalization\globalcontrastrowscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\logmeanvariancescaler.py" />
-    <Compile Include="nimbusml\preprocessing\normalization\lpnormalizer.py" />
+    <Compile Include="nimbusml\preprocessing\normalization\lpscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\meanvariancescaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
@@ -671,7 +671,7 @@
     <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
-    <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpnormalization.py" />
+    <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />

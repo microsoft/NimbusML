@@ -489,7 +489,7 @@
     },
     {
       "Name": "Transforms.LpNormalizer",
-      "NewName": "LpNormalizer",
+      "NewName": "LpScaler",
       "Module": "preprocessing.normalization",
       "Type": "Transform"
     },

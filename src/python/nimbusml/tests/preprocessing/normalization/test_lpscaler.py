@@ -8,14 +8,14 @@ import unittest
 import numpy as np
 import pandas as pd
 from nimbusml import Pipeline
-from nimbusml.preprocessing.normalization import LpNormalizer
+from nimbusml.preprocessing.normalization import LpScaler
 from nimbusml.preprocessing.schema import ColumnConcatenator
 from sklearn.utils.testing import assert_greater, assert_less
 
 
-class TestLpNormalizer(unittest.TestCase):
+class TestLpScaler(unittest.TestCase):
 
-    def test_lpnormalizer(self):
+    def test_lpscaler(self):
         in_df = pd.DataFrame(
             data=dict(
                 Sepal_Length=[2.5, 1, 2.1, 1.0],
@@ -29,7 +29,7 @@ class TestLpNormalizer(unittest.TestCase):
 
         pipeline = Pipeline([
             ColumnConcatenator() << {'concat': src_cols},
-            LpNormalizer() << {'norm': 'concat'}
+            LpScaler() << {'norm': 'concat'}
         ])
         out_df = pipeline.fit_transform(in_df)
 
@@ -40,7 +40,7 @@ class TestLpNormalizer(unittest.TestCase):
         assert_greater(sum, sum_range[0], "sum should be greater than %s" % sum_range[0])
         assert_less(sum, sum_range[1], "sum should be less than %s" % sum_range[1])
 
-    def test_lpnormalizer_automatically_converts_to_single(self):
+    def test_lpscaler_automatically_converts_to_single(self):
         in_df = pd.DataFrame(
             data=dict(
                 Sepal_Length=[2.5, 1, 2.1, 1.0],
@@ -54,7 +54,7 @@ class TestLpNormalizer(unittest.TestCase):
 
         pipeline = Pipeline([
             ColumnConcatenator() << {'concat': src_cols},
-            LpNormalizer() << {'norm': 'concat'}
+            LpScaler() << {'norm': 'concat'}
         ])
         out_df = pipeline.fit_transform(in_df)
 

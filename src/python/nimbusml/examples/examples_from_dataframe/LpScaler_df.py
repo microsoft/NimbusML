@@ -1,9 +1,9 @@
 ###############################################################################
-# LpNormalizer
+# LpScaler
 import numpy as np
 import pandas as pd
 from nimbusml import Pipeline
-from nimbusml.preprocessing.normalization import LpNormalizer
+from nimbusml.preprocessing.normalization import LpScaler
 from nimbusml.preprocessing.schema import ColumnConcatenator
 
 in_df = pd.DataFrame(
@@ -22,7 +22,7 @@ concat = ColumnConcatenator() << {
 # Normalize the input values by rescaling them to unit norm (L2, L1 or LInf).
 # Performs the following operation on a vector X: Y = (X - M) / D, where M is
 # mean and D is either L2 norm, L1 norm or LInf norm.
-normed = LpNormalizer() << {'norm': 'cat'}
+normed = LpScaler() << {'norm': 'cat'}
 
 pipeline = Pipeline([concat, normed])
 out_df = pipeline.fit_transform(in_df)
@@ -39,7 +39,7 @@ print_opts = {
         'norm.Petal_Length'
     ]
 }
-print('LpNormalizer\n', out_df.to_string(**print_opts))
+print('LpScaler\n', out_df.to_string(**print_opts))
 
 # Sepal_Length  Sepal_Width  Petal_Length  norm.Sepal_Length  norm.Sepal_Width  norm.Petal_Length
 # 2.5           0.75         0.0           0.957826           0.287348          0.000000
