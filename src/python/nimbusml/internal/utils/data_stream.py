@@ -399,7 +399,7 @@ class ViewBasePipelineItem:
 
 class BinaryDataStream(DataStream):
     """
-    Defines a data view.
+    Data accessor for IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
     """
 
     def __init__(self, filename):
@@ -427,7 +427,7 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), DataOutputFormat.Default, *(graph_nodes))
+                output_data=''), DataOutputFormat.DF, *(graph_nodes))
         (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
         return out_data
 
@@ -456,7 +456,7 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), DataOutputFormat.Default, *(graph_nodes))
+                output_data=''), DataOutputFormat.DF, *(graph_nodes))
         (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
         return out_data
 

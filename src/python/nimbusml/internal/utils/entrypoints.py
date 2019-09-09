@@ -142,9 +142,12 @@ def _get_temp_file(suffix=None):
 
 
 class DataOutputFormat(Enum):
-    BinaryDataStream= 'binary_data_stream'
-    CsrMatrix = 'csr_matrix'
-    Default = 'default'
+    # Regular pandas dataframe format
+    DF = 0
+    # IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
+    IDV = 1
+    # csr_matrix sparse data format
+    CSR = 2
 
 
 class Graph(EntryPoint):
@@ -172,7 +175,7 @@ class Graph(EntryPoint):
             self,
             inputs=None,
             outputs=None,
-            data_output_format=DataOutputFormat.Default,
+            data_output_format=DataOutputFormat.DF,
             *nodes):
         Graph._check_nodes(nodes)
 
@@ -394,11 +397,11 @@ class Graph(EntryPoint):
                     self.outputs['output_metrics'] = output_metricsfilename
 
                 if 'output_data' in self.outputs:
-                    if self._data_output_format == DataOutputFormat.BinaryDataStream:
+                    if self._data_output_format == DataOutputFormat.IDV:
                         output_idvfilename = _get_temp_file(suffix='.idv')
                         self.outputs['output_data'] = output_idvfilename
 
-                    elif self._data_output_format == DataOutputFormat.CsrMatrix:
+                    elif self._data_output_format == DataOutputFormat.CSR:
                         self.outputs['output_data'] = "<csr>"
 
             # set graph file for debuggings
@@ -436,7 +439,7 @@ class Graph(EntryPoint):
 
             out_data = None
 
-            if not cv and self._data_output_format == DataOutputFormat.CsrMatrix:
+            if not cv and self._data_output_format == DataOutputFormat.CSR:
                 out_data = resolve_output_as_csrmatrix(ret)
             else:
                 out_data = resolve_output_as_dataframe(ret)
@@ -461,7 +464,7 @@ class Graph(EntryPoint):
 
             if cv:
                 return self._process_graph_run_results(out_data)
-            elif self._data_output_format == DataOutputFormat.BinaryDataStream:
+            elif self._data_output_format == DataOutputFormat.IDV:
                 output = BinaryDataStream(output_idvfilename)
                 return (output_modelfilename, output, out_metrics)
             else:

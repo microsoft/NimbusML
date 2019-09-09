@@ -825,12 +825,12 @@ class Pipeline:
             outputs[output_data.replace(
                 '$', '')] = '' if do_fit_transform else '<null>'
 
-        data_output_format = DataOutputFormat.Default
+        data_output_format = DataOutputFormat.DF
         if do_fit_transform:
             if output_binary_data_stream:
-                data_output_format = DataOutputFormat.BinaryDataStream
+                data_output_format = DataOutputFormat.IDV
             elif params.pop('as_csr', False):
-                data_output_format = DataOutputFormat.CsrMatrix
+                data_output_format = DataOutputFormat.CSR
 
         graph = Graph(
             inputs,
@@ -1782,8 +1782,8 @@ class Pipeline:
 
         outputs = dict(output_data="")
 
-        data_output_format = DataOutputFormat.BinaryDataStream if as_binary_data_stream \
-                             else DataOutputFormat.Default,
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
 
         graph = Graph(
             inputs,
@@ -1914,8 +1914,8 @@ class Pipeline:
         else:
             outputs = dict(output_data="")
 
-        data_output_format = DataOutputFormat.BinaryDataStream if as_binary_data_stream \
-                             else DataOutputFormat.Default,
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
 
         graph = Graph(
             inputs,
@@ -2255,11 +2255,11 @@ class Pipeline:
 
         all_nodes.extend([apply_node])
 
-        data_output_format = DataOutputFormat.Default
+        data_output_format = DataOutputFormat.DF
         if as_binary_data_stream:
-            data_output_format = DataOutputFormat.BinaryDataStream
+            data_output_format = DataOutputFormat.IDV
         elif params.pop('as_csr', False):
-            data_output_format = DataOutputFormat.CsrMatrix
+            data_output_format = DataOutputFormat.CSR
 
         graph = Graph(
             inputs,
@@ -2336,7 +2336,7 @@ class Pipeline:
         graph = Graph(
             inputs,
             outputs,
-            DataOutputFormat.Default,
+            DataOutputFormat.DF,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -2586,7 +2586,7 @@ class Pipeline:
         graph = Graph(
             inputs,
             outputs,
-            DataOutputFormat.Default,
+            DataOutputFormat.DF,
             *nodes)
 
         class_name = cls.__name__

@@ -544,7 +544,7 @@ class CV:
             group_column=group_id)
 
         steps.add(cv_node)
-        graph = Graph(cv_aux_info.inputs, self.outputs, DataOutputFormat.Default, *steps)
+        graph = Graph(cv_aux_info.inputs, self.outputs, DataOutputFormat.DF, *steps)
 
         # prepare telemetry info
         class_name = type(self).__name__

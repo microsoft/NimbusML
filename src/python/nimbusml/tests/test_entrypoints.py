@@ -116,7 +116,7 @@ class TestEntryPoints(unittest.TestCase):
         graph = Graph(
             dict(
                 input_data=""), dict(
-                output_model=""), DataOutputFormat.Default, *all_nodes)
+                output_model=""), DataOutputFormat.DF, *all_nodes)
         # print(graph)
         graph.run(X=None, dryrun=True)
 
