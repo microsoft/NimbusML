@@ -201,7 +201,7 @@ def pd_concat(els, axis=0, join='inner'):
     return concat(els, axis=axis, join=join)
 
 
-def resolve_output(ret):
+def resolve_output_as_dataframe(ret):
     data = dict()
     for key in ret.keys():
         if not isinstance(ret[key], dict):
@@ -210,6 +210,15 @@ def resolve_output(ret):
             data[key] = Categorical.from_codes(
                 ret[key]["..Data"], ret[key]["..KeyValues"])
     return DataFrame(data)
+
+
+def resolve_output_as_csrmatrix(ret):
+    matrix = csr_matrix((1, 1))
+
+    if all([k in ret for k in ('data', 'indices', 'indptr', 'shape')]):
+        matrix = csr_matrix((ret['data'], ret['indices'], ret['indptr']),
+                            shape=(ret['shape'][0], ret['shape'][1]))
+    return matrix
 
 
 # Any changes to this dictionary must also be done in the enum
