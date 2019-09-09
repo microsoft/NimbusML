@@ -9,11 +9,13 @@ LpScaler
 
 __all__ = ["LpScaler"]
 
-import numbers
+
 from sklearn.base import TransformerMixin
-from ...internal.utils.utils import trace
+
 from ...base_transform import BaseTransform
-from ...internal.core.preprocessing.normalization.lpscaler import LpScaler as core
+from ...internal.core.preprocessing.normalization.lpscaler import \
+    LpScaler as core
+from ...internal.utils.utils import trace
 
 
 class LpScaler(core, BaseTransform, TransformerMixin):
