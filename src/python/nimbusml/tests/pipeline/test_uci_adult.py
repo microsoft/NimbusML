@@ -13,7 +13,7 @@ from nimbusml.ensemble import FastTreesBinaryClassifier
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.utils import get_X_y
-from sklearn.utils.testing import assert_raises_regex, assert_equal, assert_true
+from sklearn.utils.testing import assert_raises_regex, assert_equal, assert_true, assert_greater
 
 train_file = get_dataset("uciadult_train").as_filepath()
 test_file = get_dataset("uciadult_test").as_filepath()

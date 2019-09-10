@@ -23,7 +23,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.utils.testing import assert_equal
+from sklearn.utils.testing import assert_equal, assert_greater
 
 try:
     from pandas.testing import assert_frame_equal
