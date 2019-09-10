@@ -6,6 +6,7 @@ import os
 import tempfile
 import unittest
 
+import numpy as np
 from nimbusml import FileDataStream
 from nimbusml import Pipeline
 from nimbusml.datasets import get_dataset
