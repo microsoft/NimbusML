@@ -16,14 +16,14 @@ from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.linear_model import LogisticRegressionClassifier
 from nimbusml.preprocessing.normalization import MeanVarianceScaler
-from nimbusml.utils import check_accuracy_scikit, get_X_y
+from nimbusml.utils import get_X_y
 from sklearn.base import clone
 from sklearn.datasets import load_iris
 from sklearn.decomposition import PCA
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.utils.testing import assert_equal
+from sklearn.utils.testing import assert_equal, assert_greater
 
 try:
     from pandas.testing import assert_frame_equal
@@ -45,6 +45,19 @@ categorical_columns = [
     'native-country-region']
 selected_features = ['age', 'education-num']
 
+def check_accuracy_scikit(
+        test_file,
+        label_column,
+        predictions,
+        threshold,
+        sep=','):
+    (test, label) = get_X_y(test_file, label_column, sep=sep)
+    accuracy = np.mean(label[label_column].values == predictions.values)
+    assert_greater(
+        accuracy,
+        threshold,
+        "accuracy should be greater than %s" %
+        threshold)
 
 class TestUciAdultScikit(unittest.TestCase):
 
