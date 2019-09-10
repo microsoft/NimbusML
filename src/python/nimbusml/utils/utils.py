@@ -12,12 +12,9 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import roc_auc_score
-from sklearn.utils.testing import assert_greater
 
 
-# select columns from DataFrame insize a pipeline
-
-
+# select columns from DataFrame inside a pipeline
 class ColumnSelector(BaseEstimator, TransformerMixin):
     def __init__(self, columns, ravel=False):
         self.columns = columns
@@ -107,29 +104,3 @@ def evaluate_binary_classifier(target, predicted, probabilities=None):
     if probabilities is not None:
         auc_score = roc_auc_score(target, probabilities)
     return (accuracy, auc_score)
-
-
-def check_accuracy(test_file, label_column, predictions, threshold, sep=','):
-    (test, label) = get_X_y(test_file, label_column, sep=sep)
-    accuracy = np.mean(label[label_column].values ==
-                       predictions.ix[:, 'PredictedLabel'].values)
-    assert_greater(
-        accuracy,
-        threshold,
-        "accuracy should be greater than %s" %
-        threshold)
-
-
-def check_accuracy_scikit(
-        test_file,
-        label_column,
-        predictions,
-        threshold,
-        sep=','):
-    (test, label) = get_X_y(test_file, label_column, sep=sep)
-    accuracy = np.mean(label[label_column].values == predictions.values)
-    assert_greater(
-        accuracy,
-        threshold,
-        "accuracy should be greater than %s" %
-        threshold)

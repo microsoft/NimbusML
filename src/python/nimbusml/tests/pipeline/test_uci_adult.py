@@ -12,7 +12,7 @@ from nimbusml.datasets import get_dataset
 from nimbusml.ensemble import FastTreesBinaryClassifier
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
-from nimbusml.utils import check_accuracy, get_X_y
+from nimbusml.utils import get_X_y
 from sklearn.utils.testing import assert_raises_regex, assert_equal, assert_true
 
 train_file = get_dataset("uciadult_train").as_filepath()
@@ -32,6 +32,15 @@ file_schema = 'sep=, col=label:R4:0 col=Features:R4:9-14 col=workclass:TX:1 ' \
               'col=sex:TX:7 col=native-country-region:TX:8 header+'
 label_column = 'label'
 
+def check_accuracy(test_file, label_column, predictions, threshold, sep=','):
+    (test, label) = get_X_y(test_file, label_column, sep=sep)
+    accuracy = np.mean(label[label_column].values ==
+                       predictions.ix[:, 'PredictedLabel'].values)
+    assert_greater(
+        accuracy,
+        threshold,
+        "accuracy should be greater than %s" %
+        threshold)
 
 class TestUciAdult(unittest.TestCase):
 
