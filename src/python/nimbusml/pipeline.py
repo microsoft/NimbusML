@@ -70,7 +70,7 @@ from .internal.utils.data_roles import Role, DataRoles
 from .internal.utils.data_schema import DataSchema
 from .internal.utils.data_stream import DataStream, ViewDataStream, \
     FileDataStream, BinaryDataStream
-from .internal.utils.entrypoints import Graph
+from .internal.utils.entrypoints import Graph, DataOutputFormat
 from .internal.utils.schema_helper import _extract_label_column
 from .internal.utils.utils import trace, unlist
 
@@ -824,10 +824,18 @@ class Pipeline:
         if learner_node is None:  # last node is transformer
             outputs[output_data.replace(
                 '$', '')] = '' if do_fit_transform else '<null>'
+
+        data_output_format = DataOutputFormat.DF
+        if do_fit_transform:
+            if output_binary_data_stream:
+                data_output_format = DataOutputFormat.IDV
+            elif params.pop('as_csr', False):
+                data_output_format = DataOutputFormat.CSR
+
         graph = Graph(
             inputs,
             outputs,
-            do_fit_transform and output_binary_data_stream,
+            data_output_format,
             *(graph_nodes))
 
         # Checks that every parameter in params was used.
@@ -1774,10 +1782,13 @@ class Pipeline:
 
         outputs = dict(output_data="")
 
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
+
         graph = Graph(
             inputs,
             outputs,
-            as_binary_data_stream,
+            data_output_format,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -1903,10 +1914,13 @@ class Pipeline:
         else:
             outputs = dict(output_data="")
 
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
+
         graph = Graph(
             inputs,
             outputs,
-            as_binary_data_stream,
+            data_output_format,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -2241,10 +2255,16 @@ class Pipeline:
 
         all_nodes.extend([apply_node])
 
+        data_output_format = DataOutputFormat.DF
+        if as_binary_data_stream:
+            data_output_format = DataOutputFormat.IDV
+        elif params.pop('as_csr', False):
+            data_output_format = DataOutputFormat.CSR
+
         graph = Graph(
             inputs,
             dict(output_data=""),
-            as_binary_data_stream,
+            data_output_format,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -2316,7 +2336,7 @@ class Pipeline:
         graph = Graph(
             inputs,
             outputs,
-            False,
+            DataOutputFormat.DF,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -2566,7 +2586,7 @@ class Pipeline:
         graph = Graph(
             inputs,
             outputs,
-            False,
+            DataOutputFormat.DF,
             *nodes)
 
         class_name = cls.__name__
