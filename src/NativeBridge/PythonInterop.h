@@ -4,6 +4,8 @@
 #pragma once
 
 #include <map>
+#include <vector>
+
 
 // Taken from ML.NET source code. These values should be stable.
 enum DataKind
@@ -59,8 +61,8 @@ inline void PythonObjectBase::SetKind(int kind)
 
 
 /*
- * Template typed base class which provides
- * the interface for all derived classes.
+ * Template typed base class which provides the
+ * required interface for all derived classes.
  */
 template <class T>
 class PythonObject : public PythonObjectBase
@@ -72,9 +74,8 @@ protected:
 public:
     PythonObject(const int& kind, size_t numRows = 1, size_t numCols = 1);
     virtual ~PythonObject() {}
-
     virtual void SetAt(size_t nRow, size_t nCol, const T& value) = 0;
-    virtual const std::vector<T>* GetData() const = 0;
+    virtual void AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames) = 0;
 };
 
 template <class T>
@@ -87,8 +88,8 @@ inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t num
 
 
 /*
- * PythonObject based class which handles
- * the one column case.
+ * PythonObject based class which
+ * handles the one column case.
  */
 template <class T>
 class PythonObjectSingle : public PythonObject<T>
@@ -100,7 +101,8 @@ public:
     PythonObjectSingle(const int& kind, size_t numRows = 1, size_t numCols = 1);
     virtual ~PythonObjectSingle();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
-    virtual const std::vector<T>* GetData() const;
+    virtual void AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames);
+    const std::vector<T>* GetData() const { return _pData; }
 };
 
 template <class T>
@@ -125,10 +127,4 @@ inline void PythonObjectSingle<T>::SetAt(size_t nRow, size_t nCol, const T& valu
     if (_pData->size() <= index)
         _pData->resize(index + 1);
     _pData->at(index) = value;
-}
-
-template <class T>
-inline const std::vector<T>* PythonObjectSingle<T>::GetData() const
-{
-    return _pData;
 }

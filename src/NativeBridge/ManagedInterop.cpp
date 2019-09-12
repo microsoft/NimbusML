@@ -6,62 +6,15 @@
 #include "DataViewInterop.h"
 #include "ManagedInterop.h"
 
-inline void destroyManagerCObject(PyObject* obj) {
-    auto* b = static_cast<PythonObjectBase*>(PyCapsule_GetPointer(obj, NULL));
-    if (b) { delete b; }
-}
 
-#define SetDict2(cpptype, nptype); \
-		{\
-			PythonObject<cpptype>* col = dynamic_cast<PythonObject<cpptype>*>(column);\
-			auto shrd = col->GetData();\
-			auto* data = shrd->data();\
-			bp::handle<> h(::PyCapsule_New((void*)column, NULL, (PyCapsule_Destructor)&destroyManagerCObject));\
-			dict[_names[i]] = np::from_data(\
-				data,\
-				np::dtype::get_builtin<nptype>(),\
-				bp::make_tuple(shrd->size()),\
-				bp::make_tuple(sizeof(nptype)), bp::object(h));\
-		}
-
-#define SetDict1(type) SetDict2(type, type)
-
-#define SetDictAndKeys(type, i); \
-		{\
-			PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
-			auto shrd = col->GetData();\
-			auto* data = shrd->data();\
-			bp::handle<> h(::PyCapsule_New((void*)column, NULL, (PyCapsule_Destructor)&destroyManagerCObject));\
-			np::ndarray npdata = np::from_data(\
-				data,\
-				np::dtype::get_builtin<type>(),\
-				bp::make_tuple(shrd->size()),\
-				bp::make_tuple(sizeof(float)), bp::object(h));\
-			if (keyNames == nullptr)\
-			{\
-				dict[_names[i]] = npdata;\
-			}\
-			else\
-			{\
-				dict[_names[i]] = bp::dict();\
-				dict[_names[i]]["..Data"] = npdata;\
-				auto shrd = keyNames->GetData();\
-				bp::list list;\
-				for (int j = 0; j < shrd->size(); j++)\
-				{\
-					bp::object obj;\
-					const std::string& value = shrd->at(j);\
-					if (!value.empty())\
-					{\
-						obj = bp::object(value);\
-					}\
-					list.append(obj);\
-				}\
-				dict[_names[i]]["..KeyValues"] = list;\
-			}\
-		}\
+#define AddToDict(type); \
+        {\
+            PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
+            col->AddToDict(dict, _names[i], keyNames);\
+        }\
 
 #define STATIC
+
 
 EnvironmentBlock::~EnvironmentBlock()
 {
@@ -238,15 +191,15 @@ bp::dict EnvironmentBlock::GetData()
     for (size_t i = 0; i < _names.size(); i++)
     {
         PythonObjectBase* column = _columns[i];
-        PythonObject<std::string>* keyNames = nullptr;
+        const std::vector<std::string>* keyNames = nullptr;
         if (_columnToKeyMap[i] >= 0)
-            keyNames = _vKeyValues[_columnToKeyMap[i]];
+            keyNames = _vKeyValues[_columnToKeyMap[i]]->GetData();
 
         signed char kind = column->GetKind();
         switch (kind) {
         case -1:
         {
-            PythonObject<signed char>* col = dynamic_cast<PythonObject<signed char>*>(column);
+            PythonObjectSingle<signed char>* col = dynamic_cast<PythonObjectSingle<signed char>*>(column);
             auto shrd = col->GetData();
             bp::list list;
             for (size_t i = 0; i < shrd->size(); i++)
@@ -266,57 +219,42 @@ bp::dict EnvironmentBlock::GetData()
         }
         break;
         case BL:
-            SetDict2(signed char, bool);
+            AddToDict(signed char);
             break;
         case I1:
-            SetDictAndKeys(signed char, i);
+            AddToDict(signed char);
             break;
         case I2:
-            SetDictAndKeys(signed short, i);
+            AddToDict(signed short);
             break;
         case I4:
-            SetDictAndKeys(signed int, i);
+            AddToDict(signed int);
             break;
         case I8:
-            SetDict1(CxInt64);
+            AddToDict(CxInt64);
             break;
         case U1:
-            SetDict1(unsigned char);
+            AddToDict(unsigned char);
             break;
         case U2:
-            SetDict1(unsigned short);
+            AddToDict(unsigned short);
             break;
         case U4:
-            SetDict1(unsigned int);
+            AddToDict(unsigned int);
             break;
         case U8:
-            SetDict1(CxUInt64);
+            AddToDict(CxUInt64);
             break;
         case R4:
-            SetDict1(float);
+            AddToDict(float);
             break;
         case R8:
-            SetDict1(double);
+            AddToDict(double);
             break;
         case TX:
-        {
-            PythonObject<string>* col = dynamic_cast<PythonObject<string>*>(column);
-            auto shrd = col->GetData();
-            bp::list list;
-            for (size_t i = 0; i < shrd->size(); i++)
-            {
-                bp::object obj;
-                const std::string& value = shrd->at(i);
-                if (!value.empty())
-                {
-                    obj = bp::object(value);
-                }
-                list.append(obj);
-            }
-            dict[_names[i]] = list;
+            AddToDict(std::string);
             delete column;
-        }
-        break;
+            break;
         case TS:
         case DT:
         case DZ:

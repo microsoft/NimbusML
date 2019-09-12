@@ -116,7 +116,7 @@ private:
     // there are no key names.
     std::vector<CxInt64> _columnToKeyMap;
 
-    std::vector<PythonObject<std::string>*> _vKeyValues;
+    std::vector<PythonObjectSingle<std::string>*> _vKeyValues;
 
     static MANAGED_CALLBACK(void) SetR4(EnvironmentBlock *env, int col, long index, float value)
     {
