@@ -164,7 +164,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 
         if (pdata->keyCards && (pdata->keyCards[i] >= 0))
         {
-            _vKeyValues.push_back(new PythonObject<std::string>(TX, pdata->keyCards[i], 1));
+            _vKeyValues.push_back(new PythonObjectSingle<std::string>(TX, pdata->keyCards[i], 1));
             _columnToKeyMap.push_back(numKeys++);
         }
         else

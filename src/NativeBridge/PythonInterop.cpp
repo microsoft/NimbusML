@@ -50,6 +50,6 @@ PythonObjectBase* PythonObjectBase::CreateObject(const int& kind, size_t numRows
 
 template <class T> PythonObjectBase* PythonObjectBase::CreateObject(const int& kind, size_t nRows, size_t nColumns)
 {
-    return new PythonObject<T>(kind, nRows, nColumns);
+    return new PythonObjectSingle<T>(kind, nRows, nColumns);
 }
 

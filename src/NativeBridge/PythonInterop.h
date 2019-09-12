@@ -58,20 +58,23 @@ inline void PythonObjectBase::SetKind(int kind)
 }
 
 
+/*
+ * Template typed base class which provides
+ * the interface for all derived classes.
+ */
 template <class T>
 class PythonObject : public PythonObjectBase
 {
 protected:
-    std::vector<T>* _pData;
-
     size_t _numRows;
     size_t _numCols;
 
 public:
     PythonObject(const int& kind, size_t numRows = 1, size_t numCols = 1);
-    virtual ~PythonObject();
-    void SetAt(size_t nRow, size_t nCol, const T& value);
-    const std::vector<T>* GetData() const;
+    virtual ~PythonObject() {}
+
+    virtual void SetAt(size_t nRow, size_t nCol, const T& value) = 0;
+    virtual const std::vector<T>* GetData() const = 0;
 };
 
 template <class T>
@@ -80,29 +83,52 @@ inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t num
 {
     _numRows = numRows;
     _numCols = numCols;
+}
 
+
+/*
+ * PythonObject based class which handles
+ * the one column case.
+ */
+template <class T>
+class PythonObjectSingle : public PythonObject<T>
+{
+protected:
+    std::vector<T>* _pData;
+
+public:
+    PythonObjectSingle(const int& kind, size_t numRows = 1, size_t numCols = 1);
+    virtual ~PythonObjectSingle();
+    virtual void SetAt(size_t nRow, size_t nCol, const T& value);
+    virtual const std::vector<T>* GetData() const;
+};
+
+template <class T>
+inline PythonObjectSingle<T>::PythonObjectSingle(const int& kind, size_t numRows, size_t numCols)
+    : PythonObject<T>(kind, numRows, numCols)
+{
     _pData = new std::vector<T>();
-    if (_numRows > 0)
-        _pData->reserve(_numRows*_numCols);
+    if (numRows > 0)
+        _pData->reserve(numRows*numCols);
 }
 
 template <class T>
-inline PythonObject<T>::~PythonObject()
+inline PythonObjectSingle<T>::~PythonObjectSingle()
 {
     delete _pData;
 }
 
 template <class T>
-inline void PythonObject<T>::SetAt(size_t nRow, size_t nCol, const T& value)
+inline void PythonObjectSingle<T>::SetAt(size_t nRow, size_t nCol, const T& value)
 {
-    size_t index = nRow * _numCols + nCol;
+    size_t index = nRow * this->_numCols + nCol;
     if (_pData->size() <= index)
         _pData->resize(index + 1);
     _pData->at(index) = value;
 }
 
 template <class T>
-inline const std::vector<T>* PythonObject<T>::GetData() const
+inline const std::vector<T>* PythonObjectSingle<T>::GetData() const
 {
     return _pData;
 }
