@@ -11,7 +11,7 @@ inline void destroyManagerCObject(PyObject* obj) {
 }
 
 
-PythonObjectBase::PythonObjectBase(const int& kind, size_t numRows = 0, size_t numCols = 0)
+PythonObjectBase::PythonObjectBase(const int& kind, size_t numRows, size_t numCols)
 {
     _kind = kind;
     _numRows = numRows;
@@ -191,8 +191,8 @@ inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
                                                    const std::vector<std::string>* keyNames,
                                                    const size_t expectedRows)
 {
-    const size_t numRows = (expectedRows > this->_numRows) ? expectedRows : this->_numRows;
-    const size_t numCols = _data.size();
+    size_t numRows = (expectedRows > this->_numRows) ? expectedRows : this->_numRows;
+    size_t numCols = _data.size();
 
     if (numCols == 0)
     {
