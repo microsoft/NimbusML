@@ -118,79 +118,79 @@ private:
 
     std::vector<PythonObjectSingle<std::string>*> _vKeyValues;
 
-    static MANAGED_CALLBACK(void) SetR4(EnvironmentBlock *env, int col, long index, float value)
+    static MANAGED_CALLBACK(void) SetR4(EnvironmentBlock *env, int col, long m, long n, float value)
     {
         PythonObject<float>* colObject = dynamic_cast<PythonObject<float>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetR8(EnvironmentBlock *env, int col, long index, double value)
+    static MANAGED_CALLBACK(void) SetR8(EnvironmentBlock *env, int col, long m, long n, double value)
     {
         PythonObject<double>* colObject = dynamic_cast<PythonObject<double>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetBL(EnvironmentBlock *env, int col, long index, signed char value)
+    static MANAGED_CALLBACK(void) SetBL(EnvironmentBlock *env, int col, long m, long n, signed char value)
     {
         PythonObject<signed char>* colObject = dynamic_cast<PythonObject<signed char>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
         if (value < 0)
             env->_columns[col]->SetKind(-1);
     }
-    static MANAGED_CALLBACK(void) SetI1(EnvironmentBlock *env, int col, long index, signed char value)
+    static MANAGED_CALLBACK(void) SetI1(EnvironmentBlock *env, int col, long m, long n, signed char value)
     {
         PythonObject<signed char>* colObject = dynamic_cast<PythonObject<signed char>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetI2(EnvironmentBlock *env, int col, long index, short value)
+    static MANAGED_CALLBACK(void) SetI2(EnvironmentBlock *env, int col, long m, long n, short value)
     {
         PythonObject<short>* colObject = dynamic_cast<PythonObject<short>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetI4(EnvironmentBlock *env, int col, long index, int value)
+    static MANAGED_CALLBACK(void) SetI4(EnvironmentBlock *env, int col, long m, long n, int value)
     {
         PythonObject<int>* colObject = dynamic_cast<PythonObject<int>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetI8(EnvironmentBlock *env, int col, long index, CxInt64 value)
+    static MANAGED_CALLBACK(void) SetI8(EnvironmentBlock *env, int col, long m, long n, CxInt64 value)
     {
         PythonObject<CxInt64>* colObject = dynamic_cast<PythonObject<CxInt64>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetU1(EnvironmentBlock *env, int col, long index, unsigned char value)
+    static MANAGED_CALLBACK(void) SetU1(EnvironmentBlock *env, int col, long m, long n, unsigned char value)
     {
         PythonObject<unsigned char>* colObject = dynamic_cast<PythonObject<unsigned char>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetU2(EnvironmentBlock *env, int col, long index, unsigned short value)
+    static MANAGED_CALLBACK(void) SetU2(EnvironmentBlock *env, int col, long m, long n, unsigned short value)
     {
         PythonObject<unsigned short>* colObject = dynamic_cast<PythonObject<unsigned short>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetU4(EnvironmentBlock *env, int col, long index, unsigned int value)
+    static MANAGED_CALLBACK(void) SetU4(EnvironmentBlock *env, int col, long m, long n, unsigned int value)
     {
         PythonObject<unsigned int>* colObject = dynamic_cast<PythonObject<unsigned int>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetU8(EnvironmentBlock *env, int col, long index, CxUInt64 value)
+    static MANAGED_CALLBACK(void) SetU8(EnvironmentBlock *env, int col, long m, long n, CxUInt64 value)
     {
         PythonObject<CxUInt64>* colObject = dynamic_cast<PythonObject<CxUInt64>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, value);
+        colObject->SetAt(m, n, value);
     }
-    static MANAGED_CALLBACK(void) SetTX(EnvironmentBlock *env, int col, long index, char* value, long length)
+    static MANAGED_CALLBACK(void) SetTX(EnvironmentBlock *env, int col, long m, long n, char* value, long length)
     {
         PythonObject<string>* colObject = dynamic_cast<PythonObject<string>*>(env->_columns[col]);
         assert(colObject != nullptr);
-        colObject->SetAt(index, 0, std::string(value, length));
+        colObject->SetAt(m, n, std::string(value, length));
     }
     static MANAGED_CALLBACK(void) SetKeyValue(EnvironmentBlock *env, int keyColumnIndex, int keyCode, char* value, long length)
     {

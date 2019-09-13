@@ -79,8 +79,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
             public int* keyCards;
 
             // The number of values in each row of a column.
-            // A value count of 0 means that each row of the column
-            // is variable length.
+            // A value count of 0 means that each row of the
+            // column is variable length.
             [FieldOffset(0x28)]
             public byte* valueCounts;
         }
@@ -404,13 +404,17 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                                        InternalDataKind.I4,
                                                        InternalDataKind.I4};
 
+            var valueCounts = new List<byte> { 1, 1, 1, 1 };
+
             var kinds = kindList.ToArray();
             var nameBytes = nameUtf8Bytes.ToArray();
             var names = new byte*[allNames.Count];
+            var valueCountsBytes = valueCounts.ToArray();
 
             fixed (InternalDataKind* prgkind = kinds)
             fixed (byte* prgbNames = nameBytes)
             fixed (byte** prgname = names)
+            fixed (byte* prgbValueCount = valueCountsBytes)
             {
                 for (int iid = 0; iid < names.Length; iid++)
                     names[iid] = prgbNames + nameIndices[iid];
@@ -421,6 +425,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 block.names = (sbyte**)prgname;
                 block.kinds = prgkind;
                 block.keyCards = null;
+                block.valueCounts = prgbValueCount;
 
                 dataSink(penv, &block, out var setters, out var keyValueSetter);
 
@@ -470,7 +475,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
         private abstract unsafe class BufferFillerBase
         {
-            public delegate void ValuePoker<T>(T value, int col, long index);
+            public delegate void ValuePoker<T>(T value, int col, long m, long n);
 
             protected readonly int _colIndex;
             protected readonly DataViewRow _input;
@@ -494,23 +499,23 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     case InternalDataKind.U1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
                         ValuePoker<byte> pokeU1 =
-                            (byte value, int col, long index) => fnI1(penv, col, index, value > keyMax ? (sbyte)-1 : (sbyte)(value - 1));
+                            (byte value, int col, long m, long n) => fnI1(penv, col, m, n, value > keyMax ? (sbyte)-1 : (sbyte)(value - 1));
                         return new Impl<byte>(input, pyCol, idvCol, type, pokeU1);
                     case InternalDataKind.U2:
                         var fnI2 = MarshalDelegate<I2Setter>(setter);
                         ValuePoker<ushort> pokeU2 =
-                            (ushort value, int col, long index) => fnI2(penv, col, index, value > keyMax ? (short)-1 : (short)(value - 1));
+                            (ushort value, int col, long m, long n) => fnI2(penv, col, m, n, value > keyMax ? (short)-1 : (short)(value - 1));
                         return new Impl<ushort>(input, pyCol, idvCol, type, pokeU2);
                     case InternalDataKind.U4:
                         var fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<uint> pokeU4 =
-                            (uint value, int col, long index) => fnI4(penv, col, index, value > keyMax ? -1 : (int)(value - 1));
+                            (uint value, int col, long m, long n) => fnI4(penv, col, m, n, value > keyMax ? -1 : (int)(value - 1));
                         return new Impl<uint>(input, pyCol, idvCol, type, pokeU4);
                     case InternalDataKind.U8:
                         // We convert U8 key types with key names to I4.
                         fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<ulong> pokeU8 =
-                            (ulong value, int col, long index) => fnI4(penv, col, index, value > keyMax ? -1 : (int)(value - 1));
+                            (ulong value, int col, long m, long n) => fnI4(penv, col, m, n, value > keyMax ? -1 : (int)(value - 1));
                         return new Impl<ulong>(input, pyCol, idvCol, type, pokeU8);
                     }
                 }
@@ -522,23 +527,23 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     case InternalDataKind.U1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
                         ValuePoker<byte> pokeU1 =
-                            (byte value, int col, long index) => fnI1(penv, col, index, (sbyte)(value - 1));
+                            (byte value, int col, long m, long n) => fnI1(penv, col, m, n, (sbyte)(value - 1));
                         return new Impl<byte>(input, pyCol, idvCol, type, pokeU1);
                     case InternalDataKind.U2:
                         var fnI2 = MarshalDelegate<I2Setter>(setter);
                         ValuePoker<ushort> pokeU2 =
-                            (ushort value, int col, long index) => fnI2(penv, col, index, (short)(value - 1));
+                            (ushort value, int col, long m, long n) => fnI2(penv, col, m, n, (short)(value - 1));
                         return new Impl<ushort>(input, pyCol, idvCol, type, pokeU2);
                     case InternalDataKind.U4:
                         var fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<uint> pokeU4 =
-                            (uint value, int col, long index) => fnI4(penv, col, index, (int)(value - 1));
+                            (uint value, int col, long m, long n) => fnI4(penv, col, m, n, (int)(value - 1));
                         return new Impl<uint>(input, pyCol, idvCol, type, pokeU4);
                     case InternalDataKind.U8:
                         // We convert U8 key types with key names to I4.
                         fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<ulong> pokeU8 =
-                            (ulong value, int col, long index) => fnI4(penv, col, index, (int)(value - 1));
+                            (ulong value, int col, long m, long n) => fnI4(penv, col, m, n, (int)(value - 1));
                         return new Impl<ulong>(input, pyCol, idvCol, type, pokeU8);
                     }
                 }
@@ -549,70 +554,70 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     case InternalDataKind.R4:
                         var fnR4 = MarshalDelegate<R4Setter>(setter);
                         ValuePoker<float> pokeR4 =
-                            (float value, int col, long index) => fnR4(penv, col, index, value);
+                            (float value, int col, long m, long n) => fnR4(penv, col, m, n, value);
                         return new Impl<float>(input, pyCol, idvCol, type, pokeR4);
                     case InternalDataKind.R8:
                         var fnR8 = MarshalDelegate<R8Setter>(setter);
                         ValuePoker<double> pokeR8 =
-                            (double value, int col, long index) => fnR8(penv, col, index, value);
+                            (double value, int col, long m, long n) => fnR8(penv, col, m, n, value);
                         return new Impl<double>(input, pyCol, idvCol, type, pokeR8);
                     case InternalDataKind.BL:
                         var fnBl = MarshalDelegate<BLSetter>(setter);
                         ValuePoker<bool> pokeBl =
-                            (bool value, int col, long index) => fnBl(penv, col, index, !value ? (byte)0 : value ? (byte)1 : (byte)0xFF);
+                            (bool value, int col, long m, long n) => fnBl(penv, col, m, n, !value ? (byte)0 : value ? (byte)1 : (byte)0xFF);
                         return new Impl<bool>(input, pyCol, idvCol, type, pokeBl);
                     case InternalDataKind.I1:
                         var fnI1 = MarshalDelegate<I1Setter>(setter);
                         ValuePoker<sbyte> pokeI1 =
-                            (sbyte value, int col, long index) => fnI1(penv, col, index, value);
+                            (sbyte value, int col, long m, long n) => fnI1(penv, col, m, n, value);
                         return new Impl<sbyte>(input, pyCol, idvCol, type, pokeI1);
                     case InternalDataKind.I2:
                         var fnI2 = MarshalDelegate<I2Setter>(setter);
                         ValuePoker<short> pokeI2 =
-                            (short value, int col, long index) => fnI2(penv, col, index, value);
+                            (short value, int col, long m, long n) => fnI2(penv, col, m, n, value);
                         return new Impl<short>(input, pyCol, idvCol, type, pokeI2);
                     case InternalDataKind.I4:
                         var fnI4 = MarshalDelegate<I4Setter>(setter);
                         ValuePoker<int> pokeI4 =
-                            (int value, int col, long index) => fnI4(penv, col, index, value);
+                            (int value, int col, long m, long n) => fnI4(penv, col, m, n, value);
                         return new Impl<int>(input, pyCol, idvCol, type, pokeI4);
                     case InternalDataKind.I8:
                         var fnI8 = MarshalDelegate<I8Setter>(setter);
                         ValuePoker<long> pokeI8 =
-                            (long value, int col, long index) => fnI8(penv, col, index, value);
+                            (long value, int col, long m, long n) => fnI8(penv, col, m, n, value);
                         return new Impl<long>(input, pyCol, idvCol, type, pokeI8);
                     case InternalDataKind.U1:
                         var fnU1 = MarshalDelegate<U1Setter>(setter);
                         ValuePoker<byte> pokeU1 =
-                            (byte value, int col, long index) => fnU1(penv, col, index, value);
+                            (byte value, int col, long m, long n) => fnU1(penv, col, m, n, value);
                         return new Impl<byte>(input, pyCol, idvCol, type, pokeU1);
                     case InternalDataKind.U2:
                         var fnU2 = MarshalDelegate<U2Setter>(setter);
                         ValuePoker<ushort> pokeU2 =
-                            (ushort value, int col, long index) => fnU2(penv, col, index, value);
+                            (ushort value, int col, long m, long n) => fnU2(penv, col, m, n, value);
                         return new Impl<ushort>(input, pyCol, idvCol, type, pokeU2);
                     case InternalDataKind.U4:
                         var fnU4 = MarshalDelegate<U4Setter>(setter);
                         ValuePoker<uint> pokeU4 =
-                            (uint value, int col, long index) => fnU4(penv, col, index, value);
+                            (uint value, int col, long m, long n) => fnU4(penv, col, m, n, value);
                         return new Impl<uint>(input, pyCol, idvCol, type, pokeU4);
                     case InternalDataKind.U8:
                         var fnU8 = MarshalDelegate<U8Setter>(setter);
                         ValuePoker<ulong> pokeU8 =
-                            (ulong value, int col, long index) => fnU8(penv, col, index, value);
+                            (ulong value, int col, long m, long n) => fnU8(penv, col, m, n, value);
                         return new Impl<ulong>(input, pyCol, idvCol, type, pokeU8);
                     case InternalDataKind.TX:
                         var fnTX = MarshalDelegate<TXSetter>(setter);
                         ValuePoker<ReadOnlyMemory<char>> pokeTX =
-                            (ReadOnlyMemory<char> value, int col, long index) =>
+                            (ReadOnlyMemory<char> value, int col, long m, long n) =>
                             {
                                 if (value.IsEmpty)
-                                    fnTX(penv, col, index, null, 0);
+                                    fnTX(penv, col, m, n, null, 0);
                                 else
                                 {
                                     byte[] bt = Encoding.UTF8.GetBytes(value.ToString());
                                     fixed (byte* pt = bt)
-                                        fnTX(penv, col, index, (sbyte*)pt, bt.Length);
+                                        fnTX(penv, col, m, n, (sbyte*)pt, bt.Length);
                                 }
                             };
                         return new Impl<ReadOnlyMemory<char>>(input, pyCol, idvCol, type, pokeTX);
@@ -656,7 +661,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         {
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                _poker(_buffer.GetValues()[i], _colIndex + i, _input.Position);
+                                _poker(_buffer.GetValues()[i], _colIndex + i, _input.Position, 0);
                             }
                         }
                         else
@@ -671,7 +676,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 TSrc val = default(TSrc);
                                 if (ii < values.Length && indices[ii] == i)
                                     val = values[ii];
-                                _poker(val, _colIndex + i, _input.Position);
+                                _poker(val, _colIndex + i, _input.Position, 0);
                             }
                         }
                     }
@@ -679,7 +684,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     {
                         TSrc value = default(TSrc);
                         _get(ref value);
-                        _poker(value, _colIndex, _input.Position);
+                        _poker(value, _colIndex, _input.Position, 0);
                     }
                 }
             }
@@ -728,20 +733,20 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 _indptrSetter = MarshalDelegate<I4Setter>(setters[IndPtrCol]);
                 _shapeSetter = MarshalDelegate<I4Setter>(setters[ShapeCol]);
 
-                _indptrSetter(_penv, IndPtrCol, 0, 0);
+                _indptrSetter(_penv, IndPtrCol, 0, 0, 0);
             }
 
             public void AppendR4(float value, int col)
             {
-                _r4DataSetter(_penv, DataCol, _index, value);
-                _indicesSetter(_penv, IndicesCol, _index, col);
+                _r4DataSetter(_penv, DataCol, _index, 0, value);
+                _indicesSetter(_penv, IndicesCol, _index, 0, col);
                 _index++;
             }
 
             public void AppendR8(double value, int col)
             {
-                _r8DataSetter(_penv, DataCol, _index, value);
-                _indicesSetter(_penv, IndicesCol, _index, col);
+                _r8DataSetter(_penv, DataCol, _index, 0, value);
+                _indicesSetter(_penv, IndicesCol, _index, 0, col);
                 _index++;
             }
 
@@ -750,13 +755,13 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 col = 0;
                 _row++;
 
-                _indptrSetter(_penv, IndPtrCol, _row, _index);
+                _indptrSetter(_penv, IndPtrCol, _row, 0, _index);
             }
 
             public void SetShape(int m, int n)
             {
-                _shapeSetter(_penv, ShapeCol, 0, m);
-                _shapeSetter(_penv, ShapeCol, 1, n);
+                _shapeSetter(_penv, ShapeCol, 0, 0, m);
+                _shapeSetter(_penv, ShapeCol, 1, 0, n);
             }
         }
 

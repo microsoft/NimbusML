@@ -525,8 +525,8 @@ struct DataViewBlock
     // key names.
     const int *keyCards;
     // The number of values in each row of a column.
-    // A value count of 0 means that each row of the column
-    // is variable length.
+    // A value count of 0 means that each row of the
+    // column is variable length.
     const BYTE *valueCounts;
 };
 
