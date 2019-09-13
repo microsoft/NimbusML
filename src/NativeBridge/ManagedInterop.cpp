@@ -68,7 +68,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
     for (int i = 0; i < pdata->ccol; i++)
     {
         BYTE kind = pdata->kinds[i];
-        _columns.push_back(PythonObjectBase::CreateObject(kind, pdata->crow, 1));
+        _columns.push_back(PythonObjectBase::CreateObject(kind, pdata->crow, pdata->valueCounts[i]));
 
         switch (kind)
         {

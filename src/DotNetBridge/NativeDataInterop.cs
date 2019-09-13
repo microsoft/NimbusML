@@ -77,6 +77,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
             // key types. Zero means unbounded, -1 means not a key type.
             [FieldOffset(0x20)]
             public int* keyCards;
+
+            // The number of values in each row of a column.
+            // A value count of 0 means that each row of the column
+            // is variable length.
+            [FieldOffset(0x28)]
+            public byte* valueCounts;
         }
 
         private struct ColumnMetadataInfo
@@ -113,6 +119,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             var keyCardList = new List<int>();
             var nameUtf8Bytes = new List<Byte>();
             var nameIndices = new List<int>();
+            var valueCounts = new List<byte>();
 
             var expandCols = new HashSet<int>();
             var allNames = new HashSet<string>();
@@ -129,11 +136,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 var kind = itemType.GetRawKind();
                 int keyCard;
 
-                if (fullType.GetValueCount() == 0)
-                {
-                    throw ch.ExceptNotSupp("Column has variable length vector: " + 
-                        name + ". Not supported in python. Drop column before sending to Python");
-                }
+                byte valueCount = (fullType.GetValueCount() == 0) ? (byte)0 : (byte)1;
 
                 if (itemType is KeyDataViewType)
                 {
@@ -232,22 +235,26 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 {
                     kindList.Add(kind);
                     keyCardList.Add(keyCard);
+                    valueCounts.Add(valueCount);
                 }
             }
 
             ch.Assert(allNames.Count == kindList.Count);
             ch.Assert(allNames.Count == keyCardList.Count);
             ch.Assert(allNames.Count == nameIndices.Count);
+            ch.Assert(allNames.Count == valueCounts.Count);
 
             var kinds = kindList.ToArray();
             var keyCards = keyCardList.ToArray();
             var nameBytes = nameUtf8Bytes.ToArray();
             var names = new byte*[allNames.Count];
+            var valueCountsBytes = valueCounts.ToArray();
 
             fixed (InternalDataKind* prgkind = kinds)
             fixed (byte* prgbNames = nameBytes)
             fixed (byte** prgname = names)
             fixed (int* prgkeyCard = keyCards)
+            fixed (byte* prgbValueCount = valueCountsBytes)
             {
                 for (int iid = 0; iid < names.Length; iid++)
                     names[iid] = prgbNames + nameIndices[iid];
@@ -258,6 +265,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 block.names = (sbyte**)prgname;
                 block.kinds = prgkind;
                 block.keyCards = prgkeyCard;
+                block.valueCounts = prgbValueCount;
 
                 dataSink(penv, &block, out var setters, out var keyValueSetter);
 
