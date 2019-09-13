@@ -307,7 +307,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             }
                         }
                         fillers[i] = BufferFillerBase.Create(penv, cursor, pyColumn, colIndices[i], kinds[pyColumn], type, setters[pyColumn]);
-                        pyColumn += type is VectorDataViewType ? type.GetVectorSize() : 1;
+
+                        if ((type is VectorDataViewType) && (type.GetVectorSize() > 0))
+                        {
+                            pyColumn += type.GetVectorSize();
+                        }
+                        else pyColumn++;
                     }
                     for (int crow = 0; ; crow++)
                     {
@@ -638,6 +643,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 private VBuffer<TSrc> _buffer;
                 private readonly ValueGetter<TSrc> _get;
                 private readonly ValuePoker<TSrc> _poker;
+                private readonly bool _isVarLength;
 
                 public Impl(DataViewRow input, int pyColIndex, int idvColIndex, DataViewType type, ValuePoker<TSrc> poker)
                     : base(input, pyColIndex)
@@ -651,6 +657,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         _get = RowCursorUtils.GetGetterAs<TSrc>(type, input, idvColIndex);
 
                     _poker = poker;
+                    _isVarLength = (type.GetValueCount() == 0);
                 }
                 public override void Set()
                 {
@@ -661,7 +668,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
                         {
                             for (int i = 0; i < _buffer.Length; i++)
                             {
-                                _poker(_buffer.GetValues()[i], _colIndex + i, _input.Position, 0);
+                                if (_isVarLength)
+                                     _poker(_buffer.GetValues()[i], _colIndex, _input.Position, i);
+                                else _poker(_buffer.GetValues()[i], _colIndex + i, _input.Position, 0);
                             }
                         }
                         else
@@ -676,7 +685,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                 TSrc val = default(TSrc);
                                 if (ii < values.Length && indices[ii] == i)
                                     val = values[ii];
-                                _poker(val, _colIndex + i, _input.Position, 0);
+
+                                if (_isVarLength)
+                                     _poker(val, _colIndex, _input.Position, i);
+                                else _poker(val, _colIndex + i, _input.Position, 0);
                             }
                         }
                     }
