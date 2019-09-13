@@ -44,13 +44,20 @@ private:
 
 protected:
     int _kind;
+    size_t _numRows;
+    size_t _numCols;
 
 public:
-    PythonObjectBase(const int& kind);
     static PythonObjectBase* CreateObject(const int& kind, size_t numRows, size_t numCols);
+
+    PythonObjectBase(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    virtual ~PythonObjectBase();
+
     const int& GetKind() const;
     void SetKind(int kind);
-    virtual ~PythonObjectBase();
+
+    virtual size_t GetNumRows();
+    virtual size_t GetNumCols();
 };
 
 inline const int& PythonObjectBase::GetKind() const
@@ -63,6 +70,16 @@ inline void PythonObjectBase::SetKind(int kind)
     _kind = kind;
 }
 
+inline size_t PythonObjectBase::GetNumRows()
+{
+    return _numRows;
+}
+
+inline size_t PythonObjectBase::GetNumCols()
+{
+    return _numCols;
+}
+
 
 /*
  * Template typed base class which provides the
@@ -71,23 +88,20 @@ inline void PythonObjectBase::SetKind(int kind)
 template <class T>
 class PythonObject : public PythonObjectBase
 {
-protected:
-    size_t _numRows;
-    size_t _numCols;
-
 public:
-    PythonObject(const int& kind, size_t numRows = 1, size_t numCols = 1);
+    PythonObject(const int& kind, size_t numRows = 0, size_t numCols = 0);
     virtual ~PythonObject() {}
     virtual void SetAt(size_t nRow, size_t nCol, const T& value) = 0;
-    virtual void AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames) = 0;
+    virtual void AddToDict(bp::dict& dict,
+                           const std::string& name,
+                           const std::vector<std::string>* keyNames,
+                           const size_t expectedRows) = 0;
 };
 
 template <class T>
 inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t numCols)
-    : PythonObjectBase(kind)
+    : PythonObjectBase(kind, numRows, numCols)
 {
-    _numRows = numRows;
-    _numCols = numCols;
 }
 
 
@@ -102,10 +116,15 @@ protected:
     std::vector<T>* _pData;
 
 public:
-    PythonObjectSingle(const int& kind, size_t numRows = 1, size_t numCols = 1);
+    PythonObjectSingle(const int& kind, size_t numRows = 0, size_t numCols = 1);
     virtual ~PythonObjectSingle();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
-    virtual void AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames);
+    virtual void AddToDict(bp::dict& dict,
+                           const std::string& name,
+                           const std::vector<std::string>* keyNames,
+                           const size_t expectedRows);
+    virtual size_t GetNumRows();
+    virtual size_t GetNumCols();
     const std::vector<T>* GetData() const { return _pData; }
 };
 
@@ -133,6 +152,18 @@ inline void PythonObjectSingle<T>::SetAt(size_t nRow, size_t nCol, const T& valu
     _pData->at(index) = value;
 }
 
+template <class T>
+inline size_t PythonObjectSingle<T>::GetNumRows()
+{
+    return _pData->size();
+}
+
+template <class T>
+inline size_t PythonObjectSingle<T>::GetNumCols()
+{
+    return 1;
+}
+
 
 /*
  * PythonObject based class which
@@ -145,10 +176,14 @@ protected:
     std::vector<std::vector<T2>*> _data;
 
 public:
-    PythonObjectVariable(const int& kind, size_t numRows = 1, size_t numCols = 1);
+    PythonObjectVariable(const int& kind, size_t numRows = 0, size_t numCols = 0);
     virtual ~PythonObjectVariable();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
-    virtual void AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames);
+    virtual void AddToDict(bp::dict& dict,
+                           const std::string& name,
+                           const std::vector<std::string>* keyNames,
+                           const size_t expectedRows);
+    virtual size_t GetNumCols();
 };
 
 template <class T, class T2>
@@ -189,4 +224,10 @@ inline void PythonObjectVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T
     }
 
     _data[nCol]->push_back((T2)value);
+}
+
+template <class T, class T2>
+inline size_t PythonObjectVariable<T, T2>::GetNumCols()
+{
+    return _data.size();
 }

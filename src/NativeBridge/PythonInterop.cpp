@@ -11,9 +11,11 @@ inline void destroyManagerCObject(PyObject* obj) {
 }
 
 
-PythonObjectBase::PythonObjectBase(const int& kind)
+PythonObjectBase::PythonObjectBase(const int& kind, size_t numRows = 0, size_t numCols = 0)
 {
     _kind = kind;
+    _numRows = numRows;
+    _numCols = numCols;
 }
 
 PythonObjectBase::~PythonObjectBase()
@@ -92,7 +94,10 @@ template <class T, class T2> PythonObjectBase* PythonObjectBase::CreateVariable(
 }
 
 template <class T>
-void PythonObjectSingle<T>::AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames)
+void PythonObjectSingle<T>::AddToDict(bp::dict& dict,
+                                      const std::string& name,
+                                      const std::vector<std::string>* keyNames,
+                                      const size_t expectedRows)
 {
     auto* data = _pData->data();
 
@@ -161,7 +166,10 @@ void PythonObjectSingle<T>::AddToDict(bp::dict& dict, const std::string& name, c
 }
 
 template <>
-void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames)
+void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict,
+                                                const std::string& name,
+                                                const std::vector<std::string>* keyNames,
+                                                const size_t expectedRows)
 {
     bp::list list;
     for (size_t i = 0; i < _pData->size(); i++)
@@ -177,12 +185,24 @@ void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict, const std::strin
     dict[name] = list;
 }
 
-
 template<class T, class T2>
-inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames)
+inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
+                                                   const std::string& name,
+                                                   const std::vector<std::string>* keyNames,
+                                                   const size_t expectedRows)
 {
-    const size_t numRows = this->_numRows;
+    const size_t numRows = (expectedRows > this->_numRows) ? expectedRows : this->_numRows;
     const size_t numCols = _data.size();
+
+    if (numCols == 0)
+    {
+        /*
+         * If there were no values set then create
+         * a column so it can be filled with NANs.
+         */
+        _data.push_back(new std::vector<T2>());
+        numCols = 1;
+    }
 
     for (size_t i = 0; i < numCols; i++)
     {

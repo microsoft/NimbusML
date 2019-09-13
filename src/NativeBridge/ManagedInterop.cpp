@@ -10,7 +10,7 @@
 #define AddToDict(type); \
         {\
             PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
-            col->AddToDict(dict, _names[i], keyNames);\
+            col->AddToDict(dict, _names[i], keyNames, maxRows);\
         }\
 
 #define STATIC
@@ -185,6 +185,13 @@ bp::dict EnvironmentBlock::GetData()
     if (_names.size() == 0)
     {
         return bp::dict();
+    }
+
+    size_t maxRows = 0;
+    for (size_t i = 0; i < _names.size(); i++)
+    {
+        size_t numRows = _columns[i]->GetNumRows();
+        if (numRows > maxRows) maxRows = numRows;
     }
 
     bp::dict dict = bp::dict();
