@@ -33,10 +33,14 @@ private:
     typedef std::map<int, PythonObjectBase* (*)(const int&, size_t, size_t)> creation_map;
     typedef std::pair<int, PythonObjectBase* (*)(const int&, size_t, size_t)> creation_map_entry;
 
-    static creation_map* m_pCreationMap;
-    static creation_map* CreateMap();
+    static creation_map* m_pSingleCreationMap;
+    static creation_map* CreateSingleMap();
 
-    template <class T> static PythonObjectBase* CreateObject(const int& name, size_t nRows, size_t nColumns);
+    static creation_map* m_pVariableCreationMap;
+    static creation_map* CreateVariableMap();
+
+    template <class T> static PythonObjectBase* CreateSingle(const int& name, size_t nRows, size_t nColumns);
+    template <class T, class T2> static PythonObjectBase* CreateVariable(const int& name, size_t nRows, size_t nColumns);
 
 protected:
     int _kind;
@@ -89,7 +93,7 @@ inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t num
 
 /*
  * PythonObject based class which
- * handles the one column case.
+ * handles the single column case.
  */
 template <class T>
 class PythonObjectSingle : public PythonObject<T>
@@ -127,4 +131,62 @@ inline void PythonObjectSingle<T>::SetAt(size_t nRow, size_t nCol, const T& valu
     if (_pData->size() <= index)
         _pData->resize(index + 1);
     _pData->at(index) = value;
+}
+
+
+/*
+ * PythonObject based class which
+ * handles the variable column case.
+ */
+template <class T, class T2>
+class PythonObjectVariable : public PythonObject<T>
+{
+protected:
+    std::vector<std::vector<T2>*> _data;
+
+public:
+    PythonObjectVariable(const int& kind, size_t numRows = 1, size_t numCols = 1);
+    virtual ~PythonObjectVariable();
+    virtual void SetAt(size_t nRow, size_t nCol, const T& value);
+    virtual void AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames);
+};
+
+template <class T, class T2>
+inline PythonObjectVariable<T, T2>::PythonObjectVariable(const int& kind, size_t numRows, size_t numCols)
+    : PythonObject<T>(kind, numRows, numCols)
+{
+}
+
+template <class T, class T2>
+inline PythonObjectVariable<T, T2>::~PythonObjectVariable()
+{
+    for (unsigned int i = 0; i < _data.size(); i++)
+    {
+        delete _data[i];
+    }
+}
+
+template <class T, class T2>
+inline void PythonObjectVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& value)
+{
+    if ((nRow + 1) > this->_numRows) this->_numRows = nRow + 1;
+
+    /*
+     * Make sure there are enough columns for the request.
+     */
+    for (size_t i = _data.size(); i < (nCol + 1); i++)
+    {
+        _data.push_back(new std::vector<T2>());
+    }
+
+    /*
+     * Fill in any missing row values in
+     * the specified column with NAN.
+     */
+    for (size_t i = _data[nCol]->size(); i < nRow; i++)
+    {
+        _data[nCol]->push_back(NAN);
+    }
+
+    _data[nCol]->push_back((T2)value);
 }

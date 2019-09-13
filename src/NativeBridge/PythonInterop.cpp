@@ -20,44 +20,75 @@ PythonObjectBase::~PythonObjectBase()
 {
 }
 
-PythonObjectBase::creation_map* PythonObjectBase::m_pCreationMap = PythonObjectBase::CreateMap();
+PythonObjectBase::creation_map* PythonObjectBase::m_pSingleCreationMap = PythonObjectBase::CreateSingleMap();
+PythonObjectBase::creation_map* PythonObjectBase::m_pVariableCreationMap = PythonObjectBase::CreateVariableMap();
 
-PythonObjectBase::creation_map* PythonObjectBase::CreateMap()
+PythonObjectBase::creation_map* PythonObjectBase::CreateSingleMap()
 {
     PythonObjectBase::creation_map* map = new PythonObjectBase::creation_map();
 
-    map->insert(creation_map_entry(BL, CreateObject<signed char>));
-    map->insert(creation_map_entry(I1, CreateObject<signed char>));
-    map->insert(creation_map_entry(I2, CreateObject<signed short>));
-    map->insert(creation_map_entry(I4, CreateObject<signed int>));
-    map->insert(creation_map_entry(I8, CreateObject<CxInt64>));
-    map->insert(creation_map_entry(U1, CreateObject<unsigned char>));
-    map->insert(creation_map_entry(U2, CreateObject<unsigned short>));
-    map->insert(creation_map_entry(U4, CreateObject<unsigned int>));
-    map->insert(creation_map_entry(U8, CreateObject<CxUInt64>));
-    map->insert(creation_map_entry(R4, CreateObject<float>));
-    map->insert(creation_map_entry(R8, CreateObject<double>));
-    map->insert(creation_map_entry(TX, CreateObject<std::string>));
+    map->insert(creation_map_entry(BL, CreateSingle<signed char>));
+    map->insert(creation_map_entry(I1, CreateSingle<signed char>));
+    map->insert(creation_map_entry(I2, CreateSingle<signed short>));
+    map->insert(creation_map_entry(I4, CreateSingle<signed int>));
+    map->insert(creation_map_entry(I8, CreateSingle<CxInt64>));
+    map->insert(creation_map_entry(U1, CreateSingle<unsigned char>));
+    map->insert(creation_map_entry(U2, CreateSingle<unsigned short>));
+    map->insert(creation_map_entry(U4, CreateSingle<unsigned int>));
+    map->insert(creation_map_entry(U8, CreateSingle<CxUInt64>));
+    map->insert(creation_map_entry(R4, CreateSingle<float>));
+    map->insert(creation_map_entry(R8, CreateSingle<double>));
+    map->insert(creation_map_entry(TX, CreateSingle<std::string>));
+    return map;
+}
+
+PythonObjectBase::creation_map* PythonObjectBase::CreateVariableMap()
+{
+    PythonObjectBase::creation_map* map = new PythonObjectBase::creation_map();
+
+    map->insert(creation_map_entry(BL, CreateVariable<signed char, float>));
+    map->insert(creation_map_entry(I1, CreateVariable<signed char, float>));
+    map->insert(creation_map_entry(I2, CreateVariable<signed short, float>));
+    map->insert(creation_map_entry(I4, CreateVariable<signed int, float>));
+    map->insert(creation_map_entry(I8, CreateVariable<CxInt64, double>));
+    map->insert(creation_map_entry(U1, CreateVariable<unsigned char, float>));
+    map->insert(creation_map_entry(U2, CreateVariable<unsigned short, float>));
+    map->insert(creation_map_entry(U4, CreateVariable<unsigned int, float>));
+    map->insert(creation_map_entry(U8, CreateVariable<CxUInt64, double>));
+    map->insert(creation_map_entry(R4, CreateVariable<float, float>));
+    map->insert(creation_map_entry(R8, CreateVariable<double, double>));
+    //map->insert(creation_map_entry(TX, CreateVariable<std::string>));
     return map;
 }
 
 PythonObjectBase* PythonObjectBase::CreateObject(const int& kind, size_t numRows, size_t numCols)
 {
-    creation_map::iterator found = m_pCreationMap->find(kind);
-
-    if (found == m_pCreationMap->end())
+    if (numCols == 0)
     {
-        std::stringstream message;
-        message << "Columns of kind " << kind << " are not supported.";
-        throw std::invalid_argument(message.str().c_str());
+        creation_map::iterator found = m_pVariableCreationMap->find(kind);
+        if (found != m_pVariableCreationMap->end())
+            return found->second(kind, numRows, numCols);
+    }
+    else
+    {
+        creation_map::iterator found = m_pSingleCreationMap->find(kind);
+        if (found != m_pSingleCreationMap->end())
+            return found->second(kind, numRows, numCols);
     }
 
-    return found->second(kind, numRows, numCols);
+    std::stringstream message;
+    message << "Columns of kind " << kind << " are not supported.";
+    throw std::invalid_argument(message.str().c_str());
 }
 
-template <class T> PythonObjectBase* PythonObjectBase::CreateObject(const int& kind, size_t nRows, size_t nColumns)
+template <class T> PythonObjectBase* PythonObjectBase::CreateSingle(const int& kind, size_t nRows, size_t nColumns)
 {
     return new PythonObjectSingle<T>(kind, nRows, nColumns);
+}
+
+template <class T, class T2> PythonObjectBase* PythonObjectBase::CreateVariable(const int& kind, size_t nRows, size_t nColumns)
+{
+    return new PythonObjectVariable<T, T2>(kind, nRows, nColumns);
 }
 
 template <class T>
@@ -144,4 +175,34 @@ void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict, const std::strin
         list.append(obj);
     }
     dict[name] = list;
+}
+
+
+template<class T, class T2>
+inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict, const std::string& name, const std::vector<std::string>* keyNames)
+{
+    const size_t numRows = this->_numRows;
+    const size_t numCols = _data.size();
+
+    for (size_t i = 0; i < numCols; i++)
+    {
+        /*
+         * Make sure all the columns are the same length.
+         */
+        for (size_t j = _data[i]->size(); j < numRows; j++)
+        {
+            _data[i]->push_back(NAN);
+        }
+
+        std::string colName = name + "." + std::to_string(i);
+
+        auto* data = _data[i]->data();
+
+        bp::handle<> h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
+        dict[colName] = np::from_data(
+            data,
+            np::dtype::get_builtin<T2>(),
+            bp::make_tuple(_data[i]->size()),
+            bp::make_tuple(sizeof(T2)), bp::object(h));
+    }
 }
