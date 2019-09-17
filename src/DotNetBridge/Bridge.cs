@@ -302,6 +302,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(VariableColumnTransform).Assembly);
 
             using (var ch = host.Start("Executing"))
             {
