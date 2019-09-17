@@ -474,7 +474,7 @@ class Graph(EntryPoint):
                 return self._process_graph_run_results(out_data)
             elif self._data_output_format == DataOutputFormat.IDV:
                 output = BinaryDataStream(output_idvfilename)
-                return (output_modelfilename, output, out_metrics)
+                return (output_modelfilename, output, out_metrics, output_predictor_modelfilename)
             else:
                 return (output_modelfilename, out_data, out_metrics, output_predictor_modelfilename)
         finally:
