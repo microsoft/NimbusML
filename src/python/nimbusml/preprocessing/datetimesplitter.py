@@ -29,6 +29,9 @@ class DateTimeSplitter(core, BaseTransform, TransformerMixin):
 
     :param columns_to_drop: Columns to drop after the DateTime Expansion.
 
+    :param country: Country to get holidays for. Defaults to none if not
+        passed.
+
     :param params: Additional arguments sent to compute engine.
 
     """
@@ -38,6 +41,7 @@ class DateTimeSplitter(core, BaseTransform, TransformerMixin):
             self,
             prefix,
             columns_to_drop=None,
+            country='None',
             columns=None,
             **params):
 
@@ -48,6 +52,7 @@ class DateTimeSplitter(core, BaseTransform, TransformerMixin):
             self,
             prefix=prefix,
             columns_to_drop=columns_to_drop,
+            country=country,
             **params)
         self._columns = columns
 

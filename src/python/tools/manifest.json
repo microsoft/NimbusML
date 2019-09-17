@@ -18228,6 +18228,61 @@
           "SortOrder": 3.0,
           "IsNullable": false,
           "Default": null
+        },
+        {
+          "Name": "Country",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "None",
+              "Argentina",
+              "Australia",
+              "Austria",
+              "Belarus",
+              "Belgium",
+              "Brazil",
+              "Canada",
+              "Colombia",
+              "Croatia",
+              "Czech",
+              "Denmark",
+              "England",
+              "Finland",
+              "France",
+              "Germany",
+              "Hungary",
+              "India",
+              "Ireland",
+              "IsleofMan",
+              "Italy",
+              "Japan",
+              "Mexico",
+              "Netherlands",
+              "NewZealand",
+              "NorthernIreland",
+              "Norway",
+              "Poland",
+              "Portugal",
+              "Scotland",
+              "Slovenia",
+              "SouthAfrica",
+              "Spain",
+              "Sweden",
+              "Switzerland",
+              "Ukraine",
+              "UnitedKingdom",
+              "UnitedStates",
+              "Wales"
+            ]
+          },
+          "Desc": "Country to get holidays for. Defaults to none if not passed",
+          "Aliases": [
+            "ctry"
+          ],
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": "None"
         }
       ],
       "Outputs": [

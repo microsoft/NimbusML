@@ -15,6 +15,7 @@ def transforms_datetimesplitter(
         output_data=None,
         model=None,
         columns_to_drop=None,
+        country='None',
         **params):
     """
     **Description**
@@ -25,6 +26,8 @@ def transforms_datetimesplitter(
     :param prefix: Output column prefix (inputs).
     :param columns_to_drop: Columns to drop after the DateTime
         Expansion (inputs).
+    :param country: Country to get holidays for. Defaults to none if
+        not passed (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -55,6 +58,51 @@ def transforms_datetimesplitter(
             none_acceptable=True,
             is_of_type=list,
             is_column=True)
+    if country is not None:
+        inputs['Country'] = try_set(
+            obj=country,
+            none_acceptable=True,
+            is_of_type=str,
+            values=[
+                'None',
+                'Argentina',
+                'Australia',
+                'Austria',
+                'Belarus',
+                'Belgium',
+                'Brazil',
+                'Canada',
+                'Colombia',
+                'Croatia',
+                'Czech',
+                'Denmark',
+                'England',
+                'Finland',
+                'France',
+                'Germany',
+                'Hungary',
+                'India',
+                'Ireland',
+                'IsleofMan',
+                'Italy',
+                'Japan',
+                'Mexico',
+                'Netherlands',
+                'NewZealand',
+                'NorthernIreland',
+                'Norway',
+                'Poland',
+                'Portugal',
+                'Scotland',
+                'Slovenia',
+                'SouthAfrica',
+                'Spain',
+                'Sweden',
+                'Switzerland',
+                'Ukraine',
+                'UnitedKingdom',
+                'UnitedStates',
+                'Wales'])
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,
