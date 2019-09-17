@@ -86,9 +86,8 @@ class TestPipelineSplitModels(unittest.TestCase):
 
         try:
             # This does not work because the input schema doesnt 
-            # match already featurized data. Input schema looks
-            # for vector c0 with slots 'a,b' but featurized data 
-            # has only columns c0.a and c0.b
+            # match. Input schema looks for vector 'c0' with slots 'a,b'
+            # but featurized data has only columns 'c0.a' and 'c0.b'
             predictor_pipeline.predict(df)
 
         except Exception as e:
