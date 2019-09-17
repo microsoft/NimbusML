@@ -185,6 +185,33 @@ void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict,
     dict[name] = list;
 }
 
+/*
+ * Note: an instance of this object should not be used
+ * and should be considered invalid after the first time
+ * this method has been called.
+ */
+template <class T, class T2>
+void PythonObjectVariable<T, T2>::Deleter(PyObject* obj)
+{
+    auto* deleteData = static_cast<PythonObjectVariable<T, T2>::DeleteData*>(PyCapsule_GetPointer(obj, NULL));
+
+    PythonObjectVariable<T, T2>* instance = deleteData->instance;
+    size_t column = deleteData->column;
+
+    std::vector<T2>* data = instance->_data[column];
+    if (data != nullptr)
+    {
+        instance->_data[column] = nullptr;
+        instance->_numDeletedColumns++;
+        delete data;
+
+        if (instance->_numDeletedColumns == instance->_data.size())
+        {
+            delete instance;
+        }
+    }
+}
+
 template<class T, class T2>
 inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
                                                    const std::string& name,
@@ -218,7 +245,11 @@ inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
 
         auto* data = _data[i]->data();
 
-        bp::handle<> h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
+        DeleteData* deleteData = new DeleteData();
+        deleteData->instance = this;
+        deleteData->column = i;
+
+        bp::handle<> h(::PyCapsule_New((void*)deleteData, NULL, (PyCapsule_Destructor)&Deleter));
         dict[colName] = np::from_data(
             data,
             np::dtype::get_builtin<T2>(),

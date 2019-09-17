@@ -172,8 +172,9 @@ inline size_t PythonObjectSingle<T>::GetNumCols()
 template <class T, class T2>
 class PythonObjectVariable : public PythonObject<T>
 {
-protected:
+private:
     std::vector<std::vector<T2>*> _data;
+    size_t _numDeletedColumns;
 
 public:
     PythonObjectVariable(const int& kind, size_t numRows = 0, size_t numCols = 0);
@@ -184,11 +185,21 @@ public:
                            const std::vector<std::string>* keyNames,
                            const size_t expectedRows);
     virtual size_t GetNumCols();
+
+public:
+    typedef struct
+    {
+        PythonObjectVariable* instance;
+        size_t column;
+    } DeleteData;
+
+    static void Deleter(PyObject* obj);
 };
 
 template <class T, class T2>
 inline PythonObjectVariable<T, T2>::PythonObjectVariable(const int& kind, size_t numRows, size_t numCols)
-    : PythonObject<T>(kind, numRows, numCols)
+    : PythonObject<T>(kind, numRows, numCols),
+      _numDeletedColumns(0)
 {
 }
 
@@ -197,7 +208,7 @@ inline PythonObjectVariable<T, T2>::~PythonObjectVariable()
 {
     for (unsigned int i = 0; i < _data.size(); i++)
     {
-        delete _data[i];
+        if (_data[i] != nullptr) delete _data[i];
     }
 }
 
