@@ -428,7 +428,7 @@ class BinaryDataStream(DataStream):
             dict(
                 data=''), dict(
                 output_data=''), DataOutputFormat.DF, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
     def head(self, n=5, skip=0):
@@ -457,7 +457,7 @@ class BinaryDataStream(DataStream):
             dict(
                 data=''), dict(
                 output_data=''), DataOutputFormat.DF, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
     def clone(self):

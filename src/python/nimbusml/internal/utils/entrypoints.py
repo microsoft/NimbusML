@@ -269,7 +269,8 @@ class Graph(EntryPoint):
             call_parameters,
             verbose,
             concatenated,
-            output_modelfilename):
+            output_modelfilename,
+            output_predictor_modelfilename=None):
         try:
             ret = px_call(call_parameters)
         except RuntimeError as e:
@@ -320,6 +321,7 @@ class Graph(EntryPoint):
             return 'graph = %s' % (str(self))
 
         output_modelfilename = None
+        output_predictor_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
 
@@ -391,6 +393,11 @@ class Graph(EntryPoint):
                     output_modelfilename = _get_temp_file(suffix='.model.bin')
                     self.outputs['output_model'] = output_modelfilename
 
+                # set graph output model to temp file
+                if 'output_predictor_model' in self.outputs:
+                    output_predictor_modelfilename = _get_temp_file(suffix='.predictor.model.bin')
+                    self.outputs['output_predictor_model'] = output_predictor_modelfilename
+
                 # set graph output metrics to temp file
                 if 'output_metrics' in self.outputs:
                     output_metricsfilename = _get_temp_file(suffix='.txt')
@@ -435,7 +442,8 @@ class Graph(EntryPoint):
                 call_parameters,
                 verbose,
                 concatenated,
-                output_modelfilename)
+                output_modelfilename,
+                output_predictor_modelfilename)
 
             out_data = None
 
@@ -468,13 +476,16 @@ class Graph(EntryPoint):
                 output = BinaryDataStream(output_idvfilename)
                 return (output_modelfilename, output, out_metrics)
             else:
-                return (output_modelfilename, out_data, out_metrics)
+                return (output_modelfilename, out_data, out_metrics, output_predictor_modelfilename)
         finally:
             if cv:
                 self._remove_temp_files()
             else:
                 if output_modelfilename:
                     # os.remove(output_modelfilename)
+                    pass
+                if output_predictor_modelfilename:
+                    # os.remove(output_predictor_modelfilename)
                     pass
                 if output_metricsfilename:
                     os.remove(output_metricsfilename)
