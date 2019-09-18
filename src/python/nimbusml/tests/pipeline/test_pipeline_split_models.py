@@ -12,7 +12,7 @@ from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import LogisticRegressionBinaryClassifier, OnlineGradientDescentRegressor
 from nimbusml.preprocessing.filter import RangeFilter
-from nimbusml.preprocessing.schema import ColumnConcatenatorV2
+from nimbusml.preprocessing.schema import ColumnConcatenator
 
 seed = 0
 
