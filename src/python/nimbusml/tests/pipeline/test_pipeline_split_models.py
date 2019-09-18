@@ -116,7 +116,7 @@ class TestPipelineSplitModels(unittest.TestCase):
         result_1 = combined_pipeline.predict(train_df)
 
         # train ColumnConcatenator on featurized data
-        concat_pipeline = Pipeline([ColumnConcatenatorV2(columns={'c0': ['c0.a', 'c0.b']})])
+        concat_pipeline = Pipeline([ColumnConcatenator(columns={'c0': ['c0.a', 'c0.b']})])
         concat_pipeline.fit(df)
 
         # Load predictor pipeline
