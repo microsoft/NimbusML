@@ -481,12 +481,6 @@ class Graph(EntryPoint):
             if cv:
                 self._remove_temp_files()
             else:
-                if output_modelfilename:
-                    # os.remove(output_modelfilename)
-                    pass
-                if output_predictor_modelfilename:
-                    # os.remove(output_predictor_modelfilename)
-                    pass
                 if output_metricsfilename:
                     os.remove(output_metricsfilename)
 
