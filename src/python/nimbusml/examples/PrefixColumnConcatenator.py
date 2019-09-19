@@ -37,7 +37,8 @@ combined_pipeline.fit(train_df, output_predictor_model=True)
 result_1 = combined_pipeline.predict(train_df)
 
 # train ColumnConcatenatorV2 on featurized data
-concat_pipeline = Pipeline([PrefixColumnConcatenator(columns={'c0': ['c0.']})]) # specify single prefix instead of source columns
+# specify single prefix instead of source columns
+concat_pipeline = Pipeline([PrefixColumnConcatenator(columns={'c0': 'c0.'})])
 concat_pipeline.fit(df)
 
 # Load predictor pipeline

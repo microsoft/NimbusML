@@ -5,10 +5,9 @@
 
 using System;
 using System.Globalization;
-using Microsoft.ML;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     internal class RmlEnvironment : HostEnvironmentBase<RmlEnvironment>
     {

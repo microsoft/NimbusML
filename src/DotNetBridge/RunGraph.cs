@@ -9,8 +9,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.DataPrep.Common;
-using Microsoft.ML;
-using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
 using Microsoft.ML.Data.IO;
 using Microsoft.ML.EntryPoints;
@@ -20,7 +18,7 @@ using Microsoft.ML.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
