@@ -9,11 +9,10 @@ using System.Linq;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
