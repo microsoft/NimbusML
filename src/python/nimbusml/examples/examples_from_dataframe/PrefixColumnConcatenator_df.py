@@ -5,8 +5,7 @@ import pandas as pd
 from nimbusml import Pipeline, Role
 from nimbusml.datasets import get_dataset
 from nimbusml.linear_model import LogisticRegressionClassifier
-from nimbusml.preprocessing.schema import PrefixColumnConcatenator
-from nimbusml.preprocessing.schema import ColumnDropper
+from nimbusml.preprocessing.schema import PrefixColumnConcatenator, ColumnSelector
 from sklearn.model_selection import train_test_split
 
 # use 'iris' data set to create test and train data
@@ -20,9 +19,9 @@ X_train, X_test, y_train, y_test = \
 
 concat = PrefixColumnConcatenator() << {'Sepal': 'Sepal_'}
 concat1 = PrefixColumnConcatenator() << {'Petal': 'Petal_'}
-dropcols = ColumnDropper() << ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa']
+select_cols = ColumnSelector() << ['Sepal', 'Petal']
 
-pipeline = Pipeline([concat, concat1, dropcols, LogisticRegressionClassifier(feature=['Sepal','Petal'])])
+pipeline = Pipeline([concat, concat1, select_cols, LogisticRegressionClassifier()])
 pipeline.fit(X_train, y_train)
 
 # Evaluate the model
