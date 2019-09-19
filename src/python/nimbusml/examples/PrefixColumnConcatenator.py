@@ -5,7 +5,7 @@ from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import LogisticRegressionBinaryClassifier, OnlineGradientDescentRegressor
 from nimbusml.preprocessing.filter import RangeFilter
-from nimbusml.preprocessing.schema import ColumnConcatenatorV2
+from nimbusml.preprocessing.schema import PrefixColumnConcatenator
 
 
 seed = 0
@@ -37,7 +37,7 @@ combined_pipeline.fit(train_df, output_predictor_model=True)
 result_1 = combined_pipeline.predict(train_df)
 
 # train ColumnConcatenatorV2 on featurized data
-concat_pipeline = Pipeline([ColumnConcatenatorV2(columns={'c0': ['c0.']})]) # specify single prefix instead of source columns
+concat_pipeline = Pipeline([PrefixColumnConcatenator(columns={'c0': ['c0.']})]) # specify single prefix instead of source columns
 concat_pipeline.fit(df)
 
 # Load predictor pipeline

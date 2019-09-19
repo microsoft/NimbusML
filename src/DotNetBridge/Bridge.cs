@@ -4,15 +4,12 @@
 //------------------------------------------------------------------------------
 
 using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Microsoft.MachineLearning.DotNetBridge;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.EntryPoints;
-using Microsoft.ML.Model.OnnxConverter;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.Ensemble;
@@ -20,8 +17,6 @@ using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Transforms.TimeSeries;
-
-[assembly: LoadableClass(typeof(void), typeof(SchemaManipulation2), null, typeof(SignatureEntryPointModule), "SchemaManipulation2")]
 
 namespace Microsoft.MachineLearning.DotNetBridge
 {
@@ -306,7 +301,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
-            env.ComponentCatalog.RegisterAssembly(typeof(SchemaManipulation2).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(SchemaManipulation).Assembly);
 
             using (var ch = host.Start("Executing"))
             {
@@ -450,22 +445,4 @@ namespace Microsoft.MachineLearning.DotNetBridge
             return Encoding.UTF8.GetBytes(str + Char.MinValue);
         }
     }
-
-    internal static class SchemaManipulation2
-    {
-        [TlcModule.EntryPoint(Name = "Transforms.ColumnConcatenatorV2", Desc = ColumnConcatenatingTransformer.Summary, UserName = ColumnConcatenatingTransformer.UserName, ShortName = ColumnConcatenatingTransformer.LoadName)]
-        public static CommonOutputs.TransformOutput ConcatColumnsV2(IHostEnvironment env, ColumnConcatenatingTransformer.Options input)
-        {
-            Contracts.CheckValue(env, nameof(env));
-            var host = env.Register("ConcatColumns");
-            host.CheckValue(input, nameof(input));
-            EntryPointUtils.CheckInputArgs(host, input);
-
-            var columns = input.Data.Schema.Where(x => x.Name.StartsWith(input.Columns[0].Source[0])).Select(x => x.Name).ToArray();
-            var test = new ColumnConcatenatingTransformer.Options(input.Columns[0].Name, columns);
-            var xf = ColumnConcatenatingTransformer.Create(env, test, input.Data);
-            return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, input.Data), OutputData = xf };
-        }
-    }
-
 }

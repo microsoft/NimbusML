@@ -91,7 +91,7 @@
     <Compile Include="nimbusml\examples\BootStrapSample.py" />
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
-    <Compile Include="nimbusml\examples\ColumnConcatenatorV2.py" />
+    <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
     <Compile Include="nimbusml\examples\ColumnDuplicator.py" />
     <Compile Include="nimbusml\examples\ColumnSelector.py" />
@@ -300,7 +300,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
-    <Compile Include="nimbusml\internal\core\preprocessing\schema\columnconcatenatorv2.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
@@ -388,7 +388,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalhashonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenatorv2.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnselector.py" />
@@ -636,7 +636,7 @@
     <Compile Include="nimbusml\preprocessing\normalization\meanvariancescaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
-    <Compile Include="nimbusml\preprocessing\schema\columnconcatenatorv2.py" />
+    <Compile Include="nimbusml\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnduplicator.py" />
