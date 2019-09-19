@@ -36,8 +36,10 @@ namespace Microsoft.ML.DotNetBridge
                 newCol.Name = col.Name;
                 // there is only 1 perifx
                 newCol.Source = colNames.Where(x => x.StartsWith(col.Source)).ToArray();
+                columns.Add(newCol);
             }
-            
+            inputOptions.Columns = columns.ToArray();
+
             var xf = ColumnConcatenatingTransformer.Create(env, inputOptions, inputOptions.Data);
             return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
         }

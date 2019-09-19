@@ -13,10 +13,10 @@ __all__ = ["PrefixColumnConcatenator"]
 from ....entrypoints.transforms_prefixcolumnconcatenator import \
     transforms_prefixcolumnconcatenator
 from ....utils.utils import trace
-from ...base_pipeline_item import BasePipelineItem, MultiOutputsSignature
+from ...base_pipeline_item import BasePipelineItem, DefaultSignature
 
 
-class PrefixColumnConcatenator(BasePipelineItem, MultiOutputsSignature):
+class PrefixColumnConcatenator(BasePipelineItem, DefaultSignature):
     """
 
     Combines several columns into a single vector-valued column by prefix
