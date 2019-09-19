@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ML;
 using Microsoft.ML.DotNetBridge;
@@ -34,8 +35,11 @@ namespace Microsoft.ML.DotNetBridge
             {
                 var newCol = new ColumnConcatenatingTransformer.Column();
                 newCol.Name = col.Name;
-                // there is only 1 perifx
-                newCol.Source = colNames.Where(x => x.StartsWith(col.Source)).ToArray();
+                var prefix = col.Source;
+                newCol.Source = colNames.Where(x => x.StartsWith(prefix, StringComparison.InvariantCulture)).ToArray();
+                if (newCol.Source.Length == 0)
+                    throw new ArgumentOutOfRangeException("No matching columns found for prefix: " + prefix);
+
                 columns.Add(newCol);
             }
             inputOptions.Columns = columns.ToArray();
