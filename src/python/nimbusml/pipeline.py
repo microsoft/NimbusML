@@ -2002,7 +2002,7 @@ class Pipeline:
 
         :return: array, shape = [n_samples, n_classes]
         """
-        if hasattr(self, 'steps') and len(self.steps) > 0:
+        if hasattr(self, 'steps') and self.steps:
             last_node = self.last_node
             last_node._check_implements_method('predict_proba')
 
@@ -2042,7 +2042,7 @@ class Pipeline:
         :return: array, shape=(n_samples,) if n_classes == 2 else (
             n_samples, n_classes)
         """
-        if hasattr(self, 'steps') and len(self.steps) > 0:
+        if hasattr(self, 'steps') and self.steps:
             last_node = self.last_node
             last_node._check_implements_method('decision_function')
 
