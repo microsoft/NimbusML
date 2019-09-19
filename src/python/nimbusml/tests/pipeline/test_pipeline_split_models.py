@@ -12,7 +12,7 @@ from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import LogisticRegressionBinaryClassifier, OnlineGradientDescentRegressor
 from nimbusml.preprocessing.filter import RangeFilter
-from nimbusml.preprocessing.schema import ColumnConcatenator
+from nimbusml.preprocessing.schema import ColumnConcatenator, PrefixColumnConcatenator
 
 seed = 0
 
@@ -117,6 +117,42 @@ class TestPipelineSplitModels(unittest.TestCase):
 
         # train ColumnConcatenator on featurized data
         concat_pipeline = Pipeline([ColumnConcatenator(columns={'c0': ['c0.a', 'c0.b']})])
+        concat_pipeline.fit(df)
+
+        # Load predictor pipeline
+        predictor_pipeline = Pipeline()
+        predictor_pipeline.load_model(combined_pipeline.predictor_model)
+
+        # combine concat and predictor models and score 
+        combined_predictor_pipeline = Pipeline.combine_models(concat_pipeline, 
+                                                    predictor_pipeline)
+        result_2 = combined_predictor_pipeline.predict(df)
+                     
+        self.assertEqual(result_1.loc[0, 'Score'], result_2.loc[0, 'Score'])
+        self.assertEqual(result_1.loc[1, 'Score'], result_2.loc[1, 'Score'])
+
+    def test_vectorized_with_prefixconcat_output_predictor_model(self):
+        """
+        This test shows how to prepend ColumnConcatenator transform
+        to outputted predictor model from combined (with featurizers) pipeline
+        so it successfully runs on featurized data with vectors.
+        """
+        # Create and fit a OneHotVectorizer transform using the
+        # training data and use it to transform the training data.
+        transform_pipeline = Pipeline([OneHotVectorizer() << 'c0'], random_state=seed)
+        transform_pipeline.fit(train_df)
+        df = transform_pipeline.transform(train_df)
+
+        # Create, fit and score with combined model. 
+        # Output predictor model separately.
+        combined_pipeline = Pipeline([OneHotVectorizer() << 'c0',
+                            OnlineGradientDescentRegressor(label='c2')],
+                           random_state=seed)
+        combined_pipeline.fit(train_df, output_predictor_model=True)
+        result_1 = combined_pipeline.predict(train_df)
+
+        # train ColumnConcatenator on featurized data
+        concat_pipeline = Pipeline([PrefixColumnConcatenator(columns={'c0': 'c0.'})])
         concat_pipeline.fit(df)
 
         # Load predictor pipeline
