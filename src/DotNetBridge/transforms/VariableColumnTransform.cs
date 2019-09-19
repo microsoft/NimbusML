@@ -151,8 +151,12 @@ namespace Microsoft.ML.Data
                 {
                     var nextType = inputSchema[_bindings.vectorToInputMap[i]].Type as PrimitiveDataViewType;
                     if (!nextType.Equals(type))
-                        throw Contracts.Except("Input data types of the columns columns to vectorize must" +
-                                               "all be of the same type. Found {0} and {1].", type, nextType);
+                    {
+                        throw Contracts.Except("Input data types of the columns to vectorize must " +
+                                               "all be of the same type. Found {0} and {1}.",
+                                               type.ToString(),
+                                               nextType.ToString());
+                    }
                 }
 
                 var outputColumnType = new VectorDataViewType(type, 0);
