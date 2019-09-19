@@ -91,6 +91,8 @@
     <Compile Include="nimbusml\examples\BootStrapSample.py" />
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
+    <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
     <Compile Include="nimbusml\examples\DateTimeSplitter.py" />
     <Compile Include="nimbusml\examples\ColumnDuplicator.py" />
@@ -306,6 +308,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
@@ -396,6 +399,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoryimputer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnselector.py" />
@@ -646,6 +650,7 @@
     <Compile Include="nimbusml\preprocessing\normalization\meanvariancescaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
+    <Compile Include="nimbusml\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnduplicator.py" />
@@ -684,11 +689,13 @@
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
+    <Compile Include="nimbusml\tests\pipeline\test_pipeline_split_models.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
+    <Compile Include="nimbusml\tests\preprocessing\schema\test_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_tostring.py" />
     <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
