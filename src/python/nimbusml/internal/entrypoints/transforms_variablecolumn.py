@@ -12,6 +12,7 @@ def transforms_variablecolumn(
         output_data=None,
         model=None,
         features=None,
+        length_column_name=None,
         **params):
     """
     **Description**
@@ -38,6 +39,11 @@ def transforms_variablecolumn(
             none_acceptable=True,
             is_of_type=list,
             is_column=True)
+    if length_column_name is not None:
+        inputs['LengthColumnName'] = try_set(
+            obj=length_column_name,
+            none_acceptable=True,
+            is_of_type=str)
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

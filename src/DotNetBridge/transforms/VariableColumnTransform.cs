@@ -36,12 +36,14 @@ namespace Microsoft.ML.Data
             public readonly List<int> outputToInputMap;
             public readonly List<int> vectorToInputMap;
             public int outputColumn;
+            public int lengthColumn;
 
             public Bindings()
             {
                 outputToInputMap = new List<int>();
                 vectorToInputMap = new List<int>();
                 outputColumn = -1;
+                lengthColumn = -1;
             }
         }
 
@@ -53,7 +55,7 @@ namespace Microsoft.ML.Data
 
         DataViewSchema IRowToRowMapper.InputSchema => Source.Schema;
 
-        private VariableColumnTransform(IHostEnvironment env, IDataView input, string[] features)
+        private VariableColumnTransform(IHostEnvironment env, IDataView input, string[] features, string lengthColumnName)
         {
             Contracts.CheckValue(env, nameof(env));
 
@@ -64,7 +66,7 @@ namespace Microsoft.ML.Data
             _columnNames = (features == null) ? new HashSet<string>() :
                                                 new HashSet<string>(features);
 
-            OutputSchema = ProcessInputSchema(input.Schema);
+            OutputSchema = ProcessInputSchema(input.Schema, lengthColumnName);
         }
 
         internal const string Summary = "Combines the specified input columns in to a single variable length vectorized column.";
@@ -119,7 +121,7 @@ namespace Microsoft.ML.Data
         DataViewSchema IDataView.Schema => OutputSchema;
         public DataViewSchema OutputSchema { get; }
 
-        private DataViewSchema ProcessInputSchema(DataViewSchema inputSchema)
+        private DataViewSchema ProcessInputSchema(DataViewSchema inputSchema, string lengthColumnName)
         {
             var builder = new DataViewSchema.Builder();
             for (int i = 0; i < inputSchema.Count; i++)
@@ -127,7 +129,13 @@ namespace Microsoft.ML.Data
                 var name = inputSchema[i].Name;
 
                 if (_columnNames.Contains(name))
+                {
                     _bindings.vectorToInputMap.Add(i);
+                }
+                else if (name == lengthColumnName)
+                {
+                    _bindings.lengthColumn = i;
+                }
                 else
                 {
                     builder.AddColumn(name, inputSchema[i].Type);
@@ -230,6 +238,7 @@ namespace Microsoft.ML.Data
             private Delegate MakeVarLengthVectorGetter<T>(DataViewRow input)
             {
                 var srcGetters = new ValueGetter<T>[_bindings.vectorToInputMap.Count];
+                ValueGetter<long> lengthGetter = null;
 
                 for (int i = 0; i < _bindings.vectorToInputMap.Count; i++)
                 {
@@ -237,12 +246,30 @@ namespace Microsoft.ML.Data
                     srcGetters[i] = input.GetGetter<T>(column);
                 }
 
+                if (_bindings.lengthColumn >= 0)
+                {
+                    var column = input.Schema[_bindings.lengthColumn];
+                    lengthGetter = input.GetGetter<long>(column);
+                }
+
                 T tmp = default(T);
                 ValueGetter<VBuffer<T>> result = (ref VBuffer<T> dst) =>
                 {
-                    var editor = VBufferEditor.Create(ref dst, _bindings.vectorToInputMap.Count);
+                    int length = _bindings.vectorToInputMap.Count;
+                    if (lengthGetter != null)
+                    {
+                        long expectedLength = length;
+                        lengthGetter(ref expectedLength);
 
-                    for (int i = 0; i < _bindings.vectorToInputMap.Count; i++)
+                        if ((expectedLength >= 0) && (expectedLength < length))
+                        {
+                            length = (int)expectedLength;
+                        }
+                    }
+
+                    var editor = VBufferEditor.Create(ref dst, length);
+
+                    for (int i = 0; i < length; i++)
                     {
                         srcGetters[i](ref tmp);
                         editor.Values[i] = tmp;
@@ -299,6 +326,9 @@ namespace Microsoft.ML.Data
         {
             [Argument(ArgumentType.Multiple, HelpText = "Features", SortOrder = 2)]
             public string[] Features;
+
+            [Argument(ArgumentType.Multiple, HelpText = "Length Column Name", SortOrder = 2)]
+            public string LengthColumnName;
         }
 
         [TlcModule.EntryPoint(Name = "Transforms.VariableColumnTransform", Desc = Summary, UserName = "Variable Column Creator", ShortName = "Variable Column Creator")]
@@ -310,7 +340,7 @@ namespace Microsoft.ML.Data
             var host = env.Register(VariableColumnCreator);
             EntryPointUtils.CheckInputArgs(host, input);
 
-            var xf = new VariableColumnTransform(env, input.Data, input.Features);
+            var xf = new VariableColumnTransform(env, input.Data, input.Features, input.LengthColumnName);
             return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, input.Data), OutputData = xf };
         }
     }

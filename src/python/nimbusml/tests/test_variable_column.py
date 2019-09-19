@@ -14,10 +14,11 @@ from nimbusml.internal.utils.entrypoints import Graph, DataOutputFormat
 
 class TestVariableColumn(unittest.TestCase):
 
-    def to_variable_column(self, input, features):
+    def to_variable_column(self, input, features=None, length_column_name=None):
         node = transforms_variablecolumn(data='$data',
                                          output_data='$output_data',
-                                         features=features)
+                                         features=features,
+                                         length_column_name=length_column_name)
 
         graph_nodes = [node]
         graph = Graph(dict(data=''),
@@ -31,10 +32,12 @@ class TestVariableColumn(unittest.TestCase):
     def test_column_dropped_output_produces_expected_result(self):
         train_data = {'c1': [1, 0, 0, 4],
                       'c2': [2, 3, 0, 5],
-                      'c3': [3, 4, 5, 6]}
-        train_df = pd.DataFrame(train_data).astype(np.float32)
+                      'c3': [3, 4, 5, 6],
+                      'c4': [0, 1, 2, 1]}
+        train_df = pd.DataFrame(train_data).astype({'c1': np.float64,
+                                                    'c2': np.float64})
 
-        result = self.to_variable_column(train_df, ['c1', 'c2'])
+        result = self.to_variable_column(train_df, ['c1', 'c2'], 'c4')
         print(result)
 
 if __name__ == '__main__':
