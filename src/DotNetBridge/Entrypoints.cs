@@ -10,6 +10,11 @@ using Microsoft.ML.Transforms;
 
 [assembly: LoadableClass(typeof(void), typeof(DotNetBridgeEntrypoints), null, typeof(SignatureEntryPointModule), "DotNetBridgeEntrypoints")]
 
+[assembly: LoadableClass(VariableColumnTransform.Summary, typeof(VariableColumnTransform), null, typeof(SignatureLoadDataTransform),
+    "", VariableColumnTransform.LoaderSignature)]
+
+[assembly: LoadableClass(typeof(void), typeof(VariableColumnTransform), null, typeof(SignatureEntryPointModule), "VariableColumnTransform")]
+
 namespace Microsoft.ML.DotNetBridge
 {
     internal static class DotNetBridgeEntrypoints
@@ -45,6 +50,18 @@ namespace Microsoft.ML.DotNetBridge
             inputOptions.Columns = columns.ToArray();
 
             var xf = ColumnConcatenatingTransformer.Create(env, inputOptions, inputOptions.Data);
+            return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
+        }
+
+        [TlcModule.EntryPoint(Name = "Transforms.VariableColumnTransform", Desc = VariableColumnTransform.Summary,
+            UserName = "Variable Column Creator", ShortName = "Variable Column Creator")]
+        public static CommonOutputs.TransformOutput CreateVariableColumn(IHostEnvironment env, VariableColumnTransform.Options inputOptions)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("VariableColumnCreator");
+            EntryPointUtils.CheckInputArgs(host, inputOptions);
+
+            var xf = VariableColumnTransform.Create(env, inputOptions, inputOptions.Data);
             return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
         }
     }

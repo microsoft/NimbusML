@@ -8,18 +8,12 @@ using System.Collections.Generic;
 using Microsoft.ML;
 using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
-using Microsoft.ML.EntryPoints;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Internal.Utilities;
 
 
-[assembly: LoadableClass(VariableColumnTransform.Summary, typeof(VariableColumnTransform), null, typeof(SignatureLoadDataTransform),
-    "", VariableColumnTransform.LoaderSignature)]
-
-[assembly: LoadableClass(typeof(void), typeof(VariableColumnTransform), null, typeof(SignatureEntryPointModule), "VariableColumnTransform")]
-
-namespace Microsoft.ML.Data
+namespace Microsoft.ML.DotNetBridge
 {
     using BitArray = System.Collections.BitArray;
 
@@ -31,6 +25,15 @@ namespace Microsoft.ML.Data
     [BestFriend]
     internal sealed class VariableColumnTransform : IDataTransform, IRowToRowMapper
     {
+        public class Options : TransformInputBase
+        {
+            [Argument(ArgumentType.Multiple, HelpText = "Features", SortOrder = 2)]
+            public string[] Features;
+
+            [Argument(ArgumentType.Multiple, HelpText = "Length Column Name", SortOrder = 2)]
+            public string LengthColumnName;
+        }
+
         private sealed class Bindings
         {
             public readonly List<int> outputToInputMap;
@@ -85,6 +88,11 @@ namespace Microsoft.ML.Data
         }
 
         internal static string RegistrationName = "VariableColumnTransform";
+
+        public static VariableColumnTransform Create(IHostEnvironment env, Options options, IDataView input)
+        {
+            return new VariableColumnTransform(env, input, options.Features, options.LengthColumnName);
+        }
 
         public static VariableColumnTransform Create(IHostEnvironment env, ModelLoadContext ctx, IDataView input)
         {
@@ -324,28 +332,6 @@ namespace Microsoft.ML.Data
             Contracts.CheckValue(activeColumns, nameof(activeColumns));
             Contracts.CheckParam(input.Schema == Source.Schema, nameof(input), "Schema of input row must be the same as the schema the mapper is bound to");
             return input;
-        }
-
-        public class Input : TransformInputBase
-        {
-            [Argument(ArgumentType.Multiple, HelpText = "Features", SortOrder = 2)]
-            public string[] Features;
-
-            [Argument(ArgumentType.Multiple, HelpText = "Length Column Name", SortOrder = 2)]
-            public string LengthColumnName;
-        }
-
-        [TlcModule.EntryPoint(Name = "Transforms.VariableColumnTransform", Desc = Summary, UserName = "Variable Column Creator", ShortName = "Variable Column Creator")]
-        public static CommonOutputs.TransformOutput CreateVariableColumn(IHostEnvironment env, Input input)
-        {
-            const string VariableColumnCreator = "VariableColumnCreator";
-
-            Contracts.CheckValue(env, nameof(env));
-            var host = env.Register(VariableColumnCreator);
-            EntryPointUtils.CheckInputArgs(host, input);
-
-            var xf = new VariableColumnTransform(env, input.Data, input.Features, input.LengthColumnName);
-            return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, input.Data), OutputData = xf };
         }
     }
 }

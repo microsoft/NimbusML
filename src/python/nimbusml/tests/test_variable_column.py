@@ -26,7 +26,7 @@ class TestVariableColumn(unittest.TestCase):
                       DataOutputFormat.DF,
                       *(graph_nodes))
 
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=input)
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=input)
         return out_data
 
     def test_nonvariable_columns_are_returned_unchanged(self):
