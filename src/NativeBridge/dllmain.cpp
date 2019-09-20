@@ -114,11 +114,10 @@ bp::dict pxCall(bp::dict& params)
         else
             retCode = exec(&env, s_graph.c_str(), 0, NULL);
 
-        if (retCode == -1)
-            throw std::runtime_error(env.GetErrorMessage());
-
         res = env.GetData();
 
+        if (retCode == -1)
+            throw std::runtime_error(env.GetErrorMessage());
     }
     catch (const std::exception& e)
     {
