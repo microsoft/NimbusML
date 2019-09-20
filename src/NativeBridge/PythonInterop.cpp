@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+#include <math.h> 
 #include "stdafx.h"
 #include "PythonInterop.h"
 
@@ -231,6 +232,10 @@ inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
         numCols = 1;
     }
 
+    const std::string colNameBase = name + ".";
+    int maxDigits = (int)ceil(log10(numCols));
+    if (maxDigits == 0) maxDigits = 1;
+
     for (size_t i = 0; i < numCols; i++)
     {
         /*
@@ -241,7 +246,9 @@ inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
             _data[i]->push_back(NAN);
         }
 
-        std::string colName = name + "." + std::to_string(i);
+        std::string colName = std::to_string(i);
+        colName = std::string(maxDigits - colName.length(), '0') + colName;
+        colName = colNameBase + colName;
 
         auto* data = _data[i]->data();
 

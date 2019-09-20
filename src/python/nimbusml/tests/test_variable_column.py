@@ -150,5 +150,21 @@ class TestVariableColumn(unittest.TestCase):
         self.assertTrue(result.loc[:, 'c1.0'].equals(expectedC1))
         self.assertTrue(result.loc[:, 'c1.1'].equals(expectedC2))
 
+    def test_column_names_are_zero_padded(self):
+        numColsToVerify = [1, 2, 10, 11, 100, 101]
+
+        for numCols in numColsToVerify:
+            inputColNames = ['c' + str(i) for i in range(numCols)]
+            train_data = {k: [2,3,4,5] for k in inputColNames}
+            train_df = pd.DataFrame(train_data).astype(np.float32);
+
+            result = self.to_variable_column(train_df, inputColNames)
+
+            maxDigits = len(inputColNames[-1]) - 1
+            expectedColNames = ['c0.' + str(i).zfill(maxDigits) for i in range(numCols)]
+
+            self.assertTrue(all(result.columns == expectedColNames))
+
+
 if __name__ == '__main__':
     unittest.main()
