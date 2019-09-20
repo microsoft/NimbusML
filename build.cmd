@@ -308,7 +308,6 @@ if %PythonVersion% == 3.7 (
 echo Placing binaries in libs dir for wheel packaging
 copy  "%BuildOutputDir%%Configuration%\DotNetBridge.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
-copy  "%__currentScriptDir%\Featurizers.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
