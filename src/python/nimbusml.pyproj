@@ -177,6 +177,7 @@
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
     <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
+    <Compile Include="nimbusml\examples\PermutationFeatureImportance.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
@@ -426,6 +427,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_pcacalculator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_permutationfeatureimportance.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_predictedlabelcolumnoriginalvalueconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_randomnumbergenerator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_rowrangefilter.py" />
