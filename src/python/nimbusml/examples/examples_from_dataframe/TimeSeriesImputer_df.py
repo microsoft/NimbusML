@@ -20,3 +20,10 @@ tsi = TimeSeriesImputer(time_series_column='ts',
 result = tsi.fit_transform(df)
 
 print(result)
+#    ts  grain  c3  c4  IsRowImputed
+# 0   0      0   0   0         False
+# 1   1   1970  10  19         False
+# 2   2   1970  13  12         False
+# 3   3   1970  15  16         False
+# 4   4   1970  15  16          True  <== New row added
+# 5   5   1970  20  19         False
