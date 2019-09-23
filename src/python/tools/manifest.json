@@ -23174,8 +23174,10 @@
           "Type": {
             "Kind": "Enum",
             "Values": [
-              "Backfill",
-              "ForwardFill"
+              "ForwardFill",
+              "BackFill",
+              "Median",
+              "Interpolate"
             ]
           },
           "Desc": "Mode for imputing, defaults to ForwardFill if not provided",
@@ -23186,6 +23188,18 @@
           "SortOrder": 3.0,
           "IsNullable": false,
           "Default": "ForwardFill"
+        },
+        {
+          "Name": "SupressTypeErrors",
+          "Type": "Bool",
+          "Desc": "Supress the errors that would occur if a column and impute mode are imcompatible. If true, will skip the column. If false, will stop and throw an error.",
+          "Aliases": [
+            "error"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": false
         }
       ],
       "Outputs": [

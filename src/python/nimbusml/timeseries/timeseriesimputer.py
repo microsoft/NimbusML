@@ -36,6 +36,10 @@ class TimeSeriesImputer(core, BaseTransform, TransformerMixin):
     :param impute_mode: Mode for imputing, defaults to ForwardFill if not
         provided.
 
+    :param supress_type_errors: Supress the errors that would occur if a column
+        and impute mode are imcompatible. If true, will skip the column. If
+        false, will stop and throw an error.
+
     :param params: Additional arguments sent to compute engine.
 
     """
@@ -48,6 +52,7 @@ class TimeSeriesImputer(core, BaseTransform, TransformerMixin):
             filter_columns=None,
             filter_mode='Exclude',
             impute_mode='ForwardFill',
+            supress_type_errors=False,
             columns=None,
             **params):
 
@@ -61,6 +66,7 @@ class TimeSeriesImputer(core, BaseTransform, TransformerMixin):
             filter_columns=filter_columns,
             filter_mode=filter_mode,
             impute_mode=impute_mode,
+            supress_type_errors=supress_type_errors,
             **params)
         self._columns = columns
 
