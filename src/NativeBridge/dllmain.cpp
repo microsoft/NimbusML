@@ -117,8 +117,7 @@ bp::dict pxCall(bp::dict& params)
         res = env.GetData();
 
         if (retCode == -1)
-            // REVIEW: get the content of IChannel and add it the the error message.
-            throw std::runtime_error("Returned code is -1. Check the log for error messages.");
+            throw std::runtime_error(env.GetErrorMessage());
     }
     catch (const std::exception& e)
     {

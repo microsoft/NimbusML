@@ -36,7 +36,6 @@ EnvironmentBlock::EnvironmentBlock(int verbosity, int maxSlots, int seed, const 
     // Assert that this class doesn't have a vtable.
     assert(offsetof(EnvironmentBlock, verbosity) == 0);
 
-    this->_errCode = PyErrorCode_NoError;
     this->verbosity = verbosity;
     this->maxSlots = maxSlots;
     this->seed = seed;
@@ -160,6 +159,7 @@ STATIC MANAGED_CALLBACK(void) EnvironmentBlock::MessageSink(EnvironmentBlock * e
             break;
         case Error:  // We will throw the error when ConnectToMlNet returns
             sMessage = "Error: " + sMessage;
+            env->_errMessage = sMessage;
             break;
         }
 
