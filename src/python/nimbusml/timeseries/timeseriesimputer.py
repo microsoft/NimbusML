@@ -48,7 +48,7 @@ class TimeSeriesImputer(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             time_series_column,
-            grain_columns=None,
+            grain_columns,
             filter_columns=None,
             filter_mode='Exclude',
             impute_mode='ForwardFill',

@@ -11,9 +11,9 @@ from ..utils.utils import try_set, unlist
 def transforms_timeseriesimputer(
         time_series_column,
         data,
+        grain_columns,
         output_data=None,
         model=None,
-        grain_columns=None,
         filter_columns=None,
         filter_mode='Exclude',
         impute_mode='ForwardFill',
@@ -57,7 +57,7 @@ def transforms_timeseriesimputer(
     if grain_columns is not None:
         inputs['GrainColumns'] = try_set(
             obj=grain_columns,
-            none_acceptable=True,
+            none_acceptable=False,
             is_of_type=list,
             is_column=True)
     if filter_columns is not None:
