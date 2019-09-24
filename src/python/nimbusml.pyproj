@@ -177,6 +177,7 @@
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
     <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
+    <Compile Include="nimbusml\examples\Schema.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
@@ -339,6 +340,7 @@
     <Compile Include="nimbusml\internal\entrypoints\models_regressionensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionpipelineensemble.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_schema.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_summarizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_exponentialaverage.py" />
