@@ -706,6 +706,7 @@
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_timeseriesimputer.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\__init__.py" />
