@@ -2513,6 +2513,53 @@ class Pipeline:
             raise ValueError(
                 "cannot generate score for {0}).".format(task_type))
 
+    @trace
+    def get_model_schema(self, verbose=0, **params):
+        """
+        Returns the output schema of the fitted model
+        """
+        if not self._is_fitted:
+            raise ValueError("Model is not fitted. Train or load a model first.")
+
+        # start the clock!
+        start_time = time.time()
+
+        all_nodes = []
+        inputs = dict([('input_model', self.model)])
+
+        get_model_schema_node = models_get_schema(input_model="$input_model")
+        all_nodes.extend([get_model_schema_node])
+
+        outputs = dict(output_data="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            DataOutputFormat.SCHEMA,
+            *all_nodes)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (_, schema_data, _, _) = graph.run(
+                X=None,
+                y=None,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                telemetry_info=telemetry_info,
+                **params)
+        except RuntimeError as e:
+            self._run_time = time.time() - start_time
+            raise e
+
+        # stop the clock
+        self._run_time = time.time() - start_time
+        self._write_csv_time = graph._write_csv_time
+        return schema_data
+
 
     @classmethod
     def combine_models(cls, *items, **params):

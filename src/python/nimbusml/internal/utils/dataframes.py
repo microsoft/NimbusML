@@ -221,6 +221,10 @@ def resolve_output_as_csrmatrix(ret):
     return matrix
 
 
+def resolve_output_as_schema(ret):
+    return dict()
+
+
 # Any changes to this dictionary must also be done in the enum
 # ML_PY_TYPE_MAP_ENUM defined in DataViewInterop.h.
 _global_dtype_to_char_dict = {
