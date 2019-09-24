@@ -406,6 +406,52 @@ class TestPipelineCombining(unittest.TestCase):
         self.assertTrue(result_1.equals(result_2))
 
 
+    def test_combined_models_support_predict_proba(self):
+        path = get_dataset('infert').as_filepath()
+
+        data = FileDataStream.read_csv(path)
+
+        transform = OneHotVectorizer(columns={'edu': 'education'})
+        df = transform.fit_transform(data, as_binary_data_stream=True)
+
+        feature_cols = ['parity', 'edu', 'age', 'induced', 'spontaneous', 'stratum', 'pooled.stratum']
+        predictor = LogisticRegressionBinaryClassifier(feature=feature_cols, label='case')
+        predictor.fit(df)
+
+        data = FileDataStream.read_csv(path)
+        df = transform.transform(data, as_binary_data_stream=True)
+        result_1 = predictor.predict_proba(df)
+
+        data = FileDataStream.read_csv(path)
+        combined_pipeline = Pipeline.combine_models(transform, predictor)
+        result_2 = combined_pipeline.predict_proba(data)
+
+        self.assertTrue(np.array_equal(result_1, result_2))
+
+
+    def test_combined_models_support_decision_function(self):
+        path = get_dataset('infert').as_filepath()
+
+        data = FileDataStream.read_csv(path)
+
+        transform = OneHotVectorizer(columns={'edu': 'education'})
+        df = transform.fit_transform(data, as_binary_data_stream=True)
+
+        feature_cols = ['parity', 'edu', 'age', 'induced', 'spontaneous', 'stratum', 'pooled.stratum']
+        predictor = LogisticRegressionBinaryClassifier(feature=feature_cols, label='case')
+        predictor.fit(df)
+
+        data = FileDataStream.read_csv(path)
+        df = transform.transform(data, as_binary_data_stream=True)
+        result_1 = predictor.decision_function(df)
+
+        data = FileDataStream.read_csv(path)
+        combined_pipeline = Pipeline.combine_models(transform, predictor)
+        result_2 = combined_pipeline.decision_function(data)
+
+        self.assertTrue(np.array_equal(result_1, result_2))
+
+
 if __name__ == '__main__':
     unittest.main()
 

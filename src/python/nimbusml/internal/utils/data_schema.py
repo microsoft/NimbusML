@@ -655,7 +655,7 @@ class DataSchema:
                 graph = Graph(*(graph_nodes), inputs=dict(file=filename),
                               outputs=dict(data=''))
                 st = FileDataStream(filename, schema=None)
-                (out_model, out_data, out_metrics) = graph.run(verbose=True,
+                (out_model, out_data, out_metrics, _) = graph.run(verbose=True,
                                                                X=st)
 
             if isinstance(filepath_or_buffer, StringIO):

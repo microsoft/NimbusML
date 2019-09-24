@@ -656,8 +656,7 @@ class Pipeline:
             else:
                 raise NotImplementedError(
                     "Strategy '{0}' to handle unspecified inputs is not "
-                    "implemented".format(
-                        strategy_iosklearn))
+                    "implemented".format(strategy_iosklearn))
 
             if label_column is not None or last_node._use_role(Role.Label):
                 if getattr(last_node, 'label_column_name_', None):
@@ -680,8 +679,7 @@ class Pipeline:
                 last_node.label_column_name = None
                 label_column = None
 
-            if weight_column is not None or last_node._use_role(
-                    Role.Weight):
+            if weight_column is not None or last_node._use_role(Role.Weight):
                 if getattr(last_node, 'example_weight_column_name', None):
                     weight_column = last_node.example_weight_column_name
                 elif weight_column:
@@ -693,8 +691,7 @@ class Pipeline:
             if (hasattr(last_node, 'row_group_column_name_')
                     and last_node.row_group_column_name_ is not None):
                 group_id_column = last_node.row_group_column_name_
-            elif (hasattr(last_node,
-                          'row_group_column_name') and
+            elif (hasattr(last_node, 'row_group_column_name') and
                   last_node.row_group_column_name is not None):
                 group_id_column = last_node.row_group_column_name
             else:
@@ -716,10 +713,8 @@ class Pipeline:
 
             # todo: ideally all the nodes have the same name for params
             # so we dont have to distinguish if its learner or
-            # transformer. We will supply
-            # input_data, output_data & output_model vars. Its up to
-            # node to
-            # use suplied vars
+            # transformer. We will supply input_data, output_data and
+            # output_model vars. Its up to node to use suplied vars.
             learner_node = last_node._get_node(
                 feature_column_name=learner_features,
                 training_data=output_data,
@@ -746,6 +741,7 @@ class Pipeline:
         output_binary_data_stream = params.pop(
             'output_binary_data_stream', False)
         params.pop('parallel', None)
+        do_output_predictor_model = params.pop('output_predictor_model', None)
 
         X, y, columns_renamed, feature_columns, label_column, schema, \
             weights, weight_column = self._preprocess_X_y(X, y, weights)
@@ -760,6 +756,7 @@ class Pipeline:
         input_data = "$input_data"
         output_data = "$output_data"
         output_model = "$output_model"
+        output_predictor_model = "$output_predictor_model"
         predictor_model = "$predictor_model"
 
         graph_nodes, feature_columns, inputs, transform_nodes, \
@@ -774,10 +771,13 @@ class Pipeline:
             self._update_graph_nodes_for_learner(
                 graph_nodes,
                 transform_nodes,
-                columns_out, label_column,
+                columns_out, 
+                label_column,
                 weight_column,
-                output_data, output_model,
-                predictor_model, y,
+                output_data,
+                output_model,
+                predictor_model,
+                y,
                 strategy_iosklearn=strategy_iosklearn)
 
         # graph_nodes contain graph sections, which is needed for CV.
@@ -793,17 +793,27 @@ class Pipeline:
                 transform_models.append(node.inputs['TransformModel'])
             elif "Model" in node.outputs:
                 transform_models.append(node.outputs["Model"])
-
-        if learner_node and len(
-                transform_models) > 0:  # no need to combine if there is
-            #  only 1 model
+        # no need to combine if there is only 1 model
+        if learner_node and len(transform_models) > 0:
             combine_model_node = transforms_manyheterogeneousmodelcombiner(
                 transform_models=transform_models,
-                predictor_model=(
-                    predictor_model if learner_node else None),
+                predictor_model=predictor_model,
                 model=output_model)
             combine_model_node._implicit = True
             graph_nodes.append(combine_model_node)
+            if do_output_predictor_model: 
+                # get implicit_nodes and build predictor model only
+                implicit_nodes = graph_sections['implicit_nodes']
+                implicit_transform_models = []
+                for node in implicit_nodes:
+                    if "Model" in node.outputs:
+                        implicit_transform_models.append(node.outputs["Model"])
+                output_predictor_model_node = transforms_manyheterogeneousmodelcombiner(
+                    transform_models=implicit_transform_models,
+                    predictor_model=predictor_model,
+                    model=output_predictor_model)
+                output_predictor_model_node._implicit = True
+                graph_nodes.append(output_predictor_model_node)
         elif len(transform_models) > 1:
             combine_model_node = transforms_modelcombiner(
                 models=transform_models,
@@ -812,12 +822,13 @@ class Pipeline:
             graph_nodes.append(combine_model_node)
         elif len(graph_nodes) == 0:
             raise RuntimeError(
-                "Unable to process the pipeline len(transform_models)={"
-                "0}.".format(
-                    len(transform_models)))
+                "Unable to process the pipeline len(transform_models)={0}.".
+                    format(len(transform_models)))
 
         # create the graph
         outputs = OrderedDict([(output_model.replace('$', ''), '')])
+        if do_output_predictor_model:
+            outputs[output_predictor_model.replace('$', '')] = ''
         # REVIEW: ideally we should remove output completely from the
         # graph if its not needed
         # however graph validation logic prevents doing that at the moment,
@@ -1155,10 +1166,9 @@ class Pipeline:
 
         # run the graph
         # REVIEW: we should have the possibility to keep the model in
-        # memory
-        # and not in a file.
+        # memory and not in a file.
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, out_predictor_model) = graph.run(
                 X=X,
                 y=y,
                 random_state=self.random_state,
@@ -1184,6 +1194,8 @@ class Pipeline:
         move_information_about_roles_once_used()
         self.graph_ = graph
         self.model = out_model
+        if out_predictor_model:
+            self.predictor_model = out_predictor_model
         self.data = out_data
         # stop the clock
         self._run_time = time.time() - start_time
@@ -1395,9 +1407,7 @@ class Pipeline:
             optional_node = transforms_optionalcolumncreator(
                 column=[label],
                 data="$input_data" if num_transforms == 0 else
-                output_data +
-                str(
-                    num_transforms),
+                output_data + str(num_transforms),
                 output_data="$optional_data",
                 model=output_model + str(num_transforms + 1))
             optional_node._implicit = True
@@ -1405,24 +1415,20 @@ class Pipeline:
                 data="$optional_data",
                 label_column=label,
                 output_data="$label_data",
-                model=output_model + str(
-                    num_transforms + 2))
+                model=output_model + str(num_transforms + 2))
             label_node._implicit = True
             feature_node = transforms_featurecombiner(
                 data="$label_data",
                 features=features,
                 output_data=output_data,
-                model=output_model + str(
-                    num_transforms + 3))
+                model=output_model + str(num_transforms + 3))
             feature_node._implicit = True
             implicit_nodes = [optional_node, label_node, feature_node]
         elif learner.type in ('classifier', 'ranker'):
             optional_node = transforms_optionalcolumncreator(
                 column=[label],
                 data="$input_data" if num_transforms == 0 else
-                output_data +
-                str(
-                    num_transforms),
+                output_data + str(num_transforms),
                 output_data="$optional_data",
                 model=output_model + str(num_transforms + 1))
             optional_node._implicit = True
@@ -1433,25 +1439,20 @@ class Pipeline:
                 text_key_values=False,
                 model=output_model + str(num_transforms + 2))
             label_node._implicit = True
-
             feature_node = transforms_featurecombiner(
                 data="$label_data",
                 features=features,
                 output_data=output_data,
-                model=output_model + str(
-                    num_transforms + 3))
+                model=output_model + str(num_transforms + 3))
             feature_node._implicit = True
             implicit_nodes = [optional_node, label_node, feature_node]
         elif learner.type in {'recommender', 'sequence'}:
-            raise NotImplementedError(
-                "Type '{0}' is not implemented yet.".format(
-                    learner.type))
+            raise NotImplementedError("Type '{0}' is not implemented yet.".
+                                      format(learner.type))
         else:
             feature_node = transforms_featurecombiner(
                 data="$input_data" if num_transforms == 0 else
-                output_data +
-                str(
-                    num_transforms),
+                output_data + str(num_transforms),
                 features=features,
                 output_data=output_data,
                 model=output_model + str(num_transforms + 1))
@@ -1797,7 +1798,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, _) = graph.run(
                 X=X,
                 random_state=self.random_state,
                 model=self.model,
@@ -1979,7 +1980,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, _) = graph.run(
                 X=X,
                 y=y,
                 random_state=self.random_state,
@@ -2053,7 +2054,7 @@ class Pipeline:
 
         :return: array, shape = [n_samples, n_classes]
         """
-        if hasattr(self, 'steps') and len(self.steps) > 0:
+        if hasattr(self, 'steps') and self.steps:
             last_node = self.last_node
             last_node._check_implements_method('predict_proba')
 
@@ -2093,7 +2094,7 @@ class Pipeline:
         :return: array, shape=(n_samples,) if n_classes == 2 else (
             n_samples, n_classes)
         """
-        if hasattr(self, 'steps') and len(self.steps) > 0:
+        if hasattr(self, 'steps') and self.steps:
             last_node = self.last_node
             last_node._check_implements_method('decision_function')
 
@@ -2324,7 +2325,7 @@ class Pipeline:
         max_slots = params.pop('max_slots', -1)
 
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, _) = graph.run(
                 X=X,
                 random_state=self.random_state,
                 model=self.model,
@@ -2395,7 +2396,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (_, summary_data, _) = graph.run(
+            (_, summary_data, _, _) = graph.run(
                 X=None,
                 y=None,
                 random_state=self.random_state,
@@ -2645,7 +2646,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (out_model, _, _) = graph.run(
+            (out_model, _, _, _) = graph.run(
                 X=None,
                 y=None,
                 random_state=None,
