@@ -11,12 +11,13 @@ from ..utils.utils import try_set, unlist
 def transforms_timeseriesimputer(
         time_series_column,
         data,
+        grain_columns,
         output_data=None,
         model=None,
-        grain_columns=None,
         filter_columns=None,
         filter_mode='Exclude',
         impute_mode='ForwardFill',
+        supress_type_errors=False,
         **params):
     """
     **Description**
@@ -30,6 +31,10 @@ def transforms_timeseriesimputer(
         (inputs).
     :param impute_mode: Mode for imputing, defaults to ForwardFill if
         not provided (inputs).
+    :param supress_type_errors: Supress the errors that would occur
+        if a column and impute mode are imcompatible. If true, will
+        skip the column. If false, will stop and throw an error.
+        (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -52,7 +57,7 @@ def transforms_timeseriesimputer(
     if grain_columns is not None:
         inputs['GrainColumns'] = try_set(
             obj=grain_columns,
-            none_acceptable=True,
+            none_acceptable=False,
             is_of_type=list,
             is_column=True)
     if filter_columns is not None:
@@ -76,8 +81,15 @@ def transforms_timeseriesimputer(
             none_acceptable=True,
             is_of_type=str,
             values=[
-                'Backfill',
-                'ForwardFill'])
+                'ForwardFill',
+                'BackFill',
+                'Median',
+                'Interpolate'])
+    if supress_type_errors is not None:
+        inputs['SupressTypeErrors'] = try_set(
+            obj=supress_type_errors,
+            none_acceptable=True,
+            is_of_type=bool)
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

@@ -91,6 +91,7 @@
     <Compile Include="nimbusml\examples\BootStrapSample.py" />
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
     <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
@@ -699,11 +700,13 @@
     <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
     <Compile Include="nimbusml\tests\preprocessing\schema\test_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
+    <Compile Include="nimbusml\tests\preprocessing\test_tokeyimputer.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_tostring.py" />
     <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_timeseriesimputer.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\__init__.py" />

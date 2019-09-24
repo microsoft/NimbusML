@@ -32,6 +32,10 @@ class TimeSeriesImputer(BasePipelineItem, DefaultSignature):
     :param impute_mode: Mode for imputing, defaults to ForwardFill if not
         provided.
 
+    :param supress_type_errors: Supress the errors that would occur if a column
+        and impute mode are imcompatible. If true, will skip the column. If
+        false, will stop and throw an error.
+
     :param params: Additional arguments sent to compute engine.
 
     """
@@ -40,10 +44,11 @@ class TimeSeriesImputer(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             time_series_column,
-            grain_columns=None,
+            grain_columns,
             filter_columns=None,
             filter_mode='Exclude',
             impute_mode='ForwardFill',
+            supress_type_errors=False,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
@@ -53,6 +58,7 @@ class TimeSeriesImputer(BasePipelineItem, DefaultSignature):
         self.filter_columns = filter_columns
         self.filter_mode = filter_mode
         self.impute_mode = impute_mode
+        self.supress_type_errors = supress_type_errors
 
     @property
     def _entrypoint(self):
@@ -65,7 +71,8 @@ class TimeSeriesImputer(BasePipelineItem, DefaultSignature):
             grain_columns=self.grain_columns,
             filter_columns=self.filter_columns,
             filter_mode=self.filter_mode,
-            impute_mode=self.impute_mode)
+            impute_mode=self.impute_mode,
+            supress_type_errors=self.supress_type_errors)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)
