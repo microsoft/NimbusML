@@ -142,28 +142,32 @@ class TestCsrMatrixOutput(unittest.TestCase):
         self.assertEqual(result.dtypes[2], np.float32)
 
     def test_types_convertable_to_r8_get_output_as_r8(self):
+        large_int64 = 372036854775807
         train_data = {'c1': [1, 0, 0, 4],
                       'c2': [2, 3, 0, 5],
                       'c3': [3, 0, 5, 0],
                       'c4': [0, 5, 6, 7],
-                      'c5': [5, 6, 7, 8]}
+                      'c5': [0, 5, 0, large_int64],
+                      'c6': [5, 6, 7, 8]}
         train_df = pd.DataFrame(train_data).astype({'c1': np.ubyte,
                                                     'c2': np.short,
                                                     'c3': np.float32,
-                                                    'c4': np.float64})
+                                                    'c4': np.float64,
+                                                    'c5': np.int64})
 
-        xf = ColumnDropper(columns=['c5'])
+        xf = ColumnDropper(columns=['c6'])
         xf.fit(train_df)
         result = xf.transform(train_df, as_csr=True)
 
         self.assertTrue(type(result) == csr_matrix)
-        self.assertEqual(result.nnz, 10)
+        self.assertEqual(result.nnz, 12)
         result = pd.DataFrame(result.todense())
 
         train_data = {0: [1, 0, 0, 4],
                       1: [2, 3, 0, 5],
                       2: [3, 0, 5, 0],
-                      3: [0, 5, 6, 7]}
+                      3: [0, 5, 6, 7],
+                      4: [0, 5, 0, large_int64]}
         expected_result = pd.DataFrame(train_data).astype(np.float64)
 
         self.assertTrue(result.equals(expected_result))
@@ -172,6 +176,8 @@ class TestCsrMatrixOutput(unittest.TestCase):
         self.assertEqual(result.dtypes[1], np.float64)
         self.assertEqual(result.dtypes[2], np.float64)
         self.assertEqual(result.dtypes[3], np.float64)
+
+        self.assertEqual(result.loc[3, 4], large_int64)
 
 
 if __name__ == '__main__':
