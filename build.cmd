@@ -173,6 +173,8 @@ if "%AzureBuild%" == "True" (
     echo ##vso[task.prependpath]%_dotnetRoot%
 )
 
+set LOCAL_NUGET_PACKAGES_DIR=.\local-nuget-packages\windows
+
 :: Build managed code
 echo ""
 echo "#################################"
