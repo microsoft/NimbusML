@@ -7,28 +7,28 @@
 
 
 inline void destroyManagerCObject(PyObject* obj) {
-    auto* b = static_cast<PythonObjectBase*>(PyCapsule_GetPointer(obj, NULL));
+    auto* b = static_cast<PyColumnBase*>(PyCapsule_GetPointer(obj, NULL));
     if (b) { delete b; }
 }
 
 
-PythonObjectBase::PythonObjectBase(const int& kind, size_t numRows, size_t numCols)
+PyColumnBase::PyColumnBase(const int& kind, size_t numRows, size_t numCols)
 {
     _kind = kind;
     _numRows = numRows;
     _numCols = numCols;
 }
 
-PythonObjectBase::~PythonObjectBase()
+PyColumnBase::~PyColumnBase()
 {
 }
 
-PythonObjectBase::creation_map* PythonObjectBase::m_pSingleCreationMap = PythonObjectBase::CreateSingleMap();
-PythonObjectBase::creation_map* PythonObjectBase::m_pVariableCreationMap = PythonObjectBase::CreateVariableMap();
+PyColumnBase::creation_map* PyColumnBase::m_pSingleCreationMap = PyColumnBase::CreateSingleMap();
+PyColumnBase::creation_map* PyColumnBase::m_pVariableCreationMap = PyColumnBase::CreateVariableMap();
 
-PythonObjectBase::creation_map* PythonObjectBase::CreateSingleMap()
+PyColumnBase::creation_map* PyColumnBase::CreateSingleMap()
 {
-    PythonObjectBase::creation_map* map = new PythonObjectBase::creation_map();
+    PyColumnBase::creation_map* map = new PyColumnBase::creation_map();
 
     map->insert(creation_map_entry(BL, CreateSingle<signed char>));
     map->insert(creation_map_entry(I1, CreateSingle<signed char>));
@@ -45,9 +45,9 @@ PythonObjectBase::creation_map* PythonObjectBase::CreateSingleMap()
     return map;
 }
 
-PythonObjectBase::creation_map* PythonObjectBase::CreateVariableMap()
+PyColumnBase::creation_map* PyColumnBase::CreateVariableMap()
 {
-    PythonObjectBase::creation_map* map = new PythonObjectBase::creation_map();
+    PyColumnBase::creation_map* map = new PyColumnBase::creation_map();
 
     map->insert(creation_map_entry(BL, CreateVariable<signed char, float>));
     map->insert(creation_map_entry(I1, CreateVariable<signed char, float>));
@@ -64,7 +64,7 @@ PythonObjectBase::creation_map* PythonObjectBase::CreateVariableMap()
     return map;
 }
 
-PythonObjectBase* PythonObjectBase::CreateObject(const int& kind, size_t numRows, size_t numCols)
+PyColumnBase* PyColumnBase::Create(const int& kind, size_t numRows, size_t numCols)
 {
     if (numCols == 0)
     {
@@ -84,18 +84,18 @@ PythonObjectBase* PythonObjectBase::CreateObject(const int& kind, size_t numRows
     throw std::invalid_argument(message.str().c_str());
 }
 
-template <class T> PythonObjectBase* PythonObjectBase::CreateSingle(const int& kind, size_t nRows, size_t nColumns)
+template <class T> PyColumnBase* PyColumnBase::CreateSingle(const int& kind, size_t nRows, size_t nColumns)
 {
-    return new PythonObjectSingle<T>(kind, nRows, nColumns);
+    return new PyColumnSingle<T>(kind, nRows, nColumns);
 }
 
-template <class T, class T2> PythonObjectBase* PythonObjectBase::CreateVariable(const int& kind, size_t nRows, size_t nColumns)
+template <class T, class T2> PyColumnBase* PyColumnBase::CreateVariable(const int& kind, size_t nRows, size_t nColumns)
 {
-    return new PythonObjectVariable<T, T2>(kind, nRows, nColumns);
+    return new PyColumnVariable<T, T2>(kind, nRows, nColumns);
 }
 
 template <class T>
-void PythonObjectSingle<T>::AddToDict(bp::dict& dict,
+void PyColumnSingle<T>::AddToDict(bp::dict& dict,
                                       const std::string& name,
                                       const std::vector<std::string>* keyNames,
                                       const size_t expectedRows)
@@ -167,7 +167,7 @@ void PythonObjectSingle<T>::AddToDict(bp::dict& dict,
 }
 
 template <>
-void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict,
+void PyColumnSingle<std::string>::AddToDict(bp::dict& dict,
                                                 const std::string& name,
                                                 const std::vector<std::string>* keyNames,
                                                 const size_t expectedRows)
@@ -192,11 +192,11 @@ void PythonObjectSingle<std::string>::AddToDict(bp::dict& dict,
  * this method has been called.
  */
 template <class T, class T2>
-void PythonObjectVariable<T, T2>::Deleter(PyObject* obj)
+void PyColumnVariable<T, T2>::Deleter(PyObject* obj)
 {
-    auto* deleteData = static_cast<PythonObjectVariable<T, T2>::DeleteData*>(PyCapsule_GetPointer(obj, NULL));
+    auto* deleteData = static_cast<PyColumnVariable<T, T2>::DeleteData*>(PyCapsule_GetPointer(obj, NULL));
 
-    PythonObjectVariable<T, T2>* instance = deleteData->instance;
+    PyColumnVariable<T, T2>* instance = deleteData->instance;
     size_t column = deleteData->column;
 
     std::vector<T2>* data = instance->_data[column];
@@ -214,7 +214,7 @@ void PythonObjectVariable<T, T2>::Deleter(PyObject* obj)
 }
 
 template<class T, class T2>
-inline void PythonObjectVariable<T, T2>::AddToDict(bp::dict& dict,
+inline void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
                                                    const std::string& name,
                                                    const std::vector<std::string>* keyNames,
                                                    const size_t expectedRows)

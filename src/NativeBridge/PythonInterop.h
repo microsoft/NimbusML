@@ -27,11 +27,11 @@ enum DataKind
     DZ = 15,
 };
 
-class PythonObjectBase
+class PyColumnBase
 {
 private:
-    typedef std::map<int, PythonObjectBase* (*)(const int&, size_t, size_t)> creation_map;
-    typedef std::pair<int, PythonObjectBase* (*)(const int&, size_t, size_t)> creation_map_entry;
+    typedef std::map<int, PyColumnBase* (*)(const int&, size_t, size_t)> creation_map;
+    typedef std::pair<int, PyColumnBase* (*)(const int&, size_t, size_t)> creation_map_entry;
 
     static creation_map* m_pSingleCreationMap;
     static creation_map* CreateSingleMap();
@@ -39,8 +39,8 @@ private:
     static creation_map* m_pVariableCreationMap;
     static creation_map* CreateVariableMap();
 
-    template <class T> static PythonObjectBase* CreateSingle(const int& name, size_t nRows, size_t nColumns);
-    template <class T, class T2> static PythonObjectBase* CreateVariable(const int& name, size_t nRows, size_t nColumns);
+    template <class T> static PyColumnBase* CreateSingle(const int& name, size_t nRows, size_t nColumns);
+    template <class T, class T2> static PyColumnBase* CreateVariable(const int& name, size_t nRows, size_t nColumns);
 
 protected:
     int _kind;
@@ -48,10 +48,10 @@ protected:
     size_t _numCols;
 
 public:
-    static PythonObjectBase* CreateObject(const int& kind, size_t numRows, size_t numCols);
+    static PyColumnBase* Create(const int& kind, size_t numRows, size_t numCols);
 
-    PythonObjectBase(const int& kind, size_t numRows = 0, size_t numCols = 0);
-    virtual ~PythonObjectBase();
+    PyColumnBase(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    virtual ~PyColumnBase();
 
     const int& GetKind() const;
     void SetKind(int kind);
@@ -60,37 +60,37 @@ public:
     virtual size_t GetNumCols();
 };
 
-inline const int& PythonObjectBase::GetKind() const
+inline const int& PyColumnBase::GetKind() const
 {
     return _kind;
 }
 
-inline void PythonObjectBase::SetKind(int kind)
+inline void PyColumnBase::SetKind(int kind)
 {
     _kind = kind;
 }
 
-inline size_t PythonObjectBase::GetNumRows()
+inline size_t PyColumnBase::GetNumRows()
 {
     return _numRows;
 }
 
-inline size_t PythonObjectBase::GetNumCols()
+inline size_t PyColumnBase::GetNumCols()
 {
     return _numCols;
 }
 
 
 /*
- * Template typed base class which provides the
- * required interface for all derived classes.
+ * Template typed abstract base class which provides
+ * the required interface for all derived classes.
  */
 template <class T>
-class PythonObject : public PythonObjectBase
+class PyColumn : public PyColumnBase
 {
 public:
-    PythonObject(const int& kind, size_t numRows = 0, size_t numCols = 0);
-    virtual ~PythonObject() {}
+    PyColumn(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    virtual ~PyColumn() {}
     virtual void SetAt(size_t nRow, size_t nCol, const T& value) = 0;
     virtual void AddToDict(bp::dict& dict,
                            const std::string& name,
@@ -99,25 +99,24 @@ public:
 };
 
 template <class T>
-inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t numCols)
-    : PythonObjectBase(kind, numRows, numCols)
+inline PyColumn<T>::PyColumn(const int& kind, size_t numRows, size_t numCols)
+    : PyColumnBase(kind, numRows, numCols)
 {
 }
 
 
 /*
- * PythonObject based class which
- * handles the single column case.
+ * Handles the single column case.
  */
 template <class T>
-class PythonObjectSingle : public PythonObject<T>
+class PyColumnSingle : public PyColumn<T>
 {
 protected:
     std::vector<T>* _pData;
 
 public:
-    PythonObjectSingle(const int& kind, size_t numRows = 0, size_t numCols = 1);
-    virtual ~PythonObjectSingle();
+    PyColumnSingle(const int& kind, size_t numRows = 0, size_t numCols = 1);
+    virtual ~PyColumnSingle();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
     virtual void AddToDict(bp::dict& dict,
                            const std::string& name,
@@ -129,8 +128,8 @@ public:
 };
 
 template <class T>
-inline PythonObjectSingle<T>::PythonObjectSingle(const int& kind, size_t numRows, size_t numCols)
-    : PythonObject<T>(kind, numRows, numCols)
+inline PyColumnSingle<T>::PyColumnSingle(const int& kind, size_t numRows, size_t numCols)
+    : PyColumn<T>(kind, numRows, numCols)
 {
     _pData = new std::vector<T>();
     if (numRows > 0)
@@ -138,13 +137,13 @@ inline PythonObjectSingle<T>::PythonObjectSingle(const int& kind, size_t numRows
 }
 
 template <class T>
-inline PythonObjectSingle<T>::~PythonObjectSingle()
+inline PyColumnSingle<T>::~PyColumnSingle()
 {
     delete _pData;
 }
 
 template <class T>
-inline void PythonObjectSingle<T>::SetAt(size_t nRow, size_t nCol, const T& value)
+inline void PyColumnSingle<T>::SetAt(size_t nRow, size_t nCol, const T& value)
 {
     size_t index = nRow * this->_numCols + nCol;
     if (_pData->size() <= index)
@@ -153,32 +152,31 @@ inline void PythonObjectSingle<T>::SetAt(size_t nRow, size_t nCol, const T& valu
 }
 
 template <class T>
-inline size_t PythonObjectSingle<T>::GetNumRows()
+inline size_t PyColumnSingle<T>::GetNumRows()
 {
     return _pData->size();
 }
 
 template <class T>
-inline size_t PythonObjectSingle<T>::GetNumCols()
+inline size_t PyColumnSingle<T>::GetNumCols()
 {
     return 1;
 }
 
 
 /*
- * PythonObject based class which
- * handles the variable column case.
+ * Handles the variable column case.
  */
 template <class T, class T2>
-class PythonObjectVariable : public PythonObject<T>
+class PyColumnVariable : public PyColumn<T>
 {
 private:
     std::vector<std::vector<T2>*> _data;
     size_t _numDeletedColumns;
 
 public:
-    PythonObjectVariable(const int& kind, size_t numRows = 0, size_t numCols = 0);
-    virtual ~PythonObjectVariable();
+    PyColumnVariable(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    virtual ~PyColumnVariable();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
     virtual void AddToDict(bp::dict& dict,
                            const std::string& name,
@@ -189,7 +187,7 @@ public:
 public:
     typedef struct
     {
-        PythonObjectVariable* instance;
+        PyColumnVariable* instance;
         size_t column;
     } DeleteData;
 
@@ -197,14 +195,14 @@ public:
 };
 
 template <class T, class T2>
-inline PythonObjectVariable<T, T2>::PythonObjectVariable(const int& kind, size_t numRows, size_t numCols)
-    : PythonObject<T>(kind, numRows, numCols),
+inline PyColumnVariable<T, T2>::PyColumnVariable(const int& kind, size_t numRows, size_t numCols)
+    : PyColumn<T>(kind, numRows, numCols),
       _numDeletedColumns(0)
 {
 }
 
 template <class T, class T2>
-inline PythonObjectVariable<T, T2>::~PythonObjectVariable()
+inline PyColumnVariable<T, T2>::~PyColumnVariable()
 {
     for (unsigned int i = 0; i < _data.size(); i++)
     {
@@ -213,7 +211,7 @@ inline PythonObjectVariable<T, T2>::~PythonObjectVariable()
 }
 
 template <class T, class T2>
-inline void PythonObjectVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& value)
+inline void PyColumnVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& value)
 {
     if ((nRow + 1) > this->_numRows) this->_numRows = nRow + 1;
 
@@ -238,7 +236,7 @@ inline void PythonObjectVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T
 }
 
 template <class T, class T2>
-inline size_t PythonObjectVariable<T, T2>::GetNumCols()
+inline size_t PyColumnVariable<T, T2>::GetNumCols()
 {
     return _data.size();
 }

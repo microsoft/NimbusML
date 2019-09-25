@@ -9,7 +9,7 @@
 
 #define AddToDict(type); \
         {\
-            PythonObject<type>* col = dynamic_cast<PythonObject<type>*>(column);\
+            PyColumn<type>* col = dynamic_cast<PyColumn<type>*>(column);\
             col->AddToDict(dict, _names[i], keyNames, maxRows);\
         }\
 
@@ -67,7 +67,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
     for (int i = 0; i < pdata->ccol; i++)
     {
         BYTE kind = pdata->kinds[i];
-        _columns.push_back(PythonObjectBase::CreateObject(kind, pdata->crow, pdata->valueCounts[i]));
+        _columns.push_back(PyColumnBase::Create(kind, pdata->crow, pdata->valueCounts[i]));
 
         switch (kind)
         {
@@ -116,7 +116,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 
         if (pdata->keyCards && (pdata->keyCards[i] >= 0))
         {
-            _vKeyValues.push_back(new PythonObjectSingle<std::string>(TX, pdata->keyCards[i], 1));
+            _vKeyValues.push_back(new PyColumnSingle<std::string>(TX, pdata->keyCards[i], 1));
             _columnToKeyMap.push_back(numKeys++);
         }
         else
@@ -197,7 +197,7 @@ bp::dict EnvironmentBlock::GetData()
     bp::dict dict = bp::dict();
     for (size_t i = 0; i < _names.size(); i++)
     {
-        PythonObjectBase* column = _columns[i];
+        PyColumnBase* column = _columns[i];
         const std::vector<std::string>* keyNames = nullptr;
         if (_columnToKeyMap[i] >= 0)
             keyNames = _vKeyValues[_columnToKeyMap[i]]->GetData();
@@ -206,7 +206,7 @@ bp::dict EnvironmentBlock::GetData()
         switch (kind) {
         case -1:
         {
-            PythonObjectSingle<signed char>* col = dynamic_cast<PythonObjectSingle<signed char>*>(column);
+            PyColumnSingle<signed char>* col = dynamic_cast<PyColumnSingle<signed char>*>(column);
             auto shrd = col->GetData();
             bp::list list;
             for (size_t i = 0; i < shrd->size(); i++)
