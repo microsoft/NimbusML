@@ -41,7 +41,7 @@ class TestErrors(unittest.TestCase):
                 raise Exception(
                     'boost.python did not replace the exception.\n{0}'.format(
                         e))
-            assert "Check the log for error messages" in str(e)
+            assert "Error: *** System.ArgumentOutOfRangeException: 'Could not find input column" in str(e)
 
     @unittest.skip("System.NullReferenceException")
     def test_char_tokenizer(self):
