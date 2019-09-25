@@ -96,9 +96,9 @@ template <class T, class T2> PyColumnBase* PyColumnBase::CreateVariable(const in
 
 template <class T>
 void PyColumnSingle<T>::AddToDict(bp::dict& dict,
-                                      const std::string& name,
-                                      const std::vector<std::string>* keyNames,
-                                      const size_t expectedRows)
+                                  const std::string& name,
+                                  const std::vector<std::string>* keyNames,
+                                  const size_t expectedRows)
 {
     auto* data = _pData->data();
 
@@ -168,9 +168,9 @@ void PyColumnSingle<T>::AddToDict(bp::dict& dict,
 
 template <>
 void PyColumnSingle<std::string>::AddToDict(bp::dict& dict,
-                                                const std::string& name,
-                                                const std::vector<std::string>* keyNames,
-                                                const size_t expectedRows)
+                                            const std::string& name,
+                                            const std::vector<std::string>* keyNames,
+                                            const size_t expectedRows)
 {
     bp::list list;
     for (size_t i = 0; i < _pData->size(); i++)
@@ -214,10 +214,10 @@ void PyColumnVariable<T, T2>::Deleter(PyObject* obj)
 }
 
 template<class T, class T2>
-inline void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
-                                                   const std::string& name,
-                                                   const std::vector<std::string>* keyNames,
-                                                   const size_t expectedRows)
+void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
+                                        const std::string& name,
+                                        const std::vector<std::string>* keyNames,
+                                        const size_t expectedRows)
 {
     size_t numRows = (expectedRows > this->_numRows) ? expectedRows : this->_numRows;
     size_t numCols = _data.size();

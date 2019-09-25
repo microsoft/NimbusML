@@ -106,7 +106,7 @@ inline PyColumn<T>::PyColumn(const int& kind, size_t numRows, size_t numCols)
 
 
 /*
- * Handles the single column case.
+ * Handles the single value case.
  */
 template <class T>
 class PyColumnSingle : public PyColumn<T>
@@ -165,7 +165,7 @@ inline size_t PyColumnSingle<T>::GetNumCols()
 
 
 /*
- * Handles the variable column case.
+ * Handles the variable value case.
  */
 template <class T, class T2>
 class PyColumnVariable : public PyColumn<T>
