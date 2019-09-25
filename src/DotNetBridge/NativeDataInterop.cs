@@ -469,7 +469,8 @@ namespace Microsoft.ML.DotNetBridge
 
             nameIndices.Append(utf8Names.Length);
             var bytesNumber = Encoding.UTF8.GetBytes(newName, 0, newName.Length, utf8Names.Buffer, utf8Names.Length);
-            utf8Names.Length += bytesNumber + 1;
+            utf8Names.Length += bytesNumber;
+            utf8Names.Append(0);
         }
 
         private abstract unsafe class BufferFillerBase
