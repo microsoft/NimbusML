@@ -9,11 +9,10 @@ using System.Linq;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
@@ -368,6 +367,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
                     case InternalDataKind.I4:
                     case InternalDataKind.U4:
+                    case InternalDataKind.I8:
                     case InternalDataKind.R8:
                         outputDataKind = InternalDataKind.R8;
                         break;
@@ -813,6 +813,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     case InternalDataKind.R4:
                         DataAppender<float> appendR4 = (float val, int i) => csrData.AppendR8((double)val, i);
                         return new CsrFiller<float>(input, idvCol, idvColType, appendR4, csrData);
+                    case InternalDataKind.I8:
+                        DataAppender<long> appendI8 = (long val, int i) => csrData.AppendR8((double)val, i);
+                        return new CsrFiller<long>(input, idvCol, idvColType, appendI8, csrData);
                     case InternalDataKind.R8:
                         DataAppender<double> appendR8 = (double val, int i) => csrData.AppendR8((double)val, i);
                         return new CsrFiller<double>(input, idvCol, idvColType, appendR8, csrData);

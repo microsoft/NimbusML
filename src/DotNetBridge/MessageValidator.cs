@@ -7,7 +7,7 @@ using System;
 using System.Globalization;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     /// <summary>
     /// This is a temporary solution to validate the messages from ML.NET to nimbusml.

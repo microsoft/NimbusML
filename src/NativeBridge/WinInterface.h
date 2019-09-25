@@ -302,7 +302,7 @@ public:
         HRESULT hr = host->CreateDelegate(
             _domainId,
             W("DotNetBridge"),
-            W("Microsoft.MachineLearning.DotNetBridge.Bridge"),
+            W("Microsoft.ML.DotNetBridge.Bridge"),
             W("GetFn"),
             &getter);
         if (FAILED(hr))

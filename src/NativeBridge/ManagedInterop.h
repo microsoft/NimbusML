@@ -21,13 +21,6 @@ enum MessageKind
     Error = 3
 };
 
-// These are only used locally
-enum PyErrorCode
-{
-    PyErrorCode_NoError = 0,
-    PyErrorCode_Failure = 1
-};
-
 // REVIEW: the exceptions thrown in the callbacks will not be caught by BxlServer on Linux.
 // On Linux, CoreCLR will ignore previous stack frames, i.e., those before entering the managed code.
 typedef MANAGED_CALLBACK_PTR(void, MODELSINK) (EnvironmentBlock * env,
@@ -87,7 +80,6 @@ private:
 public:
     EnvironmentBlock(int verbosity = 0, int maxSlots = -1, int seed = 42, const char* pythonPath = NULL);
     ~EnvironmentBlock();
-    PyErrorCode GetErrorCode() { return _errCode; }
     std::string GetErrorMessage() { return _errMessage; }
     bp::dict GetData();
 
@@ -107,7 +99,6 @@ private:
     int _irowBase;
     int _crowWant;
     std::vector<void*> _vset;
-    PyErrorCode _errCode;
     std::string _errMessage;
 
     std::vector<std::string> _names;

@@ -8,13 +8,12 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Internal.Utilities;
 using System.Threading.Tasks;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
