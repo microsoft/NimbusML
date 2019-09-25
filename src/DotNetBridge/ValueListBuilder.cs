@@ -22,7 +22,7 @@ namespace Microsoft.ML.DotNetBridge
             _pos = 0;
         }
 
-        public ValueListBuilder(int initialSize)
+        public ValueListBuilder(int initialSize = 1024)
         {
             _arrayFromPool = ArrayPool<T>.Shared.Rent(initialSize);
             _span = _arrayFromPool;

@@ -247,11 +247,15 @@ namespace Microsoft.ML.DotNetBridge
             allNames.Clear();
             allNames = null;
 
+            var kinds = kindList.AsSpan();
+            var keyCards = keyCardList.AsSpan();
+            var nameBytes = nameUtf8Bytes.AsSpan();
             var names = new byte*[namesCount];
-            fixed (InternalDataKind* prgkind = kindList.AsSpan())
-            fixed (byte* prgbNames = nameUtf8Bytes.AsSpan())
+
+            fixed (InternalDataKind* prgkind = kinds)
+            fixed (byte* prgbNames = nameBytes)
             fixed (byte** prgname = names)
-            fixed (int* prgkeyCard = keyCardList.AsSpan())
+            fixed (int* prgkeyCard = keyCards)
             {
                 for (int iid = 0; iid < names.Length; iid++)
                     names[iid] = prgbNames + nameIndices[iid];
@@ -388,8 +392,8 @@ namespace Microsoft.ML.DotNetBridge
             }
 
             var allNames = new HashSet<string>();
-            var nameIndices = new ValueListBuilder<int>();
-            var nameUtf8Bytes = new ValueListBuilder<byte>(UTF8_BUFFER_SIZE);
+            var nameIndices = new ValueListBuilder<int>(10);
+            var nameUtf8Bytes = new ValueListBuilder<byte>(100);
 
             AddUniqueName("data", allNames, ref nameIndices, ref nameUtf8Bytes);
             AddUniqueName("indices", allNames, ref nameIndices, ref nameUtf8Bytes);
@@ -402,9 +406,11 @@ namespace Microsoft.ML.DotNetBridge
                                                        InternalDataKind.I4};
 
             var kinds = kindList.ToArray();
+            var nameBytes = nameUtf8Bytes.AsSpan();
             var names = new byte*[allNames.Count];
+
             fixed (InternalDataKind* prgkind = kinds)
-            fixed (byte* prgbNames = nameUtf8Bytes.AsSpan())
+            fixed (byte* prgbNames = nameBytes)
             fixed (byte** prgname = names)
             {
                 for (int iid = 0; iid < names.Length; iid++)
