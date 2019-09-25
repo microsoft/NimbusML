@@ -71,24 +71,6 @@ namespace Microsoft.ML.DotNetBridge
             EntryPointUtils.CheckInputArgs(host, input);
 
             return new ModelSchemaOutput { Schema = new EmptyDataView(host, input.Model.OutputSchema) };
-
-            //var sbIn = new StringBuilder();
-            //foreach (var col in input.Model.InputSchema.Where(x => !x.IsHidden))
-            //{
-            //    sbIn.Append(col.ToString());
-            //    sbIn.Append(" ");
-            //}
-            //var sbOut = new StringBuilder();
-            //foreach (var col in input.Model.OutputSchema.Where(x => !x.IsHidden))
-            //{
-            //    sbOut.Append(col.ToString());
-            //    sbOut.Append(" ");
-            //}
-
-            //var result = new Dictionary<string, string>();
-            //result["input_schema"] = sbIn.ToString();
-            //result["output_schema"] = sbIn.ToString();
-            //return new ModelSchemaOutput { Schema = result }
         }
     }
 }

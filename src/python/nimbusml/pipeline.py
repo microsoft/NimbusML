@@ -1838,7 +1838,6 @@ class Pipeline:
             schema="$output_data")
         all_nodes = [schema_node]
 
-        #outputs = dict(output_data="E:\\tmp1\\columns.csv")
         outputs = dict(output_data="")
 
         graph = Graph(
