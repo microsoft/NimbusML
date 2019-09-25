@@ -200,6 +200,8 @@ def pd_concat(els, axis=0, join='inner'):
 
     return concat(els, axis=axis, join=join)
 
+def resolve_output_as_list(ret):
+    return ret.keys()
 
 def resolve_output_as_dataframe(ret):
     data = dict()

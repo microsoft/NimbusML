@@ -1844,7 +1844,7 @@ class Pipeline:
         graph = Graph(
             inputs,
             outputs,
-            DataOutputFormat.DF,
+            DataOutputFormat.LIST,
             *all_nodes)
 
         try:
