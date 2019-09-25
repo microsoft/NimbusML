@@ -5,6 +5,8 @@
 #include <string>
 #include "DataViewInterop.h"
 #include "ManagedInterop.h"
+#include <iostream>
+#include <sstream>
 
 #define PARAM_SEED "seed"
 #define PARAM_MAX_SLOTS "max_slots"
@@ -114,7 +116,9 @@ bp::dict pxCall(bp::dict& params)
         else
             retCode = exec(&env, s_graph.c_str(), 0, NULL);
 
+        std::cout << "Before GetData()";
         res = env.GetData();
+        std::cout << "After GetData()";
 
         if (retCode == -1)
             throw std::runtime_error(env.GetErrorMessage());

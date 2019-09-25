@@ -5,16 +5,24 @@ import pandas as pd
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.linear_model import FastLinearRegressor
 from nimbusml.preprocessing.normalization import MeanVarianceScaler
+from nimbusml.feature_extraction.text.extractor import Ngram
+from nimbusml import FileDataStream, Pipeline
+from nimbusml.feature_extraction.text import NGramFeaturizer
 
-X = np.array([[1, 2.0], [2, 4], [3, 0.7]])
-Y = np.array([2, 3, 1.5])
+#df = pd.read_csv('E:\\tmp1\\columns.csv', comment='#', header=0, encoding='utf-8')
 
-df = pd.DataFrame(dict(y=Y, x1=X[:, 0], x2=X[:, 1]))
+X_train = FileDataStream.read_csv("E:\\tmp1\\ag_news.csv")
 
 pipe = Pipeline([
-    MeanVarianceScaler(),
+    NGramFeaturizer(columns={'Column2': 'Column2'}, 
+                    word_feature_extractor = Ngram(ngram_length=3))
 ])
 
-# fit with pandas dataframe
-pipe.fit(X, Y)
+# max_num_terms = 10 000 000
+
+pipe.fit(X_train)
+print('fit done')
+
 schema = pipe.get_schema()
+print(schema)
+

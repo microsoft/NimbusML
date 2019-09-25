@@ -70,7 +70,7 @@ namespace Microsoft.ML.DotNetBridge
             host.CheckValue(input, nameof(input));
             EntryPointUtils.CheckInputArgs(host, input);
 
-            return new ModelSchemaOutput { Schema = new EmptyDataView(host, input.Model.OutputSchema))};
+            return new ModelSchemaOutput { Schema = new EmptyDataView(host, input.Model.OutputSchema) };
 
             //var sbIn = new StringBuilder();
             //foreach (var col in input.Model.InputSchema.Where(x => !x.IsHidden))
@@ -88,7 +88,7 @@ namespace Microsoft.ML.DotNetBridge
             //var result = new Dictionary<string, string>();
             //result["input_schema"] = sbIn.ToString();
             //result["output_schema"] = sbIn.ToString();
-            return new ModelSchemaOutput { Schema = result }
+            //return new ModelSchemaOutput { Schema = result }
         }
     }
 }

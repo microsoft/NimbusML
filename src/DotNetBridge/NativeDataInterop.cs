@@ -206,6 +206,7 @@ namespace Microsoft.ML.DotNetBridge
                     {
                         var romNames = default(VBuffer<ReadOnlyMemory<char>>);
                         schema[col].Annotations.GetValue(AnnotationUtils.Kinds.SlotNames, ref romNames);
+                        Console.WriteLine("before utf8 conversion");
                         foreach (var kvp in romNames.Items(true))
                         {
                             // REVIEW: Add the proper number of zeros to the slot index to make them sort in the right order.
@@ -238,6 +239,7 @@ namespace Microsoft.ML.DotNetBridge
             ch.Assert(allNames.Count == keyCardList.Count);
             ch.Assert(allNames.Count == nameIndices.Count);
 
+            Console.WriteLine("before native");
             var kinds = kindList.ToArray();
             var keyCards = keyCardList.ToArray();
             var nameBytes = nameUtf8Bytes.ToArray();
@@ -259,6 +261,7 @@ namespace Microsoft.ML.DotNetBridge
                 block.keyCards = prgkeyCard;
 
                 dataSink(penv, &block, out var setters, out var keyValueSetter);
+                Console.WriteLine("after sink");
 
                 if (setters == null)
                 {
@@ -272,6 +275,7 @@ namespace Microsoft.ML.DotNetBridge
                     var fillers = new BufferFillerBase[colIndices.Count];
                     var pyColumn = 0;
                     var keyIndex = 0;
+                    Console.WriteLine("colIndices {0} ", colIndices.Count);
                     for (int i = 0; i < colIndices.Count; i++)
                     {
                         var type = schema[colIndices[i]].Type;
@@ -281,8 +285,10 @@ namespace Microsoft.ML.DotNetBridge
                             ch.Assert(schema[colIndices[i]].HasKeyValues());
                             var keyValues = default(VBuffer<ReadOnlyMemory<char>>);
                             schema[colIndices[i]].Annotations.GetValue(AnnotationUtils.Kinds.KeyValues, ref keyValues);
+                            Console.WriteLine("GetValueCount {0} ", type.GetValueCount());
                             for (int slot = 0; slot < type.GetValueCount(); slot++)
                             {
+                                Console.WriteLine("keyValues {0} ", keyValues.Items().Count());
                                 foreach (var kvp in keyValues.Items())
                                 {
                                     if (kvp.Value.IsEmpty)
@@ -314,6 +320,7 @@ namespace Microsoft.ML.DotNetBridge
                     }
                 }
             }
+            Console.WriteLine("finish");
         }
 
         private static unsafe void SendViewToNativeAsCsr(IChannel ch, EnvironmentBlock* penv, IDataView view)

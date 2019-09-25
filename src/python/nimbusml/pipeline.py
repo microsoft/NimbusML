@@ -1838,6 +1838,7 @@ class Pipeline:
             schema="$output_data")
         all_nodes = [schema_node]
 
+        #outputs = dict(output_data="E:\\tmp1\\columns.csv")
         outputs = dict(output_data="")
 
         graph = Graph(
@@ -1858,7 +1859,7 @@ class Pipeline:
         except RuntimeError as e:
             raise e
 
-        return out_data
+        return summary_data
     
     @trace
     def _predict(self, X, y=None,
