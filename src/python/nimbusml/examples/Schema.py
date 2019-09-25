@@ -27,7 +27,7 @@ pipe = Pipeline([
 ])
 
 pipe.fit(data)
-schema = list(pipe.get_schema())
+schema = pipe.get_schema()
 
 print(schema[0:5])
 # ['Sentiment', 'SentimentText', 'features.Char.<␂>|=|=', 'features.Char.=|=|r', 'features.Char.=|r|u']
