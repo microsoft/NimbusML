@@ -90,6 +90,10 @@ class TestVariableColumn(unittest.TestCase):
         """
         There are no integer nans so values that can be
         converted to float32 are converted to support nans.
+        There is nullable integer type support in pandas but
+        it is currently marked as experimental and the docs
+        state that the api may change in the future. See
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/integer_na.html
         """
         types = [np.int8, np.int16, np.int32,
                  np.uint8, np.uint16, np.uint32,
@@ -108,6 +112,10 @@ class TestVariableColumn(unittest.TestCase):
         """
         There are no integer nans so values that can be
         converted to float64 are converted to support nans.
+        There is nullable integer type support in pandas but
+        it is currently marked as experimental and the docs
+        state that the api may change in the future. See
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/integer_na.html
         """
         types = [np.int64, np.uint64, np.float64]
 
