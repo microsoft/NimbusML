@@ -109,8 +109,6 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 {
     assert(pdata != nullptr);
 
-    // Create a data set.
-    CxInt64 numKeys = 0;
     _names = pdata->names;
     for (int i = 0; i < pdata->ccol; i++)
     {
@@ -164,11 +162,9 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 
         if (pdata->keyCards && (pdata->keyCards[i] >= 0))
         {
+            _columnToKeyMap.insert(i);
             _vKeyValues.push_back(new PythonObject<std::string>(TX, pdata->keyCards[i], 1));
-            _columnToKeyMap.push_back(numKeys++);
         }
-        else
-            _columnToKeyMap.push_back(-1);
     }
 }
 
@@ -233,13 +229,14 @@ bp::dict EnvironmentBlock::GetData()
         return bp::dict();
     }
 
+    CxInt64 numKeys = 0;
     bp::dict dict = bp::dict();
     for (size_t i = 0; i < _columns.size(); i++)
     {
         PythonObjectBase* column = _columns[i];
         PythonObject<std::string>* keyNames = nullptr;
-        if (_columnToKeyMap[i] >= 0)
-            keyNames = _vKeyValues[_columnToKeyMap[i]];
+        if (_columnToKeyMap.find(i) != _columnToKeyMap.end())
+            keyNames = _vKeyValues[numKeys++];
 
         signed char kind = column->GetKind();
         switch (kind) {

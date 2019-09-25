@@ -104,10 +104,9 @@ private:
     // Column names.
     const char ** _names;
     std::vector<PythonObjectBase*> _columns;
-    // Maps between the column index, and the index in _vKeyValues containing the key names, or -1 if 
-    // there are no key names.
-    std::vector<CxInt64> _columnToKeyMap;
 
+    // Set of all key column indexes.
+    std::unordered_set<CxInt64> _columnToKeyMap;
     std::vector<PythonObject<std::string>*> _vKeyValues;
 
     static MANAGED_CALLBACK(void) SetR4(EnvironmentBlock *env, int col, long index, float value)

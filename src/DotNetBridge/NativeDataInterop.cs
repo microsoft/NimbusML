@@ -17,6 +17,9 @@ namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
+        const int UTF8_BUFFER_SIZE = 10 * 1024 * 1024; // 10 MB
+        const int INDICES_BUFFER_SIZE = 1024 * 1024; // 1 Mln
+
         /// <summary>
         /// This is provided by the native code and represents a native data source. It provides schema
         /// information and call backs for iteration.
@@ -30,20 +33,17 @@ namespace Microsoft.ML.DotNetBridge
             [FieldOffset(0x08)]
             public readonly long crow;
             [FieldOffset(0x10)]
-            public readonly long* ids;
-            [FieldOffset(0x18)]
             public readonly sbyte** names;
-            [FieldOffset(0x20)]
+            [FieldOffset(0x18)]
             public readonly InternalDataKind* kinds;
-            [FieldOffset(0x28)]
+            [FieldOffset(0x20)]
             public readonly long* keyCards;
-            [FieldOffset(0x30)]
+            [FieldOffset(0x28)]
             public readonly long* vecCards;
-            [FieldOffset(0x38)]
-            public readonly void** getters;
-
+            [FieldOffset(0x30)]
             // Call back pointers.
-            [FieldOffset(0x40)]
+            public readonly void** getters;
+            [FieldOffset(0x38)]
             public readonly void* labelsGetter;
 #pragma warning restore 649 // never assigned
         }
@@ -108,14 +108,14 @@ namespace Microsoft.ML.DotNetBridge
             var dataSink = MarshalDelegate<DataSink>(penv->dataSink);
 
             var schema = view.Schema;
-            var colIndices = new List<int>();
-            var kindList = new List<InternalDataKind>();
-            var keyCardList = new List<int>();
-            var nameUtf8Bytes = new List<Byte>();
-            var nameIndices = new List<int>();
+            var colIndices = new List<int>(1000);
+            var kindList = new ValueListBuilder<InternalDataKind>(INDICES_BUFFER_SIZE);
+            var keyCardList = new ValueListBuilder<int>(INDICES_BUFFER_SIZE);
+            var nameUtf8Bytes = new ValueListBuilder<byte>(UTF8_BUFFER_SIZE);
+            var nameIndices = new ValueListBuilder<int>(INDICES_BUFFER_SIZE);
 
-            var expandCols = new HashSet<int>();
-            var allNames = new HashSet<string>();
+            var expandCols = new HashSet<int>(1000);
+            var allNames = new HashSet<string>(INDICES_BUFFER_SIZE);
 
             for (int col = 0; col < schema.Count; col++)
             {
@@ -201,7 +201,7 @@ namespace Microsoft.ML.DotNetBridge
                     {
                         Contracts.Assert(info.SlotNames.Length == nSlots);
                         for (int i = 0; i < nSlots; i++)
-                            AddUniqueName(info.SlotNames[i], allNames, nameIndices, nameUtf8Bytes);
+                            AddUniqueName(info.SlotNames[i], allNames, ref nameIndices, ref nameUtf8Bytes);
                     }
                     else if (schema[col].HasSlotNames(nSlots))
                     {
@@ -215,47 +215,43 @@ namespace Microsoft.ML.DotNetBridge
                         {
                             // REVIEW: Add the proper number of zeros to the slot index to make them sort in the right order.
                             sb.Append((!kvp.Value.IsEmpty ? kvp.Value.ToString() : kvp.Key.ToString(CultureInfo.InvariantCulture)));
-                            AddUniqueName(sb.ToString(), allNames, nameIndices, nameUtf8Bytes);
+                            AddUniqueName(sb.ToString(), allNames, ref nameIndices, ref nameUtf8Bytes);
                             sb.Remove(sIndex, sb.Length - sIndex);
                         }
                     }
                     else
                     {
                         for (int i = 0; i < nSlots; i++)
-                            AddUniqueName(name + "." + i, allNames, nameIndices, nameUtf8Bytes);
+                            AddUniqueName(name + "." + i, allNames, ref nameIndices, ref nameUtf8Bytes);
                     }
                 }
                 else
                 {
                     nSlots = 1;
-                    AddUniqueName(name, allNames, nameIndices, nameUtf8Bytes);
+                    AddUniqueName(name, allNames, ref nameIndices, ref nameUtf8Bytes);
                 }
 
                 colIndices.Add(col);
                 for (int i = 0; i < nSlots; i++)
                 {
-                    kindList.Add(kind);
-                    keyCardList.Add(keyCard);
+                    kindList.Append(kind);
+                    keyCardList.Append(keyCard);
                 }
             }
 
-            ch.Assert(allNames.Count == kindList.Count);
-            ch.Assert(allNames.Count == keyCardList.Count);
-            ch.Assert(allNames.Count == nameIndices.Count);
+            ch.Assert(allNames.Count == kindList.Length);
+            ch.Assert(allNames.Count == keyCardList.Length);
+            ch.Assert(allNames.Count == nameIndices.Length);
             var namesCount = allNames.Count;
             // Potentially huge hashset, explicitely null it.
             allNames.Clear();
             allNames = null;
 
-            var kinds = kindList.ToArray();
-            var keyCards = keyCardList.ToArray();
-            var nameBytes = nameUtf8Bytes.ToArray();
             var names = new byte*[namesCount];
-
-            fixed (InternalDataKind* prgkind = kinds)
-            fixed (byte* prgbNames = nameBytes)
+            fixed (InternalDataKind* prgkind = kindList.AsSpan())
+            fixed (byte* prgbNames = nameUtf8Bytes.AsSpan())
             fixed (byte** prgname = names)
-            fixed (int* prgkeyCard = keyCards)
+            fixed (int* prgkeyCard = keyCardList.AsSpan())
             {
                 for (int iid = 0; iid < names.Length; iid++)
                     names[iid] = prgbNames + nameIndices[iid];
@@ -306,7 +302,7 @@ namespace Microsoft.ML.DotNetBridge
                                 keyIndex++;
                             }
                         }
-                        fillers[i] = BufferFillerBase.Create(penv, cursor, pyColumn, colIndices[i], kinds[pyColumn], type, setters[pyColumn]);
+                        fillers[i] = BufferFillerBase.Create(penv, cursor, pyColumn, colIndices[i], prgkind[pyColumn], type, setters[pyColumn]);
                         pyColumn += type is VectorDataViewType ? type.GetVectorSize() : 1;
                     }
                     for (int crow = 0; ; crow++)
@@ -392,13 +388,13 @@ namespace Microsoft.ML.DotNetBridge
             }
 
             var allNames = new HashSet<string>();
-            var nameIndices = new List<int>();
-            var nameUtf8Bytes = new List<Byte>();
+            var nameIndices = new ValueListBuilder<int>();
+            var nameUtf8Bytes = new ValueListBuilder<byte>(UTF8_BUFFER_SIZE);
 
-            AddUniqueName("data", allNames, nameIndices, nameUtf8Bytes);
-            AddUniqueName("indices", allNames, nameIndices, nameUtf8Bytes);
-            AddUniqueName("indptr", allNames, nameIndices, nameUtf8Bytes);
-            AddUniqueName("shape", allNames, nameIndices, nameUtf8Bytes);
+            AddUniqueName("data", allNames, ref nameIndices, ref nameUtf8Bytes);
+            AddUniqueName("indices", allNames, ref nameIndices, ref nameUtf8Bytes);
+            AddUniqueName("indptr", allNames, ref nameIndices, ref nameUtf8Bytes);
+            AddUniqueName("shape", allNames, ref nameIndices, ref nameUtf8Bytes);
 
             var kindList = new List<InternalDataKind> {outputDataKind,
                                                        InternalDataKind.I4,
@@ -406,11 +402,9 @@ namespace Microsoft.ML.DotNetBridge
                                                        InternalDataKind.I4};
 
             var kinds = kindList.ToArray();
-            var nameBytes = nameUtf8Bytes.ToArray();
             var names = new byte*[allNames.Count];
-
             fixed (InternalDataKind* prgkind = kinds)
-            fixed (byte* prgbNames = nameBytes)
+            fixed (byte* prgbNames = nameUtf8Bytes.AsSpan())
             fixed (byte** prgname = names)
             {
                 for (int iid = 0; iid < names.Length; iid++)
@@ -455,21 +449,21 @@ namespace Microsoft.ML.DotNetBridge
             }
         }
 
-        private static string AddUniqueName(string name, HashSet<string> allNames, List<int> nameIndices, List<Byte> nameUtf8Bytes)
+        private static void AddUniqueName(string name, HashSet<string> allNames, 
+            ref ValueListBuilder<int> nameIndices, 
+            ref ValueListBuilder<byte> utf8Names)
         {
             string newName = name;
             int i = 1;
             // REVIEW: Column names should not be affected by the slot names. They should always win against slot names.
             while (!allNames.Add(newName))
                 newName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", name, i++);
-            var samePool = ArrayPool<byte>.Shared;
-            byte[] buffer = samePool.Rent(newName.Length * 2);
-            var bytesNumber = Encoding.UTF8.GetBytes(newName, 0, newName.Length, buffer, 0);
-            nameIndices.Add(nameUtf8Bytes.Count);
-            nameUtf8Bytes.AddRange(buffer.Take(bytesNumber));
-            samePool.Return(buffer);
-            nameUtf8Bytes.Add(0);
-            return newName;
+            if (utf8Names.Capacity - utf8Names.Length < newName.Length * 2 + 2)
+                utf8Names.Grow();
+
+            nameIndices.Append(utf8Names.Length);
+            var bytesNumber = Encoding.UTF8.GetBytes(newName, 0, newName.Length, utf8Names.Buffer, utf8Names.Length);
+            utf8Names.Length += bytesNumber + 1;
         }
 
         private abstract unsafe class BufferFillerBase
