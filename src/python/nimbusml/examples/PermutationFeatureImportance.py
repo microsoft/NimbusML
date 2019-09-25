@@ -55,15 +55,18 @@ binary_model = binary_pipeline.fit(classification_data)
 binary_pfi = binary_model.permutation_feature_importance(
     classification_data, label='label')
 
-# print PFI for each feature
-print("========== PFI for Binary Classification Model ==========")
-print(binary_pfi.head())
+# Print PFI for each feature, ordered by most important features w.r.t. AUC.
+# Since AUC is an increasing metric, the highest negative changes indicate the
+# most important features.
+print("============== PFI for Binary Classification Model ==============")
+print(binary_pfi.sort_values('AreaUnderRocCurve').head())
 #               FeatureName  AreaUnderRocCurve  AreaUnderRocCurveStdErr  ...
 # 0                     age          -0.064845                      0.0  ...
-# 1          education.11th          -0.014760                      0.0  ...
-# 2       education.HS-grad           0.000858                      0.0  ...
-# 3    education.Assoc-acdm           0.000361                      0.0  ...
 # 4  education.Some-college          -0.019582                      0.0  ...
+# 10    education.Doctorate          -0.015912                      0.0  ...
+# 1          education.11th          -0.014760                      0.0  ...
+# 6   education.Prof-school          -0.011067                      0.0  ...
+
 
 ###############################
 # PFI for Classification models
@@ -80,15 +83,17 @@ multiclass_model = multiclass_pipeline.fit(classification_data)
 multiclass_pfi = multiclass_model.permutation_feature_importance(
     classification_data, label='label')
 
-# print PFI for each feature
-print("============== PFI for Classification Model ==============")
-print(multiclass_pfi.head())
-#               FeatureName  MacroAccuracy  MacroAccuracyStdErr  MicroAccuracy  ...
-# 0                     age      -0.023828                  0.0         -0.032  ...
-# 1          education.11th      -0.008696                  0.0         -0.004  ...
-# 2       education.HS-grad       0.036533                  0.0          0.014  ...
-# 3    education.Assoc-acdm      -0.003896                  0.0         -0.006  ...
-# 4  education.Some-college       0.006550                  0.0         -0.004  ...
+# Print PFI for each feature, ordered by most important features w.r.t. Macro
+# accuracy. Since Macro accuracy is an increasing metric, the highest negative
+# changes indicate the most important features.
+print("================== PFI for Classification Model ==================")
+print(multiclass_pfi.sort_values('MacroAccuracy').head())
+#             FeatureName  MacroAccuracy  MacroAccuracyStdErr  MicroAccuracy  ...
+# 10  education.Doctorate      -0.038227                  0.0         -0.026  ...
+# 0                   age      -0.012084                  0.0         -0.028  ...
+# 1        education.11th      -0.007397                  0.0         -0.002  ...
+# 5        education.10th      -0.005647                  0.0         -0.004  ...
+# 13        education.9th      -0.005647                  0.0         -0.004  ...
 
 ###########################
 # PFI for Regression models
@@ -117,14 +122,16 @@ regression_model = regression_pipeline.fit(regression_data)
 regression_pfi = regression_model.permutation_feature_importance(
     regression_data, label='age')
 
-# print PFI for each feaure
-print("================ PFI for Regression Model ================")
-print(regression_pfi.head())
+# print PFI for each feaure, ordered by most important features w.r.t. MAE.
+# Since MAE is an increasing metric, the highest positive changes indicate the
+# most important features.
+print("==================== PFI for Regression Model ====================")
+print(regression_pfi.sort_values('MeanAbsoluteError', ascending=False).head())
 #          FeatureName  MeanAbsoluteError  ...  RSquared  RSquaredStdErr
-# 0            induced           0.062107  ... -0.017166             0.0
-# 1   education.0-5yrs           0.005981  ...  0.000454             0.0
-# 2  education.6-11yrs          -0.005310  ... -0.010779             0.0
-# 3  education.12+ yrs           0.647048  ... -0.309541             0.0
+# 3  education.12+ yrs           0.475284  ... -0.214641             0.0
+# 0            induced           0.060773  ... -0.016803             0.0
+# 1   education.0-5yrs           0.015447  ... -0.003912             0.0
+# 2  education.6-11yrs          -0.013304  ...  0.002334             0.0
 
 ########################
 # PFI for Ranking models
@@ -154,10 +161,13 @@ ranking_model = ranking_pipeline.fit(ranking_data)
 ranking_pfi = ranking_model.permutation_feature_importance(
     ranking_data, label='rank', group_id='group')
 
-# print PFI for each feature
-print("================= PFI for Ranking Model =================")
-print(ranking_pfi.head())
+# Print PFI for each feature, ordered by most important features w.r.t. DCG@1.
+# Since DCG is an increasing metric, the highest negative changes indicate the
+# most important features.
+print("===================== PFI for Ranking Model =====================")
+print(ranking_pfi.sort_values('DiscountedCumulativeGains.0').head())
 #   FeatureName  DiscountedCumulativeGains.0  ...
 # 0       Class                    -2.885390  ...
 # 1     dep_day                     0.000000  ...
 # 2    duration                     0.721348  ...
+

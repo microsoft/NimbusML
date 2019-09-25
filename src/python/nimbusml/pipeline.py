@@ -1832,11 +1832,54 @@ class Pipeline:
         then calculated for this modified dataset, and the change in the
         evaluation metric from the original dataset is computed. The larger the
         change in the evaluation metric, the more important the feature is to
-        the model. PFI works by performing this permutation analysis across all
-        the features of a model, one after another.
+        the model, i.e. the most important features are those that the model is
+        most sensitive to. PFI works by performing this permutation analysis
+        across all the features of a model, one after another.
+
+        Note that for increasing metrics (e.g. AUC, accuracy, R-Squared, NDCG),
+        the most important features will be those with the highest negative
+        mean change in the metric. Conversely, for decreasing metrics (e.g.
+        Mean Squared Error, Log loss), the most important features will be
+        those with the highest positive mean change in the metric.
 
         PFI is supported for binary classifiers, classifiers, regressors, and
         rankers.
+        
+        The mean changes and statndard errors of the means are evaluated for
+        the following metrics are evaluated for PFI:
+
+        * Binary Classification:
+
+            * Area under ROC curve (AUC)
+            * Accuracy
+            * Positive precision
+            * Positive recall
+            * Negative precision
+            * Negative recall
+            * F1 score
+            * Area under Precision-Recall curve (AUPRC)
+
+        * Multiclass classification:
+
+            * Macro accuracy
+            * Micro accuracy
+            * Log loss
+            * Log loss reduction
+            * Top k accuracy
+            * Per-class log loss
+
+        * Regression:
+        
+            * Mean absolute error (MAE)
+            * Mean squared error (MSE)
+            * Root mean squared error (RMSE)
+            * Loss function
+            * R-Squared
+
+        * Ranking
+
+            * Discounted cumulative gains (DCG) @1, @2, and @3
+            * Normalized discounted cumulative gains (NDCG) @1, @2, and @3
 
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
