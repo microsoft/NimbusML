@@ -101,7 +101,8 @@ private:
     std::vector<void*> _vset;
     std::string _errMessage;
 
-    std::vector<std::string> _names;
+    // Column names.
+    const char ** _names;
     std::vector<PythonObjectBase*> _columns;
     // Maps between the column index, and the index in _vKeyValues containing the key names, or -1 if 
     // there are no key names.

@@ -111,6 +111,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 
     // Create a data set.
     CxInt64 numKeys = 0;
+    _names = pdata->names;
     for (int i = 0; i < pdata->ccol; i++)
     {
         BYTE kind = pdata->kinds[i];
@@ -168,8 +169,6 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
         }
         else
             _columnToKeyMap.push_back(-1);
-
-        _names.push_back(pdata->names[i]);
     }
 }
 
@@ -229,13 +228,13 @@ STATIC MANAGED_CALLBACK(bool) EnvironmentBlock::CheckCancel()
 
 bp::dict EnvironmentBlock::GetData()
 {
-    if (_names.size() == 0)
+    if (_columns.size() == 0)
     {
         return bp::dict();
     }
 
     bp::dict dict = bp::dict();
-    for (size_t i = 0; i < _names.size(); i++)
+    for (size_t i = 0; i < _columns.size(); i++)
     {
         PythonObjectBase* column = _columns[i];
         PythonObject<std::string>* keyNames = nullptr;
