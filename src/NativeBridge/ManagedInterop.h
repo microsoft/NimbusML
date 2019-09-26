@@ -102,7 +102,7 @@ private:
     std::string _errMessage;
 
     // Column names.
-    const char ** _names;
+    std::vector<std::string> _names;
     std::vector<PythonObjectBase*> _columns;
 
     // Set of all key column indexes.

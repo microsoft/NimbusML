@@ -109,7 +109,6 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 {
     assert(pdata != nullptr);
 
-    _names = pdata->names;
     for (int i = 0; i < pdata->ccol; i++)
     {
         BYTE kind = pdata->kinds[i];
@@ -165,6 +164,8 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
             _columnToKeyMap.insert(i);
             _vKeyValues.push_back(new PythonObject<std::string>(TX, pdata->keyCards[i], 1));
         }
+
+        _names.push_back(pdata->names[i]);
     }
 }
 
