@@ -184,6 +184,11 @@ public:
                            const size_t expectedRows);
     virtual size_t GetNumCols();
 
+    T2 GetMissingValue();
+    T2 GetConvertedValue(const T& value);
+
+    void AddColumnToDict(bp::dict& dict, const std::string& name, size_t index);
+
 public:
     typedef struct
     {
@@ -224,19 +229,30 @@ inline void PyColumnVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& va
     }
 
     /*
-     * Fill in any missing row values in
-     * the specified column with NAN.
+     * Fill in any missing row values.
      */
     for (size_t i = _data[nCol]->size(); i < nRow; i++)
     {
-        _data[nCol]->push_back(NAN);
+        _data[nCol]->push_back(GetMissingValue());
     }
 
-    _data[nCol]->push_back((T2)value);
+    _data[nCol]->push_back(GetConvertedValue(value));
 }
 
 template <class T, class T2>
 inline size_t PyColumnVariable<T, T2>::GetNumCols()
 {
     return _data.size();
+}
+
+template <class T, class T2>
+inline T2 PyColumnVariable<T, T2>::GetMissingValue()
+{
+    return NAN;
+}
+
+template <class T, class T2>
+inline T2 PyColumnVariable<T, T2>::GetConvertedValue(const T& value)
+{
+    return (T2)value;
 }

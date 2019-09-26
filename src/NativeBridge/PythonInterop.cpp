@@ -225,8 +225,8 @@ void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
     if (numCols == 0)
     {
         /*
-         * If there were no values set then create
-         * a column so it can be filled with NANs.
+         * If there were no values set then create a
+         * column so it can be filled with missing values.
          */
         _data.push_back(new std::vector<T2>());
         numCols = 1;
@@ -243,24 +243,32 @@ void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
          */
         for (size_t j = _data[i]->size(); j < numRows; j++)
         {
-            _data[i]->push_back(NAN);
+            _data[i]->push_back(GetMissingValue());
         }
 
         std::string colName = std::to_string(i);
         colName = std::string(maxDigits - colName.length(), '0') + colName;
         colName = colNameBase + colName;
 
-        auto* data = _data[i]->data();
-
-        DeleteData* deleteData = new DeleteData();
-        deleteData->instance = this;
-        deleteData->column = i;
-
-        bp::handle<> h(::PyCapsule_New((void*)deleteData, NULL, (PyCapsule_Destructor)&Deleter));
-        dict[colName] = np::from_data(
-            data,
-            np::dtype::get_builtin<T2>(),
-            bp::make_tuple(_data[i]->size()),
-            bp::make_tuple(sizeof(T2)), bp::object(h));
+        AddColumnToDict(dict, colName, i);
     }
+}
+
+template<class T, class T2>
+void PyColumnVariable<T, T2>::AddColumnToDict(bp::dict& dict,
+                                              const std::string& name,
+                                              size_t index)
+{
+    auto* data = _data[index]->data();
+
+    DeleteData* deleteData = new DeleteData();
+    deleteData->instance = this;
+    deleteData->column = index;
+
+    bp::handle<> h(::PyCapsule_New((void*)deleteData, NULL, (PyCapsule_Destructor)&Deleter));
+    dict[name] = np::from_data(
+        data,
+        np::dtype::get_builtin<T2>(),
+        bp::make_tuple(_data[index]->size()),
+        bp::make_tuple(sizeof(T2)), bp::object(h));
 }
