@@ -33,6 +33,8 @@ class TestPipelineGetSchema(unittest.TestCase):
         self.assertEqual(schema[0], 'c1')
         self.assertEqual(schema[1], 'c2')
 
+        self.assertEqual(len(schema), 2)
+
     def test_get_schema_returns_correct_value_for_vector_valued_columns(self):
         pipeline = Pipeline([OneHotVectorizer() << 'c0'])
         pipeline.fit(train_df)
@@ -43,6 +45,8 @@ class TestPipelineGetSchema(unittest.TestCase):
         self.assertEqual(schema[1], 'c0.b')
         self.assertEqual(schema[2], 'c1')
         self.assertEqual(schema[3], 'c2')
+
+        self.assertEqual(len(schema), 4)
 
     def test_get_schema_does_not_work_when_predictor_is_part_of_model(self):
         df = train_df.drop(['c0'], axis=1)
