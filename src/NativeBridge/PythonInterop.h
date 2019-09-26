@@ -3,7 +3,6 @@
 
 #pragma once
 #include <map>
-#include <unordered_set>
 
 // Taken from ML.NET source code. These values should be stable.
 enum DataKind

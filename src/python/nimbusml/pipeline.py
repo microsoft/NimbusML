@@ -1812,12 +1812,7 @@ class Pipeline:
 
     def get_schema(self, verbose=0, **params):
         """
-        Calculates observation level feature contributions. Returns dataframe
-        with raw data, predictions, and feature contributiuons for each
-        prediction. Feature contributions are not supported for transforms, so
-        make sure that the last step in a pipeline is a model. Feature
-        contriutions are supported for the following models:
-
+        Returns the output list of columns for the fitted model.
         :return: list .
         """
         self.verbose = verbose

@@ -4,6 +4,7 @@
 using namespace std;
 #include "stdafx.h"
 #include "PythonInterop.h"
+#include <unordered_set>
 
 #define CX_TraceOut(...)
 #define CX_TraceIn(...)
