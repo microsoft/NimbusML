@@ -277,9 +277,6 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
     assert(this->ccol == this->_vkeyCard.size());
     assert(this->ccol == this->_vgetter.size());
 
-    // This is used in Revo, but seems to not be needed here.
-    this->ids = nullptr;
-
     if (this->ccol > 0)
     {
         this->names = &this->_vname[0];

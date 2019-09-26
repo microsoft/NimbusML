@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 #pragma once
-
 #include <map>
 
 // Taken from ML.NET source code. These values should be stable.
@@ -82,8 +81,9 @@ inline PythonObject<T>::PythonObject(const int& kind, size_t numRows, size_t num
     _numCols = numCols;
 
     _pData = new std::vector<T>();
-    if (_numRows > 0)
+    if (_numRows > 0) {
         _pData->reserve(_numRows*_numCols);
+    }
 }
 
 template <class T>

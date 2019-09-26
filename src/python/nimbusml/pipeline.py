@@ -39,6 +39,7 @@ from .internal.entrypoints.models_rankingevaluator import \
 from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
+from .internal.entrypoints.models_schema import models_schema
 from .internal.entrypoints.transforms_datasetscorer import \
     transforms_datasetscorer
 from .internal.entrypoints.transforms_datasettransformscorer import \
@@ -1744,13 +1745,13 @@ class Pipeline:
 
         if not self._is_fitted:
             raise ValueError(
-                "Model is not fitted. Train or load a model before test().")
+                "Model is not fitted. Train or load a model before.")
 
         if len(self.steps) > 0:
             last_node = self.last_node
             if last_node.type == 'transform':
                 raise ValueError(
-                    "Pipeline needs a trainer as last step for test()")
+                    "Pipeline needs a trainer as last step.")
 
         X, y_temp, columns_renamed, feature_columns, label_column, \
             schema, weights, weight_column = self._preprocess_X_y(X)
@@ -1809,6 +1810,51 @@ class Pipeline:
 
         return out_data
 
+    def get_schema(self, verbose=0, **params):
+        """
+        Returns the output list of columns for the fitted model.
+        :return: list .
+        """
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before.")
+
+        if len(self.steps) > 0:
+            last_node = self.last_node
+            if last_node.type != 'transform':
+                raise ValueError(
+                    "Pipeline needs a transformer as last step.")
+
+        inputs = dict([('transform_model', self.model)])
+        schema_node = models_schema(
+            transform_model="$transform_model",
+            schema="$output_data")
+        all_nodes = [schema_node]
+
+        outputs = dict(output_data="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            DataOutputFormat.LIST,
+            *all_nodes)
+
+        try:
+            (_, out_data, _, _) = graph.run(
+                X=None,
+                y=None,
+                random_state=self.random_state,
+                model=self.model,
+                no_input_data=True,
+                verbose=verbose,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        return out_data
+    
     @trace
     def _predict(self, X, y=None,
                  evaltype='auto', group_id=None,
