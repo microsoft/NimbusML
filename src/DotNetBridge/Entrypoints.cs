@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.ML;
+using Microsoft.ML.CommandLine;
 using Microsoft.ML.DotNetBridge;
 using Microsoft.ML.Data;
 using Microsoft.ML.EntryPoints;
@@ -46,6 +48,29 @@ namespace Microsoft.ML.DotNetBridge
 
             var xf = ColumnConcatenatingTransformer.Create(env, inputOptions, inputOptions.Data);
             return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
+        }
+
+        public sealed class TransformModelInput
+        {
+            [Argument(ArgumentType.Required, HelpText = "The transform model.", SortOrder = 1)]
+            public TransformModel Model;
+        }
+
+        public sealed class ModelSchemaOutput
+        {
+            [TlcModule.Output(Desc = "The model schema", SortOrder = 1)]
+            public IDataView Schema;
+        }
+
+        [TlcModule.EntryPoint(Name = "Models.Schema", Desc = "Retrieve input and output model schemas")]
+        public static ModelSchemaOutput GetSchema(IHostEnvironment env, TransformModelInput input)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("GetSchema");
+            host.CheckValue(input, nameof(input));
+            EntryPointUtils.CheckInputArgs(host, input);
+
+            return new ModelSchemaOutput { Schema = new EmptyDataView(host, input.Model.OutputSchema) };
         }
     }
 }
