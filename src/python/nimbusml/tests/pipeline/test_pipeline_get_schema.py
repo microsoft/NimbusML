@@ -30,8 +30,8 @@ class TestPipelineGetSchema(unittest.TestCase):
 
         schema = pipeline.get_schema()
 
-        self.assertEqual(schema[0], 'c1')
-        self.assertEqual(schema[1], 'c2')
+        self.assertTrue('c1' in schema)
+        self.assertTrue('c2' in schema)
 
         self.assertEqual(len(schema), 2)
 
@@ -41,10 +41,10 @@ class TestPipelineGetSchema(unittest.TestCase):
 
         schema = pipeline.get_schema()
 
-        self.assertEqual(schema[0], 'c0.a')
-        self.assertEqual(schema[1], 'c0.b')
-        self.assertEqual(schema[2], 'c1')
-        self.assertEqual(schema[3], 'c2')
+        self.assertTrue('c0.a' in schema)
+        self.assertTrue('c0.b' in schema)
+        self.assertTrue('c1' in schema)
+        self.assertTrue('c2' in schema)
 
         self.assertEqual(len(schema), 4)
 
