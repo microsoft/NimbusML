@@ -60,7 +60,7 @@ PyColumnBase::creation_map* PyColumnBase::CreateVariableMap()
     map->insert(creation_map_entry(U8, CreateVariable<CxUInt64, double>));
     map->insert(creation_map_entry(R4, CreateVariable<float, float>));
     map->insert(creation_map_entry(R8, CreateVariable<double, double>));
-    //map->insert(creation_map_entry(TX, CreateVariable<std::string>));
+    map->insert(creation_map_entry(TX, CreateVariable<std::string, NullableString>));
     return map;
 }
 
@@ -271,4 +271,29 @@ void PyColumnVariable<T, T2>::AddColumnToDict(bp::dict& dict,
         np::dtype::get_builtin<T2>(),
         bp::make_tuple(_data[index]->size()),
         bp::make_tuple(sizeof(T2)), bp::object(h));
+}
+
+template<>
+void PyColumnVariable<std::string, NullableString>::AddColumnToDict(bp::dict& dict,
+                                                                    const std::string& name,
+                                                                    size_t index)
+{
+    bp::list list;
+    std::vector<NullableString>* pData = _data[index];
+    size_t numRows = pData->size();
+
+    for (size_t i = 0; i < numRows; i++)
+    {
+        bp::object obj;
+        NullableString value = pData->at(i);
+
+        if (value)
+        {
+            obj = bp::object(*value);
+        }
+
+        list.append(obj);
+    }
+
+    dict[name] = list;
 }

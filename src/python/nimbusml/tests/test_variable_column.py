@@ -173,6 +173,26 @@ class TestVariableColumn(unittest.TestCase):
 
             self.assertTrue(all(result.columns == expectedColNames))
 
+    def test_variable_column_of_type_string(self):
+        train_data = {'c1': ['a', 'b', '', 'd'],
+                      'c2': ['e', 'f', 'g', 'h'],
+                      'c3': [0, 1, 2, 1]}
+        train_df = pd.DataFrame(train_data)
+
+        result = self.to_variable_column(train_df, ['c1', 'c2'], 'c3')
+
+        self.assertEqual(result.loc[0, 'c1.0'], None)
+        self.assertEqual(result.loc[1, 'c1.0'], 'b')
+        self.assertEqual(result.loc[2, 'c1.0'], '')
+        self.assertEqual(result.loc[3, 'c1.0'], 'd')
+
+        self.assertNotEqual(result.loc[2, 'c1.0'], None)
+
+        self.assertEqual(result.loc[0, 'c1.1'], None)
+        self.assertEqual(result.loc[1, 'c1.1'], None)
+        self.assertEqual(result.loc[2, 'c1.1'], 'g')
+        self.assertEqual(result.loc[3, 'c1.1'], None)
+
 
 if __name__ == '__main__':
     unittest.main()

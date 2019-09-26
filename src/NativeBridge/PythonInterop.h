@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <boost/optional.hpp>
 
 
 // Taken from ML.NET source code. These values should be stable.
@@ -163,6 +164,7 @@ inline size_t PyColumnSingle<T>::GetNumCols()
     return 1;
 }
 
+typedef boost::optional<std::string> NullableString;
 
 /*
  * Handles the variable value case.
@@ -255,4 +257,16 @@ template <class T, class T2>
 inline T2 PyColumnVariable<T, T2>::GetConvertedValue(const T& value)
 {
     return (T2)value;
+}
+
+template <>
+inline NullableString PyColumnVariable<std::string, NullableString>::GetMissingValue()
+{
+    return boost::none;
+}
+
+template <>
+inline NullableString PyColumnVariable<std::string, NullableString>::GetConvertedValue(const std::string& value)
+{
+    return value;
 }
