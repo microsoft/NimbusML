@@ -1847,18 +1847,18 @@ class Pipeline:
             *all_nodes)
 
         try:
-            (_, summary_data, _, _) = graph.run(
+            (_, out_data, _, _) = graph.run(
                 X=None,
                 y=None,
                 random_state=self.random_state,
                 model=self.model,
+                no_input_data=True,
                 verbose=verbose,
-                is_summary=True,
                 **params)
         except RuntimeError as e:
             raise e
 
-        return summary_data
+        return out_data
     
     @trace
     def _predict(self, X, y=None,
