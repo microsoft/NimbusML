@@ -70,6 +70,21 @@ namespace Microsoft.ML.DotNetBridge
             _pos = pos + 1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendRange(T[] items)
+        {
+            int pos = _pos;
+            while(pos + items.Length >= _span.Length)
+                Grow();
+
+            foreach (T item in items)
+            {
+                _span[pos] = item;
+                _pos = pos + 1;
+                pos++;
+            }
+        }
+
         public ReadOnlySpan<T> AsSpan()
         {
             return _span.Slice(0, _pos);
