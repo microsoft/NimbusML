@@ -120,7 +120,7 @@ namespace Microsoft.ML.DotNetBridge
             var nameUtf8Bytes = new ValueListBuilder<byte>(UTF8_BUFFER_SIZE);
             var nameIndices = new ValueListBuilder<int>(INDICES_BUFFER_SIZE);
             var expandCols = new HashSet<int>(1000);
-            var valueCounts = new List<byte>();
+            var valueCounts = new List<byte>(1000);
 
             for (int col = 0; col < schema.Count; col++)
             {
