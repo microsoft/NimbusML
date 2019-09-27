@@ -23,7 +23,8 @@ from .data_stream import DprepDataStream
 from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
-    resolve_output_as_dataframe, resolve_output_as_csrmatrix
+    resolve_output_as_dataframe, resolve_output_as_csrmatrix, \
+    resolve_output_as_list
 from .utils import try_set, set_clr_environment_vars, get_clr_path, \
     get_mlnet_path, get_dprep_path
 from ..libs.pybridge import px_call
@@ -148,6 +149,8 @@ class DataOutputFormat(Enum):
     IDV = 1
     # csr_matrix sparse data format
     CSR = 2
+    # list
+    LIST = 3
 
 
 class Graph(EntryPoint):
@@ -449,6 +452,8 @@ class Graph(EntryPoint):
 
             if not cv and self._data_output_format == DataOutputFormat.CSR:
                 out_data = resolve_output_as_csrmatrix(ret)
+            elif not cv and self._data_output_format == DataOutputFormat.LIST:
+                out_data = resolve_output_as_list(ret)
             else:
                 out_data = resolve_output_as_dataframe(ret)
                 # remove label column from data
