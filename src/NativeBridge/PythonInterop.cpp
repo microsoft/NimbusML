@@ -52,11 +52,11 @@ PyColumnBase::creation_map* PyColumnBase::CreateVariableMap()
     map->insert(creation_map_entry(BL, CreateVariable<signed char, float>));
     map->insert(creation_map_entry(I1, CreateVariable<signed char, float>));
     map->insert(creation_map_entry(I2, CreateVariable<signed short, float>));
-    map->insert(creation_map_entry(I4, CreateVariable<signed int, float>));
+    map->insert(creation_map_entry(I4, CreateVariable<signed int, double>));
     map->insert(creation_map_entry(I8, CreateVariable<CxInt64, double>));
     map->insert(creation_map_entry(U1, CreateVariable<unsigned char, float>));
     map->insert(creation_map_entry(U2, CreateVariable<unsigned short, float>));
-    map->insert(creation_map_entry(U4, CreateVariable<unsigned int, float>));
+    map->insert(creation_map_entry(U4, CreateVariable<unsigned int, double>));
     map->insert(creation_map_entry(U8, CreateVariable<CxUInt64, double>));
     map->insert(creation_map_entry(R4, CreateVariable<float, float>));
     map->insert(creation_map_entry(R8, CreateVariable<double, double>));

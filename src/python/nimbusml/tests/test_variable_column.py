@@ -95,9 +95,7 @@ class TestVariableColumn(unittest.TestCase):
         state that the api may change in the future. See
         https://pandas.pydata.org/pandas-docs/stable/user_guide/integer_na.html
         """
-        types = [np.int8, np.int16, np.int32,
-                 np.uint8, np.uint16, np.uint32,
-                 np.float32]
+        types = [np.int8, np.int16, np.uint8, np.uint16, np.float32]
 
         for type in types:
             train_data = {'c1': [2, 3, 4, 5], 'c2': [3, 4, 5, 6]}
@@ -117,7 +115,7 @@ class TestVariableColumn(unittest.TestCase):
         state that the api may change in the future. See
         https://pandas.pydata.org/pandas-docs/stable/user_guide/integer_na.html
         """
-        types = [np.int64, np.uint64, np.float64]
+        types = [np.int32, np.uint32, np.int64, np.uint64, np.float64]
 
         for type in types:
             train_data = {'c1': [2, 3, 4, 5], 'c2': [3, 4, 5, 6]}
