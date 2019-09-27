@@ -1812,13 +1812,11 @@ class Pipeline:
         return out_data
 
     @trace
-    def permutation_feature_importance(self, X, label="Label",
-                                       group_id="GroupId",
-                                       number_of_examples=None,
+    def permutation_feature_importance(self, X, number_of_examples=None,
                                        permutation_count=1,
                                        filter_zero_weight_features=False,
-                                       verbose=0,
-                                       as_binary_data_stream=False, **params):
+                                       verbose=0, as_binary_data_stream=False,
+                                       **params):
         """
         Permutation feature importance (PFI) is a technique to determine the
         global importance of features in a trained machine learning model. The
@@ -1884,9 +1882,6 @@ class Pipeline:
 
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
-        :param label: The name of the label column
-        :param group_id: The name of the Group ID column, only required when
-            evaluating a ranking model.
         :param number_of_examples: Limit the number of examples to evaluate on.
             'None' means all examples in the dataset are used.
         :param permutation_count: The number of permutations to perform.
@@ -1907,7 +1902,7 @@ class Pipeline:
             schema, weights, weight_column = self._preprocess_X_y(X)
 
         all_nodes = []
-        inputs = dict([('data', ''), ('file2', self.model)])
+        inputs = dict([('data', ''), ('predictor_model', self.model)])
         if isinstance(X, FileDataStream):
             importtext_node = data_customtextloader(
                 input_file="$file",
@@ -1915,16 +1910,14 @@ class Pipeline:
                 custom_schema=schema.to_string(
                     add_sep=True))
             all_nodes = [importtext_node]
-            inputs = dict([('file', ''), ('file2', self.model)])
+            inputs = dict([('file', ''), ('predictor_model', self.model)])
 
         pfi_node = transforms_permutationfeatureimportance(
             data="$data",
-            model_path="$file2",
+            predictor_model="$predictor_model",
             metrics="$output_data",
             permutation_count=permutation_count,
             number_of_examples_to_use=number_of_examples,
-            label_column_name=label,
-            row_group_column_name=group_id,
             use_feature_weight_filter=filter_zero_weight_features)
         
         all_nodes.extend([pfi_node])
@@ -1945,7 +1938,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, _) = graph.run(
                 X=X,
                 random_state=self.random_state,
                 model=self.model,

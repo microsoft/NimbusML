@@ -11,10 +11,8 @@ from ..utils.utils import try_set, unlist
 
 def transforms_permutationfeatureimportance(
         data,
-        model_path,
+        predictor_model,
         metrics=None,
-        label_column_name='Label',
-        row_group_column_name='GroupId',
         use_feature_weight_filter=False,
         number_of_examples_to_use=None,
         permutation_count=1,
@@ -24,9 +22,7 @@ def transforms_permutationfeatureimportance(
         Permutation Feature Importance (PFI)
 
     :param data: Input dataset (inputs).
-    :param model_path: The path to the model file (inputs).
-    :param label_column_name: Label column name (inputs).
-    :param row_group_column_name: Group ID column (inputs).
+    :param predictor_model: The path to the model file (inputs).
     :param use_feature_weight_filter: Use feature weights to pre-
         filter features (inputs).
     :param number_of_examples_to_use: Limit the number of examples to
@@ -45,23 +41,11 @@ def transforms_permutationfeatureimportance(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if model_path is not None:
-        inputs['ModelPath'] = try_set(
-            obj=model_path,
+    if predictor_model is not None:
+        inputs['PredictorModel'] = try_set(
+            obj=predictor_model,
             none_acceptable=False,
             is_of_type=str)
-    if label_column_name is not None:
-        inputs['LabelColumnName'] = try_set(
-            obj=label_column_name,
-            none_acceptable=True,
-            is_of_type=str,
-            is_column=True)
-    if row_group_column_name is not None:
-        inputs['RowGroupColumnName'] = try_set(
-            obj=row_group_column_name,
-            none_acceptable=True,
-            is_of_type=str,
-            is_column=True)
     if use_feature_weight_filter is not None:
         inputs['UseFeatureWeightFilter'] = try_set(
             obj=use_feature_weight_filter,
