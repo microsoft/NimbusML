@@ -115,7 +115,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
         if (pdata->keyCards && (pdata->keyCards[i] >= 0))
         {
             _columnToKeyMap.insert(i);
-            _vKeyValues.push_back(new PyColumnSingle<std::string>(TX, pdata->keyCards[i], 1));
+            _vKeyValues.push_back(new PyColumnSingle<std::string>(TX, pdata->keyCards[i]));
         }
 
         _names.push_back(pdata->names[i]);

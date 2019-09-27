@@ -12,11 +12,9 @@ inline void destroyManagerCObject(PyObject* obj) {
 }
 
 
-PyColumnBase::PyColumnBase(const int& kind, size_t numRows, size_t numCols)
+PyColumnBase::PyColumnBase(const int& kind)
 {
     _kind = kind;
-    _numRows = numRows;
-    _numCols = numCols;
 }
 
 PyColumnBase::~PyColumnBase()
@@ -70,13 +68,13 @@ PyColumnBase* PyColumnBase::Create(const int& kind, size_t numRows, size_t numCo
     {
         creation_map::iterator found = m_pVariableCreationMap->find(kind);
         if (found != m_pVariableCreationMap->end())
-            return found->second(kind, numRows, numCols);
+            return found->second(kind, numRows);
     }
     else
     {
         creation_map::iterator found = m_pSingleCreationMap->find(kind);
         if (found != m_pSingleCreationMap->end())
-            return found->second(kind, numRows, numCols);
+            return found->second(kind, numRows);
     }
 
     std::stringstream message;
@@ -84,14 +82,14 @@ PyColumnBase* PyColumnBase::Create(const int& kind, size_t numRows, size_t numCo
     throw std::invalid_argument(message.str().c_str());
 }
 
-template <class T> PyColumnBase* PyColumnBase::CreateSingle(const int& kind, size_t nRows, size_t nColumns)
+template <class T> PyColumnBase* PyColumnBase::CreateSingle(const int& kind, size_t nRows)
 {
-    return new PyColumnSingle<T>(kind, nRows, nColumns);
+    return new PyColumnSingle<T>(kind, nRows);
 }
 
-template <class T, class T2> PyColumnBase* PyColumnBase::CreateVariable(const int& kind, size_t nRows, size_t nColumns)
+template <class T, class T2> PyColumnBase* PyColumnBase::CreateVariable(const int& kind, size_t nRows)
 {
-    return new PyColumnVariable<T, T2>(kind, nRows, nColumns);
+    return new PyColumnVariable<T, T2>(kind, nRows);
 }
 
 template <class T>
@@ -186,6 +184,32 @@ void PyColumnSingle<std::string>::AddToDict(bp::dict& dict,
     dict[name] = list;
 }
 
+template <class T, class T2>
+void PyColumnVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& value)
+{
+    if ((nRow + 1) > _numRows) _numRows = nRow + 1;
+
+    /*
+     * Make sure there are enough columns for the request.
+     */
+    for (size_t i = _data.size(); i <= nCol; i++)
+    {
+        _data.push_back(new std::vector<T2>());
+    }
+
+    std::vector<T2>* pColData = _data[nCol];
+
+    /*
+     * Fill in any missing row values.
+     */
+    for (size_t i = pColData->size(); i < nRow; i++)
+    {
+        pColData->push_back(GetMissingValue());
+    }
+
+    pColData->push_back(GetConvertedValue(value));
+}
+
 /*
  * Note: an instance of this object should not be used
  * and should be considered invalid after the first time
@@ -219,7 +243,7 @@ void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
                                         const std::vector<std::string>* keyNames,
                                         const size_t expectedRows)
 {
-    size_t numRows = (expectedRows > this->_numRows) ? expectedRows : this->_numRows;
+    size_t numRows = (expectedRows > _numRows) ? expectedRows : _numRows;
     size_t numCols = _data.size();
 
     if (numCols == 0)

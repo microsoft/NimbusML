@@ -30,8 +30,8 @@ enum DataKind
 class PyColumnBase
 {
 private:
-    typedef std::map<int, PyColumnBase* (*)(const int&, size_t, size_t)> creation_map;
-    typedef std::pair<int, PyColumnBase* (*)(const int&, size_t, size_t)> creation_map_entry;
+    typedef std::map<int, PyColumnBase* (*)(const int&, size_t)> creation_map;
+    typedef std::pair<int, PyColumnBase* (*)(const int&, size_t)> creation_map_entry;
 
     static creation_map* m_pSingleCreationMap;
     static creation_map* CreateSingleMap();
@@ -39,46 +39,24 @@ private:
     static creation_map* m_pVariableCreationMap;
     static creation_map* CreateVariableMap();
 
-    template <class T> static PyColumnBase* CreateSingle(const int& name, size_t nRows, size_t nColumns);
-    template <class T, class T2> static PyColumnBase* CreateVariable(const int& name, size_t nRows, size_t nColumns);
+    template <class T> static PyColumnBase* CreateSingle(const int& kind, size_t nRows);
+    template <class T, class T2> static PyColumnBase* CreateVariable(const int& kind, size_t nRows);
 
 protected:
     int _kind;
-    size_t _numRows;
-    size_t _numCols;
 
 public:
     static PyColumnBase* Create(const int& kind, size_t numRows, size_t numCols);
 
-    PyColumnBase(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    PyColumnBase(const int& kind);
     virtual ~PyColumnBase();
 
-    const int& GetKind() const;
-    void SetKind(int kind);
+    const int& GetKind() const { return _kind; }
+    void SetKind(int kind) { _kind = kind; }
 
-    virtual size_t GetNumRows();
-    virtual size_t GetNumCols();
+    virtual size_t GetNumRows() = 0;
+    virtual size_t GetNumCols() = 0;
 };
-
-inline const int& PyColumnBase::GetKind() const
-{
-    return _kind;
-}
-
-inline void PyColumnBase::SetKind(int kind)
-{
-    _kind = kind;
-}
-
-inline size_t PyColumnBase::GetNumRows()
-{
-    return _numRows;
-}
-
-inline size_t PyColumnBase::GetNumCols()
-{
-    return _numCols;
-}
 
 
 /*
@@ -89,7 +67,7 @@ template <class T>
 class PyColumn : public PyColumnBase
 {
 public:
-    PyColumn(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    PyColumn(const int& kind) : PyColumnBase(kind) {}
     virtual ~PyColumn() {}
     virtual void SetAt(size_t nRow, size_t nCol, const T& value) = 0;
     virtual void AddToDict(bp::dict& dict,
@@ -97,12 +75,6 @@ public:
                            const std::vector<std::string>* keyNames,
                            const size_t expectedRows) = 0;
 };
-
-template <class T>
-inline PyColumn<T>::PyColumn(const int& kind, size_t numRows, size_t numCols)
-    : PyColumnBase(kind, numRows, numCols)
-{
-}
 
 
 /*
@@ -115,7 +87,7 @@ protected:
     std::vector<T>* _pData;
 
 public:
-    PyColumnSingle(const int& kind, size_t numRows = 0, size_t numCols = 1);
+    PyColumnSingle(const int& kind, size_t numRows = 0);
     virtual ~PyColumnSingle();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
     virtual void AddToDict(bp::dict& dict,
@@ -128,12 +100,12 @@ public:
 };
 
 template <class T>
-inline PyColumnSingle<T>::PyColumnSingle(const int& kind, size_t numRows, size_t numCols)
-    : PyColumn<T>(kind, numRows, numCols)
+inline PyColumnSingle<T>::PyColumnSingle(const int& kind, size_t numRows)
+    : PyColumn<T>(kind)
 {
     _pData = new std::vector<T>();
     if (numRows > 0) {
-        _pData->reserve(numRows*numCols);
+        _pData->reserve(numRows);
     }
 }
 
@@ -146,10 +118,9 @@ inline PyColumnSingle<T>::~PyColumnSingle()
 template <class T>
 inline void PyColumnSingle<T>::SetAt(size_t nRow, size_t nCol, const T& value)
 {
-    size_t index = nRow * this->_numCols + nCol;
-    if (_pData->size() <= index)
-        _pData->resize(index + 1);
-    _pData->at(index) = value;
+    if (_pData->size() <= nRow)
+        _pData->resize(nRow + 1);
+    _pData->at(nRow) = value;
 }
 
 template <class T>
@@ -164,6 +135,7 @@ inline size_t PyColumnSingle<T>::GetNumCols()
     return 1;
 }
 
+
 typedef boost::optional<std::string> NullableString;
 
 /*
@@ -174,16 +146,19 @@ class PyColumnVariable : public PyColumn<T>
 {
 private:
     std::vector<std::vector<T2>*> _data;
+
+    size_t _numRows;
     size_t _numDeletedColumns;
 
 public:
-    PyColumnVariable(const int& kind, size_t numRows = 0, size_t numCols = 0);
+    PyColumnVariable(const int& kind, size_t numRows = 0);
     virtual ~PyColumnVariable();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
     virtual void AddToDict(bp::dict& dict,
                            const std::string& name,
                            const std::vector<std::string>* keyNames,
                            const size_t expectedRows);
+    virtual size_t GetNumRows();
     virtual size_t GetNumCols();
 
     T2 GetMissingValue();
@@ -202,8 +177,9 @@ public:
 };
 
 template <class T, class T2>
-inline PyColumnVariable<T, T2>::PyColumnVariable(const int& kind, size_t numRows, size_t numCols)
-    : PyColumn<T>(kind, numRows, numCols),
+inline PyColumnVariable<T, T2>::PyColumnVariable(const int& kind, size_t numRows)
+    : PyColumn<T>(kind),
+      _numRows(numRows),
       _numDeletedColumns(0)
 {
 }
@@ -218,29 +194,9 @@ inline PyColumnVariable<T, T2>::~PyColumnVariable()
 }
 
 template <class T, class T2>
-inline void PyColumnVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& value)
+inline size_t PyColumnVariable<T, T2>::GetNumRows()
 {
-    if ((nRow + 1) > this->_numRows) this->_numRows = nRow + 1;
-
-    /*
-     * Make sure there are enough columns for the request.
-     */
-    for (size_t i = _data.size(); i < (nCol + 1); i++)
-    {
-        _data.push_back(new std::vector<T2>());
-    }
-
-    std::vector<T2>* pColData = _data[nCol];
-
-    /*
-     * Fill in any missing row values.
-     */
-    for (size_t i = pColData->size(); i < nRow; i++)
-    {
-        pColData->push_back(GetMissingValue());
-    }
-
-    pColData->push_back(GetConvertedValue(value));
+    return _numRows;
 }
 
 template <class T, class T2>
