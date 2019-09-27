@@ -62,8 +62,6 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 {
     assert(pdata != nullptr);
 
-    // Create a data set.
-    CxInt64 numKeys = 0;
     for (int i = 0; i < pdata->ccol; i++)
     {
         BYTE kind = pdata->kinds[i];
@@ -116,11 +114,9 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
 
         if (pdata->keyCards && (pdata->keyCards[i] >= 0))
         {
+            _columnToKeyMap.insert(i);
             _vKeyValues.push_back(new PyColumnSingle<std::string>(TX, pdata->keyCards[i], 1));
-            _columnToKeyMap.push_back(numKeys++);
         }
-        else
-            _columnToKeyMap.push_back(-1);
 
         _names.push_back(pdata->names[i]);
     }
@@ -182,25 +178,26 @@ STATIC MANAGED_CALLBACK(bool) EnvironmentBlock::CheckCancel()
 
 bp::dict EnvironmentBlock::GetData()
 {
-    if (_names.size() == 0)
+    if (_columns.size() == 0)
     {
         return bp::dict();
     }
 
     size_t maxRows = 0;
-    for (size_t i = 0; i < _names.size(); i++)
+    for (size_t i = 0; i < _columns.size(); i++)
     {
         size_t numRows = _columns[i]->GetNumRows();
         if (numRows > maxRows) maxRows = numRows;
     }
 
+    CxInt64 numKeys = 0;
     bp::dict dict = bp::dict();
-    for (size_t i = 0; i < _names.size(); i++)
+    for (size_t i = 0; i < _columns.size(); i++)
     {
         PyColumnBase* column = _columns[i];
         const std::vector<std::string>* keyNames = nullptr;
-        if (_columnToKeyMap[i] >= 0)
-            keyNames = _vKeyValues[_columnToKeyMap[i]]->GetData();
+        if (_columnToKeyMap.find(i) != _columnToKeyMap.end())
+            keyNames = _vKeyValues[numKeys++]->GetData();
 
         signed char kind = column->GetKind();
         switch (kind) {

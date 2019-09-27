@@ -37,8 +37,6 @@ private:
     // Total number of rows. Zero for unknown.
     CxInt64 crow;
 
-    // Column ids.
-    const CxInt64 *ids;
     // Column names.
     const char **names;
     // Column data kinds.

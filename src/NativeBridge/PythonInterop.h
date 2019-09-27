@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 #pragma once
-
 #include <map>
 #include <vector>
 #include <boost/optional.hpp>
@@ -133,8 +132,9 @@ inline PyColumnSingle<T>::PyColumnSingle(const int& kind, size_t numRows, size_t
     : PyColumn<T>(kind, numRows, numCols)
 {
     _pData = new std::vector<T>();
-    if (numRows > 0)
+    if (numRows > 0) {
         _pData->reserve(numRows*numCols);
+    }
 }
 
 template <class T>

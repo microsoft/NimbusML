@@ -4,6 +4,7 @@
 using namespace std;
 #include "stdafx.h"
 #include "PythonInterop.h"
+#include <unordered_set>
 
 #define CX_TraceOut(...)
 #define CX_TraceIn(...)
@@ -101,12 +102,12 @@ private:
     std::vector<void*> _vset;
     std::string _errMessage;
 
+    // Column names.
     std::vector<std::string> _names;
     std::vector<PyColumnBase*> _columns;
-    // Maps between the column index, and the index in _vKeyValues containing the key names, or -1 if 
-    // there are no key names.
-    std::vector<CxInt64> _columnToKeyMap;
 
+    // Set of all key column indexes.
+    std::unordered_set<CxInt64> _columnToKeyMap;
     std::vector<PyColumnSingle<std::string>*> _vKeyValues;
 
     static MANAGED_CALLBACK(void) SetR4(EnvironmentBlock *env, int col, long m, long n, float value)
