@@ -15,8 +15,6 @@ using Microsoft.ML.Transforms;
 [assembly: LoadableClass(VariableColumnTransform.Summary, typeof(VariableColumnTransform), null, typeof(SignatureLoadDataTransform),
     "", VariableColumnTransform.LoaderSignature)]
 
-[assembly: LoadableClass(typeof(void), typeof(VariableColumnTransform), null, typeof(SignatureEntryPointModule), "VariableColumnTransform")]
-
 namespace Microsoft.ML.DotNetBridge
 {
     internal static class DotNetBridgeEntrypoints
