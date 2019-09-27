@@ -230,15 +230,17 @@ inline void PyColumnVariable<T, T2>::SetAt(size_t nRow, size_t nCol, const T& va
         _data.push_back(new std::vector<T2>());
     }
 
+    std::vector<T2>* pColData = _data[nCol];
+
     /*
      * Fill in any missing row values.
      */
-    for (size_t i = _data[nCol]->size(); i < nRow; i++)
+    for (size_t i = pColData->size(); i < nRow; i++)
     {
-        _data[nCol]->push_back(GetMissingValue());
+        pColData->push_back(GetMissingValue());
     }
 
-    _data[nCol]->push_back(GetConvertedValue(value));
+    pColData->push_back(GetConvertedValue(value));
 }
 
 template <class T, class T2>

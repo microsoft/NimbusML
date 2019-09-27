@@ -238,12 +238,14 @@ void PyColumnVariable<T, T2>::AddToDict(bp::dict& dict,
 
     for (size_t i = 0; i < numCols; i++)
     {
+        std::vector<T2>* pColData = _data[i];
+
         /*
          * Make sure all the columns are the same length.
          */
-        for (size_t j = _data[i]->size(); j < numRows; j++)
+        for (size_t j = pColData->size(); j < numRows; j++)
         {
-            _data[i]->push_back(GetMissingValue());
+            pColData->push_back(GetMissingValue());
         }
 
         std::string colName = std::to_string(i);
@@ -279,13 +281,13 @@ void PyColumnVariable<std::string, NullableString>::AddColumnToDict(bp::dict& di
                                                                     size_t index)
 {
     bp::list list;
-    std::vector<NullableString>* pData = _data[index];
-    size_t numRows = pData->size();
+    std::vector<NullableString>* pColData = _data[index];
+    size_t numRows = pColData->size();
 
     for (size_t i = 0; i < numRows; i++)
     {
         bp::object obj;
-        NullableString value = pData->at(i);
+        NullableString value = pColData->at(i);
 
         if (value)
         {
