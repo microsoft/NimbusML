@@ -180,6 +180,7 @@
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
     <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\PermutationFeatureImportance.py" />
+    <Compile Include="nimbusml\examples\Schema.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
