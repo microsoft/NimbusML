@@ -1,21 +1,23 @@
 ###############################################################################
 # Permutation Feature Importance (PFI)
 
-# Permutation feature importance (PFI) is a technique to determine the
-# global importance of features in a trained machine learning model. The
-# advantage of the PFI method is that it is model agnostic - it works
-# with any model that can be evaluated - and it can use any dataset, not
-# just the training set, to compute feature importance metrics.
+# Permutation feature importance (PFI) is a technique to determine the global
+# importance of features in a trained machine learning model. PFI is a simple
+# yet powerful technique motivated by Breiman in section 10 of his Random
+# Forests paper (Machine Learning, 2001). The advantage of the PFI method is
+# that it is model agnostic - it works with any model that can be evaluated -
+# and it can use any dataset, not just the training set, to compute feature
+# importance metrics.
         
-# PFI works by taking a labeled dataset, choosing a feature, and
-# permuting the values for that feature across all the examples, so that
-# each example now has a random value for the feature and the original
-# values for all other features. The evaluation metric (e.g. NDCG) is
-# then calculated for this modified dataset, and the change in the
-# evaluation metric from the original dataset is computed. The larger the
-# change in the evaluation metric, the more important the feature is to
-# the model. PFI works by performing this permutation analysis across all
-# the features of a model, one after another.
+# PFI works by taking a labeled dataset, choosing a feature, and permuting the
+# values for that feature across all the examples, so that each example now has
+# a random value for the feature and the original values for all other
+# features. The evaluation metric (e.g. NDCG) is then calculated for this
+# modified dataset, and the change in the evaluation metric from the original
+# dataset is computed. The larger the change in the evaluation metric, the more
+# important the feature is to the model, i.e. the most important features are
+# those that the model is most sensitive to. PFI works by performing this
+# permutation analysis across allthe features of a model, one after another.
 
 # PFI is supported for binary classifiers, classifiers, regressors, and
 # rankers.
@@ -27,6 +29,7 @@ from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import LogisticRegressionBinaryClassifier, \
     FastLinearClassifier, FastLinearRegressor
 from nimbusml.preprocessing import ToKey
+from numpy.testing import assert_almost_equal
 
 # data input (as a FileDataStream)
 adult_path = get_dataset('uciadult_train').as_filepath()
@@ -51,8 +54,6 @@ binary_pipeline = Pipeline([
 # train the model
 binary_model = binary_pipeline.fit(classification_data)
 
-print(binary_model.transform(classification_data).head())
-
 # get permutation feature importance
 binary_pfi = binary_model.permutation_feature_importance(classification_data)
 
@@ -61,21 +62,23 @@ binary_pfi = binary_model.permutation_feature_importance(classification_data)
 # most important features.
 print("============== PFI for Binary Classification Model ==============")
 print(binary_pfi.sort_values('AreaUnderRocCurve').head())
-#               FeatureName  AreaUnderRocCurve  AreaUnderRocCurveStdErr  ...
-# 0                     age          -0.081604                      0.0  ...
-# 6   education.Prof-school          -0.012964                      0.0  ...
-# 10    education.Doctorate          -0.012863                      0.0  ...
-# 8     education.Bachelors          -0.010593                      0.0  ...
-# 2       education.HS-grad          -0.005918
+#               FeatureName  AreaUnderRocCurve  AreaUnderRocCurve.StdErr  ...
+# 0                     age          -0.081604                       0.0  ...
+# 6   education.Prof-school          -0.012964                       0.0  ...
+# 10    education.Doctorate          -0.012863                       0.0  ...
+# 8     education.Bachelors          -0.010593                       0.0  ...
+# 2       education.HS-grad          -0.005918                       0.0  ...
 
 
 ###############################
 # PFI for Classification models
 ###############################
 # define the training pipeline with a classifier
+# use 1 thread and no shuffling to force determinism
 multiclass_pipeline = Pipeline([
     OneHotVectorizer(columns=['education']),
-    FastLinearClassifier(feature=['age', 'education'], label='label')])
+    FastLinearClassifier(feature=['age', 'education'], label='label',
+                         number_of_threads=1, shuffle=False)])
 
 # train the model
 multiclass_model = multiclass_pipeline.fit(classification_data)
@@ -88,12 +91,12 @@ multiclass_pfi = multiclass_model.permutation_feature_importance(classification_
 # changes indicate the most important features.
 print("================== PFI for Classification Model ==================")
 print(multiclass_pfi.sort_values('MacroAccuracy').head())
-#                FeatureName  MacroAccuracy  MacroAccuracyStdErr  MicroAccuracy  ...
-# 2        education.HS-grad      -0.024337                  0.0         -0.014  ...
-# 9        education.Masters      -0.017843                  0.0         -0.004  ...
-# 6    education.Prof-school      -0.016093                  0.0         -0.006  ...
-# 10     education.Doctorate      -0.015189                  0.0         -0.014  ...
-# 4   education.Some-college      -0.014794                  0.0         -0.004  ...
+#               FeatureName  MacroAccuracy  ...  MicroAccuracy  ...
+# 10    education.Doctorate      -0.028233  ...         -0.020  ...
+# 0                     age      -0.001750  ...          0.002  ...
+# 6   education.Prof-school      -0.001750  ...          0.002  ...
+# 9       education.Masters      -0.001299  ...         -0.002  ...
+# 1          education.11th       0.000000  ...          0.000  ...
 
 ###########################
 # PFI for Regression models
@@ -110,10 +113,11 @@ print(regression_data.head())
 # 4   35     1   6-11yrs        1       3 ...       5            1  ...
 
 # define the training pipeline with a regressor
+# use 1 thread and no shuffling to force determinism
 regression_pipeline = Pipeline([
     OneHotVectorizer(columns=['education']),
-    FastLinearRegressor(feature=['induced', 'education'], label='age')
-])
+    FastLinearRegressor(feature=['induced', 'education'], label='age',
+                        number_of_threads=1, shuffle=False)])
 
 # train the model
 regression_model = regression_pipeline.fit(regression_data)
@@ -122,15 +126,15 @@ regression_model = regression_pipeline.fit(regression_data)
 regression_pfi = regression_model.permutation_feature_importance(regression_data)
 
 # print PFI for each feaure, ordered by most important features w.r.t. MAE.
-# Since MAE is an increasing metric, the highest positive changes indicate the
+# Since MAE is a decreasing metric, the highest positive changes indicate the
 # most important features.
 print("==================== PFI for Regression Model ====================")
 print(regression_pfi.sort_values('MeanAbsoluteError', ascending=False).head())
-#          FeatureName  MeanAbsoluteError  ...  RSquared  RSquaredStdErr
-# 3  education.12+ yrs           0.206138  ... -0.065571             0.0
-# 1   education.0-5yrs           0.128282  ... -0.053344             0.0
-# 0            induced           0.101055  ... -0.032716             0.0
-# 2  education.6-11yrs           0.002545  ... -0.006032             0.0
+#         FeatureName  MeanAbsoluteError  ...  RSquared  RSquared.StdErr
+#3  education.12+ yrs           0.393451  ... -0.146338              0.0
+#0            induced           0.085804  ... -0.026168              0.0
+#1   education.0-5yrs           0.064460  ... -0.027587              0.0
+#2  education.6-11yrs          -0.000047  ...  0.000059              0.0
 
 ########################
 # PFI for Ranking models
@@ -150,8 +154,7 @@ print(ranking_data.head())
 ranking_pipeline = Pipeline([
     ToKey(columns=['group']),
     LightGbmRanker(feature=['Class', 'dep_day', 'duration'],
-                   label='rank',
-                   group_id='group')])
+                   label='rank', group_id='group')])
 
 # train the model
 ranking_model = ranking_pipeline.fit(ranking_data)
@@ -163,8 +166,8 @@ ranking_pfi = ranking_model.permutation_feature_importance(ranking_data)
 # Since DCG is an increasing metric, the highest negative changes indicate the
 # most important features.
 print("===================== PFI for Ranking Model =====================")
-print(ranking_pfi.sort_values('DiscountedCumulativeGains.0').head())
-#   FeatureName  DiscountedCumulativeGains.0  ...
-# 0       Class                    -4.869096  ...
-# 2    duration                    -2.344379  ...
-# 1     dep_day                     0.000000  ...
+print(ranking_pfi.sort_values('DCG@1').head())
+#     Feature     DCG@1     DCG@2     DCG@3  ...    NDCG@1    NDCG@2 ...
+# 0     Class -4.869096 -7.030914 -5.948893  ... -0.420238 -0.407281 ...
+# 2  duration -2.344379 -3.595958 -3.956632  ... -0.232143 -0.231539 ...
+# 1   dep_day  0.000000  0.000000  0.000000  ...  0.000000  0.000000 ...

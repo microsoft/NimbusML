@@ -1865,10 +1865,12 @@ class Pipeline:
                                        **params):
         """
         Permutation feature importance (PFI) is a technique to determine the
-        global importance of features in a trained machine learning model. The
-        advantage of the PFI method is that it is model agnostic - it works
-        with any model that can be evaluated - and it can use any dataset, not
-        just the training set, to compute feature importance metrics.
+        global importance of features in a trained machine learning model. PFI
+        is a simple yet powerful technique motivated by Breiman in section 10
+        of his Random Forests paper (Machine Learning, 2001). The advantage of
+        the PFI method is that it is model agnostic - it works with any model
+        that can be evaluated - and it can use any dataset, not just the
+        training set, to compute feature importance metrics.
         
         PFI works by taking a labeled dataset, choosing a feature, and
         permuting the values for that feature across all the examples, so that
@@ -1926,10 +1928,15 @@ class Pipeline:
             * Discounted cumulative gains (DCG) @1, @2, and @3
             * Normalized discounted cumulative gains (NDCG) @1, @2, and @3
 
+        **Reference**
+
+            `Breiman, L. Random Forests. Machine Learning (2001) 45: 5.
+            <https://link.springer.com/content/pdf/10.1023%2FA%3A1010933404324.pdf>`_
+
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
         :param number_of_examples: Limit the number of examples to evaluate on.
-            'None' means all examples in the dataset are used.
+            ``'None'`` means all examples in the dataset are used.
         :param permutation_count: The number of permutations to perform.
         :filter_zero_weight_features: Pre-filter features with zero weight. PFI
             will not be evaluated on these features.
@@ -1994,7 +2001,30 @@ class Pipeline:
         except RuntimeError as e:
             raise e
 
+        out_data = self._fix_pfi_columns(out_data)
+
         return out_data
+
+    def _fix_pfi_columns(self, data):
+        if 'DiscountedCumulativeGains.0' in data.columns:
+            data.columns = ['FeatureName', 'DCG@1', 'DCG@2', 'DCG@3',
+                            'DCG@1.StdErr', 'DCG@2.StdErr', 'DCG@3.StdErr',
+                            'NDCG@1', 'NDCG@2', 'NDCG@3',
+                            'NDCG@1.StdErr', 'NDCG@2.StdErr', 'NDCG@3.StdErr']
+        else:
+            cols = []
+            for i in range(len(data.columns)):
+                if 'StdErr' in data.columns.values[i]:
+                    if data.columns.values[i][:15] == 'PerClassLogLoss' :
+                        cols.append('PerClassLogLoss' + \
+                            data.columns.values[i][21:] + '.StdErr')
+                    else:
+                        cols.append(data.columns.values[i][:-6] + '.StdErr')
+                else:
+                    cols.append(data.columns.values[i])
+            data.columns = cols        
+        
+        return data
 
     @trace
     def _predict(self, X, y=None,
