@@ -12,6 +12,9 @@ using Microsoft.ML.Transforms;
 
 [assembly: LoadableClass(typeof(void), typeof(DotNetBridgeEntrypoints), null, typeof(SignatureEntryPointModule), "DotNetBridgeEntrypoints")]
 
+[assembly: LoadableClass(VariableColumnTransform.Summary, typeof(VariableColumnTransform), null, typeof(SignatureLoadDataTransform),
+    "", VariableColumnTransform.LoaderSignature)]
+
 namespace Microsoft.ML.DotNetBridge
 {
     internal static class DotNetBridgeEntrypoints
@@ -71,6 +74,18 @@ namespace Microsoft.ML.DotNetBridge
             EntryPointUtils.CheckInputArgs(host, input);
 
             return new ModelSchemaOutput { Schema = new EmptyDataView(host, input.Model.OutputSchema) };
+        }
+
+        [TlcModule.EntryPoint(Name = "Transforms.VariableColumnTransform", Desc = VariableColumnTransform.Summary,
+            UserName = "Variable Column Creator", ShortName = "Variable Column Creator")]
+        public static CommonOutputs.TransformOutput CreateVariableColumn(IHostEnvironment env, VariableColumnTransform.Options inputOptions)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("VariableColumnCreator");
+            EntryPointUtils.CheckInputArgs(host, inputOptions);
+
+            var xf = VariableColumnTransform.Create(env, inputOptions, inputOptions.Data);
+            return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
         }
     }
 }
