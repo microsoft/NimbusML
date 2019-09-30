@@ -31,6 +31,7 @@ PythonObjectBase::creation_map* PythonObjectBase::CreateMap()
     map->insert(creation_map_entry(R4, CreateObject<float>));
     map->insert(creation_map_entry(R8, CreateObject<double>));
     map->insert(creation_map_entry(TX, CreateObject<std::string>));
+    map->insert(creation_map_entry(DT, CreateObject<CxUInt64>));
     return map;
 }
 
