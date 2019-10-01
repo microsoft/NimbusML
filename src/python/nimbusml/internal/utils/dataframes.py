@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 import numpy as np
 import six
-from pandas import DataFrame, Series, concat, Categorical
+from pandas import DataFrame, Series, concat, Categorical, to_datetime
 from pandas.api.types import infer_dtype
 from scipy.sparse import csr_matrix
 
@@ -208,6 +208,8 @@ def resolve_output_as_dataframe(ret):
     for key in ret.keys():
         if not isinstance(ret[key], dict):
             data[key] = ret[key]
+        elif "..DateTime" in ret[key]:
+            data[key] = to_datetime(ret[key]["..DateTime"], unit='ms')
         else:
             data[key] = Categorical.from_codes(
                 ret[key]["..Data"], ret[key]["..KeyValues"])

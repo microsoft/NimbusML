@@ -182,6 +182,7 @@ namespace Microsoft.ML.DotNetBridge
                     case InternalDataKind.R8:
                     case InternalDataKind.BL:
                     case InternalDataKind.TX:
+                    case InternalDataKind.DT:
                         break;
                     }
                     keyCard = -1;
@@ -624,6 +625,15 @@ namespace Microsoft.ML.DotNetBridge
                         ValuePoker<ulong> pokeU8 =
                             (ulong value, int col, long m, long n) => fnU8(penv, col, m, n, value);
                         return new Impl<ulong>(input, pyCol, idvCol, type, pokeU8);
+                    case InternalDataKind.DT:
+                        var fnDT = MarshalDelegate<I8Setter>(setter);
+                        ValuePoker<DateTime> pokeDT =
+                            (DateTime value, int col, long m, long n) =>
+                            {
+                                DateTimeOffset dto = new DateTimeOffset(value);
+                                fnDT(penv, col, m, n, dto.ToUnixTimeMilliseconds());
+                            };
+                        return new Impl<DateTime>(input, pyCol, idvCol, type, pokeDT);
                     case InternalDataKind.TX:
                         var fnTX = MarshalDelegate<TXSetter>(setter);
                         ValuePoker<ReadOnlyMemory<char>> pokeTX =
