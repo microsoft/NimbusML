@@ -654,6 +654,7 @@
     <Compile Include="nimbusml\preprocessing\__init__.py" />
     <Compile Include="nimbusml\tests\cluster\test_kmeansplusplus.py" />
     <Compile Include="nimbusml\tests\cluster\__init__.py" />
+    <Compile Include="nimbusml\tests\data_type\test_datetime.py" />
     <Compile Include="nimbusml\tests\data_type\test_numeric.py" />
     <Compile Include="nimbusml\tests\data_type\test_text.py" />
     <Compile Include="nimbusml\tests\data_type\test_text_label.py" />
