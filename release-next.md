@@ -14,6 +14,21 @@
         OnlineGradientDescentRegressor(label='c2', feature=['c1'])
     ])
     ```
+    
+- **Add Permutation Feature Importance.**
+
+    [PR#279](https://github.com/microsoft/NimbusML/pull/279)
+    Adds `permutation_feature_importance()` method to `Pipeline()` and
+    predictor estimators, enabling evaluation of model-wide feature
+    importances on any dataset`.
+
+    ```python
+    pipe = Pipeline([
+        LogisticRegressionBinaryClassifier(label='label', feature=['feature'])
+    ])
+    pipe.fit(data)
+    pipe.permutation_feature_importance(data)
+    ```
 
 ## **Bug Fixes**
 
