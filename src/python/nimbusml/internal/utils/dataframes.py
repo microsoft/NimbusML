@@ -47,6 +47,13 @@ def resolve_dataframe(dataframe):
                     # Workaround, empty dataframe needs to be sent as an array
                     # to convey type information
                     ret[name_i] = serie.values.reshape((len(serie), 1))
+
+                elif serie.dtype == np.dtype('datetime64[ns]'):
+                    values = serie.values.astype(np.int64, copy=False)
+                    values = values // 1000000 # convert from nanoseconds to milliseconds
+                    ret[str(i)] = values
+                    types.append(_global_dtype_to_char_dict[np.dtype('datetime64[ns]')])
+
                 elif serie.dtype == np.object or str(serie.dtype) == '<U1':
                     # This column might still be numeric, so we do another
                     # check.
@@ -243,5 +250,6 @@ _global_dtype_to_char_dict = {
     np.dtype(np.float64): 'd',
     np.dtype(np.string_): 't',
     np.dtype(np.unicode): 'u',
+    np.dtype('datetime64[ns]'): 'z',
     'unsupported': 'x'
 }
