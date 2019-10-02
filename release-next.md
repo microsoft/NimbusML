@@ -42,7 +42,7 @@
 
 - **Fixed `Pipeline.transform()` in transform only `Pipeline` fails if y column is provided **
 
-    [PR#232](https://github.com/microsoft/NimbusML/pull/232)
+    [PR#294](https://github.com/microsoft/NimbusML/pull/294)
     Enable calling `.transform()` on a `Pipeline` containing only transforms when the y column is provided 
 
 ## **Breaking Changes**
