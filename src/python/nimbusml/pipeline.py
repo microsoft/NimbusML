@@ -2270,18 +2270,8 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before test("
                 ").")
 
-        if y is not None:
-            if len(self.steps) > 0:
-                last_node = self.last_node
-                if last_node.type == 'transform':
-                    raise ValueError(
-                        "Pipeline needs a trainer as last step for test()")
-
         X, y_temp, columns_renamed, feature_columns, label_column, \
             schema, weights, weight_column = self._preprocess_X_y(X, y)
-
-        if not isinstance(y, (str, tuple)):
-            y = y_temp
 
         all_nodes = []
 
