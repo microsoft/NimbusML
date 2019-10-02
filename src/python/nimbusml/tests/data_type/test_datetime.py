@@ -35,6 +35,10 @@ class TestDateTimeDataType(unittest.TestCase):
         self.assertEqual(result.loc[:, 'c1'].dtype, np.dtype('datetime64[ns]'))
 
         self.assertEqual(result.loc[0, 'c1'].year, 1969)
+        self.assertEqual(result.loc[0, 'c1'].hour, 0)
+        self.assertEqual(result.loc[0, 'c1'].minute, 0)
+        self.assertEqual(result.loc[0, 'c1'].second, 0)
+
         self.assertEqual(result.loc[3, 'c1'].year, 1966)
 
     def test_timestamp_boundaries(self):
@@ -76,10 +80,16 @@ class TestDateTimeDataType(unittest.TestCase):
         self.assertEqual(result.loc[0, 'c1'].year, 2018)
         self.assertEqual(result.loc[0, 'c1'].month, 1)
         self.assertEqual(result.loc[0, 'c1'].day, 2)
+        self.assertEqual(result.loc[0, 'c1'].hour, 0)
+        self.assertEqual(result.loc[0, 'c1'].minute, 0)
+        self.assertEqual(result.loc[0, 'c1'].second, 0)
 
         self.assertEqual(result.loc[1, 'c1'].year, 2018)
         self.assertEqual(result.loc[1, 'c1'].month, 2)
         self.assertEqual(result.loc[1, 'c1'].day, 1)
+        self.assertEqual(result.loc[1, 'c1'].hour, 0)
+        self.assertEqual(result.loc[1, 'c1'].minute, 0)
+        self.assertEqual(result.loc[1, 'c1'].second, 0)
 
         self.assertEqual(len(result), 2)
         self.assertEqual(result.dtypes[0], np.dtype('datetime64[ns]'))
@@ -87,7 +97,7 @@ class TestDateTimeDataType(unittest.TestCase):
         os.remove(file_name)
 
     def test_dprep_datastream(self):
-        dates = ["2018-01-02", "2018-02-01"]
+        dates = ["2018-01-02 00:00:00", "2018-02-01 10:00:00"]
         col2 = ['0', '1']
         label_array = np.repeat([0], 2)
         train_df = pd.DataFrame({'col1': dates, 'col2': col2, 'label': label_array})
@@ -109,10 +119,16 @@ class TestDateTimeDataType(unittest.TestCase):
         self.assertEqual(result.loc[0, 'col1'].year, 2018)
         self.assertEqual(result.loc[0, 'col1'].month, 1)
         self.assertEqual(result.loc[0, 'col1'].day, 2)
+        self.assertEqual(result.loc[0, 'col1'].hour, 0)
+        self.assertEqual(result.loc[0, 'col1'].minute, 0)
+        self.assertEqual(result.loc[0, 'col1'].second, 0)
 
         self.assertEqual(result.loc[1, 'col1'].year, 2018)
         self.assertEqual(result.loc[1, 'col1'].month, 2)
         self.assertEqual(result.loc[1, 'col1'].day, 1)
+        self.assertEqual(result.loc[1, 'col1'].hour, 10)
+        self.assertEqual(result.loc[1, 'col1'].minute, 0)
+        self.assertEqual(result.loc[1, 'col1'].second, 0)
 
         os.remove(file_name)
 

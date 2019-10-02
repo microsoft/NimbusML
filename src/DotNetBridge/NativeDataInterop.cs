@@ -630,7 +630,9 @@ namespace Microsoft.ML.DotNetBridge
                         ValuePoker<DateTime> pokeDT =
                             (DateTime value, int col, long m, long n) =>
                             {
-                                DateTimeOffset dto = new DateTimeOffset(value);
+                                DateTimeOffset dto = (value.Kind == DateTimeKind.Unspecified) ? 
+                                                     new DateTimeOffset(value, TimeSpan.Zero) :
+                                                     new DateTimeOffset(value);
                                 fnDT(penv, col, m, n, dto.ToUnixTimeMilliseconds());
                             };
                         return new Impl<DateTime>(input, pyCol, idvCol, type, pokeDT);
