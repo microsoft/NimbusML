@@ -279,7 +279,7 @@ class Pipeline:
 
     @property
     def last_node(self):
-        if len(self.steps) <= 0:
+        if not self.steps:
             raise TypeError("No steps given.")
         last_step = self.steps[-1]
         return last_step if not isinstance(last_step, tuple) else \
@@ -2002,7 +2002,7 @@ class Pipeline:
         return out_data, out_metrics
 
     def _extract_classes(self, y):
-        if ((len(self.steps) > 0) and
+        if (self.steps and
             (self.last_node.type in ['classifier', 'anomaly']) and
             (y is not None) and
             (not isinstance(y, (str, tuple)))):
@@ -2015,7 +2015,10 @@ class Pipeline:
             self._add_classes(unique_classes)
 
     def _extract_classes_from_headers(self, headers):
-        if hasattr(self.last_node, 'classes_'):
+        # Note: _classes can not be added to the Pipeline unless
+        # it already exists in the predictor node because the
+        # dtype is required to set the correct type.
+        if self.steps and hasattr(self.last_node, 'classes_'):
             classes = [x.replace('Score.', '') for x in headers]
             classes = np.array(classes).astype(self.last_node.classes_.dtype)
             self._add_classes(classes)
@@ -2024,7 +2027,9 @@ class Pipeline:
         # Create classes_ attribute similar to scikit
         # Add both to pipeline and ending classifier
         self.classes_ = classes
-        self.last_node.classes_ = classes
+
+        if self.steps:
+            self.last_node.classes_ = classes
 
     @trace
     def predict(self, X, verbose=0, as_binary_data_stream=False, **params):
