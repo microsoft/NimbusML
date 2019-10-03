@@ -1951,8 +1951,7 @@ class Pipeline:
             raise ValueError(
                 "Model is not fitted. Train or load a model before test().")
 
-        X, y_temp, columns_renamed, feature_columns, label_column, \
-            schema, weights, weight_column = self._preprocess_X_y(X)
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
 
         all_nodes = []
         inputs = dict([('data', ''), ('predictor_model', self.model)])
