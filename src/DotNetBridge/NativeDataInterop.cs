@@ -122,9 +122,6 @@ namespace Microsoft.ML.DotNetBridge
             var expandCols = new HashSet<int>(1000);
             var valueCounts = new List<byte>(1000);
 
-            // Only works with WordTokenizer_df.py
-            PrintDataView(view);
-
             for (int col = 0; col < schema.Count; col++)
             {
                 if (schema[col].IsHidden)
