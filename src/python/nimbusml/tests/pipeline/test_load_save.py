@@ -338,7 +338,7 @@ class TestLoadSave(unittest.TestCase):
         test_df = pd.DataFrame(test_data).astype({'c1': np.float64,
                                                   'c2': np.float64})
 
-        # Create predictor model and use it to predict
+        # Create predictor model and use it to predict 
         pipeline = Pipeline([OnlineGradientDescentRegressor(label='c2')], random_state=0)
         pipeline.fit(train_df, output_predictor_model=True)
         result_1 = pipeline.predict(test_df)
