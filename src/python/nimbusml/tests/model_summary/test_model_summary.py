@@ -73,7 +73,7 @@ learners = [
     FactorizationMachineBinaryClassifier(),
     KMeansPlusPlus(),
     NaiveBayesClassifier(),
-    FastForestBinaryClassifier(number_of_trees=2),
+    FastForestBinaryClassifier(number_of_trees=2), 
     FastForestRegressor(number_of_trees=2),
     FastTreesBinaryClassifier(number_of_trees=2),
     FastTreesRegressor(number_of_trees=2),
