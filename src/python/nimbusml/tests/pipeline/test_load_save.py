@@ -7,10 +7,13 @@ import os
 import pickle
 import unittest
 
+import numpy as np
+import pandas as pd
+
 from nimbusml import Pipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
-from nimbusml.linear_model import FastLinearBinaryClassifier
+from nimbusml.linear_model import FastLinearBinaryClassifier, OnlineGradientDescentRegressor
 from nimbusml.utils import get_X_y
 from numpy.testing import assert_almost_equal
 
@@ -325,6 +328,44 @@ class TestLoadSave(unittest.TestCase):
                 for feature in features]
 
         os.remove(model_filename)
+
+    def test_pickled_pipeline_with_predictor_model(self):
+        train_data = {'c1': [1, 2, 3, 4], 'c2': [2, 3, 4, 5]}
+        train_df = pd.DataFrame(train_data).astype({'c1': np.float64,
+                                                    'c2': np.float64})
+
+        test_data = {'c1': [1.5, 2.3, 3.7], 'c2': [2.2, 4.9, 2.7]}
+        test_df = pd.DataFrame(test_data).astype({'c1': np.float64,
+                                                  'c2': np.float64})
+
+        # Create predictor model and use it to predict
+        pipeline = Pipeline([OnlineGradientDescentRegressor(label='c2')], random_state=0)
+        pipeline.fit(train_df, output_predictor_model=True)
+        result_1 = pipeline.predict(test_df)
+
+        self.assertTrue(pipeline.model)
+        self.assertTrue(pipeline.predictor_model)
+        self.assertNotEqual(pipeline.model, pipeline.predictor_model)
+
+        pickle_filename = 'nimbusml_model.p'
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(pipeline, f)
+
+        os.remove(pipeline.model)
+        os.remove(pipeline.predictor_model)
+
+        with open(pickle_filename, "rb") as f:
+            pipeline_pickle = pickle.load(f)
+
+        os.remove(pickle_filename)
+
+        # Load predictor pipeline and score data
+        predictor_pipeline = Pipeline()
+        predictor_pipeline.load_model(pipeline_pickle.predictor_model)
+        result_2 = predictor_pipeline.predict(test_df)
+
+        self.assertTrue(result_1.equals(result_2))
+
 
 if __name__ == '__main__':
     unittest.main()
