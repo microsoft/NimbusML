@@ -13,14 +13,13 @@ path = get_dataset("wiki_detox_train").as_filepath()
 data = FileDataStream.read_csv(path, sep='\t')
 df = data.to_df().head()
 X = df['SentimentText']
-y = df['Sentiment']
 
 class TestPipelineTransformMethod(unittest.TestCase):
 
     def test_transform_only_pipeline_transform_method(self):
         p = Pipeline([NGramFeaturizer(char_feature_extractor=None) << 'SentimentText'])
         p.fit(X)
-        xf = p.transform(X, y)
+        xf = p.transform(X)
         assert xf.columns[0] == 'SentimentText.==rude=='
 
 if __name__ == '__main__':

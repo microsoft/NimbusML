@@ -2249,7 +2249,6 @@ class Pipeline:
     def transform(
             self,
             X,
-            y=None,
             verbose=0,
             as_binary_data_stream=False,
             **params):
@@ -2270,8 +2269,7 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before test("
                 ").")
 
-        X, y_temp, columns_renamed, feature_columns, label_column, \
-            schema, weights, weight_column = self._preprocess_X_y(X, y)
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
 
         all_nodes = []
 
