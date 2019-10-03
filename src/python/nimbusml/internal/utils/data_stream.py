@@ -399,7 +399,7 @@ class ViewBasePipelineItem:
 
 class BinaryDataStream(DataStream):
     """
-    Defines a data view.
+    Data accessor for IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
     """
 
     def __init__(self, filename):
@@ -419,7 +419,7 @@ class BinaryDataStream(DataStream):
         # Do not move these imports or the module fails
         # due to circular references.
         from ..entrypoints.transforms_nooperation import transforms_nooperation
-        from .entrypoints import Graph
+        from .entrypoints import Graph, DataOutputFormat
 
         no_op = transforms_nooperation(
             data='$data', output_data='$output_data')
@@ -427,8 +427,8 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), False, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+                output_data=''), DataOutputFormat.DF, *(graph_nodes))
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
     def head(self, n=5, skip=0):
@@ -438,7 +438,7 @@ class BinaryDataStream(DataStream):
             transforms_rowtakefilter
         from ..entrypoints.transforms_rowskipfilter import \
             transforms_rowskipfilter
-        from .entrypoints import Graph
+        from .entrypoints import Graph, DataOutputFormat
         if n == 0:
             raise ValueError("n must be > 0")
         graph_nodes = []
@@ -456,8 +456,8 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), False, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+                output_data=''), DataOutputFormat.DF, *(graph_nodes))
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
     def clone(self):

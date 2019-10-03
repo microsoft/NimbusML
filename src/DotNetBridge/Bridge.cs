@@ -7,10 +7,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.EntryPoints;
-using Microsoft.ML.Model.OnnxConverter;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.Ensemble;
@@ -19,7 +17,7 @@ using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Transforms.TimeSeries;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     /// <summary>
     /// The main entry point from native code. Note that GC / lifetime issues are critical to get correct.
@@ -130,51 +128,51 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
         // For setting bool values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void BLSetter(EnvironmentBlock* penv, int col, long index, byte value);
+        private unsafe delegate void BLSetter(EnvironmentBlock* penv, int col, long m, long n, byte value);
 
         // For setting float values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void R4Setter(EnvironmentBlock* penv, int col, long index, float value);
+        private unsafe delegate void R4Setter(EnvironmentBlock* penv, int col, long m, long n, float value);
 
         // For setting double values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void R8Setter(EnvironmentBlock* penv, int col, long index, double value);
+        private unsafe delegate void R8Setter(EnvironmentBlock* penv, int col, long m, long n, double value);
 
         // For setting I1 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I1Setter(EnvironmentBlock* penv, int col, long index, sbyte value);
+        private unsafe delegate void I1Setter(EnvironmentBlock* penv, int col, long m, long n, sbyte value);
 
         // For setting I2 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I2Setter(EnvironmentBlock* penv, int col, long index, short value);
+        private unsafe delegate void I2Setter(EnvironmentBlock* penv, int col, long m, long n, short value);
 
         // For setting I4 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I4Setter(EnvironmentBlock* penv, int col, long index, int value);
+        private unsafe delegate void I4Setter(EnvironmentBlock* penv, int col, long m, long n, int value);
 
         // For setting I8 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I8Setter(EnvironmentBlock* penv, int col, long index, long value);
+        private unsafe delegate void I8Setter(EnvironmentBlock* penv, int col, long m, long n, long value);
 
         // For setting U1 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U1Setter(EnvironmentBlock* penv, int col, long index, byte value);
+        private unsafe delegate void U1Setter(EnvironmentBlock* penv, int col, long m, long n, byte value);
 
         // For setting U2 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U2Setter(EnvironmentBlock* penv, int col, long index, ushort value);
+        private unsafe delegate void U2Setter(EnvironmentBlock* penv, int col, long m, long n, ushort value);
 
         // For setting U4 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U4Setter(EnvironmentBlock* penv, int col, long index, uint value);
+        private unsafe delegate void U4Setter(EnvironmentBlock* penv, int col, long m, long n, uint value);
 
         // For setting U8 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U8Setter(EnvironmentBlock* penv, int col, long index, ulong value);
+        private unsafe delegate void U8Setter(EnvironmentBlock* penv, int col, long m, long n, ulong value);
 
         // For setting string values, to a generic pointer and index.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void TXSetter(EnvironmentBlock* penv, int col, long index, sbyte* pch, int cch);
+        private unsafe delegate void TXSetter(EnvironmentBlock* penv, int col, long m, long n, sbyte* pch, int cch);
 
         // For setting string key values, to a generic pointer and index.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -302,6 +300,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(DotNetBridgeEntrypoints).Assembly);
 
             using (var ch = host.Start("Executing"))
             {

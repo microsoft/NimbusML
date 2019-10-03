@@ -241,7 +241,14 @@
       "Module": "linear_model",
       "Type": "Classifier",
       "Predict_Proba" : true,
-      "Decision_Function" : true
+      "Decision_Function" : true,
+	  "Inputs": [
+	    {
+		  "Name": "Lambda",
+		  "NewName": "l2_regularization",
+		  "Desc": "L2 regularization weight. It also controls the learning rate, with the learning rate being inversely proportional to it."
+		}
+	  ]
     },
     {
       "Name": "Trainers.EnsembleClassification",
@@ -477,6 +484,12 @@
     {
       "Name": "Transforms.GlobalContrastNormalizer",
       "NewName": "GlobalContrastRowScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.LpNormalizer",
+      "NewName": "LpScaler",
       "Module": "preprocessing.normalization",
       "Type": "Transform"
     },

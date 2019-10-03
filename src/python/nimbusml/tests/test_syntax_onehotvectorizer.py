@@ -79,7 +79,7 @@ class TestSyntaxOneHotVectorizer(unittest.TestCase):
             vec.fit_transform(X, verbose=2)
             assert False
         except RuntimeError as e:
-            assert "Returned code is -1. Check the log for error messages.." \
+            assert "Error: *** System.ArgumentOutOfRangeException: 'Could not find input column" \
                    in str(e)
         vec = OneHotVectorizer() << {'edu1': ['education']}
         res = vec.fit_transform(X)
@@ -147,3 +147,6 @@ class TestSyntaxOneHotVectorizer(unittest.TestCase):
             'out1': ['education1', 'education2']}
         output4 = ng4.fit_transform(X)
         assert output4.shape == (5, 13)
+
+if __name__ == '__main__':
+    unittest.main()

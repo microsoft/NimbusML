@@ -23,7 +23,8 @@ from .data_stream import DprepDataStream
 from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
-    resolve_output
+    resolve_output_as_dataframe, resolve_output_as_csrmatrix, \
+    resolve_output_as_list
 from .utils import try_set, set_clr_environment_vars, get_clr_path, \
     get_mlnet_path, get_dprep_path
 from ..libs.pybridge import px_call
@@ -141,6 +142,17 @@ def _get_temp_file(suffix=None):
     return file_name
 
 
+class DataOutputFormat(Enum):
+    # Regular pandas dataframe format
+    DF = 0
+    # IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
+    IDV = 1
+    # csr_matrix sparse data format
+    CSR = 2
+    # list
+    LIST = 3
+
+
 class Graph(EntryPoint):
     """
     graph
@@ -166,7 +178,7 @@ class Graph(EntryPoint):
             self,
             inputs=None,
             outputs=None,
-            output_binary_data_stream=False,
+            data_output_format=DataOutputFormat.DF,
             *nodes):
         Graph._check_nodes(nodes)
 
@@ -191,7 +203,7 @@ class Graph(EntryPoint):
 
         self.nodes = nodes
         self._write_csv_time = 0
-        self._output_binary_data_stream = output_binary_data_stream
+        self._data_output_format = data_output_format
 
     def __iter__(self):
         return iter(self.nodes)
@@ -260,7 +272,8 @@ class Graph(EntryPoint):
             call_parameters,
             verbose,
             concatenated,
-            output_modelfilename):
+            output_modelfilename,
+            output_predictor_modelfilename=None):
         try:
             ret = px_call(call_parameters)
         except RuntimeError as e:
@@ -311,6 +324,7 @@ class Graph(EntryPoint):
             return 'graph = %s' % (str(self))
 
         output_modelfilename = None
+        output_predictor_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
 
@@ -382,15 +396,23 @@ class Graph(EntryPoint):
                     output_modelfilename = _get_temp_file(suffix='.model.bin')
                     self.outputs['output_model'] = output_modelfilename
 
+                # set graph output model to temp file
+                if 'output_predictor_model' in self.outputs:
+                    output_predictor_modelfilename = _get_temp_file(suffix='.predictor.model.bin')
+                    self.outputs['output_predictor_model'] = output_predictor_modelfilename
+
                 # set graph output metrics to temp file
                 if 'output_metrics' in self.outputs:
                     output_metricsfilename = _get_temp_file(suffix='.txt')
                     self.outputs['output_metrics'] = output_metricsfilename
 
-                if 'output_data' in self.outputs and \
-                        self._output_binary_data_stream:
-                    output_idvfilename = _get_temp_file(suffix='.idv')
-                    self.outputs['output_data'] = output_idvfilename
+                if 'output_data' in self.outputs:
+                    if self._data_output_format == DataOutputFormat.IDV:
+                        output_idvfilename = _get_temp_file(suffix='.idv')
+                        self.outputs['output_data'] = output_idvfilename
+
+                    elif self._data_output_format == DataOutputFormat.CSR:
+                        self.outputs['output_data'] = "<csr>"
 
             # set graph file for debuggings
             if verbose > 0:
@@ -423,17 +445,26 @@ class Graph(EntryPoint):
                 call_parameters,
                 verbose,
                 concatenated,
-                output_modelfilename)
+                output_modelfilename,
+                output_predictor_modelfilename)
 
-            out_data = resolve_output(ret)
-            # remove label column from data
-            if out_data is not None and concatenated:
-                out_columns = list(out_data.columns)
-                if hasattr(y, 'columns'):
-                    y_column = y.columns[0]
-                    if y_column in out_columns:
-                        out_columns.remove(y_column)
-                        out_data = out_data[out_columns]
+            out_data = None
+
+            if not cv and self._data_output_format == DataOutputFormat.CSR:
+                out_data = resolve_output_as_csrmatrix(ret)
+            elif not cv and self._data_output_format == DataOutputFormat.LIST:
+                out_data = resolve_output_as_list(ret)
+            else:
+                out_data = resolve_output_as_dataframe(ret)
+                # remove label column from data
+                if out_data is not None and concatenated:
+                    out_columns = list(out_data.columns)
+                    if hasattr(y, 'columns'):
+                        y_column = y.columns[0]
+                        if y_column in out_columns:
+                            out_columns.remove(y_column)
+                            out_data = out_data[out_columns]
+
             if output_metricsfilename:
                 out_metrics = pd.read_csv(
                     output_metricsfilename,
@@ -446,18 +477,15 @@ class Graph(EntryPoint):
 
             if cv:
                 return self._process_graph_run_results(out_data)
-            elif self._output_binary_data_stream:
+            elif self._data_output_format == DataOutputFormat.IDV:
                 output = BinaryDataStream(output_idvfilename)
-                return (output_modelfilename, output, out_metrics)
+                return (output_modelfilename, output, out_metrics, output_predictor_modelfilename)
             else:
-                return (output_modelfilename, out_data, out_metrics)
+                return (output_modelfilename, out_data, out_metrics, output_predictor_modelfilename)
         finally:
             if cv:
                 self._remove_temp_files()
             else:
-                if output_modelfilename:
-                    # os.remove(output_modelfilename)
-                    pass
                 if output_metricsfilename:
                     os.remove(output_metricsfilename)
 

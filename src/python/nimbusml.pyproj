@@ -91,6 +91,8 @@
     <Compile Include="nimbusml\examples\BootStrapSample.py" />
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
+    <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
     <Compile Include="nimbusml\examples\ColumnDuplicator.py" />
     <Compile Include="nimbusml\examples\ColumnSelector.py" />
@@ -119,6 +121,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\Filter_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GamBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GamRegressor_airquality_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\LpScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\GlobalContrastRowScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Handler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\IidChangePointDetector_df.py" />
@@ -171,11 +174,13 @@
     <Compile Include="nimbusml\examples\Filter.py" />
     <Compile Include="nimbusml\examples\GamBinaryClassifier.py" />
     <Compile Include="nimbusml\examples\GamRegressor.py" />
+    <Compile Include="nimbusml\examples\LpScaler.py" />
     <Compile Include="nimbusml\examples\GlobalContrastRowScaler.py" />
     <Compile Include="nimbusml\examples\Handler.py" />
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
     <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
+    <Compile Include="nimbusml\examples\Schema.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
     <Compile Include="nimbusml\examples\SsaSpikeDetector.py" />
@@ -297,6 +302,8 @@
     <Compile Include="nimbusml\internal\core\preprocessing\datasettransformer.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
@@ -338,6 +345,7 @@
     <Compile Include="nimbusml\internal\entrypoints\models_regressionensemble.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_regressionpipelineensemble.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_schema.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_summarizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_traintestevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\timeseriesprocessingentrypoints_exponentialaverage.py" />
@@ -385,6 +393,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalhashonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnselector.py" />
@@ -422,6 +431,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_missingvaluesubstitutor.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_modelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_ngramtranslator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumn.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_pcacalculator.py" />
@@ -629,9 +639,11 @@
     <Compile Include="nimbusml\preprocessing\normalization\binner.py" />
     <Compile Include="nimbusml\preprocessing\normalization\globalcontrastrowscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\logmeanvariancescaler.py" />
+    <Compile Include="nimbusml\preprocessing\normalization\lpscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\meanvariancescaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
+    <Compile Include="nimbusml\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnduplicator.py" />
@@ -669,10 +681,16 @@
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
+    <Compile Include="nimbusml\tests\pipeline\test_pipeline_get_schema.py" />
+    <Compile Include="nimbusml\tests\pipeline\test_pipeline_split_models.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
+    <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
+    <Compile Include="nimbusml\tests\preprocessing\schema\test_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
+    <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
+    <Compile Include="nimbusml\tests\test_variable_column.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
