@@ -2512,7 +2512,7 @@ class Pipeline:
             # Pickled pipelines which were created
             # before export_version was added used
             # the default implementation which uses
-            # the instance’s __dict__.
+            # the instances __dict__.
             if 'steps' in state:
                 self.steps = state['steps']
 
