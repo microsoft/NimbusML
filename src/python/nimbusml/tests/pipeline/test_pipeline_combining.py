@@ -11,7 +11,10 @@ from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import LogisticRegressionBinaryClassifier, OnlineGradientDescentRegressor
+from nimbusml.multiclass import OneVsRestClassifier
 from nimbusml.preprocessing.filter import RangeFilter
+from nimbusml.preprocessing import DatasetTransformer
+from nimbusml.preprocessing.schema import PrefixColumnConcatenator
 
 seed = 0
 
@@ -427,6 +430,30 @@ class TestPipelineCombining(unittest.TestCase):
         result_2 = combined_pipeline.predict_proba(data)
 
         self.assertTrue(np.array_equal(result_1, result_2))
+
+
+    def test_combined_models_support_predict_proba_with_more_than_2_classes(self):
+        path = get_dataset('infert').as_filepath()
+        data = FileDataStream.read_csv(path)
+
+        featurization_pipeline = Pipeline([OneHotVectorizer(columns={'education': 'education'})])
+        featurization_pipeline.fit(data)
+        featurized_data = featurization_pipeline.transform(data)
+
+        feature_cols = ['education', 'age']
+        training_pipeline = Pipeline([DatasetTransformer(featurization_pipeline.model), OneVsRestClassifier(LogisticRegressionBinaryClassifier(), feature=feature_cols, label='induced')])
+        training_pipeline.fit(data, output_predictor_model=True)
+
+        concat_pipeline = Pipeline([PrefixColumnConcatenator({'education': 'education.'})])
+        concat_pipeline.fit(featurized_data)
+
+        predictor_pipeline = Pipeline()
+        predictor_pipeline.load_model(training_pipeline.predictor_model)
+
+        concat_and_predictor_pipeline = Pipeline.combine_models(concat_pipeline, predictor_pipeline)
+
+        result = concat_and_predictor_pipeline.predict_proba(featurized_data)
+        self.assertEqual(result.shape[1], 3)
 
 
     def test_combined_models_support_decision_function(self):
