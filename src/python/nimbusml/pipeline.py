@@ -2446,7 +2446,7 @@ class Pipeline:
         self.steps = []
 
     def __getstate__(self):
-        odict = {'export_version': 1}
+        odict = {'export_version': 2}
 
         if hasattr(self, 'steps'):
             odict['steps'] = self.steps
@@ -2458,6 +2458,13 @@ class Pipeline:
             with open(self.model, "rb") as f:
                 odict['modelbytes'] = f.read()
 
+        if (hasattr(self, 'predictor_model') and 
+            self.predictor_model is not None and
+            os.path.isfile(self.predictor_model)):
+
+            with open(self.predictor_model, "rb") as f:
+                odict['predictor_model_bytes'] = f.read()
+
         return odict
 
     def __setstate__(self, state):
@@ -2465,17 +2472,34 @@ class Pipeline:
         self.model = None
         self.random_state = None
 
-        for k, v in state.items():
-            if k not in {'modelbytes', 'export_version'}:
-                setattr(self, k, v)
+        if state.get('export_version', 0) == 0:
+            # Pickled pipelines which were created
+            # before export_version was added used
+            # the default implementation which uses
+            # the instances __dict__.
+            if 'steps' in state:
+                self.steps = state['steps']
 
-        if state.get('export_version', 0) == 1:
+        elif state.get('export_version', 0) in {1, 2}:
+            if 'steps' in state:
+                self.steps = state['steps']
+
             if 'modelbytes' in state:
                 (fd, modelfile) = tempfile.mkstemp()
                 fl = os.fdopen(fd, "wb")
                 fl.write(state['modelbytes'])
                 fl.close()
                 self.model = modelfile
+
+            if 'predictor_model_bytes' in state:
+                (fd, modelfile) = tempfile.mkstemp()
+                fl = os.fdopen(fd, "wb")
+                fl.write(state['predictor_model_bytes'])
+                fl.close()
+                self.predictor_model = modelfile
+
+        else:
+            raise ValueError('Pipeline version not supported.')
 
     @trace
     def score(
