@@ -2,8 +2,7 @@
 # WordTokenizer 
 
 import pandas
-from nimbusml import Pipeline, Role
-from nimbusml.preprocessing.schema import ColumnConcatenator
+from nimbusml import Pipeline
 from nimbusml.preprocessing.text import WordTokenizer
 
 # create the data
