@@ -47,7 +47,9 @@
 
 ## **Breaking Changes**
 
-None.
+- **Removed `y` parameter from `Pipeline.transform()`**
+    [PR#294](https://github.com/microsoft/NimbusML/pull/294)
+    Removed `y` parameter from `Pipeline.transform()` as it is not needed nor used for transforming data with a fitted `Pipeline`.
 
 ## **Enhancements**
 
