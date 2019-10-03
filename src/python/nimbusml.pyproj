@@ -92,6 +92,7 @@
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
+    <Compile Include="nimbusml\examples\WordTokenizer.py" />
     <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
     <Compile Include="nimbusml\examples\ColumnDuplicator.py" />
