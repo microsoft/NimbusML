@@ -93,6 +93,7 @@
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
+    <Compile Include="nimbusml\examples\WordTokenizer.py" />
     <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
     <Compile Include="nimbusml\examples\DateTimeSplitter.py" />
@@ -104,6 +105,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\AveragedPerceptronBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Binner_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\BootStrapSample_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\WordTokenizer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\CharTokenizer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\ColumnConcatenator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\DateTimeSplitter_df.py" />
@@ -310,12 +312,14 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\normalization\robustscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tokeyimputer.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tostring.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\text\wordtokenizer.py" />
     <Compile Include="nimbusml\internal\core\timeseries\iidchangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\iidspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\ssachangepointdetector.py" />
@@ -442,6 +446,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_missingvaluesubstitutor.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_modelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_ngramtranslator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumn.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_pcacalculator.py" />
@@ -465,6 +470,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_twoheterogeneousmodelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_vectortoimage.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_wordembeddings.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_wordtokenizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\_boosterparameterfunction_dart.py" />
     <Compile Include="nimbusml\internal\entrypoints\_boosterparameterfunction_gbdt.py" />
     <Compile Include="nimbusml\internal\entrypoints\_boosterparameterfunction_goss.py" />
@@ -654,6 +660,7 @@
     <Compile Include="nimbusml\preprocessing\normalization\lpscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\meanvariancescaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
+    <Compile Include="nimbusml\preprocessing\normalization\robustscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
     <Compile Include="nimbusml\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
@@ -664,6 +671,7 @@
     <Compile Include="nimbusml\preprocessing\schema\__init__.py" />
     <Compile Include="nimbusml\preprocessing\tensorflowscorer.py" />
     <Compile Include="nimbusml\preprocessing\text\chartokenizer.py" />
+    <Compile Include="nimbusml\preprocessing\text\wordtokenizer.py" />
     <Compile Include="nimbusml\preprocessing\text\__init__.py" />
     <Compile Include="nimbusml\preprocessing\tokey.py" />
     <Compile Include="nimbusml\preprocessing\tokeyimputer.py" />
@@ -705,7 +713,9 @@
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_tokeyimputer.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_tostring.py" />
+    <Compile Include="nimbusml\tests\preprocessing\text\test_wordtokenizer.py" />
     <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
+    <Compile Include="nimbusml\tests\test_variable_column.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />

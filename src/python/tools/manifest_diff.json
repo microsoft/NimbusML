@@ -512,6 +512,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.RobustScalar",
+      "NewName": "RobustScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.MissingValuesRowDropper",
       "NewName": "Filter",
       "Module": "preprocessing.missing_values",
@@ -754,6 +760,12 @@
     {
       "Name": "Transforms.CharacterTokenizer",
       "NewName": "CharTokenizer",
+      "Module": "preprocessing.text",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.WordTokenizer",
+      "NewName": "WordTokenizer",
       "Module": "preprocessing.text",
       "Type": "Transform"
     },

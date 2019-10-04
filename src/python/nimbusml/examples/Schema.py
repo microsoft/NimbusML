@@ -30,4 +30,4 @@ pipe.fit(data)
 schema = pipe.get_schema()
 
 print(schema[0:5])
-# ['Sentiment', 'SentimentText', 'features.Char.<␂>|=|=', 'features.Char.=|=|r', 'features.Char.=|r|u']
+# ['Sentiment', 'SentimentText', 'features.Char.<?>|=|=', 'features.Char.=|=|r', 'features.Char.=|r|u']

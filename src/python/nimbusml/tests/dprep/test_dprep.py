@@ -28,7 +28,7 @@ def assert_2d_array_equal(actual, desired):
                 continue
             assert_true(actual[i][y] == desired[i][y])
 
-@unittest.skipIf(os.name == "posix" or sys.version_info[:2] != (3, 7), "azureml-dataprep is not installed.")
+@unittest.skipIf(sys.version_info[:2] == (2, 7), "azureml-dataprep is not installed.")
 class TestDprep(unittest.TestCase):
 
     def test_fit_transform(self):
