@@ -310,6 +310,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\normalization\robustscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columndropper.py" />
@@ -654,6 +655,7 @@
     <Compile Include="nimbusml\preprocessing\normalization\lpscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\meanvariancescaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
+    <Compile Include="nimbusml\preprocessing\normalization\robustscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
     <Compile Include="nimbusml\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
