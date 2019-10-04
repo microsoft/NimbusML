@@ -22239,7 +22239,7 @@
           "Default": true
         },
         {
-          "Name": "Quantile Min",
+          "Name": "QuantileMin",
           "Type": "Float",
           "Desc": "Min for the quantile range used to calculate scale.",
           "Aliases": [
@@ -22251,7 +22251,7 @@
           "Default": 25.0
         },
         {
-          "Name": "Quantile Max",
+          "Name": "QuantileMax",
           "Type": "Float",
           "Desc": "Max for the quantile range used to calculate scale.",
           "Aliases": [

@@ -9,7 +9,6 @@ RobustScaler
 
 __all__ = ["RobustScaler"]
 
-import numbers
 
 from sklearn.base import TransformerMixin
 
@@ -30,9 +29,9 @@ class RobustScaler(core, BaseTransform, TransformerMixin):
 
     :param scale: If True, scale the data to interquartile range.
 
-    :param quantile _min: Min for the quantile range used to calculate scale.
+    :param quantile_min: Min for the quantile range used to calculate scale.
 
-    :param quantile _max: Max for the quantile range used to calculate scale.
+    :param quantile_max: Max for the quantile range used to calculate scale.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -43,8 +42,8 @@ class RobustScaler(core, BaseTransform, TransformerMixin):
             self,
             center=True,
             scale=True,
-            quantile _min=25.0,
-            quantile _max=75.0,
+            quantile_min=25.0,
+            quantile_max=75.0,
             columns=None,
             **params):
 
@@ -55,8 +54,8 @@ class RobustScaler(core, BaseTransform, TransformerMixin):
             self,
             center=center,
             scale=scale,
-            quantile _min=quantile _min,
-            quantile _max=quantile _max,
+            quantile_min=quantile_min,
+            quantile_max=quantile_max,
             **params)
         self._columns = columns
 

@@ -16,8 +16,8 @@ def transforms_robustscalar(
         model=None,
         center=True,
         scale=True,
-        quantile _min=25.0,
-        quantile _max=75.0,
+        quantile_min=25.0,
+        quantile_max=75.0,
         **params):
     """
     **Description**
@@ -30,10 +30,10 @@ def transforms_robustscalar(
     :param center: If True, center the data before scaling. (inputs).
     :param scale: If True, scale the data to interquartile range.
         (inputs).
-    :param quantile _min: Min for the quantile range used to
-        calculate scale. (inputs).
-    :param quantile _max: Max for the quantile range used to
-        calculate scale. (inputs).
+    :param quantile_min: Min for the quantile range used to calculate
+        scale. (inputs).
+    :param quantile_max: Max for the quantile range used to calculate
+        scale. (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -63,14 +63,14 @@ def transforms_robustscalar(
             obj=scale,
             none_acceptable=True,
             is_of_type=bool)
-    if quantile _min is not None:
-        inputs['Quantile Min'] = try_set(
-            obj=quantile _min,
+    if quantile_min is not None:
+        inputs['QuantileMin'] = try_set(
+            obj=quantile_min,
             none_acceptable=True,
             is_of_type=numbers.Real)
-    if quantile _max is not None:
-        inputs['Quantile Max'] = try_set(
-            obj=quantile _max,
+    if quantile_max is not None:
+        inputs['QuantileMax'] = try_set(
+            obj=quantile_max,
             none_acceptable=True,
             is_of_type=numbers.Real)
     if output_data is not None:

@@ -9,10 +9,8 @@ RobustScaler
 
 __all__ = ["RobustScaler"]
 
-import numbers
 
 from ....entrypoints.transforms_robustscalar import transforms_robustscalar
-from ....utils.data_roles import Role
 from ....utils.utils import trace
 from ...base_pipeline_item import BasePipelineItem, DefaultSignature
 
@@ -26,9 +24,9 @@ class RobustScaler(BasePipelineItem, DefaultSignature):
 
     :param scale: If True, scale the data to interquartile range.
 
-    :param quantile _min: Min for the quantile range used to calculate scale.
+    :param quantile_min: Min for the quantile range used to calculate scale.
 
-    :param quantile _max: Max for the quantile range used to calculate scale.
+    :param quantile_max: Max for the quantile range used to calculate scale.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -39,16 +37,16 @@ class RobustScaler(BasePipelineItem, DefaultSignature):
             self,
             center=True,
             scale=True,
-            quantile _min=25.0,
-            quantile _max=75.0,
+            quantile_min=25.0,
+            quantile_max=75.0,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
         self.center = center
         self.scale = scale
-        self.quantile _min = quantile _min
-        self.quantile _max = quantile _max
+        self.quantile_min = quantile_min
+        self.quantile_max = quantile_max
 
     @property
     def _entrypoint(self):
@@ -89,11 +87,17 @@ class RobustScaler(BasePipelineItem, DefaultSignature):
                 type(output_columns))
 
         algo_args = dict(
-            column=[dict(Source=i, Name=o) for i, o in zip(input_columns, output_columns)] if input_columns else None,
+            column=[
+                dict(
+                    Source=i,
+                    Name=o) for i,
+                o in zip(
+                    input_columns,
+                    output_columns)] if input_columns else None,
             center=self.center,
             scale=self.scale,
-            quantile _min=self.quantile _min,
-            quantile _max=self.quantile _max)
+            quantile_min=self.quantile_min,
+            quantile_max=self.quantile_max)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)
