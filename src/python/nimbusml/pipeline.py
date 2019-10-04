@@ -2254,7 +2254,6 @@ class Pipeline:
     def transform(
             self,
             X,
-            y=None,
             verbose=0,
             as_binary_data_stream=False,
             **params):
@@ -2275,18 +2274,7 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before test("
                 ").")
 
-        if y is not None:
-            if len(self.steps) > 0:
-                last_node = self.last_node
-                if last_node.type == 'transform':
-                    raise ValueError(
-                        "Pipeline needs a trainer as last step for test()")
-
-        X, y_temp, columns_renamed, feature_columns, label_column, \
-            schema, weights, weight_column = self._preprocess_X_y(X, y)
-
-        if not isinstance(y, (str, tuple)):
-            y = y_temp
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
 
         all_nodes = []
 
