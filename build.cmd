@@ -353,9 +353,7 @@ if "%InstallPythonPackages%" == "True" (
     :: Run azureml-dataprep tests only in pyhon 3.7 as its an optional dependency
     if %PythonVersion% == 3.7 ( call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.12" )
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
-    if %PythonVersion% == 3.6 ( call "%PythonExe%" -m pip install --upgrade pip )
     if %PythonVersion% == 3.5 ( call "%PythonExe%" -m pip install --upgrade pip )
-    if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pip )
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 )
 
