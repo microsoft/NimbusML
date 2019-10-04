@@ -358,7 +358,9 @@ if "%InstallPythonPackages%" == "True" (
     )
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
+    if %PythonVersion% == 3.6 ( call "%PythonExe%" -m pip install --upgrade pip )
     if %PythonVersion% == 3.5 ( call "%PythonExe%" -m pip install --upgrade pip )
+    if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pip )
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 )
 
