@@ -279,7 +279,7 @@ class Pipeline:
 
     @property
     def last_node(self):
-        if len(self.steps) <= 0:
+        if not self.steps:
             raise TypeError("No steps given.")
         last_step = self.steps[-1]
         return last_step if not isinstance(last_step, tuple) else \
@@ -2002,7 +2002,7 @@ class Pipeline:
         return out_data, out_metrics
 
     def _extract_classes(self, y):
-        if ((len(self.steps) > 0) and
+        if (self.steps and
             (self.last_node.type in ['classifier', 'anomaly']) and
             (y is not None) and
             (not isinstance(y, (str, tuple)))):
@@ -2015,7 +2015,10 @@ class Pipeline:
             self._add_classes(unique_classes)
 
     def _extract_classes_from_headers(self, headers):
-        if hasattr(self.last_node, 'classes_'):
+        # Note: _classes can not be added to the Pipeline unless
+        # it already exists in the predictor node because the
+        # dtype is required to set the correct type.
+        if self.steps and hasattr(self.last_node, 'classes_'):
             classes = [x.replace('Score.', '') for x in headers]
             classes = np.array(classes).astype(self.last_node.classes_.dtype)
             self._add_classes(classes)
@@ -2024,7 +2027,9 @@ class Pipeline:
         # Create classes_ attribute similar to scikit
         # Add both to pipeline and ending classifier
         self.classes_ = classes
-        self.last_node.classes_ = classes
+
+        if self.steps:
+            self.last_node.classes_ = classes
 
     @trace
     def predict(self, X, verbose=0, as_binary_data_stream=False, **params):
@@ -2404,53 +2409,12 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
-        self._validate_model_summary(summary_data)
         self.model_summary = summary_data
 
         # stop the clock
         self._run_time = time.time() - start_time
         self._write_csv_time = graph._write_csv_time
         return self.model_summary
-
-    @trace
-    def _validate_model_summary(self, model_summary):
-        """
-        Validates model summary has correct format
-
-        :param model_summary: model summary dataframes
-
-        """
-        if not isinstance(model_summary, (DataFrame)):
-            raise TypeError(
-                "Unexpected type {0} for model_summary, type DataFrame "
-                "is expected ".format(
-                    type(model_summary)))
-
-        col_names = [
-            'Bias',
-            'ClassNames',
-            'Coefficients',
-            'PredictorName',
-            'Summary',
-            'VectorName'
-        ]
-
-        col_name_prefixes = [
-            'Weights',
-            'Gains',
-            'Support vectors.',
-            'VectorData'
-        ]
-
-        for col in model_summary.columns:
-            if col in col_names:
-                pass
-            elif any([col.startswith(pre) for pre in col_name_prefixes]):
-                pass
-            else:
-                raise TypeError(
-                    "Unsupported '{0}' column is in model_summary".format(
-                        col))
 
     @trace
     def save_model(self, dst):
@@ -2482,7 +2446,7 @@ class Pipeline:
         self.steps = []
 
     def __getstate__(self):
-        odict = {'export_version': 1}
+        odict = {'export_version': 2}
 
         if hasattr(self, 'steps'):
             odict['steps'] = self.steps
@@ -2494,6 +2458,13 @@ class Pipeline:
             with open(self.model, "rb") as f:
                 odict['modelbytes'] = f.read()
 
+        if (hasattr(self, 'predictor_model') and 
+            self.predictor_model is not None and
+            os.path.isfile(self.predictor_model)):
+
+            with open(self.predictor_model, "rb") as f:
+                odict['predictor_model_bytes'] = f.read()
+
         return odict
 
     def __setstate__(self, state):
@@ -2501,17 +2472,34 @@ class Pipeline:
         self.model = None
         self.random_state = None
 
-        for k, v in state.items():
-            if k not in {'modelbytes', 'export_version'}:
-                setattr(self, k, v)
+        if state.get('export_version', 0) == 0:
+            # Pickled pipelines which were created
+            # before export_version was added used
+            # the default implementation which uses
+            # the instances __dict__.
+            if 'steps' in state:
+                self.steps = state['steps']
 
-        if state.get('export_version', 0) == 1:
+        elif state.get('export_version', 0) in {1, 2}:
+            if 'steps' in state:
+                self.steps = state['steps']
+
             if 'modelbytes' in state:
                 (fd, modelfile) = tempfile.mkstemp()
                 fl = os.fdopen(fd, "wb")
                 fl.write(state['modelbytes'])
                 fl.close()
                 self.model = modelfile
+
+            if 'predictor_model_bytes' in state:
+                (fd, modelfile) = tempfile.mkstemp()
+                fl = os.fdopen(fd, "wb")
+                fl.write(state['predictor_model_bytes'])
+                fl.close()
+                self.predictor_model = modelfile
+
+        else:
+            raise ValueError('Pipeline version not supported.')
 
     @trace
     def score(

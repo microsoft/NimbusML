@@ -1457,7 +1457,7 @@ def parse_arg(argument, inout):
                 assert not is_column
                 arg_obj = NumericArrayArg(argument, inout)
             elif itemType in ["String", "DataView", "PredictorModel",
-                              "TransformModel", "Node"]:
+                              "TransformModel", "Node", "Char"]:
                 arg_obj = StringArrayArg(argument, inout,
                                          is_column=is_column)
             elif isinstance(itemType, dict):
