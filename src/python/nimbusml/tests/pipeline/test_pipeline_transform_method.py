@@ -20,7 +20,7 @@ class TestPipelineTransformMethod(unittest.TestCase):
         p = Pipeline([NGramFeaturizer(char_feature_extractor=None) << 'SentimentText'])
         p.fit(X)
         xf = p.transform(X)
-        assert xf.columns[0] == 'SentimentText.==rude=='
+        assert 'SentimentText.==rude==' in xf.columns
 
 if __name__ == '__main__':
     unittest.main()
