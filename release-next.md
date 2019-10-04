@@ -40,9 +40,16 @@
     [PR#232](https://github.com/microsoft/NimbusML/pull/232)
     Enable passing python executable to dataprep package, so dataprep can execute python transformations
 
+- **Fixed `Pipeline.transform()` in transform only `Pipeline` fails if y column is provided **
+
+    [PR#294](https://github.com/microsoft/NimbusML/pull/294)
+    Enable calling `.transform()` on a `Pipeline` containing only transforms when the y column is provided 
+
 ## **Breaking Changes**
 
-None.
+- **Removed `y` parameter from `Pipeline.transform()`**
+    [PR#294](https://github.com/microsoft/NimbusML/pull/294)
+    Removed `y` parameter from `Pipeline.transform()` as it is not needed nor used for transforming data with a fitted `Pipeline`.
 
 ## **Enhancements**
 

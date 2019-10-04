@@ -706,6 +706,7 @@
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_split_models.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
+    <Compile Include="nimbusml\tests\pipeline\test_pipeline_transform_method.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
