@@ -353,7 +353,7 @@ if "%InstallPythonPackages%" == "True" (
     if %PythonVersion% == 2.7 (
         call "%PythonExe%" -m pip install --upgrade pyzmq
     ) else (
-        call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.12"
+        call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.12" 
     )
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
