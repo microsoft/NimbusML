@@ -1,48 +1,43 @@
-# -------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License.
-# -------------------------------------------------------------------------
-import os
-import unittest
+import numpy as np
+import pandas as pd
+from nimbusml import Pipeline, FileDataStream
+from nimbusml.datasets import get_dataset
+from nimbusml.feature_extraction.categorical import OneHotVectorizer
+from nimbusml.linear_model import LogisticRegressionBinaryClassifier
+from nimbusml.preprocessing import DatasetTransformer
+from nimbusml.preprocessing.schema import PrefixColumnConcatenator
+from nimbusml.preprocessing.schema import ColumnDropper
 
+path = get_dataset('infert').as_filepath()
+data = FileDataStream.read_csv(path)
+ 
+# train featurizer
+featurization_pipeline = Pipeline([OneHotVectorizer(columns={'education': 'education'})])
+featurization_pipeline.fit(data)
+print(featurization_pipeline.get_schema())
 
-class TestCopyright(unittest.TestCase):
-    """
-    Tests that the copyright is present in everyfile.
-    """
+# need to remove extra columns from csr matrix 
+# and get csr_matrix featurized data
+csr_featurization_pipeline = Pipeline([DatasetTransformer(featurization_pipeline.model), ColumnDropper() << ['case', 'row_num']])
+sparse_featurized_data = csr_featurization_pipeline.fit_transform(data, as_csr=True)
+# Note: the relative order of all columns is still the same.
+print(csr_featurization_pipeline.get_schema())
 
-    def test_copyrigth_present(self):
-        root = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            '..')
-        root = os.path.normpath(root)
-        allfiles = []
-        for r, dirs, files in os.walk(root):
-            for name in files:
-                if name.endswith('.py'):
-                    allfiles.append(os.path.join(r, name))
+concat_pipeline = Pipeline([DatasetTransformer(csr_featurization_pipeline.model), PrefixColumnConcatenator({'education': 'education.'})])
+concat_pipeline.fit(data)
+print(concat_pipeline.get_schema())
 
-        nothere = []
-        nb = 0
-        for name in allfiles:
-            if 'examples' in name or 'docs' in name or \
-                    '__init__.py' in name or 'entrypoints' in name:
-                continue
-            with open(name, "r") as f:
-                content = f.read()
-            if 'Copyright (c) Microsoft Corporation. All rights ' \
-               'reserved.' not in content:
-                nothere.append(name)
-            else:
-                nb += 1
+# train a featurizer + learner pipeline
+# Note! order of feature columns on input to learner should be the same as in csr_matrix above
+#feature_cols = ['parity', 'education', 'age', 'induced', 'spontaneous', 'stratum', 'pooled.stratum'] # 9 features
+feature_cols = csr_featurization_pipeline.get_schema()
+training_pipeline = Pipeline([DatasetTransformer(featurization_pipeline.model), LogisticRegressionBinaryClassifier(feature=feature_cols, label='case')])
+training_pipeline.fit(data, output_predictor_model=True)
+ 
+# load just a learner model
+predictor_pipeline = Pipeline()
+predictor_pipeline.load_model(training_pipeline.predictor_model)
+print(predictor_pipeline.get_schema())
 
-        if len(nothere) > 0:
-            nothere = ['  File "{0}", line 1'.format(_) for _ in nothere]
-            raise Exception(
-                "Copyright not found in\n{0}".format(
-                    "\n".join(nothere)))
-        if nb == 0:
-            raise Exception("No file found in '{0}'".format(root))
-
-
-if __name__ == '__main__':
-    unittest.main()
+# use just a learner model on csr_matrix featurized data
+predictor_pipeline.predict_proba(sparse_featurized_data.astype(np.float32))

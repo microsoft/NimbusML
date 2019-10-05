@@ -2041,6 +2041,11 @@ if __name__ == '__main__':
     script_args = arg_parser.parse_args()
     pkg_path = os.path.join(my_dir, r'..\nimbusml')
 
+
+    script_args.generate_api = False
+    script_args.generate_entrypoints = False
+    script_args.check_manual_changes = False
+
     if script_args.check_manual_changes:
         verbose = False
         if script_args.folder == 'temp':

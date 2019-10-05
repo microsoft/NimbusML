@@ -87,5 +87,60 @@ namespace Microsoft.ML.DotNetBridge
             var xf = VariableColumnTransform.Create(env, inputOptions, inputOptions.Data);
             return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
         }
+
+        public sealed class Input
+        {
+            [Argument(ArgumentType.Required, HelpText = "The dataset to be scored", SortOrder = 1)]
+            public IDataView Data;
+
+            [Argument(ArgumentType.Required, HelpText = "The predictor model to apply to data", SortOrder = 2)]
+            public PredictorModel PredictorModel;
+
+            [Argument(ArgumentType.AtMostOnce, HelpText = "Suffix to append to the score columns", SortOrder = 3)]
+            public string Suffix;
+        }
+
+        public sealed class Output
+        {
+            [TlcModule.Output(Desc = "The scored dataset", SortOrder = 1)]
+            public IDataView ScoredData;
+
+            [TlcModule.Output(Desc = "The scoring transform", SortOrder = 2)]
+            public TransformModel ScoringTransform;
+        }
+
+        [TlcModule.EntryPoint(Name = "Transforms.DatasetScorer1", Desc = "Score a dataset with a predictor model")]
+        public static Output Score(IHostEnvironment env, Input input)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("ScoreModel");
+            host.CheckValue(input, nameof(input));
+            EntryPointUtils.CheckInputArgs(host, input);
+
+            var inputData = input.Data;
+            // input.PredictorModel.PrepareData(host, inputData, out RoleMappedData data, out IPredictor predictor);
+            IPredictor predictor = input.PredictorModel.Predictor;
+            var data = new RoleMappedData(input.Data, null, input.Data.Schema[0].Name);
+
+            IDataView scoredPipe;
+            using (var ch = host.Start("Creating scoring pipeline"))
+            {
+                ch.Trace("Creating pipeline");
+                var bindable = ScoreUtils.GetSchemaBindableMapper(host, predictor);
+                ch.AssertValue(bindable);
+
+                var mapper = bindable.Bind(host, data.Schema);
+                var scorer = ScoreUtils.GetScorerComponent(host, mapper, input.Suffix);
+                scoredPipe = scorer.CreateComponent(host, data.Data, mapper, input.PredictorModel.GetTrainingSchema(host));
+            }
+
+            return
+                new Output
+                {
+                    ScoredData = scoredPipe,
+                    ScoringTransform = new TransformModelImpl(host, scoredPipe, inputData)
+                };
+
+        }
     }
 }

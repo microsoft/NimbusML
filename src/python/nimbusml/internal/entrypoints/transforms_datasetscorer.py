@@ -27,7 +27,7 @@ def transforms_datasetscorer(
     :param scoring_transform: The scoring transform (outputs).
     """
 
-    entrypoint_name = 'Transforms.DatasetScorer'
+    entrypoint_name = 'Transforms.DatasetScorer1'
     inputs = {}
     outputs = {}
 
