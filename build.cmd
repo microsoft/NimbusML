@@ -348,6 +348,7 @@ if "%InstallPythonPackages%" == "True" (
     echo "#################################"
     echo "Installing python packages ... "
     echo "#################################"
+    call "%PythonExe%" -m pip install --upgrade pip
     call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
     if %PythonVersion% == 2.7 (
