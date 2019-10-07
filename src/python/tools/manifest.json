@@ -22159,10 +22159,10 @@
       ]
     },
     {
-      "Name": "Transforms.RobustScalar",
+      "Name": "Transforms.RobustScaler",
       "Desc": "Removes the median and scales the data according to the quantile range.",
-      "FriendlyName": "RobustScalarTransformer",
-      "ShortName": "RobustScalarTransformer",
+      "FriendlyName": "RobustScalerTransformer",
+      "ShortName": "RobustScalerTransformer",
       "Inputs": [
         {
           "Name": "Column",

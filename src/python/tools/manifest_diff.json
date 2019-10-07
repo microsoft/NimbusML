@@ -512,7 +512,7 @@
       "Type": "Transform"
     },
     {
-      "Name": "Transforms.RobustScalar",
+      "Name": "Transforms.RobustScaler",
       "NewName": "RobustScaler",
       "Module": "preprocessing.normalization",
       "Type": "Transform"
