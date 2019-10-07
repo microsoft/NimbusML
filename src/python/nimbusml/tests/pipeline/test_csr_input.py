@@ -40,7 +40,7 @@ class TestCsrInput(unittest.TestCase):
         cols.remove('row_num')
         cols.remove('case')
         feature_cols = cols
-        print(feature_cols)
+        #print(feature_cols)
         #['education', 'age', 'parity', 'induced', 'spontaneous', 'stratum', 'pooled.stratum']
         training_pipeline = Pipeline([DatasetTransformer(featurization_pipeline.model), LogisticRegressionBinaryClassifier(feature=feature_cols, label='case')])
         training_pipeline.fit(data, output_predictor_model=True)
