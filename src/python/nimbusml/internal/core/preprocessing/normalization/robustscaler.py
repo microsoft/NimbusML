@@ -10,7 +10,7 @@ RobustScaler
 __all__ = ["RobustScaler"]
 
 
-from ....entrypoints.transforms_robustscalar import transforms_robustscalar
+from ....entrypoints.transforms_robustscaler import transforms_robustscaler
 from ....utils.utils import trace
 from ...base_pipeline_item import BasePipelineItem, DefaultSignature
 
@@ -50,7 +50,7 @@ class RobustScaler(BasePipelineItem, DefaultSignature):
 
     @property
     def _entrypoint(self):
-        return transforms_robustscalar
+        return transforms_robustscaler
 
     @trace
     def _get_node(self, **all_args):

@@ -446,6 +446,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_missingvaluesubstitutor.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_modelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_ngramtranslator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_robustscaler.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumn.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
