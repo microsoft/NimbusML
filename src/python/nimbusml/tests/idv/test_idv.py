@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 from nimbusml import Pipeline, FileDataStream, BinaryDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.linear_model import FastLinearRegressor
+from nimbusml.feature_extraction.categorical import OneHotVectorizer
+from nimbusml.linear_model import FastLinearRegressor, OnlineGradientDescentRegressor
 from nimbusml.preprocessing.normalization import MinMaxScaler
 from sklearn.utils.testing import assert_true, assert_array_equal
 
@@ -104,6 +105,40 @@ class TestIdv(unittest.TestCase):
 
         assert_array_equal(scores, scores_df)
         assert_array_equal(metrics, metrics_df)
+
+    def test_fit_idv(self):
+        train_data = {'c0': ['a', 'b', 'a', 'b'],
+                      'c1': [1, 2, 3, 4],
+                      'c2': [2, 3, 4, 5]}
+        train_df = pd.DataFrame(train_data).astype({'c1': np.float64,
+                                                    'c2': np.float64})
+
+        test_data = {'c0': ['a', 'b', 'b'],
+                     'c1': [1.5, 2.3, 3.7],
+                     'c2': [2.2, 4.9, 2.7]}
+        test_df = pd.DataFrame(test_data).astype({'c1': np.float64,
+                                                  'c2': np.float64})
+
+        # Fit a transform pipeline to the training data
+        transform_pipeline = Pipeline([OneHotVectorizer() << 'c0'])
+        transform_pipeline.fit(train_df)
+        df = transform_pipeline.transform(train_df, as_binary_data_stream=True)
+
+        # Fit a predictor pipeline given a transformed BinaryDataStream
+        predictor = OnlineGradientDescentRegressor(label='c2', feature=['c0', 'c1'])
+        predictor_pipeline = Pipeline([predictor])
+        predictor_pipeline.fit(df)
+
+        # Perform a prediction given the test data using
+        # the transform and predictor defined previously.
+        df = transform_pipeline.transform(test_df, as_binary_data_stream=True)
+        result_1 = predictor_pipeline.predict(df)
+
+        print(result_1)
+        #       Score
+        # 0  1.693640
+        # 1  2.256605
+        # 2  2.504744
 
 
 if __name__ == '__main__':
