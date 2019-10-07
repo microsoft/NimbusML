@@ -14,6 +14,7 @@ from nimbusml.linear_model import LogisticRegressionBinaryClassifier
 from nimbusml.preprocessing import DatasetTransformer
 from nimbusml.preprocessing.schema import PrefixColumnConcatenator
 from nimbusml.preprocessing.schema import ColumnDropper
+from numpy.testing import assert_equal
 
 class TestCsrInput(unittest.TestCase):
 
@@ -51,8 +52,11 @@ class TestCsrInput(unittest.TestCase):
         #print(predictor_pipeline.get_schema())
 
         # use just a learner model on csr_matrix featurized data
-        print(predictor_pipeline.predict_proba(sparse_featurized_data.astype(np.float32)))
-        # TBD assert
+        predictions = predictor_pipeline.predict_proba(sparse_featurized_data.astype(np.float32))
+        assert_equal(len(predictions), 248)
+        assert_equal(len(predictions[0]), 2)
+
+
 
 if __name__ == '__main__':
     unittest.main()
