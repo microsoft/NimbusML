@@ -460,6 +460,13 @@ class BinaryDataStream(DataStream):
         (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
+    @property
+    def schema(self):
+        if not self._schema:
+            head = self.head(n=1)
+            self._schema = DataSchema.read_schema(head)
+        return self._schema
+
     def clone(self):
         """
         Copy/clone the object.

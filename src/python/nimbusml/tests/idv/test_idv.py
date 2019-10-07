@@ -12,6 +12,7 @@ from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearRegressor, OnlineGradientDescentRegressor
 from nimbusml.preprocessing.normalization import MinMaxScaler
+from nimbusml.preprocessing.schema import ColumnDropper
 from sklearn.utils.testing import assert_true, assert_array_equal
 
 # data input (as a FileDataStream)
@@ -106,7 +107,7 @@ class TestIdv(unittest.TestCase):
         assert_array_equal(scores, scores_df)
         assert_array_equal(metrics, metrics_df)
 
-    def test_fit_idv(self):
+    def test_fit_predictor_with_idv(self):
         train_data = {'c0': ['a', 'b', 'a', 'b'],
                       'c1': [1, 2, 3, 4],
                       'c2': [2, 3, 4, 5]}
@@ -134,11 +135,37 @@ class TestIdv(unittest.TestCase):
         df = transform_pipeline.transform(test_df, as_binary_data_stream=True)
         result_1 = predictor_pipeline.predict(df)
 
-        print(result_1)
-        #       Score
-        # 0  1.693640
-        # 1  2.256605
-        # 2  2.504744
+        # Create expected result
+        xf = OneHotVectorizer() << 'c0'
+        df = xf.fit_transform(train_df)
+        predictor = OnlineGradientDescentRegressor(label='c2', feature=['c0.a', 'c0.b', 'c1'])
+        predictor.fit(df)
+        df = xf.transform(test_df)
+        expected_result = predictor.predict(df)
+
+        self.assertTrue(result_1.loc[:, 'Score'].equals(expected_result))
+
+    def test_fit_transform_with_idv(self):
+        path = get_dataset('infert').as_filepath()
+        data = FileDataStream.read_csv(path)
+
+        featurization_pipeline = Pipeline([OneHotVectorizer(columns={'education': 'education'})])
+        featurization_pipeline.fit(data)
+        featurized_data = featurization_pipeline.transform(data, as_binary_data_stream=True)
+
+        schema = featurized_data.schema
+        num_columns = len(schema)
+        self.assertTrue('case' in schema)
+        self.assertTrue('row_num' in schema)
+
+        pipeline = Pipeline([ColumnDropper() << ['case', 'row_num']])
+        pipeline.fit(featurized_data)
+        result = pipeline.transform(featurized_data)
+
+        columns = result.columns
+        self.assertEqual(len(columns), num_columns - 2)
+        self.assertTrue('case' not in columns)
+        self.assertTrue('row_num' not in columns)
 
 
 if __name__ == '__main__':
