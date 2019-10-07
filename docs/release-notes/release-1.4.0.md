@@ -1,4 +1,4 @@
-# [NimbusML](https://docs.microsoft.com/en-us/nimbusml/overview) Next
+# [NimbusML](https://docs.microsoft.com/en-us/nimbusml/overview) 1.4.0
 
 ## **New Features**
 
