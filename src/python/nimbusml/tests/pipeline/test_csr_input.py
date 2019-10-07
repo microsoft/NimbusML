@@ -52,7 +52,7 @@ class TestCsrInput(unittest.TestCase):
         #print(predictor_pipeline.get_schema())
 
         # use just a learner model on csr_matrix featurized data
-        predictions = predictor_pipeline.predict_proba(sparse_featurized_data.astype(np.float32))
+        predictions = predictor_pipeline.predict_proba(sparse_featurized_data)
         assert_equal(len(predictions), 248)
         assert_equal(len(predictions[0]), 2)
 

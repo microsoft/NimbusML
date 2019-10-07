@@ -1775,6 +1775,7 @@ class Pipeline:
             scored_data="$scoredvectordata")
         
         if isinstance(X, csr_matrix):
+            X = X.astype(np.float32)
             score_node = transforms_csrscorer(
                 data="$data",
                 predictor_model="$predictor_model",
@@ -1936,6 +1937,7 @@ class Pipeline:
                 scored_data="$scoredVectorData")
 
             if isinstance(X, csr_matrix):
+                X = X.astype(np.float32)
                 score_node = transforms_csrscorer(
                     data="$data",
                     predictor_model="$predictor_model",
