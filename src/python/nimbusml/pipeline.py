@@ -42,6 +42,8 @@ from .internal.entrypoints.models_summarizer import models_summarizer
 from .internal.entrypoints.models_schema import models_schema
 from .internal.entrypoints.transforms_datasetscorer import \
     transforms_datasetscorer
+from .internal.entrypoints.transforms_csrscorer import \
+    transforms_csrscorer
 from .internal.entrypoints.transforms_datasettransformscorer import \
     transforms_datasettransformscorer
 from .internal.entrypoints.transforms_featurecombiner import \
@@ -1771,6 +1773,12 @@ class Pipeline:
             data="$data",
             predictor_model="$predictor_model",
             scored_data="$scoredvectordata")
+        
+        if isinstance(X, csr_matrix):
+            score_node = transforms_csrscorer(
+                data="$data",
+                predictor_model="$predictor_model",
+                scored_data="$scoredvectordata")
 
         fcc_node = transforms_featurecontributioncalculationtransformer(
             data="$scoredvectordata",
@@ -1926,6 +1934,13 @@ class Pipeline:
                 data="$data",
                 predictor_model="$predictor_model",
                 scored_data="$scoredVectorData")
+
+            if isinstance(X, csr_matrix):
+                score_node = transforms_csrscorer(
+                    data="$data",
+                    predictor_model="$predictor_model",
+                    scored_data="$scoredVectorData")
+
             all_nodes.extend([score_node])
 
         if (evaltype in ['binary', 'multiclass']) or \

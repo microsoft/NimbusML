@@ -109,7 +109,7 @@ namespace Microsoft.ML.DotNetBridge
             public TransformModel ScoringTransform;
         }
 
-        [TlcModule.EntryPoint(Name = "Transforms.DatasetScorer1", Desc = "Score a dataset with a predictor model")]
+        [TlcModule.EntryPoint(Name = "Transforms.CsrScorer", Desc = "Score a csr_matrix based dataset with a predictor model")]
         public static Output Score(IHostEnvironment env, Input input)
         {
             Contracts.CheckValue(env, nameof(env));
@@ -118,7 +118,6 @@ namespace Microsoft.ML.DotNetBridge
             EntryPointUtils.CheckInputArgs(host, input);
 
             var inputData = input.Data;
-            // input.PredictorModel.PrepareData(host, inputData, out RoleMappedData data, out IPredictor predictor);
             IPredictor predictor = input.PredictorModel.Predictor;
             var data = new RoleMappedData(input.Data, null, input.Data.Schema[0].Name);
 
