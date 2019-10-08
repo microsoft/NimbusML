@@ -126,8 +126,11 @@ namespace Microsoft.ML.DotNetBridge
             }
             catch (Exception)
             {
+                var inputColumnName = inputData.Schema[0].Name;
                 predictor = input.PredictorModel.Predictor;
-                data = new RoleMappedData(input.Data, null, input.Data.Schema[0].Name);
+                var xf = new TypeConvertingTransformer(host, 
+                    new TypeConvertingEstimator.ColumnOptions(inputColumnName, DataKind.Single, inputColumnName)).Transform(inputData);
+                data = new RoleMappedData(xf, null, inputColumnName);
             }
 
             IDataView scoredPipe;
