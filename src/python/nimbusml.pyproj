@@ -394,7 +394,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalhashonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_categoricalonehotvectorizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_charactertokenizer.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_csrscorer.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_datasetscorerex.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columnconcatenator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_columncopier.py" />

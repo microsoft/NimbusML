@@ -1,5 +1,5 @@
 """
-Transforms.CsrScorer
+Transforms.DatasetScorerEx
 """
 
 
@@ -7,7 +7,7 @@ from ..utils.entrypoints import EntryPoint
 from ..utils.utils import try_set, unlist
 
 
-def transforms_csrscorer(
+def transforms_datasetscorerex(
         data,
         predictor_model,
         scored_data=None,
@@ -26,7 +26,7 @@ def transforms_csrscorer(
     :param scoring_transform: The scoring transform (outputs).
     """
 
-    entrypoint_name = 'Transforms.CsrScorer'
+    entrypoint_name = 'Transforms.DatasetScorerEx'
     inputs = {}
     outputs = {}
 

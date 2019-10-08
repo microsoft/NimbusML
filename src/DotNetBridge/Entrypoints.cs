@@ -65,7 +65,7 @@ namespace Microsoft.ML.DotNetBridge
             public IDataView Schema;
         }
 
-        [TlcModule.EntryPoint(Name = "Models.Schema", Desc = "Retrieve input and output model schemas")]
+        [TlcModule.EntryPoint(Name = "Models.Schema", Desc = "Retrieve output model schema")]
         public static ModelSchemaOutput GetSchema(IHostEnvironment env, TransformModelInput input)
         {
             Contracts.CheckValue(env, nameof(env));
@@ -88,7 +88,7 @@ namespace Microsoft.ML.DotNetBridge
             return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
         }
 
-        public sealed class Input
+        public sealed class ScoringTransformInput
         {
             [Argument(ArgumentType.Required, HelpText = "The dataset to be scored", SortOrder = 1)]
             public IDataView Data;
@@ -100,7 +100,7 @@ namespace Microsoft.ML.DotNetBridge
             public string Suffix;
         }
 
-        public sealed class Output
+        public sealed class ScoringTransformOutput
         {
             [TlcModule.Output(Desc = "The scored dataset", SortOrder = 1)]
             public IDataView ScoredData;
@@ -109,8 +109,8 @@ namespace Microsoft.ML.DotNetBridge
             public TransformModel ScoringTransform;
         }
 
-        [TlcModule.EntryPoint(Name = "Transforms.CsrScorer", Desc = "Score a csr_matrix based dataset with a predictor model")]
-        public static Output Score(IHostEnvironment env, Input input)
+        [TlcModule.EntryPoint(Name = "Transforms.DatasetScorerEx", Desc = "Score a dataset with a predictor model")]
+        public static ScoringTransformOutput Score(IHostEnvironment env, ScoringTransformInput input)
         {
             Contracts.CheckValue(env, nameof(env));
             var host = env.Register("ScoreModel");
@@ -118,8 +118,17 @@ namespace Microsoft.ML.DotNetBridge
             EntryPointUtils.CheckInputArgs(host, input);
 
             var inputData = input.Data;
-            IPredictor predictor = input.PredictorModel.Predictor;
-            var data = new RoleMappedData(input.Data, null, input.Data.Schema[0].Name);
+            RoleMappedData data;
+            IPredictor predictor;
+            try
+            {
+                input.PredictorModel.PrepareData(host, inputData, out data, out predictor);
+            }
+            catch (Exception)
+            {
+                predictor = input.PredictorModel.Predictor;
+                data = new RoleMappedData(input.Data, null, input.Data.Schema[0].Name);
+            }
 
             IDataView scoredPipe;
             using (var ch = host.Start("Creating scoring pipeline"))
@@ -134,7 +143,7 @@ namespace Microsoft.ML.DotNetBridge
             }
 
             return
-                new Output
+                new ScoringTransformOutput
                 {
                     ScoredData = scoredPipe,
                     ScoringTransform = new TransformModelImpl(host, scoredPipe, inputData)

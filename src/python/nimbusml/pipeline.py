@@ -40,10 +40,8 @@ from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
 from .internal.entrypoints.models_schema import models_schema
-from .internal.entrypoints.transforms_datasetscorer import \
-    transforms_datasetscorer
-from .internal.entrypoints.transforms_csrscorer import \
-    transforms_csrscorer
+from .internal.entrypoints.transforms_datasetscorerex import \
+    transforms_datasetscorerex
 from .internal.entrypoints.transforms_datasettransformscorer import \
     transforms_datasettransformscorer
 from .internal.entrypoints.transforms_featurecombiner import \
@@ -1769,17 +1767,10 @@ class Pipeline:
             all_nodes = [importtext_node]
             inputs = dict([('file', ''), ('predictor_model', self.model)])
 
-        score_node = transforms_datasetscorer(
+        score_node = transforms_datasetscorerex(
             data="$data",
             predictor_model="$predictor_model",
             scored_data="$scoredvectordata")
-        
-        if isinstance(X, csr_matrix):
-            X = X.astype(np.float32)
-            score_node = transforms_csrscorer(
-                data="$data",
-                predictor_model="$predictor_model",
-                scored_data="$scoredvectordata")
 
         fcc_node = transforms_featurecontributioncalculationtransformer(
             data="$scoredvectordata",
@@ -1931,18 +1922,10 @@ class Pipeline:
                 all_nodes = [importtext_node]
                 inputs = dict([('file', ''), ('predictor_model', self.model)])
 
-            score_node = transforms_datasetscorer(
+            score_node = transforms_datasetscorerex(
                 data="$data",
                 predictor_model="$predictor_model",
                 scored_data="$scoredVectorData")
-
-            if isinstance(X, csr_matrix):
-                X = X.astype(np.float32)
-                score_node = transforms_csrscorer(
-                    data="$data",
-                    predictor_model="$predictor_model",
-                    scored_data="$scoredVectorData")
-
             all_nodes.extend([score_node])
 
         if (evaltype in ['binary', 'multiclass']) or \
