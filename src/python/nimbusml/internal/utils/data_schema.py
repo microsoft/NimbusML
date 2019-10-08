@@ -882,6 +882,21 @@ class DataSchema:
         final_schema.sort()
         return DataSchema(final_schema, **opt)
 
+    @staticmethod
+    def extract_idv_schema_from_file(path):
+        with open(path, 'r') as f:
+            lines = f.readlines()
+
+        col_regex = re.compile(r'#@\s*(col=.*)$')
+        col_specs = []
+
+        for line in lines:
+            match = col_regex.match(line)
+            if match:
+                col_specs.append(match.group(1))
+
+        return DataSchema(' '.join(col_specs))
+
 
 class COL:
     """

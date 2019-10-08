@@ -403,9 +403,10 @@ class BinaryDataStream(DataStream):
     """
 
     def __init__(self, filename):
-        # REVIEW: would be good to figure out a way to know the schema of the
-        # binary IDV.
-        super(BinaryDataStream, self).__init__(DataSchema(""))
+        schema_file_path = os.path.splitext(filename)[0] + '.schema'
+        schema = DataSchema.extract_idv_schema_from_file(schema_file_path)
+
+        super(BinaryDataStream, self).__init__(schema)
         self._filename = filename
 
     def __repr__(self):
@@ -460,12 +461,11 @@ class BinaryDataStream(DataStream):
         (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
-    @property
-    def schema(self):
-        if not self._schema:
+    def get_dataframe_schema(self):
+        if not hasattr(self, '_df_schema') or not self._df_schema:
             head = self.head(n=1)
-            self._schema = DataSchema.read_schema(head)
-        return self._schema
+            self._df_schema = DataSchema.read_schema(head)
+        return self._df_schema
 
     def clone(self):
         """

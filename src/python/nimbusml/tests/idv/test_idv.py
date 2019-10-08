@@ -160,12 +160,62 @@ class TestIdv(unittest.TestCase):
 
         pipeline = Pipeline([ColumnDropper() << ['case', 'row_num']])
         pipeline.fit(featurized_data)
-        result = pipeline.transform(featurized_data)
+        result = pipeline.transform(featurized_data, as_binary_data_stream=True)
 
-        columns = result.columns
-        self.assertEqual(len(columns), num_columns - 2)
-        self.assertTrue('case' not in columns)
-        self.assertTrue('row_num' not in columns)
+        schema = result.schema
+        self.assertEqual(len(schema), num_columns - 2)
+        self.assertTrue('case' not in schema)
+        self.assertTrue('row_num' not in schema)
+
+    def test_schema_with_vectorized_column(self):
+        path = get_dataset('infert').as_filepath()
+        data = FileDataStream.read_csv(path)
+
+        featurization_pipeline = Pipeline([OneHotVectorizer(columns={'education': 'education'})])
+        featurization_pipeline.fit(data)
+        featurized_data = featurization_pipeline.transform(data, as_binary_data_stream=True)
+
+        # col=row_num:I8:0 col=education:R4:1-3 col=age:I8:4 col=parity:I8:5
+        # col=induced:I8:6 col=case:I8:7 col=spontaneous:I8:8 col=stratum:I8:9
+        # col=pooled.stratum:I8:10 quote+
+        schema = featurized_data.schema
+
+        self.assertEqual(len(schema), 9)
+        self.assertEqual(schema['age'].Type, 'I8')
+        self.assertEqual(schema['age'].Name, 'age')
+        self.assertEqual(schema['age'].Pos, 4)
+        self.assertEqual(schema['age'].IsVector, False)
+
+        self.assertEqual(schema['education'].Type, 'R4')
+        self.assertEqual(schema['education'].Name, 'education')
+        self.assertEqual(schema['education'].Pos, (1, 2, 3))
+        self.assertEqual(schema['education'].IsVector, True)
+
+        self.assertTrue('education.0-5yrs' not in schema)
+        self.assertTrue('education.6-11yrs' not in schema)
+        self.assertTrue('education.12+yrs' not in schema)
+
+        # col=row_num:I8:0 col=education.0-5yrs:R4:1 col=education.6-11yrs:R4:2
+        # col=education.12+yrs:R4:3 col=age:I8:4 col=parity:I8:5 col=induced:I8:6
+        # col=case:I8:7 col=spontaneous:I8:8 col=stratum:I8:9 col=pooled.stratum:I8:10
+        # quote+ header=+
+        schema = featurized_data.get_dataframe_schema()
+
+        self.assertEqual(len(schema), 11)
+        self.assertEqual(schema['age'].Type, 'I8')
+        self.assertEqual(schema['age'].Name, 'age')
+        self.assertEqual(schema['age'].Pos, 4)
+        self.assertEqual(schema['age'].IsVector, False)
+
+        self.assertTrue('education' not in schema)
+        self.assertTrue('education.0-5yrs' in schema)
+        self.assertTrue('education.6-11yrs' in schema)
+        self.assertTrue('education.12+yrs' in schema)
+
+        self.assertEqual(schema['education.0-5yrs'].Type, 'R4')
+        self.assertEqual(schema['education.0-5yrs'].Name, 'education.0-5yrs')
+        self.assertEqual(schema['education.0-5yrs'].Pos, 1)
+        self.assertEqual(schema['education.0-5yrs'].IsVector, False)
 
 
 if __name__ == '__main__':
