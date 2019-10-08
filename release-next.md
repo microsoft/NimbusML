@@ -2,47 +2,66 @@
 
 ## **New Features**
 
-- **Add initial implementation of DatasetTransformer.**
+- **Initial implementation of `csr_matrix` output support.**
 
-    [PR#240](https://github.com/microsoft/NimbusML/pull/240)
-    This transform allows a fitted transformer based model to be inserted
-    in to another `Pipeline`.
+    [PR#250](https://github.com/microsoft/NimbusML/pull/250)
+    Add support for data output in `scipy.sparse.csr_matrix` format.
 
     ```python
-    Pipeline([
-        DatasetTransformer(transform_model=transform_pipeline.model),
-        OnlineGradientDescentRegressor(label='c2', feature=['c1'])
-    ])
+    xf = OneHotVectorizer(columns={'c0':'c0', 'c1':'c1'})
+    xf.fit(train_df)
+    result = xf.transform(train_df, as_csr=True)
     ```
+
+- **Initial implementation of LpScaler.**
+
+    [PR#253](https://github.com/microsoft/NimbusML/pull/253)
+    Normalize vectors (rows) individually by rescaling them to unit norm (L2, L1 or LInf).
+    Performs the following operation on a vector X: Y = (X - M) / D, where M is mean and D
+    is either L2 norm, L1 norm or LInf norm.
+
+- **Add support for variable length vector output.**
+
+    [PR#267](https://github.com/microsoft/NimbusML/pull/267)
+    Support output of columns returned from ML.Net which contain variable length vectors.
+
+- **Save `predictor_model` when pickling a `Pipeline`.**
+
+    [PR#295](https://github.com/microsoft/NimbusML/pull/295)
+
+- **Initial implementation of the WordTokenizer transform.**
+
+    [PR#296](https://github.com/microsoft/NimbusML/pull/296)
+
+- **Add support for summary output from tree based predictors.**
+
+    [PR#298](https://github.com/microsoft/NimbusML/pull/298)
 
 ## **Bug Fixes**
 
-- **Fixed `classes_` attribute when no `y` input specified **
+- **Fixed `Pipeline.transform()` in transform only `Pipeline` fails if y column is provided **
 
-    [PR#218](https://github.com/microsoft/NimbusML/pull/218)
-    Fix a bug with the classes_ attribute when no y input is specified during fitting.
-    This addresses [issue 216](https://github.com/microsoft/NimbusML/issues/216)
+    [PR#294](https://github.com/microsoft/NimbusML/pull/294)
+    Enable calling `.transform()` on a `Pipeline` containing only transforms when the y column is provided 
 
-- **Fixed Add NumSharp.Core.dll **
+- **Fix issue when using `predict_proba` or `decision_function` with combined models.**
 
-    [PR#220](https://github.com/microsoft/NimbusML/pull/220)
-    Fixed a bug that prevented running TensorFlowScorer.
-    This addresses [issue 219](https://github.com/microsoft/NimbusML/issues/219)
+    [PR#272](https://github.com/microsoft/NimbusML/pull/272)
 
-- **Fixed Enable scoring of ML.NET models saved with new TransformerChain format **
+- **Fix `Pipeline._extract_classes_from_headers` was not checking for valid steps.**
 
-    [PR#230](https://github.com/microsoft/NimbusML/pull/230)
-    Fixed error loading a model that was saved with mlnet auto-train.
-    This addresses [issue 201](https://github.com/microsoft/NimbusML/issues/201)
+    [PR#292](https://github.com/microsoft/NimbusML/pull/292)
 
-- **Fixed Pass python path to Dprep package **
+- **Fix casing for the installPythonPackages build.sh argument.**
 
-    [PR#232](https://github.com/microsoft/NimbusML/pull/232)
-    Enable passing python executable to dataprep package, so dataprep can execute python transformations
+    [PR#256](https://github.com/microsoft/NimbusML/pull/256)
 
 ## **Breaking Changes**
 
-None.
+- **Removed `y` parameter from `Pipeline.transform()`**
+
+    [PR#294](https://github.com/microsoft/NimbusML/pull/294)
+    Removed `y` parameter from `Pipeline.transform()` as it is not needed nor used for transforming data with a fitted `Pipeline`.
 
 ## **Enhancements**
 

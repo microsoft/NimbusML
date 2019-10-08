@@ -279,13 +279,14 @@ then
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq
-    elif [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
-    then
-        "${PythonExe}" -m pip install --upgrade pytest-remotedata
-    elif [ ${PythonVersion} = 3.7 ]
-    then
+    else
+        if [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
+        then
+            "${PythonExe}" -m pip install --upgrade pytest-remotedata
+        fi
+
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.12"
-	fi
+    fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 fi

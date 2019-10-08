@@ -2254,7 +2254,6 @@ class Pipeline:
     def transform(
             self,
             X,
-            y=None,
             verbose=0,
             as_binary_data_stream=False,
             **params):
@@ -2275,18 +2274,7 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before test("
                 ").")
 
-        if y is not None:
-            if len(self.steps) > 0:
-                last_node = self.last_node
-                if last_node.type == 'transform':
-                    raise ValueError(
-                        "Pipeline needs a trainer as last step for test()")
-
-        X, y_temp, columns_renamed, feature_columns, label_column, \
-            schema, weights, weight_column = self._preprocess_X_y(X, y)
-
-        if not isinstance(y, (str, tuple)):
-            y = y_temp
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
 
         all_nodes = []
 
@@ -2409,53 +2397,12 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
-        self._validate_model_summary(summary_data)
         self.model_summary = summary_data
 
         # stop the clock
         self._run_time = time.time() - start_time
         self._write_csv_time = graph._write_csv_time
         return self.model_summary
-
-    @trace
-    def _validate_model_summary(self, model_summary):
-        """
-        Validates model summary has correct format
-
-        :param model_summary: model summary dataframes
-
-        """
-        if not isinstance(model_summary, (DataFrame)):
-            raise TypeError(
-                "Unexpected type {0} for model_summary, type DataFrame "
-                "is expected ".format(
-                    type(model_summary)))
-
-        col_names = [
-            'Bias',
-            'ClassNames',
-            'Coefficients',
-            'PredictorName',
-            'Summary',
-            'VectorName'
-        ]
-
-        col_name_prefixes = [
-            'Weights',
-            'Gains',
-            'Support vectors.',
-            'VectorData'
-        ]
-
-        for col in model_summary.columns:
-            if col in col_names:
-                pass
-            elif any([col.startswith(pre) for pre in col_name_prefixes]):
-                pass
-            else:
-                raise TypeError(
-                    "Unsupported '{0}' column is in model_summary".format(
-                        col))
 
     @trace
     def save_model(self, dst):
