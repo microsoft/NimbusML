@@ -183,12 +183,11 @@ class TestIdv(unittest.TestCase):
         self.assertEqual(len(schema), 9)
         self.assertEqual(schema['age'].Type, 'I8')
         self.assertEqual(schema['age'].Name, 'age')
-        self.assertEqual(schema['age'].Pos, 4)
         self.assertEqual(schema['age'].IsVector, False)
 
         self.assertEqual(schema['education'].Type, 'R4')
         self.assertEqual(schema['education'].Name, 'education')
-        self.assertEqual(schema['education'].Pos, (1, 2, 3))
+        self.assertEqual(len(schema['education'].Pos), 3)
         self.assertEqual(schema['education'].IsVector, True)
 
         self.assertTrue('education.0-5yrs' not in schema)
@@ -204,7 +203,6 @@ class TestIdv(unittest.TestCase):
         self.assertEqual(len(schema), 11)
         self.assertEqual(schema['age'].Type, 'I8')
         self.assertEqual(schema['age'].Name, 'age')
-        self.assertEqual(schema['age'].Pos, 4)
         self.assertEqual(schema['age'].IsVector, False)
 
         self.assertTrue('education' not in schema)
@@ -214,7 +212,6 @@ class TestIdv(unittest.TestCase):
 
         self.assertEqual(schema['education.0-5yrs'].Type, 'R4')
         self.assertEqual(schema['education.0-5yrs'].Name, 'education.0-5yrs')
-        self.assertEqual(schema['education.0-5yrs'].Pos, 1)
         self.assertEqual(schema['education.0-5yrs'].IsVector, False)
 
 
