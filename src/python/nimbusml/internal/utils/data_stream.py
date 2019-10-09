@@ -402,10 +402,14 @@ class BinaryDataStream(DataStream):
     Data accessor for IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
     """
 
-    def __init__(self, filename):
-        # REVIEW: would be good to figure out a way to know the schema of the
-        # binary IDV.
-        super(BinaryDataStream, self).__init__(DataSchema(""))
+    def __init__(self, filename=None):
+        if filename:
+            schema_file_path = os.path.splitext(filename)[0] + '.schema'
+            schema = DataSchema.extract_idv_schema_from_file(schema_file_path)
+        else:
+            schema = DataSchema("")
+
+        super(BinaryDataStream, self).__init__(schema)
         self._filename = filename
 
     def __repr__(self):
@@ -460,6 +464,12 @@ class BinaryDataStream(DataStream):
         (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
+    def get_dataframe_schema(self):
+        if not hasattr(self, '_df_schema') or not self._df_schema:
+            head = self.head(n=1)
+            self._df_schema = DataSchema.read_schema(head)
+        return self._df_schema
+
     def clone(self):
         """
         Copy/clone the object.
@@ -479,7 +489,7 @@ class DprepDataStream(BinaryDataStream):
     def __init__(self, dataflow=None, filename=None):
         if dataflow is None and filename is None:
             raise ValueError('Both dataflow object and filename are None')
-        super(DprepDataStream, self).__init__(DataSchema(""))
+        super(DprepDataStream, self).__init__()
         if dataflow is not None:
             (fd, filename) = tempfile.mkstemp(suffix='.dprep')
             fl = os.fdopen(fd, "wt")

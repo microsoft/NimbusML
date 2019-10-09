@@ -567,9 +567,12 @@ class Pipeline:
             inputs = OrderedDict([(file_data.replace('$', ''), '')])
 
         # connect transform node inputs/outputs
-        if feature_columns is None and not isinstance(X, BinaryDataStream):
+        if feature_columns is None:
             if schema is None:
-                schema = DataSchema.read_schema(X)
+                if isinstance(X, BinaryDataStream):
+                    schema = X.schema
+                else:
+                    schema = DataSchema.read_schema(X)
             feature_columns = [c.Name for c in schema]
             if label_column:
                 # if label_column is a string, remove it from
