@@ -173,6 +173,8 @@ if "%AzureBuild%" == "True" (
     echo ##vso[task.prependpath]%_dotnetRoot%
 )
 
+set LOCAL_NUGET_PACKAGES_DIR=.\local-nuget-packages
+
 :: Build managed code
 echo ""
 echo "#################################"
@@ -311,6 +313,7 @@ copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\py
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
 	:: remove dataprep dlls as its not supported in python 2.7
 	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
 	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
@@ -321,6 +324,7 @@ if %PythonVersion% == 2.7 (
 	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
 ) else (
     for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
 )
 
 if "%DebugBuild%" == "True" (

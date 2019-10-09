@@ -175,6 +175,8 @@ then
     echo "Installing dotnet SDK ... "
     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 2.1.701 -InstallDir ./cli
 
+    export LOCAL_NUGET_PACKAGES_DIR=./local-nuget-packages
+
     # Build managed code
     echo "Building managed code ... "
     _dotnet="${__currentScriptDir}/cli/dotnet"
@@ -213,6 +215,7 @@ then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
 		ext=*.so
 		if [ "$(uname -s)" = "Darwin" ]
 		then 
@@ -241,6 +244,7 @@ then
 		cat build/${libs_txt} | while read i; do
 			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 		done
+        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
 	
     if [[ $__configuration = Dbg* ]]
