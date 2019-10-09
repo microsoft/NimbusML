@@ -56,7 +56,9 @@ class TestCsrInput(unittest.TestCase):
         assert_equal(len(predictions), 248)
         assert_equal(len(predictions[0]), 2)
 
-
+        # get feature contributions
+        fcc = predictor_pipeline.get_feature_contributions(sparse_featurized_data)
+        assert_equal(fcc.shape, (248,30))
 
 if __name__ == '__main__':
     unittest.main()

@@ -149,11 +149,13 @@ namespace Microsoft.ML.DotNetBridge
                 var inputColumnName = inputData.Schema[0].Name;
                 var trainingSchema = input.PredictorModel.GetTrainingSchema(host);
                 // get feature vector item type.
-                var requiredType = ((DataViewSchema.Column)trainingSchema.Feature).Type.GetItemType().RawType;
+                var trainingFeatureColumn = (DataViewSchema.Column)trainingSchema.Feature;
+                var requiredType = trainingFeatureColumn.Type.GetItemType().RawType;
+                var featuresColumnName = trainingFeatureColumn.Name;
                 predictor = input.PredictorModel.Predictor;
                 var xf = new TypeConvertingTransformer(host,
-                    new TypeConvertingEstimator.ColumnOptions(inputColumnName, requiredType, inputColumnName)).Transform(inputData);
-                data = new RoleMappedData(xf, null, inputColumnName);
+                    new TypeConvertingEstimator.ColumnOptions(featuresColumnName, requiredType, inputColumnName)).Transform(inputData);
+                data = new RoleMappedData(xf, null, featuresColumnName);
             }
 
             IDataView scoredPipe;
