@@ -8,7 +8,6 @@ import tempfile
 
 import numpy as np
 import pandas as pd
-import azureml.dataprep as dprep
 from nimbusml import Pipeline, DprepDataStream
 from nimbusml.preprocessing.missing_values import Handler
 
@@ -96,7 +95,10 @@ class TestDateTimeDataType(unittest.TestCase):
 
         os.remove(file_name)
 
+    @unittest.skipIf(sys.version_info[:2] == (2, 7), "azureml-dataprep is not installed.")
     def test_dprep_datastream(self):
+        import azureml.dataprep as dprep
+
         dates = ["2018-01-02 00:00:00", "2018-02-01 10:00:00"]
         col2 = ['0', '1']
         label_array = np.repeat([0], 2)
