@@ -60,6 +60,8 @@ from .internal.entrypoints.transforms_modelcombiner import \
     transforms_modelcombiner
 from .internal.entrypoints.transforms_optionalcolumncreator import \
     transforms_optionalcolumncreator
+from .internal.entrypoints.transforms_permutationfeatureimportance import \
+    transforms_permutationfeatureimportance
 from .internal.entrypoints \
     .transforms_predictedlabelcolumnoriginalvalueconverter import \
     transforms_predictedlabelcolumnoriginalvalueconverter
@@ -1738,7 +1740,7 @@ class Pipeline:
             to report.
         :param bottom: The number of negative contributions with highest
             magnitude to report.
-        :return: dataframe of containing the raw data, predicted label, score,
+        :return: dataframe containing the raw data, predicted label, score,
             probabilities, and feature contributions.
         """
         self.verbose = verbose
@@ -1855,6 +1857,181 @@ class Pipeline:
 
         return out_data
     
+    @trace
+    def permutation_feature_importance(self, X, number_of_examples=None,
+                                       permutation_count=1,
+                                       filter_zero_weight_features=False,
+                                       verbose=0, as_binary_data_stream=False,
+                                       **params):
+        """
+        Permutation feature importance (PFI) is a technique to determine the
+        global importance of features in a trained machine learning model. PFI
+        is a simple yet powerful technique motivated by Breiman in section 10
+        of his Random Forests paper (Machine Learning, 2001). The advantage of
+        the PFI method is that it is model agnostic - it works with any model
+        that can be evaluated - and it can use any dataset, not just the
+        training set, to compute feature importance metrics.
+        
+        PFI works by taking a labeled dataset, choosing a feature, and
+        permuting the values for that feature across all the examples, so that
+        each example now has a random value for the feature and the original
+        values for all other features. The evaluation metric (e.g. NDCG) is
+        then calculated for this modified dataset, and the change in the
+        evaluation metric from the original dataset is computed. The larger the
+        change in the evaluation metric, the more important the feature is to
+        the model, i.e. the most important features are those that the model is
+        most sensitive to. PFI works by performing this permutation analysis
+        across all the features of a model, one after another.
+
+        Note that for increasing metrics (e.g. AUC, accuracy, R-Squared, NDCG),
+        the most important features will be those with the highest negative
+        mean change in the metric. Conversely, for decreasing metrics (e.g.
+        Mean Squared Error, Log loss), the most important features will be
+        those with the highest positive mean change in the metric.
+
+        PFI is supported for binary classifiers, classifiers, regressors, and
+        rankers.
+        
+        The mean changes and statndard errors of the means are evaluated for
+        the following metrics are evaluated for PFI:
+
+        * Binary Classification:
+
+            * Area under ROC curve (AUC)
+            * Accuracy
+            * Positive precision
+            * Positive recall
+            * Negative precision
+            * Negative recall
+            * F1 score
+            * Area under Precision-Recall curve (AUPRC)
+
+        * Multiclass classification:
+
+            * Macro accuracy
+            * Micro accuracy
+            * Log loss
+            * Log loss reduction
+            * Top k accuracy
+            * Per-class log loss
+
+        * Regression:
+        
+            * Mean absolute error (MAE)
+            * Mean squared error (MSE)
+            * Root mean squared error (RMSE)
+            * Loss function
+            * R-Squared
+
+        * Ranking
+
+            * Discounted cumulative gains (DCG) @1, @2, and @3
+            * Normalized discounted cumulative gains (NDCG) @1, @2, and @3
+
+        **Reference**
+
+            `Breiman, L. Random Forests. Machine Learning (2001) 45: 5.
+            <https://link.springer.com/content/pdf/10.1023%2FA%3A1010933404324.pdf>`_
+
+        :param X: {array-like [n_samples, n_features],
+            :py:class:`nimbusml.FileDataStream` }
+        :param number_of_examples: Limit the number of examples to evaluate on.
+            ``'None'`` means all examples in the dataset are used.
+        :param permutation_count: The number of permutations to perform.
+        :filter_zero_weight_features: Pre-filter features with zero weight. PFI
+            will not be evaluated on these features.
+        :return: dataframe containing the mean change in evaluation metrics and
+            standard error of the mean for each feature. Features with the
+            largest change in a metric are the most important in the model with
+            respect to that metric.
+        """
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before test().")
+
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
+
+        all_nodes = []
+        inputs = dict([('data', ''), ('predictor_model', self.model)])
+        if isinstance(X, FileDataStream):
+            importtext_node = data_customtextloader(
+                input_file="$file",
+                data="$data",
+                custom_schema=schema.to_string(
+                    add_sep=True))
+            all_nodes = [importtext_node]
+            inputs = dict([('file', ''), ('predictor_model', self.model)])
+
+        pfi_node = transforms_permutationfeatureimportance(
+            data="$data",
+            predictor_model="$predictor_model",
+            metrics="$output_data",
+            permutation_count=permutation_count,
+            number_of_examples_to_use=number_of_examples,
+            use_feature_weight_filter=filter_zero_weight_features)
+        
+        all_nodes.extend([pfi_node])
+
+        outputs = dict(output_data="")
+
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
+
+        graph = Graph(
+            inputs,
+            outputs,
+            data_output_format,
+            *all_nodes)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, out_data, out_metrics, _) = graph.run(
+                X=X,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                telemetry_info=telemetry_info,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        out_data = self._fix_pfi_columns(out_data)
+
+        return out_data
+
+    def _fix_pfi_columns(self, data):
+        cols = []
+        for i in range(len(data.columns)):
+            if 'StdErr' in data.columns.values[i]:
+                if data.columns.values[i][:15] == 'PerClassLogLoss' :
+                    cols.append('PerClassLogLoss' + \
+                        data.columns.values[i][21:] + '.StdErr')
+                elif data.columns.values[i][:10] == 'Discounted':
+                    pos = int(data.columns.values[i][-1]) + 1
+                    cols.append('DCG@' + str(pos) + '.StdErr')
+                elif data.columns.values[i][:10] == 'Normalized':
+                    pos = int(data.columns.values[i][-1]) + 1
+                    cols.append('NDCG@' + str(pos) + '.StdErr')
+                else:
+                    cols.append(data.columns.values[i][:-6] + '.StdErr')
+            else:
+                if data.columns.values[i][:10] == 'Discounted':
+                    pos = int(data.columns.values[i][26]) + 1
+                    cols.append('DCG@' + str(pos))
+                elif data.columns.values[i][:10] == 'Normalized':
+                    pos = int(data.columns.values[i][36]) + 1
+                    cols.append('NDCG@' + str(pos))
+                else:
+                    cols.append(data.columns.values[i])
+        data.columns = cols
+        
+        return data
+
     @trace
     def _predict(self, X, y=None,
                  evaltype='auto', group_id=None,
