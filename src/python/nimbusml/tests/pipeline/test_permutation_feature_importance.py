@@ -51,7 +51,7 @@ class TestPermutationFeatureImportance(unittest.TestCase):
             ToKey(columns=['group']),
             LightGbmRanker(feature=['Class', 'dep_day', 'duration'],
                            label='rank', group_id='group',
-                           random_state=0)])
+                           random_state=0, number_of_threads=1)])
         self.ranker_model = ranker_pipeline.fit(self.ranking_data)
         self.ranker_pfi = self.ranker_model.permutation_feature_importance(self.ranking_data)
 

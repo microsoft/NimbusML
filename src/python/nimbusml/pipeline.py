@@ -2005,23 +2005,30 @@ class Pipeline:
         return out_data
 
     def _fix_pfi_columns(self, data):
-        if 'DiscountedCumulativeGains.0' in data.columns:
-            data.columns = ['FeatureName', 'DCG@1', 'DCG@2', 'DCG@3',
-                            'DCG@1.StdErr', 'DCG@2.StdErr', 'DCG@3.StdErr',
-                            'NDCG@1', 'NDCG@2', 'NDCG@3',
-                            'NDCG@1.StdErr', 'NDCG@2.StdErr', 'NDCG@3.StdErr']
-        else:
-            cols = []
-            for i in range(len(data.columns)):
-                if 'StdErr' in data.columns.values[i]:
-                    if data.columns.values[i][:15] == 'PerClassLogLoss' :
-                        cols.append('PerClassLogLoss' + \
-                            data.columns.values[i][21:] + '.StdErr')
-                    else:
-                        cols.append(data.columns.values[i][:-6] + '.StdErr')
+        cols = []
+        for i in range(len(data.columns)):
+            if 'StdErr' in data.columns.values[i]:
+                if data.columns.values[i][:15] == 'PerClassLogLoss' :
+                    cols.append('PerClassLogLoss' + \
+                        data.columns.values[i][21:] + '.StdErr')
+                elif data.columns.values[i][:10] == 'Discounted':
+                    pos = int(data.columns.values[i][-1]) + 1
+                    cols.append('DCG@' + str(pos) + '.StdErr')
+                elif data.columns.values[i][:10] == 'Normalized':
+                    pos = int(data.columns.values[i][-1]) + 1
+                    cols.append('NDCG@' + str(pos) + '.StdErr')
+                else:
+                    cols.append(data.columns.values[i][:-6] + '.StdErr')
+            else:
+                if data.columns.values[i][:10] == 'Discounted':
+                    pos = int(data.columns.values[i][26]) + 1
+                    cols.append('DCG@' + str(pos))
+                elif data.columns.values[i][:10] == 'Normalized':
+                    pos = int(data.columns.values[i][36]) + 1
+                    cols.append('NDCG@' + str(pos))
                 else:
                     cols.append(data.columns.values[i])
-            data.columns = cols        
+        data.columns = cols
         
         return data
 
