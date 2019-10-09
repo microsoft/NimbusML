@@ -35,7 +35,15 @@ namespace Microsoft.ML.DotNetBridge
             var extension = Path.GetExtension(path);
             IDataSaver saver;
             if (extension != ".csv" && extension != ".tsv" && extension != ".txt")
+            {
                 saver = new BinarySaver(host, new BinarySaver.Arguments());
+
+                var schemaFilePath = Path.GetDirectoryName(path) +
+                                     Path.DirectorySeparatorChar +
+                                     Path.GetFileNameWithoutExtension(path) +
+                                     ".schema";
+                SaveIdvSchemaToFile(idv, schemaFilePath, host);
+            }
             else
             {
                 var saverArgs = new TextSaver.Arguments
@@ -53,6 +61,25 @@ namespace Microsoft.ML.DotNetBridge
             {
                 saver.SaveData(fs, idv, Utils.GetIdentityPermutation(idv.Schema.Count)
                     .Where(x => !idv.Schema[x].IsHidden && saver.IsColumnSavable(idv.Schema[x].Type))
+                    .ToArray());
+            }
+        }
+
+        private static void SaveIdvSchemaToFile(IDataView idv, string path, IHost host)
+        {
+            var emptyDataView = new EmptyDataView(host, idv.Schema);
+            var saverArgs = new TextSaver.Arguments
+            {
+                OutputHeader = false,
+                OutputSchema = true,
+                Dense = true
+            };
+            IDataSaver saver = new TextSaver(host, saverArgs);
+
+            using (var fs = File.OpenWrite(path))
+            {
+                saver.SaveData(fs, emptyDataView, Utils.GetIdentityPermutation(emptyDataView.Schema.Count)
+                    .Where(x => !emptyDataView.Schema[x].IsHidden && saver.IsColumnSavable(emptyDataView.Schema[x].Type))
                     .ToArray());
             }
         }

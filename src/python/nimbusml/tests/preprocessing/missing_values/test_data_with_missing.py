@@ -98,7 +98,8 @@ class TestDataWithMissing(unittest.TestCase):
         assert_equal(result.loc[2, 'f5'], True)
         result.loc[2, 'f5'] = False
         result = ~result
-        self.assertTrue(result.all(axis=None))
+        for val in result.all().tolist():
+            self.assertTrue(val)
 
         # Check Filter
         xf = Filter()
