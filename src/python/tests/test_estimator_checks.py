@@ -16,6 +16,7 @@ from nimbusml.ensemble import LightGbmRanker
 from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
+from nimbusml.linear_model import SgdBinaryClassifier
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
@@ -201,6 +202,7 @@ INSTANCES = {
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'SgdBinaryClassifier': SgdBinaryClassifier(number_of_threads=1, shuffle=False),
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
     'IidSpikeDetector': IidSpikeDetector(columns=['F0']),

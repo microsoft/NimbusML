@@ -40,6 +40,7 @@ PyColumnBase::creation_map* PyColumnBase::CreateSingleMap()
     map->insert(creation_map_entry(R4, CreateSingle<float>));
     map->insert(creation_map_entry(R8, CreateSingle<double>));
     map->insert(creation_map_entry(TX, CreateSingle<std::string>));
+    map->insert(creation_map_entry(DT, CreateSingle<CxInt64>));
     return map;
 }
 
@@ -159,6 +160,19 @@ void PyColumnSingle<T>::AddToDict(bp::dict& dict,
             np::dtype::get_builtin<T>(),
             bp::make_tuple(_pData->size()),
             bp::make_tuple(sizeof(T)), bp::object(h));
+    }
+    break;
+    case DataKind::DT:
+    {
+        bp::handle<> h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
+        np::ndarray npdata = np::from_data(
+            data,
+            np::dtype::get_builtin<T>(),
+            bp::make_tuple(_pData->size()),
+            bp::make_tuple(sizeof(T)), bp::object(h));
+
+        dict[name] = bp::dict();
+        dict[name]["..DateTime"] = npdata;
     }
     break;
     }

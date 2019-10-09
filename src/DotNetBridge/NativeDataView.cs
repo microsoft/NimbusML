@@ -142,6 +142,10 @@ namespace Microsoft.ML.DotNetBridge
                         case InternalDataKind.Text:
                             columns.Add(new TextColumn(pdata, pdata->getters[c], c, name));
                             break;
+                        case InternalDataKind.DT:
+                            if (pdata->vecCards[c] == -1)
+                                columns.Add(new DateTimeColumn(pdata, pdata->getters[c], c, name));
+                            break;
                     }
                 }
 
@@ -857,6 +861,31 @@ namespace Microsoft.ML.DotNetBridge
                     Contracts.Check(Data != null, AlreadyDisposed);
                     Contracts.Assert(0 <= index);
                     _getter(Data, ColIndex, index, out value);
+                }
+
+                public override void Dispose()
+                {
+                    _getter = null;
+                    base.Dispose();
+                }
+            }
+
+            private sealed class DateTimeColumn : Column<DateTime>
+            {
+                private I8Getter _getter;
+
+                public DateTimeColumn(DataSourceBlock* data, void* getter, int colIndex, string name)
+                    : base(data, colIndex, name, DateTimeDataViewType.Instance)
+                {
+                    _getter = MarshalDelegate<I8Getter>(getter);
+                }
+
+                public override void CopyOut(long index, Batch batch, ref DateTime value)
+                {
+                    Contracts.Check(Data != null, AlreadyDisposed);
+                    Contracts.Assert(0 <= index);
+                    _getter(Data, ColIndex, index, out var val);
+                    value = DateTimeOffset.FromUnixTimeMilliseconds(val).UtcDateTime;
                 }
 
                 public override void Dispose()
