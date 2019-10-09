@@ -19,6 +19,7 @@ from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.preprocessing import TensorFlowScorer, DateTimeSplitter
 from nimbusml.linear_model import SgdBinaryClassifier
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
+from nimbusml.preprocessing.normalization import RobustScaler
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
                                  SsaForecaster)
@@ -160,6 +161,8 @@ OMITTED_CHECKS = {
         'check_estimators_overwrite_params, \
         check_estimator_sparse_data, check_estimators_pickle, '
         'check_estimators_nan_inf',
+    # RobustScaler does not support vectorized types
+    'RobustScaler': 'check_estimator_sparse_data',
     'ToKeyImputer': 'check_estimator_sparse_data',
     # Most of these skipped tests are failing because the checks
     # require numerical types. ToString returns object types.
@@ -216,6 +219,7 @@ INSTANCES = {
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'RobustScaler': RobustScaler(scale=False),
     'SgdBinaryClassifier': SgdBinaryClassifier(number_of_threads=1, shuffle=False),
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
