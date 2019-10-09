@@ -40,8 +40,8 @@ from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
 from .internal.entrypoints.models_schema import models_schema
-from .internal.entrypoints.transforms_datasetscorer import \
-    transforms_datasetscorer
+from .internal.entrypoints.transforms_datasetscorerex import \
+    transforms_datasetscorerex
 from .internal.entrypoints.transforms_datasettransformscorer import \
     transforms_datasettransformscorer
 from .internal.entrypoints.transforms_featurecombiner import \
@@ -1772,7 +1772,7 @@ class Pipeline:
             all_nodes = [importtext_node]
             inputs = dict([('file', ''), ('predictor_model', self.model)])
 
-        score_node = transforms_datasetscorer(
+        score_node = transforms_datasetscorerex(
             data="$data",
             predictor_model="$predictor_model",
             scored_data="$scoredvectordata")
@@ -1815,7 +1815,7 @@ class Pipeline:
 
         return out_data
 
-    def get_schema(self, verbose=0, **params):
+    def get_output_columns(self, verbose=0, **params):
         """
         Returns the output list of columns for the fitted model.
         :return: list .
@@ -2102,7 +2102,7 @@ class Pipeline:
                 all_nodes = [importtext_node]
                 inputs = dict([('file', ''), ('predictor_model', self.model)])
 
-            score_node = transforms_datasetscorer(
+            score_node = transforms_datasetscorerex(
                 data="$data",
                 predictor_model="$predictor_model",
                 scored_data="$scoredVectorData")
