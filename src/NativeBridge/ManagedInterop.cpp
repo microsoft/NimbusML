@@ -81,6 +81,7 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
         case I4:
             _vset.push_back((void*)&SetI4);
             break;
+        case DT:
         case I8:
             _vset.push_back((void*)&SetI8);
             break;
@@ -106,7 +107,6 @@ void EnvironmentBlock::DataSinkCore(const DataViewBlock * pdata)
             _vset.push_back((void*)&SetTX);
             break;
         case TS:  // tbd
-        case DT:  // tbd
         case DZ:  // tbd
         default:
             throw std::invalid_argument("data type is not supported " + std::to_string(kind));
@@ -259,8 +259,10 @@ bp::dict EnvironmentBlock::GetData()
             AddToDict(std::string);
             delete column;
             break;
-        case TS:
         case DT:
+            AddToDict(CxInt64);
+            break;
+        case TS:
         case DZ:
         default:
             throw std::invalid_argument("data type is not supported " + std::to_string(kind));

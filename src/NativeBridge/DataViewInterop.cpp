@@ -98,6 +98,10 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                 kind = R8;
                 pgetter = (void*)&GetR8;
                 break;
+            case (ML_PY_DATETIME):
+                kind = DT;
+                pgetter = (void*)&GetI8;
+                break;
             default:
                 throw std::invalid_argument("column " + colName + " has unsupported type");
             }
