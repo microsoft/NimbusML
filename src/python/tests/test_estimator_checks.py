@@ -8,6 +8,7 @@ run check_estimator tests
 import json
 import os
 
+from nimbusml.decomposition import FactorizationMachineBinaryClassifier
 from nimbusml.ensemble import EnsembleClassifier
 from nimbusml.ensemble import EnsembleRegressor
 from nimbusml.ensemble import LightGbmBinaryClassifier
@@ -194,6 +195,7 @@ NOBINARY_CHECKS = [
 INSTANCES = {
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
+    'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
