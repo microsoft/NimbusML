@@ -1812,7 +1812,7 @@ class Pipeline:
 
         return out_data
 
-    def get_schema(self, verbose=0, **params):
+    def get_output_columns(self, verbose=0, **params):
         """
         Returns the output list of columns for the fitted model.
         :return: list .

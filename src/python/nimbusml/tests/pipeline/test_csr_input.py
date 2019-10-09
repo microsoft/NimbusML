@@ -27,13 +27,13 @@ class TestCsrInput(unittest.TestCase):
         featurization_pipeline = Pipeline([OneHotVectorizer(columns={'education': 'education'})])
         featurization_pipeline.fit(data)
         # Note: the relative order of all columns is still the same as in raw data.
-        #print(featurization_pipeline.get_schema())
+        #print(featurization_pipeline.get_output_columns())
 
         # need to remove extra columns before getting csr_matrix featurized data as it wont have column name information.
         csr_featurization_pipeline = Pipeline([DatasetTransformer(featurization_pipeline.model), ColumnDropper() << ['case', 'row_num']])
         sparse_featurized_data = csr_featurization_pipeline.fit_transform(data, as_csr=True)
         # Note: the relative order of all columns is still the same.
-        #print(csr_featurization_pipeline.get_schema())
+        #print(csr_featurization_pipeline.get_output_columns())
 
         # train learner
         # Note: order & number of feature columns for learner (parameter 'feature') should be the same as in csr_matrix above
@@ -49,7 +49,7 @@ class TestCsrInput(unittest.TestCase):
         predictor_pipeline = Pipeline()
         predictor_pipeline.load_model(training_pipeline.predictor_model)
         # see the order of Feature.* columns that get passed to learner algo
-        #print(predictor_pipeline.get_schema())
+        #print(predictor_pipeline.get_output_columns())
 
         # use just a learner model on csr_matrix featurized data
         predictions = predictor_pipeline.predict_proba(sparse_featurized_data)
