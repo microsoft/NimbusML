@@ -12,6 +12,22 @@
     xf.fit(train_df)
     result = xf.transform(train_df, as_csr=True)
     ```
+    
+- **Permutation Feature Importance for model interpretibility.**
+
+    [PR#279](https://github.com/microsoft/NimbusML/pull/279)
+    Adds `permutation_feature_importance()` method to `Pipeline` and
+    predictor estimators, enabling evaluation of model-wide feature
+    importances on any dataset with same schema as the dataset used
+    to fit the `Pipeline`.
+
+    ```python
+    pipe = Pipeline([
+        LogisticRegressionBinaryClassifier(label='label', feature=['feature'])
+    ])
+    pipe.fit(data)
+    pipe.permutation_feature_importance(data)
+    ```
 
 - **Initial implementation of LpScaler.**
 

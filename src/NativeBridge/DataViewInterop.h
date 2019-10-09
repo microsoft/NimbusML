@@ -545,5 +545,6 @@ enum ML_PY_TYPE_MAP_ENUM {
     ML_PY_CAT = 'c',
     ML_PY_TEXT = 't',
     ML_PY_UNICODE = 'u',
+    ML_PY_DATETIME = 'z',
     ML_PY_UNSUPPORTED = 'x'
 };

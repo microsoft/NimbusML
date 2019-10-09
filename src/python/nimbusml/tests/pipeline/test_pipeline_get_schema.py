@@ -28,7 +28,7 @@ class TestPipelineGetSchema(unittest.TestCase):
         pipeline.fit(df)
         df = pipeline.transform(df)
 
-        schema = pipeline.get_schema()
+        schema = pipeline.get_output_columns()
 
         self.assertTrue('c1' in schema)
         self.assertTrue('c2' in schema)
@@ -39,7 +39,7 @@ class TestPipelineGetSchema(unittest.TestCase):
         pipeline = Pipeline([OneHotVectorizer() << 'c0'])
         pipeline.fit(train_df)
 
-        schema = pipeline.get_schema()
+        schema = pipeline.get_output_columns()
 
         self.assertTrue('c0.a' in schema)
         self.assertTrue('c0.b' in schema)
@@ -55,7 +55,7 @@ class TestPipelineGetSchema(unittest.TestCase):
         pipeline.fit(df)
 
         try:
-            schema = pipeline.get_schema()
+            schema = pipeline.get_output_columns()
         except Exception as e:
             pass
         else:

@@ -2,7 +2,7 @@
 Microsoft Machine Learning for Python
 """
 
-__version__ = '1.4.2'
+__version__ = '1.5.0'
 
 # CoreCLR version of MicrosoftML is built on Windows.
 # But file permissions are not preserved when it's copied to Linux.
