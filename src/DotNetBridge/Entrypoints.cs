@@ -109,6 +109,24 @@ namespace Microsoft.ML.DotNetBridge
             public TransformModel ScoringTransform;
         }
 
+        private static bool AreSchemasCompatible(DataViewSchema schema1, DataViewSchema schema2)
+        {
+            if (schema1 == null)
+                return schema2 == null;
+            if (schema2 == null)
+                return schema1 == null;
+            if (schema1.Count != schema2.Count)
+                return false;
+
+            for (int i = 0; i < schema1.Count; i++)
+            {
+                if(schema1[i].Type != schema2[i].Type)
+                    return false;
+            }
+
+            return true;
+        }
+
         [TlcModule.EntryPoint(Name = "Transforms.DatasetScorerEx", Desc = "Score a dataset with a predictor model")]
         public static ScoringTransformOutput Score(IHostEnvironment env, ScoringTransformInput input)
         {
@@ -117,19 +135,24 @@ namespace Microsoft.ML.DotNetBridge
             host.CheckValue(input, nameof(input));
             EntryPointUtils.CheckInputArgs(host, input);
 
-            var inputData = input.Data;
             RoleMappedData data;
             IPredictor predictor;
-            try
+            var inputData = input.Data;
+            if (AreSchemasCompatible(inputData.Schema, input.PredictorModel.TransformModel.InputSchema))
             {
                 input.PredictorModel.PrepareData(host, inputData, out data, out predictor);
             }
-            catch (Exception)
+            else // use only trainer model.
             {
+                // feature vector provided only.
+                host.Assert(inputData.Schema.Count == 1);
                 var inputColumnName = inputData.Schema[0].Name;
+                var trainingSchema = input.PredictorModel.GetTrainingSchema(host);
+                // get feature vector item type.
+                var requiredType = ((DataViewSchema.Column)trainingSchema.Feature).Type.GetItemType().RawType;
                 predictor = input.PredictorModel.Predictor;
-                var xf = new TypeConvertingTransformer(host, 
-                    new TypeConvertingEstimator.ColumnOptions(inputColumnName, DataKind.Single, inputColumnName)).Transform(inputData);
+                var xf = new TypeConvertingTransformer(host,
+                    new TypeConvertingEstimator.ColumnOptions(inputColumnName, requiredType, inputColumnName)).Transform(inputData);
                 data = new RoleMappedData(xf, null, inputColumnName);
             }
 
