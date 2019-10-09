@@ -25,7 +25,8 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         binary_pipeline = Pipeline([
             OneHotVectorizer(columns=['education']),
             LogisticRegressionBinaryClassifier(
-                feature=['age', 'education'], label='label')])
+                feature=['age', 'education'], label='label',
+                number_of_threads=1)])
         self.binary_model = binary_pipeline.fit(self.classification_data)
         self.binary_pfi = self.binary_model.permutation_feature_importance(self.classification_data)
         classifier_pipeline = Pipeline([
@@ -49,7 +50,8 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         ranker_pipeline = Pipeline([
             ToKey(columns=['group']),
             LightGbmRanker(feature=['Class', 'dep_day', 'duration'],
-                           label='rank', group_id='group')])
+                           label='rank', group_id='group',
+                           random_state=0)])
         self.ranker_model = ranker_pipeline.fit(self.ranking_data)
         self.ranker_pfi = self.ranker_model.permutation_feature_importance(self.ranking_data)
 
@@ -60,7 +62,7 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         assert_almost_equal(self.binary_pfi['NegativePrecision'].sum(), -0.0139899, 6)
         assert_almost_equal(self.binary_pfi['NegativeRecall'].sum(), -0.00779221, 6)
         assert_almost_equal(self.binary_pfi['F1Score'].sum(), -0.126983, 6)
-        assert_almost_equal(self.binary_pfi['AreaUnderPrecisionRecallCurve'].sum(), -0.19374, 5)
+        assert_almost_equal(self.binary_pfi['AreaUnderPrecisionRecallCurve'].sum(), -0.19365, 5)
 
     def test_binary_classifier_from_loaded_model(self):
         model_path = "model.zip"
