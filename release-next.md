@@ -29,6 +29,11 @@
     pipe.permutation_feature_importance(data)
     ```
 
+- **Initial implementation of DateTime input and output column support.**
+
+    [PR#290](https://github.com/microsoft/NimbusML/pull/290)
+    Add initial support for input and output of Pandas DateTime columns.
+
 - **Initial implementation of LpScaler.**
 
     [PR#253](https://github.com/microsoft/NimbusML/pull/253)
@@ -67,6 +72,10 @@
 - **Fix `Pipeline._extract_classes_from_headers` was not checking for valid steps.**
 
     [PR#292](https://github.com/microsoft/NimbusML/pull/292)
+
+- **Fix BinaryDataStream was not valid as input for transformer.**
+
+    [PR#307](https://github.com/microsoft/NimbusML/pull/307)
 
 - **Fix casing for the installPythonPackages build.sh argument.**
 
