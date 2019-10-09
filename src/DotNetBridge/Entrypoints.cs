@@ -138,13 +138,13 @@ namespace Microsoft.ML.DotNetBridge
             RoleMappedData data;
             IPredictor predictor;
             var inputData = input.Data;
-            if (AreSchemasCompatible(inputData.Schema, input.PredictorModel.TransformModel.InputSchema))
+            try
             {
                 input.PredictorModel.PrepareData(host, inputData, out data, out predictor);
             }
-            else // use only trainer model.
+            catch (Exception)
             {
-                // feature vector provided only.
+                // this can happen in csr_matrix case, try to use only trainer model.
                 host.Assert(inputData.Schema.Count == 1);
                 var inputColumnName = inputData.Schema[0].Name;
                 var trainingSchema = input.PredictorModel.GetTrainingSchema(host);
