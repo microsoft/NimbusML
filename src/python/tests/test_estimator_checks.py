@@ -161,7 +161,8 @@ OMITTED_CHECKS_TUPLE = (
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
-    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer',
+    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer'
+    'NGramExtractor',
     'check_transformer_data_not_an_array, check_pipeline_consistency, '
     'check_fit2d_1feature, check_estimators_fit_returns_self,\
                        check_fit2d_1sample, '
