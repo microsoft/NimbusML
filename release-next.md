@@ -13,12 +13,13 @@
     result = xf.transform(train_df, as_csr=True)
     ```
     
-- **Add Permutation Feature Importance.**
+- **Permutation Feature Importance for model interpretibility.**
 
     [PR#279](https://github.com/microsoft/NimbusML/pull/279)
-    Adds `permutation_feature_importance()` method to `Pipeline()` and
+    Adds `permutation_feature_importance()` method to `Pipeline` and
     predictor estimators, enabling evaluation of model-wide feature
-    importances on any dataset`.
+    importances on any dataset with same schema as the dataset used
+    to fit the `Pipeline`.
 
     ```python
     pipe = Pipeline([
