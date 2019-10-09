@@ -402,9 +402,12 @@ class BinaryDataStream(DataStream):
     Data accessor for IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
     """
 
-    def __init__(self, filename):
-        schema_file_path = os.path.splitext(filename)[0] + '.schema'
-        schema = DataSchema.extract_idv_schema_from_file(schema_file_path)
+    def __init__(self, filename=None):
+        if filename:
+            schema_file_path = os.path.splitext(filename)[0] + '.schema'
+            schema = DataSchema.extract_idv_schema_from_file(schema_file_path)
+        else:
+            schema = DataSchema("")
 
         super(BinaryDataStream, self).__init__(schema)
         self._filename = filename
@@ -486,7 +489,7 @@ class DprepDataStream(BinaryDataStream):
     def __init__(self, dataflow=None, filename=None):
         if dataflow is None and filename is None:
             raise ValueError('Both dataflow object and filename are None')
-        super(DprepDataStream, self).__init__(DataSchema(""))
+        super(DprepDataStream, self).__init__()
         if dataflow is not None:
             (fd, filename) = tempfile.mkstemp(suffix='.dprep')
             fl = os.fdopen(fd, "wt")
