@@ -181,6 +181,7 @@
     <Compile Include="nimbusml\examples\Hinge.py" />
     <Compile Include="nimbusml\examples\IidChangePointDetector.py" />
     <Compile Include="nimbusml\examples\LinearSvmBinaryClassifier.py" />
+    <Compile Include="nimbusml\examples\PermutationFeatureImportance.py" />
     <Compile Include="nimbusml\examples\Schema.py" />
     <Compile Include="nimbusml\examples\SsaForecaster.py" />
     <Compile Include="nimbusml\examples\SsaChangePointDetector.py" />
@@ -437,6 +438,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_pcacalculator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_permutationfeatureimportance.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_predictedlabelcolumnoriginalvalueconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_randomnumbergenerator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_rowrangefilter.py" />
@@ -660,6 +662,7 @@
     <Compile Include="nimbusml\preprocessing\__init__.py" />
     <Compile Include="nimbusml\tests\cluster\test_kmeansplusplus.py" />
     <Compile Include="nimbusml\tests\cluster\__init__.py" />
+    <Compile Include="nimbusml\tests\data_type\test_datetime.py" />
     <Compile Include="nimbusml\tests\data_type\test_numeric.py" />
     <Compile Include="nimbusml\tests\data_type\test_text.py" />
     <Compile Include="nimbusml\tests\data_type\test_text_label.py" />
@@ -684,6 +687,7 @@
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\pipeline\test_csr_input.py" />
+    <Compile Include="nimbusml\tests\pipeline\test_permutation_feature_importance.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_get_schema.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_split_models.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
