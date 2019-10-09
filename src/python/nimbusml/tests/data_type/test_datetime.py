@@ -117,7 +117,7 @@ class TestDateTimeDataType(unittest.TestCase):
 
         result = pipeline.fit_transform(dprepDataStream)
 
-        self.assertEqual(result.dtypes[1], np.dtype('datetime64[ns]'))
+        self.assertEqual(result.loc[:, 'col1'].dtype, np.dtype('datetime64[ns]'))
 
         self.assertEqual(result.loc[0, 'col1'].year, 2018)
         self.assertEqual(result.loc[0, 'col1'].month, 1)
