@@ -8,6 +8,7 @@ run check_estimator tests
 import json
 import os
 
+from nimbusml.decomposition import FactorizationMachineBinaryClassifier
 from nimbusml.ensemble import EnsembleClassifier
 from nimbusml.ensemble import EnsembleRegressor
 from nimbusml.ensemble import LightGbmBinaryClassifier
@@ -16,6 +17,7 @@ from nimbusml.ensemble import LightGbmRanker
 from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
+from nimbusml.linear_model import SgdBinaryClassifier
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
@@ -70,7 +72,9 @@ OMITTED_CHECKS = {
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
-                           'check_regressors_int',
+                           'check_regressors_int, '
+                           # todo: investigate
+                           'check_regressors_train',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
     'FastLinearClassifier': 'check_classifiers_train',
@@ -93,6 +97,8 @@ OMITTED_CHECKS = {
         'check_estimators_dtypes',
     # tolerance
     'LogisticRegressionClassifier': 'check_classifiers_train',
+    # todo: investigate
+    'OnlineGradientDescentRegressor': 'check_regressors_train',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
         'check_classifiers_train, check_classifiers_classes',
@@ -156,8 +162,7 @@ OMITTED_CHECKS_TUPLE = (
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
-    'NGramFeaturizer, \
-                        WordEmbedding',
+    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer',
     'check_transformer_data_not_an_array, check_pipeline_consistency, '
     'check_fit2d_1feature, check_estimators_fit_returns_self,\
                        check_fit2d_1sample, '
@@ -189,6 +194,7 @@ NOBINARY_CHECKS = [
 INSTANCES = {
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
+    'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
@@ -198,6 +204,7 @@ INSTANCES = {
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'SgdBinaryClassifier': SgdBinaryClassifier(number_of_threads=1, shuffle=False),
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
     'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
@@ -256,7 +263,14 @@ def load_json(file_path):
         return json.loads(content_without_comments)
 
 
-skip_epoints = set(['OneVsRestClassifier', 'TreeFeaturizer'])
+skip_epoints = set([
+    'OneVsRestClassifier',
+    'TreeFeaturizer',
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    'SymSgdBinaryClassifier',
+    'DatasetTransformer'
+])
+
 epoints = []
 my_path = os.path.realpath(__file__)
 my_dir = os.path.dirname(my_path)

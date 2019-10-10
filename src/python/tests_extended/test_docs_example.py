@@ -128,9 +128,10 @@ class TestDocsExamples(unittest.TestCase):
                 "CacheClassesFromAssembly: can't map name "
                 "OLSLinearRegression to Void, already mapped to Void",
                 # TensorFlowScorer.py
-                "tensorflow/compiler/xla/service/service.cc:150] XLA service",
-                "tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device",
+                "tensorflow/compiler/xla/service/service.cc:168] XLA service",
+                "tensorflow/compiler/xla/service/service.cc:175]   StreamExecutor device",
                 "tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency:",
+                "tensorflow/compiler/jit/mark_for_compilation_pass.cc:1412] (One-time warning): Not using XLA:CPU",
                 # Binner.py
                 "from collections import Mapping, defaultdict",
                 "DeprecationWarning: Using or importing the ABCs",
