@@ -71,6 +71,16 @@ class TestDocsExamples(unittest.TestCase):
                     'NaiveBayesClassifier_df.py'
                     ]:
                     continue
+            # skip for ubuntu 14 tests
+            if platform.linux_distribution()[1] == 'jessie/sid':
+                # libdl needs to be setup
+                if name is 'Image_df.py':
+                    continue
+            # skip for centos7 tests 
+            if platform.linux_distribution()[0] == 'CentOS Linux':
+                # libgdiplus needs to be setup
+                if name is 'Image_df.py':
+                    continue
 
             full = os.path.join(fold, name)
             cmd = '"{0}" -u "{1}"'.format(
