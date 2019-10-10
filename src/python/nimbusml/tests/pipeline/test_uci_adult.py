@@ -183,18 +183,5 @@ class TestUciAdult(unittest.TestCase):
             sum2,
             "model metrics don't match after loading model")
 
-<<<<<<< HEAD
-    def test_parallel(self):
-        (train, label) = get_X_y(train_file, label_column, sep=',')
-        cat = OneHotVectorizer() << categorical_columns
-        ftree = FastTreesBinaryClassifier()
-        pipeline = Pipeline([cat, ftree])
-
-        result = pipeline.fit(train, label, parallel=8)
-        result2 = pipeline.fit(train, label, parallel=1)
-        assert_true(result == result2)
-
-=======
->>>>>>> master
 if __name__ == '__main__':
     unittest.main()

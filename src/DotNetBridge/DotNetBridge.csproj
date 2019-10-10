@@ -16,10 +16,7 @@
     <PackageProjectUrl>https://github.com/Microsoft/NimbusML</PackageProjectUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>DotNetBridge.snk</AssemblyOriginatorKeyFile>
-<<<<<<< HEAD
-=======
     <LangVersion>latest</LangVersion>
->>>>>>> master
   </PropertyGroup>
 
   <ItemGroup>

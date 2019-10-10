@@ -194,10 +194,7 @@ NOBINARY_CHECKS = [
 INSTANCES = {
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
-<<<<<<< HEAD
-=======
     'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
->>>>>>> master
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
@@ -207,10 +204,7 @@ INSTANCES = {
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
-<<<<<<< HEAD
-=======
     'SgdBinaryClassifier': SgdBinaryClassifier(number_of_threads=1, shuffle=False),
->>>>>>> master
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
     'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
