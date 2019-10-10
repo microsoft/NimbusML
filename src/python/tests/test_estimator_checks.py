@@ -27,6 +27,24 @@ from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
 OMITTED_CHECKS = {
+    # by design consistent input with model
+    # don't accept randomly created inputs
+    'TensorFlowScorer': 'check_dict_unchanged, '
+                        'check_dont_overwrite_parameters, '
+                        'check_dtype_object, '
+                        'check_estimator_sparse_data, '
+                        'check_estimators_dtypes, '
+                        'check_estimators_fit_returns_self, '
+                        'check_estimators_overwrite_params, '
+                        'check_estimators_pickle, '
+                        'check_fit1d_1feature, '
+                        'check_fit2d_1feature, '
+                        'check_fit2d_1sample, '
+                        'check_fit2d_predict1d, '
+                        'check_fit_score_takes_y, '
+                        'check_pipeline_consistency, '
+                        'check_transformer_data_not_an_array, '
+                        'check_transformer_general',
     # by design non-determenistic output
     'BootstrapSampler': 'check_transformer_general, '
                         'check_transformer_data_not_an_array',
