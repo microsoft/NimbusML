@@ -13,7 +13,7 @@ __all__ = ["LinearSvmBinaryClassifier"]
 from sklearn.base import ClassifierMixin
 
 from ..base_predictor import BasePredictor
-from ..internal.core.linear_model._linearsvmbinaryclassifier import \
+from ..internal.core.linear_model.linearsvmbinaryclassifier import \
     LinearSvmBinaryClassifier as core
 from ..internal.utils.utils import trace
 
@@ -78,7 +78,9 @@ class LinearSvmBinaryClassifier(
 
     :param caching: Whether trainer should cache input training data.
 
-    :param lambda_: Regularizer constant.
+    :param l2_regularization: L2 regularization weight. It also controls the
+        learning rate, with the learning rate being inversely proportional to
+        it.
 
     :param perform_projection: Perform projection to unit-ball? Typically used
         with batch size > 1.
@@ -114,7 +116,7 @@ class LinearSvmBinaryClassifier(
             self,
             normalize='Auto',
             caching='Auto',
-            lambda_=0.001,
+            l2_regularization=0.001,
             perform_projection=False,
             number_of_iterations=1,
             initial_weights_diameter=0.0,
@@ -147,7 +149,7 @@ class LinearSvmBinaryClassifier(
             self,
             normalize=normalize,
             caching=caching,
-            lambda_=lambda_,
+            l2_regularization=l2_regularization,
             perform_projection=perform_projection,
             number_of_iterations=number_of_iterations,
             initial_weights_diameter=initial_weights_diameter,

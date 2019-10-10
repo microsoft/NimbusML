@@ -13,7 +13,7 @@ __all__ = ["LightGbmBinaryClassifier"]
 from sklearn.base import ClassifierMixin
 
 from ..base_predictor import BasePredictor
-from ..internal.core.ensemble._lightgbmbinaryclassifier import \
+from ..internal.core.ensemble.lightgbmbinaryclassifier import \
     LightGbmBinaryClassifier as core
 from ..internal.utils.utils import trace
 

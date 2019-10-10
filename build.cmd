@@ -311,6 +311,14 @@ copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\py
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+	:: remove dataprep dlls as its not supported in python 2.7
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.ProgramSynthesis.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DataPrep.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\ExcelDataReader.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.WindowsAzure.Storage.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
 ) else (
     for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )
@@ -340,10 +348,15 @@ if "%InstallPythonPackages%" == "True" (
     echo "#################################"
     echo "Installing python packages ... "
     echo "#################################"
+    call "%PythonExe%" -m pip install --upgrade pip
     call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
-    if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
-    :: Run azureml-dataprep tests only in pyhon 3.7 as its an optional dependency
-    if %PythonVersion% == 3.7 ( call "%PythonExe%" -m pip install --upgrade azureml-dataprep )
+
+    if %PythonVersion% == 2.7 (
+        call "%PythonExe%" -m pip install --upgrade pyzmq
+    ) else (
+        call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.12" 
+    )
+
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 )

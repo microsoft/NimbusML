@@ -10,7 +10,7 @@ ClassifierDisagreement
 __all__ = ["ClassifierDisagreement"]
 
 
-from ....internal.core.ensemble.sub_model_selector.diversity_measure._classifierdisagreement import \
+from ....internal.core.ensemble.sub_model_selector.diversity_measure.classifierdisagreement import \
     ClassifierDisagreement as core
 from ....internal.utils.utils import trace
 

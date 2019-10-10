@@ -52,7 +52,7 @@ while [ "$1" != "" ]; do
             __runTests=true
             __installPythonPackages=true
             ;;
-        --installPythonPackages)
+        --installpythonpackages)
             __installPythonPackages=true
             ;;
         --includeextendedtests)
@@ -219,6 +219,19 @@ then
             ext=*.dylib
 		fi	
 		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		# Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
+		if [ ! "$(uname -s)" = "Darwin" ]
+		then
+			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+		fi
+		# remove dataprep dlls as its not supported in python 2.7
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
+		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
     else
 		libs_txt=libs_linux.txt
 		if [ "$(uname -s)" = "Darwin" ]
@@ -271,13 +284,14 @@ then
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq
-    elif [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
-    then
-        "${PythonExe}" -m pip install --upgrade pytest-remotedata
-    elif [ ${PythonVersion} = 3.7 ]
-    then
-        "${PythonExe}" -m pip install --upgrade azureml-dataprep
-	fi
+    else
+        if [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
+        then
+            "${PythonExe}" -m pip install --upgrade pytest-remotedata
+        fi
+
+        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.12"
+    fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 fi

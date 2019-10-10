@@ -10,7 +10,7 @@ RegressorStacking
 __all__ = ["RegressorStacking"]
 
 
-from ...internal.core.ensemble.output_combiner._regressorstacking import \
+from ...internal.core.ensemble.output_combiner.regressorstacking import \
     RegressorStacking as core
 from ...internal.utils.utils import trace
 

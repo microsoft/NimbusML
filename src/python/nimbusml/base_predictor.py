@@ -88,7 +88,13 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
 
     @trace
     def get_feature_contributions(self, X, **params):
-        return self._invoke_inference_method('get_feature_contributions', X, **params)
+        return self._invoke_inference_method('get_feature_contributions',
+                                             X, **params)
+
+    @trace
+    def permutation_feature_importance(self, X, **params):
+        return self._invoke_inference_method('permutation_feature_importance',
+                                             X, **params)
 
     @trace
     def predict(self, X, **params):

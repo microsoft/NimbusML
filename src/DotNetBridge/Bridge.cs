@@ -7,10 +7,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.EntryPoints;
-using Microsoft.ML.Model.OnnxConverter;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.Ensemble;
@@ -19,7 +17,7 @@ using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Transforms.TimeSeries;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     /// <summary>
     /// The main entry point from native code. Note that GC / lifetime issues are critical to get correct.
@@ -130,51 +128,51 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
         // For setting bool values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void BLSetter(EnvironmentBlock* penv, int col, long index, byte value);
+        private unsafe delegate void BLSetter(EnvironmentBlock* penv, int col, long m, long n, byte value);
 
         // For setting float values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void R4Setter(EnvironmentBlock* penv, int col, long index, float value);
+        private unsafe delegate void R4Setter(EnvironmentBlock* penv, int col, long m, long n, float value);
 
         // For setting double values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void R8Setter(EnvironmentBlock* penv, int col, long index, double value);
+        private unsafe delegate void R8Setter(EnvironmentBlock* penv, int col, long m, long n, double value);
 
         // For setting I1 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I1Setter(EnvironmentBlock* penv, int col, long index, sbyte value);
+        private unsafe delegate void I1Setter(EnvironmentBlock* penv, int col, long m, long n, sbyte value);
 
         // For setting I2 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I2Setter(EnvironmentBlock* penv, int col, long index, short value);
+        private unsafe delegate void I2Setter(EnvironmentBlock* penv, int col, long m, long n, short value);
 
         // For setting I4 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I4Setter(EnvironmentBlock* penv, int col, long index, int value);
+        private unsafe delegate void I4Setter(EnvironmentBlock* penv, int col, long m, long n, int value);
 
         // For setting I8 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void I8Setter(EnvironmentBlock* penv, int col, long index, long value);
+        private unsafe delegate void I8Setter(EnvironmentBlock* penv, int col, long m, long n, long value);
 
         // For setting U1 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U1Setter(EnvironmentBlock* penv, int col, long index, byte value);
+        private unsafe delegate void U1Setter(EnvironmentBlock* penv, int col, long m, long n, byte value);
 
         // For setting U2 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U2Setter(EnvironmentBlock* penv, int col, long index, ushort value);
+        private unsafe delegate void U2Setter(EnvironmentBlock* penv, int col, long m, long n, ushort value);
 
         // For setting U4 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U4Setter(EnvironmentBlock* penv, int col, long index, uint value);
+        private unsafe delegate void U4Setter(EnvironmentBlock* penv, int col, long m, long n, uint value);
 
         // For setting U8 values to NativeBridge.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void U8Setter(EnvironmentBlock* penv, int col, long index, ulong value);
+        private unsafe delegate void U8Setter(EnvironmentBlock* penv, int col, long m, long n, ulong value);
 
         // For setting string values, to a generic pointer and index.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private unsafe delegate void TXSetter(EnvironmentBlock* penv, int col, long index, sbyte* pch, int cch);
+        private unsafe delegate void TXSetter(EnvironmentBlock* penv, int col, long m, long n, sbyte* pch, int cch);
 
         // For setting string key values, to a generic pointer and index.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -185,12 +183,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
             HelloMlNet = 1,
             Generic = 2,
         }
-
-#if !CORECLR
-        // The hosting code invokes this to get a specific entry point.
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private delegate IntPtr NativeFnGetter(FnId id);
-#endif
 
         #region Callbacks to native
 
@@ -236,8 +228,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
             [FieldOffset(0x18)]
             public readonly void* modelSink;
 
+            //Max slots to return for vector valued columns(<=0 to return all).
             [FieldOffset(0x20)]
-            public readonly int maxThreadsAllowed;
+            public readonly int maxSlots;
 
             // Call back to provide cancel flag.
             [FieldOffset(0x28)]
@@ -252,41 +245,14 @@ namespace Microsoft.MachineLearning.DotNetBridge
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private unsafe delegate int NativeGeneric(EnvironmentBlock* penv, sbyte* psz, int cdata, DataSourceBlock** ppdata);
 
-#if !CORECLR
-        private static NativeFnGetter FnGetter;
-#endif
         private static NativeGeneric FnGeneric;
 
         private static TDel MarshalDelegate<TDel>(void* pv)
         {
             Contracts.Assert(typeof(TDel).IsSubclassOf(typeof(Delegate)));
             Contracts.Assert(pv != null);
-#if CORECLR
             return Marshal.GetDelegateForFunctionPointer<TDel>((IntPtr)pv);
-#else
-            return (TDel)(object)Marshal.GetDelegateForFunctionPointer((IntPtr)pv, typeof(TDel));
-#endif
         }
-
-#if !CORECLR
-        /// <summary>
-        /// This is the bootstrapping entry point. It's labeled private but is actually invoked from the native
-        /// code to poke the address of the FnGetter callback into the address encoded in the string parameter.
-        /// This odd way of doing things is because the most convenient way to call an initial managed method
-        /// imposes the signature of Func{string, int}, which doesn't allow us to return a function adress.
-        /// </summary>
-        private static unsafe int GetFnGetterCallback(string addr)
-        {
-            if (FnGetter == null)
-                Interlocked.CompareExchange(ref FnGetter, (NativeFnGetter)GetFn, null);
-            long a = long.Parse(addr);
-            IntPtr* p = null;
-            IntPtr** pp = &p;
-            *(long*)pp = a;
-            *p = Marshal.GetFunctionPointerForDelegate(FnGetter);
-            return 1;
-        }
-#endif
 
         /// <summary>
         /// This is the main FnGetter function. Given an FnId value, it returns a native-callable
@@ -334,6 +300,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(DotNetBridgeEntrypoints).Assembly);
 
             using (var ch = host.Start("Executing"))
             {
@@ -397,7 +364,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     // Wrap the data sets.
                     ch.Trace("Wrapping native data sources");
                     ch.Trace("Executing");
-                    ExecCore(penv, host, ch, graph, cdata, ppdata);
+                    RunGraphCore(penv, host, graph, cdata, ppdata);
                 }
                 catch (Exception e)
                 {
@@ -418,24 +385,6 @@ namespace Microsoft.MachineLearning.DotNetBridge
                 }
             }
             return 0;
-        }
-
-        private static void CheckModel(IHost host, byte** ppModelBin, long* pllModelBinLen, int i)
-        {
-            host.CheckParam(
-                ppModelBin != null && ppModelBin[i] != null
-                && pllModelBinLen != null && pllModelBinLen[i] > 0, "pModelBin", "Model is missing");
-        }
-
-        private static void ExecCore(EnvironmentBlock* penv, IHost host, IChannel ch, string graph, int cdata, DataSourceBlock** ppdata)
-        {
-            Contracts.AssertValue(ch);
-            ch.AssertValue(host);
-            ch.AssertNonEmpty(graph);
-            ch.Assert(cdata >= 0);
-            ch.Assert(ppdata != null || cdata == 0);
-
-            RunGraphCore(penv, host, graph, cdata, ppdata);
         }
 
         /// <summary>
@@ -483,25 +432,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
 
             if (cch == 0)
                 return null;
-#if CORECLR
-
             return Encoding.UTF8.GetString((byte*)psz, cch);
-#else
-            if (cch <= 0)
-                return "";
-
-            var decoder = Encoding.UTF8.GetDecoder();
-            var chars = new char[decoder.GetCharCount((byte*)psz, cch, true)];
-            int bytesUsed;
-            int charsUsed;
-            bool complete;
-            fixed (char* pchars = chars)
-                decoder.Convert((byte*)psz, cch, pchars, chars.Length, true, out bytesUsed, out charsUsed, out complete);
-            Contracts.Assert(bytesUsed == cch);
-            Contracts.Assert(charsUsed == chars.Length);
-            Contracts.Assert(complete);
-            return new string(chars);
-#endif
         }
 
         /// <summary>

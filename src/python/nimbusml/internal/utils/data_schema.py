@@ -655,7 +655,7 @@ class DataSchema:
                 graph = Graph(*(graph_nodes), inputs=dict(file=filename),
                               outputs=dict(data=''))
                 st = FileDataStream(filename, schema=None)
-                (out_model, out_data, out_metrics) = graph.run(verbose=True,
+                (out_model, out_data, out_metrics, _) = graph.run(verbose=True,
                                                                X=st)
 
             if isinstance(filepath_or_buffer, StringIO):
@@ -881,6 +881,21 @@ class DataSchema:
                     if k in {'header', 'sep'}})
         final_schema.sort()
         return DataSchema(final_schema, **opt)
+
+    @staticmethod
+    def extract_idv_schema_from_file(path):
+        with open(path, 'r') as f:
+            lines = f.readlines()
+
+        col_regex = re.compile(r'#@\s*(col=.*)$')
+        col_specs = []
+
+        for line in lines:
+            match = col_regex.match(line)
+            if match:
+                col_specs.append(match.group(1))
+
+        return DataSchema(' '.join(col_specs))
 
 
 class COL:

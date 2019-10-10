@@ -2,7 +2,7 @@
 # Example with TextTransform and LogisticRegressionBinaryClassifier
 import pandas
 from nimbusml.feature_extraction.text import NGramFeaturizer
-from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
+from nimbusml.feature_extraction.text.extractor import Ngram
 from nimbusml.linear_model import LogisticRegressionBinaryClassifier
 
 train_reviews = pandas.DataFrame(
@@ -77,7 +77,7 @@ test_reviews = pandas.DataFrame(
 y = train_reviews['like']
 X = train_reviews.loc[:, train_reviews.columns != 'like']
 
-ngram = NGramFeaturizer(word_feature_extractor=n_gram()) << 'review'
+ngram = NGramFeaturizer(word_feature_extractor=Ngram()) << 'review'
 X = ngram.fit_transform(X)
 
 # view the transformed numerical values and column names

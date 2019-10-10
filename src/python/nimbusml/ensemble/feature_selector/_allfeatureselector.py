@@ -10,7 +10,7 @@ AllFeatureSelector
 __all__ = ["AllFeatureSelector"]
 
 
-from ...internal.core.ensemble.feature_selector._allfeatureselector import \
+from ...internal.core.ensemble.feature_selector.allfeatureselector import \
     AllFeatureSelector as core
 from ...internal.utils.utils import trace
 

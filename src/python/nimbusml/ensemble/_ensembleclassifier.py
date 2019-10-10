@@ -13,7 +13,7 @@ __all__ = ["EnsembleClassifier"]
 from sklearn.base import ClassifierMixin
 
 from ..base_predictor import BasePredictor
-from ..internal.core.ensemble._ensembleclassifier import \
+from ..internal.core.ensemble.ensembleclassifier import \
     EnsembleClassifier as core
 from ..internal.utils.utils import trace
 from .feature_selector import AllFeatureSelector

@@ -11,7 +11,7 @@ from nimbusml.internal.entrypoints.transforms_featurecombiner import \
 from nimbusml.internal.entrypoints.transforms_twoheterogeneousmodelcombiner \
     import \
     transforms_twoheterogeneousmodelcombiner
-from nimbusml.internal.utils.entrypoints import EntryPoint, Graph
+from nimbusml.internal.utils.entrypoints import EntryPoint, Graph, DataOutputFormat
 
 
 # from imp import reload
@@ -116,7 +116,7 @@ class TestEntryPoints(unittest.TestCase):
         graph = Graph(
             dict(
                 input_data=""), dict(
-                output_model=""), False, *all_nodes)
+                output_model=""), DataOutputFormat.DF, *all_nodes)
         # print(graph)
         graph.run(X=None, dryrun=True)
 

@@ -13,7 +13,7 @@ __all__ = ["EnsembleRegressor"]
 from sklearn.base import RegressorMixin
 
 from ..base_predictor import BasePredictor
-from ..internal.core.ensemble._ensembleregressor import \
+from ..internal.core.ensemble.ensembleregressor import \
     EnsembleRegressor as core
 from ..internal.utils.utils import trace
 from .feature_selector import AllFeatureSelector

@@ -399,13 +399,17 @@ class ViewBasePipelineItem:
 
 class BinaryDataStream(DataStream):
     """
-    Defines a data view.
+    Data accessor for IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
     """
 
-    def __init__(self, filename):
-        # REVIEW: would be good to figure out a way to know the schema of the
-        # binary IDV.
-        super(BinaryDataStream, self).__init__(DataSchema(""))
+    def __init__(self, filename=None):
+        if filename:
+            schema_file_path = os.path.splitext(filename)[0] + '.schema'
+            schema = DataSchema.extract_idv_schema_from_file(schema_file_path)
+        else:
+            schema = DataSchema("")
+
+        super(BinaryDataStream, self).__init__(schema)
         self._filename = filename
 
     def __repr__(self):
@@ -419,7 +423,7 @@ class BinaryDataStream(DataStream):
         # Do not move these imports or the module fails
         # due to circular references.
         from ..entrypoints.transforms_nooperation import transforms_nooperation
-        from .entrypoints import Graph
+        from .entrypoints import Graph, DataOutputFormat
 
         no_op = transforms_nooperation(
             data='$data', output_data='$output_data')
@@ -427,8 +431,8 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), False, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+                output_data=''), DataOutputFormat.DF, *(graph_nodes))
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
 
     def head(self, n=5, skip=0):
@@ -438,7 +442,7 @@ class BinaryDataStream(DataStream):
             transforms_rowtakefilter
         from ..entrypoints.transforms_rowskipfilter import \
             transforms_rowskipfilter
-        from .entrypoints import Graph
+        from .entrypoints import Graph, DataOutputFormat
         if n == 0:
             raise ValueError("n must be > 0")
         graph_nodes = []
@@ -456,9 +460,15 @@ class BinaryDataStream(DataStream):
         graph = Graph(
             dict(
                 data=''), dict(
-                output_data=''), False, *(graph_nodes))
-        (out_model, out_data, out_metrics) = graph.run(verbose=True, X=self)
+                output_data=''), DataOutputFormat.DF, *(graph_nodes))
+        (out_model, out_data, out_metrics, _) = graph.run(verbose=True, X=self)
         return out_data
+
+    def get_dataframe_schema(self):
+        if not hasattr(self, '_df_schema') or not self._df_schema:
+            head = self.head(n=1)
+            self._df_schema = DataSchema.read_schema(head)
+        return self._df_schema
 
     def clone(self):
         """
@@ -479,7 +489,7 @@ class DprepDataStream(BinaryDataStream):
     def __init__(self, dataflow=None, filename=None):
         if dataflow is None and filename is None:
             raise ValueError('Both dataflow object and filename are None')
-        super(DprepDataStream, self).__init__(DataSchema(""))
+        super(DprepDataStream, self).__init__()
         if dataflow is not None:
             (fd, filename) = tempfile.mkstemp(suffix='.dprep')
             fl = os.fdopen(fd, "wt")
