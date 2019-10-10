@@ -10,7 +10,7 @@ ClassifierVoting
 __all__ = ["ClassifierVoting"]
 
 
-from ...internal.core.ensemble.output_combiner.classifiervoting import \
+from ...internal.core.ensemble.output_combiner._classifiervoting import \
     ClassifierVoting as core
 from ...internal.utils.utils import trace
 

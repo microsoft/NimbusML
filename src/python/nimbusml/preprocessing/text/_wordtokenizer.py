@@ -13,7 +13,7 @@ __all__ = ["WordTokenizer"]
 from sklearn.base import TransformerMixin
 
 from ...base_transform import BaseTransform
-from ...internal.core.preprocessing.text.wordtokenizer import \
+from ...internal.core.preprocessing.text._wordtokenizer import \
     WordTokenizer as core
 from ...internal.utils.utils import trace
 

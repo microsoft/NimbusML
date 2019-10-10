@@ -13,7 +13,7 @@ __all__ = ["LpScaler"]
 from sklearn.base import TransformerMixin
 
 from ...base_transform import BaseTransform
-from ...internal.core.preprocessing.normalization.lpscaler import \
+from ...internal.core.preprocessing.normalization._lpscaler import \
     LpScaler as core
 from ...internal.utils.utils import trace
 

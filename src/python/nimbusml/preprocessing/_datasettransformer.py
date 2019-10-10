@@ -13,7 +13,7 @@ __all__ = ["DatasetTransformer"]
 from sklearn.base import TransformerMixin
 
 from ..base_transform import BaseTransform
-from ..internal.core.preprocessing.datasettransformer import \
+from ..internal.core.preprocessing._datasettransformer import \
     DatasetTransformer as core
 from ..internal.utils.utils import trace
 

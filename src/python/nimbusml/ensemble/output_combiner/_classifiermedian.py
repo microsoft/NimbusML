@@ -10,7 +10,7 @@ ClassifierMedian
 __all__ = ["ClassifierMedian"]
 
 
-from ...internal.core.ensemble.output_combiner.classifiermedian import \
+from ...internal.core.ensemble.output_combiner._classifiermedian import \
     ClassifierMedian as core
 from ...internal.utils.utils import trace
 
