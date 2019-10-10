@@ -12,7 +12,7 @@ __all__ = ["PrefixColumnConcatenator"]
 from sklearn.base import TransformerMixin
 
 from ...base_transform import BaseTransform
-from ...internal.core.preprocessing.schema.prefixcolumnconcatenator import \
+from ...internal.core.preprocessing.schema._prefixcolumnconcatenator import \
     PrefixColumnConcatenator as core
 from ...internal.utils.utils import trace
 
