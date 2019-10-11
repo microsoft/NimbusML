@@ -26,6 +26,8 @@ set RunExtendedTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
 set AzureBuild=False
+set BuildManifestGenerator=False
+set UpdateManifest=False
 
 :Arg_Loop
 if [%1] == [] goto :Build
@@ -53,6 +55,10 @@ if /i [%1] == [--skipDotNetBridge]     (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
 )
+if /i [%1] == [--updateManifest] (
+    set UpdateManifest=True
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [--azureBuild]     (
     set AzureBuild=True
     shift && goto :Arg_Loop
@@ -68,6 +74,7 @@ echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "  --updateManifest                  Update manifest.json"
 echo "  --azureBuild                      Building in azure devops (adds dotnet CLI to the path)"
 goto :Exit_Success
 
@@ -188,6 +195,23 @@ if "%BuildDotNetBridgeOnly%" == "True" (
 )
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
 call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force --self-contained -r win-x64 -c %Configuration%
+
+if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
+
+if "%BuildManifestGenerator%" == "True" (
+    echo ""
+    echo "#################################"
+    echo "Building Manifest Generator... "
+    echo "#################################"
+    call "%_dotnet%" build -c %Configuration% -o "%BuildOutputDir%%Configuration%"  --force "%__currentScriptDir%src\ManifestGenerator\ManifestGenerator.csproj"
+)
+
+if "%UpdateManifest%" == "True" (
+    echo Updating manifest.json ...
+    call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" create %__currentScriptDir%\src\python\tools\manifest.json
+    goto :Exit_Success
+)
+
 
 echo ""
 echo "#################################"
