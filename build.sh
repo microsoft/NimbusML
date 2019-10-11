@@ -210,12 +210,6 @@ then
     ls "/lib/x86_64-linux-gnu/"
     echo "finish"
 
-	if [ ! "$(uname -s)" = "Darwin" ]
-	then
-		cp  "/lib/x86_64-linux-gnu/libdl.so.2" "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		cp "/lib/x86_64-linux-gnu/libdl-2.23.so" "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-	fi
-
 	# ls "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
     if [ ${PythonVersion} = 2.7 ]
     then
