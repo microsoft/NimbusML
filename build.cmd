@@ -28,6 +28,7 @@ set SkipDotNetBridge=False
 set AzureBuild=False
 set BuildManifestGenerator=False
 set UpdateManifest=False
+set VerifyManifest=False
 
 :Arg_Loop
 if [%1] == [] goto :Build
@@ -196,6 +197,9 @@ if "%BuildDotNetBridgeOnly%" == "True" (
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
 call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force --self-contained -r win-x64 -c %Configuration%
 
+
+if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
+if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
 if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
 
 if "%BuildManifestGenerator%" == "True" (
@@ -212,6 +216,15 @@ if "%UpdateManifest%" == "True" (
     goto :Exit_Success
 )
 
+if "%VerifyManifest%" == "True" (
+    echo Verifying manifest.json ...
+    call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" verify %__currentScriptDir%\src\python\tools\manifest.json
+    if errorlevel 1 (
+        echo manifest.json is invalid.
+        echo Run build --updateManifest to update manifest.json.
+        goto :Exit_Error
+    )
+)
 
 echo ""
 echo "#################################"
