@@ -42,7 +42,8 @@ namespace Microsoft.ML.DotNetBridge
             typeof(ImageLoadingTransformer),
             typeof(SymbolicSgdLogisticRegressionBinaryTrainer),
             typeof(OnnxContext),
-            typeof(SsaForecastingTransformer)
+            typeof(SsaForecastingTransformer),
+            typeof(VariableColumnTransform)
         };
 
         private static (IEnumerable<string> epListContents, JObject manifest) BuildManifests()
