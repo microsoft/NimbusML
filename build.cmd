@@ -429,10 +429,18 @@ if "%RunExtendedTests%" == "True" (
 )
 
 :Exit_Success
+:: Shutdown all dotnet persistent servers so that the
+:: dotnet executable is not left open in the background.
+:: As of dotnet 2.1.3 three servers are left running in
+:: the background. This will shutdown them all down.
+:: See here for more info: https://github.com/dotnet/cli/issues/9458
+call "%_dotnet%" build-server shutdown
 endlocal
 exit /b %ERRORLEVEL%
 
 :Exit_Error
+:: See comment above
+call "%_dotnet%" build-server shutdown
 endlocal
 echo Failed with error %ERRORLEVEL%
 exit /b %ERRORLEVEL%
