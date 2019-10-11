@@ -213,6 +213,8 @@ if "%BuildManifestGenerator%" == "True" (
 if "%UpdateManifest%" == "True" (
     echo Updating manifest.json ...
     call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" create %__currentScriptDir%\src\python\tools\manifest.json
+    echo manifest.json updated.
+    echo Run entrypoint_compiler.py --generate_api --generate_entrypoints to generate entry points and api files.
     goto :Exit_Success
 )
 
