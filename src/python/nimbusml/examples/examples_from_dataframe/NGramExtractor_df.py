@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 ###############################################################################
 # Example with NGramExtractor and LogisticRegressionBinaryClassifier
 import pandas
