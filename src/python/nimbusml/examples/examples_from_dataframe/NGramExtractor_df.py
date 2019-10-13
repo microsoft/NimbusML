@@ -87,7 +87,7 @@ pipeline = Pipeline([
 X = pipeline.fit_transform(X)
 
 print(X.head())
-#    ngrams.<.>|T|h  ngrams.T|h|i  ngrams.h|i|s  ngrams.i|s|<.>  ...  ngrams.i|t|!  ngrams.t|!|<.>  ngrams.<.>|H|a  ngrams.H|a|t
+#    ngrams.<␂>|T|h  ngrams.T|h|i  ngrams.h|i|s  ngrams.i|s|<␠>  ...  ngrams.i|t|!  ngrams.t|!|<␃>  ngrams.<␂>|H|a  ngrams.H|a|t
 # 0             1.0           1.0           1.0             2.0  ...           0.0             0.0             0.0           0.0
 # 1             0.0           0.0           0.0             0.0  ...           0.0             0.0             0.0           0.0
 # 2             0.0           0.0           0.0             0.0  ...           0.0             0.0             0.0           0.0
