@@ -186,6 +186,11 @@ then
     fi
     ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force --self-contained -r ${PublishDir} -c ${__configuration}
     ${_dotnet} build -c ${__configuration} -o "${BuildOutputDir}/${__configuration}"  --force "${__currentScriptDir}/src/DotNetBridge/DotNetBridge.csproj"
+	if [ ! "$(uname -s)" = "Darwin" ]
+	then 
+        apt-get install libc6-dev -y
+        apt-get install libgdiplus -y
+    fi	
 
     # Build nimbusml wheel
     echo ""
