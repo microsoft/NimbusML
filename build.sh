@@ -186,17 +186,6 @@ then
     fi
     ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force --self-contained -r ${PublishDir} -c ${__configuration}
     ${_dotnet} build -c ${__configuration} -o "${BuildOutputDir}/${__configuration}"  --force "${__currentScriptDir}/src/DotNetBridge/DotNetBridge.csproj"
-	if [ ! "$(uname -s)" = "Darwin" ]
-	then
-		echo "start"
-		ls "/lib/x86_64-linux-gnu"
-		echo "end"
-	fi
-	if [ ! "$(uname -s)" = "Darwin" ]
-	then
-		cp "/lib/x86_64-linux-gnu/libdl-2.23.so"  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
-		cp "/lib/x86_64-linux-gnu/libdl.so.2"  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
-	fi
 
     # Build nimbusml wheel
     echo ""
@@ -234,12 +223,6 @@ then
 		if [ ! "$(uname -s)" = "Darwin" ]
 		then
 			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		fi
-        if [ ! "$(uname -s)" = "Darwin" ]
-		then
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libdl-2.23.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libdl.so.2 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-
 		fi
 		# remove dataprep dlls as its not supported in python 2.7
 		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
@@ -329,6 +312,12 @@ then
 
     if [ ${__runExtendedTests} = true ]
     then 
+        # Required for Image.py and Image_df.py to run successfully on Ubuntu and CentOS.
+        if [ ! "$(uname -s)" = "Darwin" ]
+        then 
+            apt-get install libc6-dev -y
+            apt-get install libgdiplus -y
+        fi	
         "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
 fi
