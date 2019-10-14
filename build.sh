@@ -188,7 +188,9 @@ then
     ${_dotnet} build -c ${__configuration} -o "${BuildOutputDir}/${__configuration}"  --force "${__currentScriptDir}/src/DotNetBridge/DotNetBridge.csproj"
 	if [ ! "$(uname -s)" = "Darwin" ]
 	then 
-        ls -la "/lib/x86_64-linux-gnu"
+        echo "start"
+        ls "/lib/x86_64-linux-gnu"
+        echo "end"
     fi	
 
     # Build nimbusml wheel
