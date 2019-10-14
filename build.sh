@@ -237,7 +237,7 @@ then
 		fi
         if [ ! "$(uname -s)" = "Darwin" ]
 		then
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libdl-2.19.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libdl-2.23.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libdl.so.2 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
 		fi
