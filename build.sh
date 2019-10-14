@@ -186,6 +186,10 @@ then
     fi
     ${_dotnet} publish "${__currentScriptDir}/src/Platforms/build.csproj" --force --self-contained -r ${PublishDir} -c ${__configuration}
     ${_dotnet} build -c ${__configuration} -o "${BuildOutputDir}/${__configuration}"  --force "${__currentScriptDir}/src/DotNetBridge/DotNetBridge.csproj"
+	if [ ! "$(uname -s)" = "Darwin" ]
+	then 
+        ls -la "/lib/x86_64-linux-gnu"
+    fi	
 
     # Build nimbusml wheel
     echo ""
