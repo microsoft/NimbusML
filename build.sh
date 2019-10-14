@@ -194,8 +194,8 @@ then
 	fi
 	if [ ! "$(uname -s)" = "Darwin" ]
 	then
-		cp "lib/x86_64-linux-gnu/libdl-2.23.so"  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
-		cp "lib/x86_64-linux-gnu/libdl.so.2"  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
+		cp "/lib/x86_64-linux-gnu/libdl-2.23.so"  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
+		cp "/lib/x86_64-linux-gnu/libdl.so.2"  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
 	fi
 
     # Build nimbusml wheel
