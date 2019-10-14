@@ -129,6 +129,9 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
+# Print Linux processor info
+echo uname -r
+
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
 BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 # Platform name for python wheel based on OS
@@ -311,13 +314,19 @@ then
     "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}"
 
     if [ ${__runExtendedTests} = true ]
-    then 
-        # Required for Image.py and Image_df.py to run successfully on Ubuntu and CentOS.
-        if [ ! "$(uname -s)" = "Darwin" ]
+    then
+        echo "Running extended tests ... " 
+        # Required for Image.py and Image_df.py to run successfully on Ubuntu.
+        if [ "$(uname -p)" = "x86_64" ]
         then 
-            apt-get install libc6-dev -y
-            apt-get install libgdiplus -y
-        fi	
+            apt install libc6-dev -y
+            apt install libgdiplus -y
+        fi
+        # Required for Image.py and Image_df.py to run successfully on CentOS.
+        if [ "$(uname -p)" = "i686" ]
+        then 
+            yum install glibc-devel
+        fi
         "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
 fi
