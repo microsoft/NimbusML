@@ -7,6 +7,7 @@ run check_estimator tests
 """
 import json
 import os
+import unittest
 
 from nimbusml.decomposition import FactorizationMachineBinaryClassifier
 from nimbusml.ensemble import EnsembleClassifier
@@ -272,88 +273,91 @@ skip_epoints = set([
     'DatasetTransformer'
 ])
 
-epoints = []
-my_path = os.path.realpath(__file__)
-my_dir = os.path.dirname(my_path)
-manifest_diff_json = os.path.join(my_dir, '..', 'tools',
-                                  'manifest_diff.json')
-manifest_diff = load_json(manifest_diff_json)
-for e in manifest_diff['EntryPoints']:
-    if e['NewName'] not in skip_epoints:
-        epoints.append((e['Module'], e['NewName']))
+class TestEstimatorChecks(unittest.TestCase):
 
-all_checks = {}
-all_failed_checks = {}
-all_passed_checks = {}
-total_checks_passed = 0
+    def test_estimator_checks(self):
+        epoints = []
+        my_path = os.path.realpath(__file__)
+        my_dir = os.path.dirname(my_path)
+        manifest_diff_json = os.path.join(my_dir, '..', 'tools',
+                                          'manifest_diff.json')
+        manifest_diff = load_json(manifest_diff_json)
+        for e in manifest_diff['EntryPoints']:
+            if e['NewName'] not in skip_epoints:
+                epoints.append((e['Module'], e['NewName']))
 
-print("total entrypoints: {}", len(epoints))
+        all_checks = {}
+        all_failed_checks = {}
+        all_passed_checks = {}
+        total_checks_passed = 0
 
-for e in epoints:
-    checks = set()
-    failed_checks = set()
-    passed_checks = set()
-    class_name = e[1]
-    print("======== now Estimator is %s =========== " % class_name)
-    # skip LighGbm for now, because of random crashes.
-    if 'LightGbm' in class_name:
-        continue
+        print("total entrypoints: {}", len(epoints))
 
-    mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
-    the_class = getattr(mod, class_name)
-    if class_name in INSTANCES:
-        estimator = INSTANCES[class_name]
-    else:
-        estimator = the_class()
+        for e in epoints:
+            checks = set()
+            failed_checks = set()
+            passed_checks = set()
+            class_name = e[1]
+            print("======== now Estimator is %s =========== " % class_name)
+            # skip LighGbm for now, because of random crashes.
+            if 'LightGbm' in class_name:
+                continue
 
-    if estimator._use_single_input_as_string():
-        estimator = estimator << 'F0'
+            mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
+            the_class = getattr(mod, class_name)
+            if class_name in INSTANCES:
+                estimator = INSTANCES[class_name]
+            else:
+                estimator = the_class()
 
-    for check in _yield_all_checks(class_name, estimator):
-        # Skip check_dict_unchanged for estimators which
-        # update the classes_ attribute. For more details
-        # see https://github.com/microsoft/NimbusML/pull/200
-        if (check.__name__ == 'check_dict_unchanged') and \
-            (hasattr(estimator, 'predict_proba') or
-             hasattr(estimator, 'decision_function')):
-            continue
+            if estimator._use_single_input_as_string():
+                estimator = estimator << 'F0'
 
-        if check.__name__ in OMITTED_CHECKS_ALWAYS:
-            continue
-        if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
-            continue
-        if class_name in OMITTED_CHECKS and check.__name__ in \
-                OMITTED_CHECKS[class_name]:
-            continue
-        if class_name in OMITTED_CHECKS_TUPLE[0] and check.__name__ in \
-                OMITTED_CHECKS_TUPLE[1]:
-            continue
-        checks.add(check.__name__)
-        try:
-            check(class_name, estimator.clone())
-            passed_checks.add(check.__name__)
-            total_checks_passed = total_checks_passed + 1
-        except Exception as e:
-            failed_checks.add(check.__name__)
+            for check in _yield_all_checks(class_name, estimator):
+                # Skip check_dict_unchanged for estimators which
+                # update the classes_ attribute. For more details
+                # see https://github.com/microsoft/NimbusML/pull/200
+                if (check.__name__ == 'check_dict_unchanged') and \
+                    (hasattr(estimator, 'predict_proba') or
+                     hasattr(estimator, 'decision_function')):
+                    continue
 
-    if frozenset(checks) not in all_checks:
-        all_checks[frozenset(checks)] = []
-    all_checks[frozenset(checks)].append(class_name)
+                if check.__name__ in OMITTED_CHECKS_ALWAYS:
+                    continue
+                if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
+                    continue
+                if class_name in OMITTED_CHECKS and check.__name__ in \
+                        OMITTED_CHECKS[class_name]:
+                    continue
+                if class_name in OMITTED_CHECKS_TUPLE[0] and check.__name__ in \
+                        OMITTED_CHECKS_TUPLE[1]:
+                    continue
+                checks.add(check.__name__)
+                try:
+                    check(class_name, estimator.clone())
+                    passed_checks.add(check.__name__)
+                    total_checks_passed = total_checks_passed + 1
+                except Exception as e:
+                    failed_checks.add(check.__name__)
 
-    if len(failed_checks) > 0:
-        if frozenset(failed_checks) not in all_failed_checks:
-            all_failed_checks[frozenset(failed_checks)] = []
-        all_failed_checks[frozenset(failed_checks)].append(class_name)
+            if frozenset(checks) not in all_checks:
+                all_checks[frozenset(checks)] = []
+            all_checks[frozenset(checks)].append(class_name)
 
-    if frozenset(passed_checks) not in all_passed_checks:
-        all_passed_checks[frozenset(passed_checks)] = []
-    all_passed_checks[frozenset(passed_checks)].append(class_name)
+            if len(failed_checks) > 0:
+                if frozenset(failed_checks) not in all_failed_checks:
+                    all_failed_checks[frozenset(failed_checks)] = []
+                all_failed_checks[frozenset(failed_checks)].append(class_name)
 
-if len(all_failed_checks) > 0:
-    print("Following tests failed for components:")
-    for key, value in all_failed_checks.items():
-        print('========================')
-        print(key)
-        print(value)
-    raise RuntimeError("estimator checks failed")
-print("success, total checks passed %s ", total_checks_passed)
+            if frozenset(passed_checks) not in all_passed_checks:
+                all_passed_checks[frozenset(passed_checks)] = []
+            all_passed_checks[frozenset(passed_checks)].append(class_name)
+
+        if len(all_failed_checks) > 0:
+            print("Following tests failed for components:")
+            for key, value in all_failed_checks.items():
+                print('========================')
+                print(key)
+                print(value)
+            raise RuntimeError("estimator checks failed")
+        print("success, total checks passed %s ", total_checks_passed)
