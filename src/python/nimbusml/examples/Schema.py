@@ -1,4 +1,4 @@
-# -- coding: utf-8 --
+# -*- coding: utf-8 -*-
 ###############################################################################
 # Get schema from a fitted pipeline example.
 import numpy as np
