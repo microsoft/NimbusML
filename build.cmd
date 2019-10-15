@@ -375,7 +375,10 @@ set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
 set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
-call "%PythonExe%" -m pytest -n auto --dist=loadfile --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
+if %NumConcurrentTests% LSS 4 set NumConcurrentTests=4
+
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --dist=loadfile --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
     goto :Exit_Error
 )
