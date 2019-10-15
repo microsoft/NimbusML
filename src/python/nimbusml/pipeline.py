@@ -1834,7 +1834,7 @@ class Pipeline:
 
         inputs = dict([('transform_model', self.model)])
         schema_node = models_schema(
-            transform_model="$transform_model",
+            model="$transform_model",
             schema="$output_data")
         all_nodes = [schema_node]
 
