@@ -342,7 +342,6 @@
     <Compile Include="nimbusml\internal\entrypoints\models_multioutputregressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_naivecalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_oneversusall.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_onnxconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_ovamodelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
@@ -438,7 +437,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_missingvaluesubstitutor.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_modelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_ngramtranslator.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumn.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_pcacalculator.py" />
@@ -459,6 +457,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_traintestdatasetsplitter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_treeleaffeaturizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_twoheterogeneousmodelcombiner.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumntransform.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_vectortoimage.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_wordembeddings.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_wordtokenizer.py" />
@@ -515,8 +514,6 @@
     <Compile Include="nimbusml\internal\entrypoints\_ngramextractor_ngramhash.py" />
     <Compile Include="nimbusml\internal\entrypoints\_parallellightgbm_single.py" />
     <Compile Include="nimbusml\internal\entrypoints\_paralleltraining_single.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_partitionedpathparser_parquetpathparser.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_partitionedpathparser_simplepathparser.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_poissonloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_squaredloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_tweedieloss.py" />

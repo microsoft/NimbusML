@@ -26,6 +26,9 @@ set RunExtendedTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
 set AzureBuild=False
+set BuildManifestGenerator=False
+set UpdateManifest=False
+set VerifyManifest=False
 
 :Arg_Loop
 if [%1] == [] goto :Build
@@ -53,6 +56,10 @@ if /i [%1] == [--skipDotNetBridge]     (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
 )
+if /i [%1] == [--updateManifest] (
+    set UpdateManifest=True
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [--azureBuild]     (
     set AzureBuild=True
     shift && goto :Arg_Loop
@@ -68,6 +75,7 @@ echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "  --updateManifest                  Update manifest.json"
 echo "  --azureBuild                      Building in azure devops (adds dotnet CLI to the path)"
 goto :Exit_Success
 
@@ -188,6 +196,37 @@ if "%BuildDotNetBridgeOnly%" == "True" (
 )
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
 call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force --self-contained -r win-x64 -c %Configuration%
+
+
+if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
+if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
+if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
+
+if "%BuildManifestGenerator%" == "True" (
+    echo ""
+    echo "#################################"
+    echo "Building Manifest Generator... "
+    echo "#################################"
+    call "%_dotnet%" build -c %Configuration% -o "%BuildOutputDir%%Configuration%"  --force "%__currentScriptDir%src\ManifestGenerator\ManifestGenerator.csproj"
+)
+
+if "%UpdateManifest%" == "True" (
+    echo Updating manifest.json ...
+    call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" create %__currentScriptDir%\src\python\tools\manifest.json
+    echo manifest.json updated.
+    echo Run entrypoint_compiler.py --generate_api --generate_entrypoints to generate entry points and api files.
+    goto :Exit_Success
+)
+
+if "%VerifyManifest%" == "True" (
+    echo Verifying manifest.json ...
+    call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" verify %__currentScriptDir%\src\python\tools\manifest.json
+    if errorlevel 1 (
+        echo manifest.json is invalid.
+        echo Run build --updateManifest to update manifest.json.
+        goto :Exit_Error
+    )
+)
 
 echo ""
 echo "#################################"
@@ -391,10 +430,18 @@ if "%RunExtendedTests%" == "True" (
 )
 
 :Exit_Success
+:: Shutdown all dotnet persistent servers so that the
+:: dotnet executable is not left open in the background.
+:: As of dotnet 2.1.3 three servers are left running in
+:: the background. This will shutdown them all down.
+:: See here for more info: https://github.com/dotnet/cli/issues/9458
+call "%_dotnet%" build-server shutdown
 endlocal
 exit /b %ERRORLEVEL%
 
 :Exit_Error
+:: See comment above
+call "%_dotnet%" build-server shutdown
 endlocal
 echo Failed with error %ERRORLEVEL%
 exit /b %ERRORLEVEL%
