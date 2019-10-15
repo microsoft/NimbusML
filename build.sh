@@ -318,9 +318,10 @@ then
         echo "Running extended tests ... " 
         # Required for Image.py and Image_df.py to run successfully on Ubuntu.
         if [ "$(uname -p)" = "x86_64" ]
-        then 
-            apt install libc6-dev -y
-            apt install libgdiplus -y
+        then
+            apt-get update 
+            apt-get install libc6-dev -y
+            apt-get install libgdiplus -y
         fi
         # Required for Image.py and Image_df.py to run successfully on CentOS.
         if [ "$(uname -p)" = "i686" ]
