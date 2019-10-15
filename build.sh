@@ -130,7 +130,8 @@ echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
 # Print Linux processor info
-echo uname -r
+echo uname -a
+uname -a
 
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
 BoostRoot=${DependenciesDir}/Boost${PythonVersion}
