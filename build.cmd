@@ -375,11 +375,7 @@ set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
 set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
-call "%PythonExe%" -m pytest -n auto --verbose --maxfail=1000 --capture=sys "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
-if errorlevel 1 (
-    goto :Exit_Error
-)
-call "%PythonExe%" -m pytest -n auto --verbose --maxfail=1000 --capture=sys "%TestsPath2%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n auto --verbose --maxfail=1000 --capture=sys "%TestsPath1%" "%TestsPath2%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
     goto :Exit_Error
 )
