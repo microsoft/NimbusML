@@ -349,7 +349,7 @@ if "%InstallPythonPackages%" == "True" (
     echo "Installing python packages ... "
     echo "#################################"
     call "%PythonExe%" -m pip install --upgrade pip
-    call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
     if %PythonVersion% == 2.7 (
         call "%PythonExe%" -m pip install --upgrade pyzmq
@@ -375,11 +375,11 @@ set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
 set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
-call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n auto --verbose --maxfail=1000 --capture=sys "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
     goto :Exit_Error
 )
-call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath2%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n auto --verbose --maxfail=1000 --capture=sys "%TestsPath2%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
     goto :Exit_Error
 )
