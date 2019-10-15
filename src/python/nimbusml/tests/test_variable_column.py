@@ -8,17 +8,17 @@ import unittest
 import numpy as np
 import pandas as pd
 from nimbusml import Pipeline
-from nimbusml.internal.entrypoints.transforms_variablecolumn import transforms_variablecolumn
+from nimbusml.internal.entrypoints.transforms_variablecolumntransform import transforms_variablecolumntransform
 from nimbusml.internal.utils.entrypoints import Graph, DataOutputFormat
 
 
 class TestVariableColumn(unittest.TestCase):
 
     def to_variable_column(self, input, features=None, length_column_name=None):
-        node = transforms_variablecolumn(data='$data',
-                                         output_data='$output_data',
-                                         features=features,
-                                         length_column_name=length_column_name)
+        node = transforms_variablecolumntransform(data='$data',
+                                                  output_data='$output_data',
+                                                  features=features,
+                                                  length_column_name=length_column_name)
 
         graph_nodes = [node]
         graph = Graph(dict(data=''),
