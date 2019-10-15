@@ -320,8 +320,7 @@ then
             apt-get install libgdiplus -y
         } || { 
         # Required for Image.py and Image_df.py to run successfully on CentOS.
-            yum check-update
-            yum install glibc-devel
+            yum install glibc-devel -y
         }
         "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
