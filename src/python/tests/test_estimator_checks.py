@@ -374,3 +374,5 @@ class TestEstimatorChecks(unittest.TestCase):
         check_entry_points(epoints[len(epoints)//2:])
 
 
+if __name__ == '__main__':
+    unittest.main()
