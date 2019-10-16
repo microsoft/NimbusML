@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ###############################################################################
 # NGramExtractor
 from nimbusml import FileDataStream, Pipeline
