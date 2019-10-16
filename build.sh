@@ -313,15 +313,18 @@ then
     if [ ${__runExtendedTests} = true ]
     then
         echo "Running extended tests ... " 
-        # Required for Image.py and Image_df.py to run successfully on Ubuntu.
-        {
-            apt-get update 
-            apt-get install libc6-dev -y
-            apt-get install libgdiplus -y
-        } || { 
-        # Required for Image.py and Image_df.py to run successfully on CentOS.
-            yum install glibc-devel -y
-        }
+        if [ ! "$(uname -s)" = "Darwin" ]
+        then 
+            # Required for Image.py and Image_df.py to run successfully on Ubuntu.
+            {
+                apt-get update 
+                apt-get install libc6-dev -y
+                apt-get install libgdiplus -y
+            } || { 
+            # Required for Image.py and Image_df.py to run successfully on CentOS.
+                yum install glibc-devel -y
+            }
+        fi
         "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
 fi
