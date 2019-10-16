@@ -86,6 +86,7 @@ image_paths_df = pd.DataFrame(data=dict(
 
 
 SKIP = {
+    'DatasetTransformer',
     'LightLda',
     'OneVsRestClassifier',
     'Sentiment',

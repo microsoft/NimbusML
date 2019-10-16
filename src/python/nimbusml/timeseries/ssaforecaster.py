@@ -19,8 +19,19 @@ from ..internal.utils.utils import trace
 
 class SsaForecaster(core, BaseTransform, TransformerMixin):
     """
-    **Description**
-        This transform forecasts using Singular Spectrum Analysis (SSA).
+    This transform forecasts using Singular Spectrum Analysis (SSA).
+
+    .. remarks::
+
+        This class implements the transform based on `Singular Spectrum Analysis
+        <https://en.wikipedia.org/wiki/Singular_spectrum_analysis>`_ (SSA).
+        SSA is a powerful framework for decomposing the time-series into trend,
+        seasonality and noise components as well as forecasting the future values
+        of the time-series. In principle, SSA performs spectral analysis on the
+        input time-series where each component in the spectrum corresponds to a
+        trend, seasonal or noise component in the time-series. For details of the
+        Singular Spectrum Analysis (SSA), refer to `this document
+        <http://arxiv.org/pdf/1206.6910.pdf>`_.
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
@@ -72,6 +83,21 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
 
     :param params: Additional arguments sent to compute engine.
 
+    .. seealso::
+        :py:func:`IIDChangePointDetector
+        <nimbusml.preprocessing.timeseries.IIDChangePointDetector>`,
+        :py:func:`IIDSpikeDetector
+        <nimbusml.preprocessing.timeseries.IIDSpikeDetector>`,
+        :py:func:`SsaChangePointDetector
+        <nimbusml.preprocessing.timeseries.SsaChangePointDetector>`.
+        :py:func:`SsaSpikeDetector
+        <nimbusml.preprocessing.timeseries.SsaSpikeDetector>`.
+
+    .. index:: models, timeseries, transform
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/examples_from_dataframe/SsaForecaster_df.py
+              :language: python
     """
 
     @trace

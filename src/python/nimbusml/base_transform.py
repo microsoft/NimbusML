@@ -73,6 +73,15 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
         set_shape(self, X)
         return self
 
+    @property
+    def _is_fitted(self):
+        """
+        Tells if the transform was trained.
+        """
+        return (hasattr(self, 'model_') and
+                self.model_ and
+                os.path.isfile(self.model_))
+
     @trace
     def transform(self, X, as_binary_data_stream=False, **params):
         """

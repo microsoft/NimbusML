@@ -7,11 +7,13 @@
 #include "ManagedInterop.h"
 
 #define PARAM_SEED "seed"
+#define PARAM_MAX_SLOTS "max_slots"
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
 #define PARAM_MLNET_PATH "mlnetPath"
 #define PARAM_DOTNETCLR_PATH "dotnetClrPath"
 #define PARAM_DPREP_PATH "dprepPath"
+#define PARAM_PYTHON_PATH "pythonPath"
 #define PARAM_DATA "data"
 
 
@@ -74,11 +76,13 @@ bp::dict pxCall(bp::dict& params)
         bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
         bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
         bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
+        bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
         bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
         std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
         std::string s_dprepPath = std::string(dprepPath);
+        std::string s_pythonPath = std::string(pythonPath);
         std::string s_graph = std::string(graph);
         const char *mlnetpath = s_mlnetPath.c_str();
         const char *coreclrpath = s_dotnetClrPath.c_str();
@@ -93,7 +97,11 @@ bp::dict pxCall(bp::dict& params)
         if (params.has_key(PARAM_SEED))
             seed = bp::extract<int>(params[PARAM_SEED]);
 
-        EnvironmentBlock env(i_verbose, 0, seed);
+        int maxSlots = -1;
+        if (params.has_key(PARAM_MAX_SLOTS))
+            maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+
+        EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
         if (params.has_key(PARAM_DATA) && bp::extract<bp::dict>(params[PARAM_DATA]).check())
         {
@@ -109,8 +117,7 @@ bp::dict pxCall(bp::dict& params)
         res = env.GetData();
 
         if (retCode == -1)
-            // REVIEW: get the content of IChannel and add it the the error message.
-            throw std::runtime_error("Returned code is -1. Check the log for error messages.");
+            throw std::runtime_error(env.GetErrorMessage());
     }
     catch (const std::exception& e)
     {

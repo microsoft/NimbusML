@@ -17,7 +17,7 @@ from ..internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
     transforms_manyheterogeneousmodelcombiner
 from ..internal.entrypoints.transforms_modelcombiner import \
     transforms_modelcombiner
-from ..internal.utils.entrypoints import Graph, GraphOutputType
+from ..internal.utils.entrypoints import Graph, GraphOutputType, DataOutputFormat
 
 
 # Extension method for extending a list of steps, with chaining
@@ -544,7 +544,7 @@ class CV:
             group_column=group_id)
 
         steps.add(cv_node)
-        graph = Graph(cv_aux_info.inputs, self.outputs, False, *steps)
+        graph = Graph(cv_aux_info.inputs, self.outputs, DataOutputFormat.DF, *steps)
 
         # prepare telemetry info
         class_name = type(self).__name__
@@ -557,7 +557,6 @@ class CV:
                 X=X,
                 y=y,
                 random_state=pipeline.random_state,
-                seed=pipeline.random_state,
                 w=weights,
                 verbose=verbose,
                 telemetry_info=telemetry_info,

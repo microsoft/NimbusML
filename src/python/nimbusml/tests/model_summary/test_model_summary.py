@@ -67,25 +67,20 @@ learners = [
     OrdinaryLeastSquaresRegressor(),
     PoissonRegressionRegressor(),
     OneVsRestClassifier(FastLinearBinaryClassifier()),
-    LightGbmClassifier(),
     GamRegressor(),
     GamBinaryClassifier(),
     PcaAnomalyDetector(),
     FactorizationMachineBinaryClassifier(),
     KMeansPlusPlus(),
-    NaiveBayesClassifier()
-
-    # Skipping these tests since they are throwing the following error:
-    #   *** System.NotSupportedException: 'Column has variable length
-    #   vector: CategoricalSplitFeatures. Not supported in python.
-    #   Drop column before sending to Python
-    #FastForestBinaryClassifier(),
-    #FastForestRegressor(),
-    #FastTreesBinaryClassifier(),
-    #FastTreesRegressor(),
-    #FastTreesTweedieRegressor(),
-    #LightGbmRegressor(),
-    #LightGbmBinaryClassifier(),
+    NaiveBayesClassifier(),
+    FastForestBinaryClassifier(number_of_trees=2), 
+    FastForestRegressor(number_of_trees=2),
+    FastTreesBinaryClassifier(number_of_trees=2),
+    FastTreesRegressor(number_of_trees=2),
+    FastTreesTweedieRegressor(number_of_trees=2),
+    LightGbmRegressor(number_of_iterations=2),
+    LightGbmClassifier(),
+    LightGbmBinaryClassifier(number_of_iterations=2)
 ]
 
 learners_not_supported = [

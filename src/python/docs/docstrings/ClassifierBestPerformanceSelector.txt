@@ -1,0 +1,35 @@
+    """
+
+	**Description**
+    Combines only the models with the best performance.
+
+
+    :param metric_name: the metric type to be used to find the weights for
+        each model. Can be ``"AccuracyMicro"``, ``"AccuracyMacro"``,
+		``"LogLoss"``, or ``"LogLossReduction"``.
+    
+
+    .. seealso::
+	    :py:class:`EnsembleClassifier
+        <nimbusml.ensemble.EnsembleClassifier>`
+
+		* Submodel selectors:
+		:py:class:`ClassifierAllSelector
+        <nimbusml.ensemble.sub_model_selector.ClassifierAllSelector>`,
+		:py:class:`ClassifierBestDiverseSelector
+        <nimbusml.ensemble.sub_model_selector.ClassifierBestDiverseSelector>`
+		
+		* Output combiners:
+		:py:class:`ClassifierAverage
+        <nimbusml.ensemble.output_combiner.ClassifierAverage>`,
+		:py:class:`ClassifierMedian
+        <nimbusml.ensemble.output_combiner.ClassifierMedian>`,
+		:py:class:`ClassifierStacking
+        <nimbusml.ensemble.output_combiner.ClassifierStacking>`,
+		:py:class:`ClassifierVoting
+        <nimbusml.ensemble.output_combiner.ClassifierVoting>`
+
+
+    .. index:: models, ensemble, classification
+
+    """

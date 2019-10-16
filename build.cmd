@@ -21,10 +21,14 @@ set BoostRoot=%DependenciesDir%BoostDbg3.7
 set PythonVersion=3.7
 set PythonTag=cp37
 set RunTests=False
+set InstallPythonPackages=False
 set RunExtendedTests=False
 set BuildDotNetBridgeOnly=False
 set SkipDotNetBridge=False
 set AzureBuild=False
+set BuildManifestGenerator=False
+set UpdateManifest=False
+set VerifyManifest=False
 
 :Arg_Loop
 if [%1] == [] goto :Build
@@ -33,6 +37,11 @@ if /i [%1] == [--configuration] (
 )
 if /i [%1] == [--runTests]     (
     set RunTests=True
+    set InstallPythonPackages=True
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [--installPythonPackages]     (
+    set InstallPythonPackages=True
     shift && goto :Arg_Loop
 )
 if /i [%1] == [--includeExtendedTests]     (
@@ -47,20 +56,26 @@ if /i [%1] == [--skipDotNetBridge]     (
     set SkipDotNetBridge=True
     shift && goto :Arg_Loop
 )
+if /i [%1] == [--updateManifest] (
+    set UpdateManifest=True
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [--azureBuild]     (
     set AzureBuild=True
     shift && goto :Arg_Loop
 ) else goto :Usage
 
 :Usage
-echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
+echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--installPythonPackages] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
 echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
+echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
 echo "  --buildDotNetBridgeOnly           Build only DotNetBridge"
 echo "  --skipDotNetBridge                Build everything except DotNetBridge"
+echo "  --updateManifest                  Update manifest.json"
 echo "  --azureBuild                      Building in azure devops (adds dotnet CLI to the path)"
 goto :Exit_Success
 
@@ -181,6 +196,37 @@ if "%BuildDotNetBridgeOnly%" == "True" (
 )
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
 call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force --self-contained -r win-x64 -c %Configuration%
+
+
+if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
+if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
+if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
+
+if "%BuildManifestGenerator%" == "True" (
+    echo ""
+    echo "#################################"
+    echo "Building Manifest Generator... "
+    echo "#################################"
+    call "%_dotnet%" build -c %Configuration% -o "%BuildOutputDir%%Configuration%"  --force "%__currentScriptDir%src\ManifestGenerator\ManifestGenerator.csproj"
+)
+
+if "%UpdateManifest%" == "True" (
+    echo Updating manifest.json ...
+    call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" create %__currentScriptDir%\src\python\tools\manifest.json
+    echo manifest.json updated.
+    echo Run entrypoint_compiler.py --generate_api --generate_entrypoints to generate entry points and api files.
+    goto :Exit_Success
+)
+
+if "%VerifyManifest%" == "True" (
+    echo Verifying manifest.json ...
+    call "%_dotnet%" "%BuildOutputDir%%Configuration%\ManifestGenerator.dll" verify %__currentScriptDir%\src\python\tools\manifest.json
+    if errorlevel 1 (
+        echo manifest.json is invalid.
+        echo Run build --updateManifest to update manifest.json.
+        goto :Exit_Error
+    )
+)
 
 echo ""
 echo "#################################"
@@ -304,6 +350,14 @@ copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\py
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+	:: remove dataprep dlls as its not supported in python 2.7
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.ProgramSynthesis.*"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DataPrep.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\ExcelDataReader.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.WindowsAzure.Storage.dll"
+	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
 ) else (
     for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )
@@ -328,6 +382,24 @@ md "%__currentScriptDir%target"
 copy "%__currentScriptDir%src\python\dist\%WheelFile%" "%__currentScriptDir%target\%WheelFile%"
 echo Python package successfully created: %__currentScriptDir%target\%WheelFile%
 
+if "%InstallPythonPackages%" == "True" (
+    echo ""
+    echo "#################################"
+    echo "Installing python packages ... "
+    echo "#################################"
+    call "%PythonExe%" -m pip install --upgrade pip
+    call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+
+    if %PythonVersion% == 2.7 (
+        call "%PythonExe%" -m pip install --upgrade pyzmq
+    ) else (
+        call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.12" 
+    )
+
+    call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
+    call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
+)
+
 if "%RunTests%" == "False" ( 
     goto :Exit_Success
 )
@@ -337,13 +409,6 @@ echo ""
 echo "#################################"
 echo "Running tests ... "
 echo "#################################"
-call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
-if %PythonVersion% == 2.7 ( call "%PythonExe%" -m pip install --upgrade pyzmq )
-:: Run azureml-dataprep tests only in pyhon 3.7 as its an optional dependency
-if %PythonVersion% == 3.7 ( call "%PythonExe%" -m pip install --upgrade azureml-dataprep )
-call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
-call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
-
 set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
@@ -366,10 +431,18 @@ if "%RunExtendedTests%" == "True" (
 )
 
 :Exit_Success
+:: Shutdown all dotnet persistent servers so that the
+:: dotnet executable is not left open in the background.
+:: As of dotnet 2.1.3 three servers are left running in
+:: the background. This will shutdown them all down.
+:: See here for more info: https://github.com/dotnet/cli/issues/9458
+call "%_dotnet%" build-server shutdown
 endlocal
 exit /b %ERRORLEVEL%
 
 :Exit_Error
+:: See comment above
+call "%_dotnet%" build-server shutdown
 endlocal
 echo Failed with error %ERRORLEVEL%
 exit /b %ERRORLEVEL%

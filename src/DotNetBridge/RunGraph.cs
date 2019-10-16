@@ -9,8 +9,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.DataPrep.Common;
-using Microsoft.ML;
-using Microsoft.ML.CommandLine;
 using Microsoft.ML.Data;
 using Microsoft.ML.Data.IO;
 using Microsoft.ML.EntryPoints;
@@ -20,36 +18,15 @@ using Microsoft.ML.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
         // std:null specifier in a graph, used to redirect output to std::null
         const string STDNULL = "<null>";
 
-        private sealed class RunGraphArgs
-        {
-#pragma warning disable 649 // never assigned
-            [Argument(ArgumentType.AtMostOnce)]
-            public string graph;
-
-            [Argument(ArgumentType.LastOccurenceWins, HelpText = "Desired degree of parallelism in the data pipeline", ShortName = "conc")]
-            public int? parallel;
-
-            [Argument(ArgumentType.AtMostOnce, HelpText = "Random seed", ShortName = "seed")]
-            public int? randomSeed;
-
-            [Argument(ArgumentType.AtMostOnce, ShortName = "lab")]
-            public string labelColumn; //not used
-
-            [Argument(ArgumentType.Multiple, ShortName = "feat")]
-            public string[] featureColumn; //not used
-
-            [Argument(ArgumentType.AtMostOnce, HelpText = "Max slots to return for vector valued columns (<=0 to return all)")]
-            public int maxSlots = -1;
-
-#pragma warning restore 649 // never assigned
-        }
+        // graph output format specifier, used to output to a sparse csr matrix
+        const string CSR_MATRIX = "<csr>";
 
         private static void SaveIdvToFile(IDataView idv, string path, IHost host)
         {
@@ -58,7 +35,15 @@ namespace Microsoft.MachineLearning.DotNetBridge
             var extension = Path.GetExtension(path);
             IDataSaver saver;
             if (extension != ".csv" && extension != ".tsv" && extension != ".txt")
+            {
                 saver = new BinarySaver(host, new BinarySaver.Arguments());
+
+                var schemaFilePath = Path.GetDirectoryName(path) +
+                                     Path.DirectorySeparatorChar +
+                                     Path.GetFileNameWithoutExtension(path) +
+                                     ".schema";
+                SaveIdvSchemaToFile(idv, schemaFilePath, host);
+            }
             else
             {
                 var saverArgs = new TextSaver.Arguments
@@ -80,6 +65,25 @@ namespace Microsoft.MachineLearning.DotNetBridge
             }
         }
 
+        private static void SaveIdvSchemaToFile(IDataView idv, string path, IHost host)
+        {
+            var emptyDataView = new EmptyDataView(host, idv.Schema);
+            var saverArgs = new TextSaver.Arguments
+            {
+                OutputHeader = false,
+                OutputSchema = true,
+                Dense = true
+            };
+            IDataSaver saver = new TextSaver(host, saverArgs);
+
+            using (var fs = File.OpenWrite(path))
+            {
+                saver.SaveData(fs, emptyDataView, Utils.GetIdentityPermutation(emptyDataView.Schema.Count)
+                    .Where(x => !emptyDataView.Schema[x].IsHidden && saver.IsColumnSavable(emptyDataView.Schema[x].Type))
+                    .ToArray());
+            }
+        }
+
         private static void SavePredictorModelToFile(PredictorModel model, string path, IHost host)
         {
             using (var fs = File.OpenWrite(path))
@@ -90,19 +94,11 @@ namespace Microsoft.MachineLearning.DotNetBridge
         {
             Contracts.AssertValue(env);
 
-            var args = new RunGraphArgs();
-            string err = null;
-            if (!CmdParser.ParseArguments(env, graphStr, args, e => err = err ?? e))
-                throw env.Except(err);
-
-            int? maxThreadsAllowed = Math.Min(args.parallel > 0 ? args.parallel.Value : penv->maxThreadsAllowed, penv->maxThreadsAllowed);
-            maxThreadsAllowed = penv->maxThreadsAllowed > 0 ? maxThreadsAllowed : args.parallel;
-            var host = env.Register("RunGraph", args.randomSeed, null);
-
+            var host = env.Register("RunGraph", penv->seed, null);
             JObject graph;
             try
             {
-                graph = JObject.Parse(args.graph);
+                graph = JObject.Parse(graphStr);
             }
             catch (JsonReaderException ex)
             {
@@ -147,8 +143,8 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     var extension = Path.GetExtension(path);
                                     if (extension == ".txt")
                                         dv = TextLoader.LoadFile(host, new TextLoader.Options(), new MultiFileSource(path));
-                                    else if(extension == ".dprep")
-                                        dv = DataFlow.FromDPrepFile(path).ToDataView();
+                                    else if (extension == ".dprep")
+                                        dv = LoadDprepFile(BytesToString(penv->pythonPath), path);
                                     else
                                         dv = new BinaryLoader(host, new BinaryLoader.Arguments(), path);
                                 }
@@ -215,14 +211,18 @@ namespace Microsoft.MachineLearning.DotNetBridge
                                     throw host.ExceptNotSupp("File handle outputs not yet supported.");
                                 case TlcModule.DataKind.DataView:
                                     var idv = runner.GetOutput<IDataView>(varName);
-                                    if (!string.IsNullOrWhiteSpace(path))
+                                    if (path == CSR_MATRIX)
+                                    {
+                                        SendViewToNativeAsCsr(ch, penv, idv);
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(path))
                                     {
                                         SaveIdvToFile(idv, path, host);
                                     }
                                     else
                                     {
-                                        var infos = ProcessColumns(ref idv, args.maxSlots, host);
-                                        SendViewToNative(ch, penv, idv, infos);
+                                        var infos = ProcessColumns(ref idv, penv->maxSlots, host);
+                                        SendViewToNativeAsDataFrame(ch, penv, idv, infos);
                                     }
                                     break;
                                 case TlcModule.DataKind.PredictorModel:
@@ -281,6 +281,12 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     disp.Dispose();
                 }
             }
+        }
+
+        private static IDataView LoadDprepFile(string pythonPath, string path)
+        {
+            DPrepSettings.Instance.PythonPath = pythonPath;
+            return DataFlow.FromDPrepFile(path).ToDataView();
         }
 
         private static Dictionary<string, ColumnMetadataInfo> ProcessColumns(ref IDataView view, int maxSlots, IHostEnvironment env)

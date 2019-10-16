@@ -24,7 +24,7 @@
 #define CORECLR_SHUTDOWN "coreclr_shutdown"
 
 #define DOTNETBRIDGE "DotNetBridge"
-#define DOTNETBRIDGE_FQDN "Microsoft.MachineLearning.DotNetBridge.Bridge"
+#define DOTNETBRIDGE_FQDN "Microsoft.ML.DotNetBridge.Bridge"
 
 #define GET_FN "GetFn"
 
@@ -151,7 +151,7 @@ public:
 
         std::string libsroot(mlnetpath);
         std::string coreclrdir(coreclrpath);
-        if (strlen(dpreppath) == 0) 
+        if (strlen(dpreppath) == 0)
         {
             dpreppath = mlnetpath;
         }

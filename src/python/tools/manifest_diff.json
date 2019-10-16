@@ -241,7 +241,28 @@
       "Module": "linear_model",
       "Type": "Classifier",
       "Predict_Proba" : true,
+      "Decision_Function" : true,
+	  "Inputs": [
+	    {
+		  "Name": "Lambda",
+		  "NewName": "l2_regularization",
+		  "Desc": "L2 regularization weight. It also controls the learning rate, with the learning rate being inversely proportional to it."
+		}
+	  ]
+    },
+    {
+      "Name": "Trainers.EnsembleClassification",
+      "NewName": "EnsembleClassifier",
+      "Module": "ensemble",
+      "Type": "Classifier",
+      "Predict_Proba" : true,
       "Decision_Function" : true
+    },
+    {
+      "Name": "Trainers.EnsembleRegression",
+      "NewName": "EnsembleRegressor",
+      "Module": "ensemble",
+      "Type": "Regressor"
     },
     {
       "Name": "Transforms.ApproximateBootstrapSampler",
@@ -302,6 +323,12 @@
           "NewName": "Classifier"
         }
       ]
+    },
+    {
+      "Name": "Models.DatasetTransformer",
+      "NewName": "DatasetTransformer",
+      "Module": "preprocessing",
+      "Type": "Transform"
     },
     {
       "Name": "Trainers.FieldAwareFactorizationMachineBinaryClassifier",
@@ -457,6 +484,12 @@
     {
       "Name": "Transforms.GlobalContrastNormalizer",
       "NewName": "GlobalContrastRowScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.LpNormalizer",
+      "NewName": "LpScaler",
       "Module": "preprocessing.normalization",
       "Type": "Transform"
     },
@@ -701,6 +734,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.WordTokenizer",
+      "NewName": "WordTokenizer",
+      "Module": "preprocessing.text",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.LightLda",
       "NewName": "LightLda",
       "Module": "feature_extraction.text",
@@ -709,6 +748,12 @@
     {
       "Name": "Transforms.TextFeaturizer",
       "NewName": "NGramFeaturizer",
+      "Module": "feature_extraction.text",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.NGramTranslator",
+      "NewName": "NGramExtractor",
       "Module": "feature_extraction.text",
       "Type": "Transform"
     },
@@ -774,6 +819,193 @@
           "Name": "goss",
           "NewName": "Goss",
           "Module": "ensemble.booster",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleSubsetSelector",
+      "Components": [
+        {
+          "Name": "AllInstanceSelector",
+          "NewName": "AllInstanceSelector",
+          "Desc": "Selects all rows for each trainer in the ensemble",
+          "Module": "ensemble.subset_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BootstrapSelector",
+          "NewName": "BootstrapSelector",
+          "Desc": "Selects a bootstrapped sample of the rows for each trainer in the ensemble",
+          "Module": "ensemble.subset_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "RandomPartitionSelector",
+          "NewName": "RandomPartitionSelector",
+          "Desc": "Randomly partitions the rows for each trainer in the ensemble",
+          "Module": "ensemble.subset_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleFeatureSelector",
+      "Components": [
+        {
+          "Name": "AllFeatureSelector",
+          "NewName": "AllFeatureSelector",
+          "Desc": "Selects all features for each trainer in the ensemble",
+          "Module": "ensemble.feature_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "RandomFeatureSelector",
+          "NewName": "RandomFeatureSelector",
+          "Desc": "Selects a random subset of features for each trainer in the ensemble",
+          "Module": "ensemble.feature_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleMulticlassOutputCombiner",
+      "Components": [
+        {
+          "Name": "MultiAverage",
+          "NewName": "ClassifierAverage",
+          "Desc": "Computes the average of the outputs of the trained models",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        },
+        {
+          "Name": "MultiMedian",
+          "NewName": "ClassifierMedian",
+          "Desc": "Computes the median of the outputs of the trained models",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        },
+        {
+          "Name": "MultiStacking",
+          "NewName": "ClassifierStacking",
+          "Desc": "Computes the output by training a model on a training set where each instance is a vector containing the outputs of the different models on a training instance, and the instance's label",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        },
+        {
+          "Name": "MultiVoting",
+          "NewName": "ClassifierVoting",
+          "Desc": "Computes the fraction of positive predictions for each class from all the trained models, and outputs the class with the largest number",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        },
+        {
+          "Name": "MultiWeightedAverage",
+          "NewName": "ClassifierWeightedAverage",
+          "Desc": "Computes the weighted average of the outputs of the trained models",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleRegressionOutputCombiner",
+      "Components": [
+        {
+          "Name": "Average",
+          "NewName": "RegressorAverage",
+          "Desc": "Computes the average of the outputs of the trained models",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        },
+        {
+          "Name": "Median",
+          "NewName": "RegressorMedian",
+          "Desc": "Computes the median of the outputs of the trained models",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        },
+        {
+          "Name": "RegressionStacking",
+          "NewName": "RegressorStacking",
+          "Desc": "Computes the output by training a model on a training set where each instance is a vector containing the outputs of the different models on a training instance, and the instance's label",
+          "Module": "ensemble.output_combiner",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleMulticlassSubModelSelector",
+      "Components": [
+        {
+          "Name": "AllSelectorMultiClass",
+          "NewName": "ClassifierAllSelector",
+          "Desc": "Combines all the models to create the output. This is the default submodel selector.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestDiverseSelectorMultiClass",
+          "NewName": "ClassifierBestDiverseSelector",
+          "Desc": "Combines the models whose predictions are as diverse as possible.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestPerformanceSelectorMultiClass",
+          "NewName": "ClassifierBestPerformanceSelector",
+          "Desc": "Combines only the models with the best performance.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleRegressionSubModelSelector",
+      "Components": [
+        {
+          "Name": "AllSelector",
+          "NewName": "RegressorAllSelector",
+          "Desc": "Combines all the models to create the output. This is the default submodel selector.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestDiverseSelectorRegression",
+          "NewName": "RegressorBestDiverseSelector",
+          "Desc": "Combines the models whose predictions are as diverse as possible.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        },
+        {
+          "Name": "BestPerformanceRegressionSelector",
+          "NewName": "RegressorBestPerformanceSelector",
+          "Desc": "Combines only the models with the best performance.",
+          "Module": "ensemble.sub_model_selector",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleMulticlassDiversityMeasure",
+      "Components": [
+        {
+          "Name": "MultiDisagreementDiversityMeasure",
+          "NewName": "ClassifierDisagreement",
+          "Desc": "A measure of disagreement in predictions between a pair of classifiers, averaged over all pairs",
+          "Module": "ensemble.sub_model_selector.diversity_measure",
+          "Type": "Component"
+        }
+      ]
+    },
+    {
+      "Kind": "EnsembleRegressionDiversityMeasure",
+      "Components": [
+        {
+          "Name": "RegressionDisagreementDiversityMeasure",
+          "NewName": "RegressorDisagreement",
+          "Desc": "A measure of absolute value of disagreement in predictions between a pair of regressors, averaged over all pairs",
+          "Module": "ensemble.sub_model_selector.diversity_measure",
           "Type": "Component"
         }
       ]

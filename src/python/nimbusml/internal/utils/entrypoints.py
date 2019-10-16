@@ -5,6 +5,7 @@
 """
 definition of classes for the entities in the entrypoint manifest.json
 """
+import sys
 import functools
 import json
 import os
@@ -22,7 +23,8 @@ from .data_stream import DprepDataStream
 from .data_stream import BinaryDataStream
 from .data_stream import FileDataStream
 from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
-    resolve_output
+    resolve_output_as_dataframe, resolve_output_as_csrmatrix, \
+    resolve_output_as_list
 from .utils import try_set, set_clr_environment_vars, get_clr_path, \
     get_mlnet_path, get_dprep_path
 from ..libs.pybridge import px_call
@@ -140,6 +142,17 @@ def _get_temp_file(suffix=None):
     return file_name
 
 
+class DataOutputFormat(Enum):
+    # Regular pandas dataframe format
+    DF = 0
+    # IDV data format, see here https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md
+    IDV = 1
+    # csr_matrix sparse data format
+    CSR = 2
+    # list
+    LIST = 3
+
+
 class Graph(EntryPoint):
     """
     graph
@@ -165,7 +178,7 @@ class Graph(EntryPoint):
             self,
             inputs=None,
             outputs=None,
-            output_binary_data_stream=False,
+            data_output_format=DataOutputFormat.DF,
             *nodes):
         Graph._check_nodes(nodes)
 
@@ -190,7 +203,7 @@ class Graph(EntryPoint):
 
         self.nodes = nodes
         self._write_csv_time = 0
-        self._output_binary_data_stream = output_binary_data_stream
+        self._data_output_format = data_output_format
 
     def __iter__(self):
         return iter(self.nodes)
@@ -253,55 +266,14 @@ class Graph(EntryPoint):
             '"nodes"',
             '"Nodes"')
 
-    def run(
-            self,
-            X,
-            y=None,
-            seed=None,
-            parallel=None,
-            max_slots=-1,
-            random_state=None,
-            verbose=1,
-            **params):
-        """
-        run graph
-        """
-        code = ""
-        if parallel is not None:
-            if isinstance(parallel, six.integer_types):
-                code += "parallel = {} ".format(parallel)
-            else:
-                raise TypeError("parallel is not of 'int' type.")
-        if seed is not None:
-            if isinstance(seed, six.integer_types):
-                code += "seed = {} ".format(seed)
-            else:
-                raise TypeError("seed is not of 'int' type.")
-        if parallel is not None:
-            if isinstance(parallel, six.integer_types):
-                code += "parallel = {} ".format(parallel)
-            else:
-                raise TypeError("parallel is not of 'int' type.")
-        if max_slots is not None:
-            if isinstance(max_slots, six.integer_types):
-                code += "maxSlots = {} ".format(max_slots)
-            else:
-                raise TypeError("max_slots is not of 'int' type.")
-
-        if params.get("dryrun") is not None:
-            ret = 'graph = {%s} %s' % (str(self), code)
-        else:
-            ret = self.idv_bridge(X, y, code, random_state, verbose, **params)
-        return ret
-
     def _try_call_bridge(
             self,
             px_call,
             call_parameters,
-            code,
             verbose,
             concatenated,
-            output_modelfilename):
+            output_modelfilename,
+            output_predictor_modelfilename=None):
         try:
             ret = px_call(call_parameters)
         except RuntimeError as e:
@@ -323,9 +295,9 @@ class Graph(EntryPoint):
                             type(od), ','.join(od))
                 if isinstance(verbose, six.integer_types) and verbose >= 2:
                     raise BridgeRuntimeError(
-                        "{0}.\n--CODE--\n{1}\n--GRAPH--\n{2}\n--DATA--\n{3}"
-                        "\n--\nconcatenated={4}".format(
-                            str(e), code, str(self), vars, concatenated),
+                        "{0}.\n--GRAPH--\n{1}\n--DATA--\n{2}"
+                        "\n--\nconcatenated={3}".format(
+                            str(e), str(self), vars, concatenated),
                         model=output_modelfilename)
                 else:
                     raise BridgeRuntimeError(
@@ -347,12 +319,16 @@ class Graph(EntryPoint):
             return None
         return pieces[0].replace("sep=", "").strip()
 
-    def idv_bridge(self, X, y, code, random_state=None, verbose=1, **params):
+    def run(self, X, y=None, max_slots=-1, random_state=None, verbose=1, **params):
+        if params.get("dryrun") is not None:
+            return 'graph = %s' % (str(self))
+
         output_modelfilename = None
+        output_predictor_modelfilename = None
         output_metricsfilename = None
         out_metrics = None
 
-        # Ideally, idv_bridge shouldn't care if it's running CV
+        # Ideally, run_graph shouldn't care if it's running CV
         # or a regular pipeline. That required changing the idv_bridge to be
         # more flexible (e.g. changing return value, changing input
         # structure, etc.) In my first attempt, this approach caused
@@ -405,7 +381,7 @@ class Graph(EntryPoint):
                     self.inputs['input_data'] = X._filename
                 elif 'data' in self.inputs:
                     self.inputs['data'] = X._filename
-            elif not (summary or params.get('is_onnx_export')):
+            elif not (summary or params.get('no_input_data')):
                 raise RuntimeError(
                     "data should be a dataframe, FileDataStream or DataView")
 
@@ -420,15 +396,23 @@ class Graph(EntryPoint):
                     output_modelfilename = _get_temp_file(suffix='.model.bin')
                     self.outputs['output_model'] = output_modelfilename
 
+                # set graph output model to temp file
+                if 'output_predictor_model' in self.outputs:
+                    output_predictor_modelfilename = _get_temp_file(suffix='.predictor.model.bin')
+                    self.outputs['output_predictor_model'] = output_predictor_modelfilename
+
                 # set graph output metrics to temp file
                 if 'output_metrics' in self.outputs:
                     output_metricsfilename = _get_temp_file(suffix='.txt')
                     self.outputs['output_metrics'] = output_metricsfilename
 
-                if 'output_data' in self.outputs and \
-                        self._output_binary_data_stream:
-                    output_idvfilename = _get_temp_file(suffix='.idv')
-                    self.outputs['output_data'] = output_idvfilename
+                if 'output_data' in self.outputs:
+                    if self._data_output_format == DataOutputFormat.IDV:
+                        output_idvfilename = _get_temp_file(suffix='.idv')
+                        self.outputs['output_data'] = output_idvfilename
+
+                    elif self._data_output_format == DataOutputFormat.CSR:
+                        self.outputs['output_data'] = "<csr>"
 
             # set graph file for debuggings
             if verbose > 0:
@@ -441,35 +425,46 @@ class Graph(EntryPoint):
                     f.write(self.nimbusml_runnable_graph)
 
             call_parameters['verbose'] = try_set(verbose, False, six.integer_types)
-            call_parameters['graph'] = try_set(
-                'graph = {%s} %s' %
-                (str(self), code), False, str)
+            call_parameters['graph'] = try_set(str(self), False, str)
             
             # Set paths to .NET Core CLR, ML.NET and DataPrep libs
             set_clr_environment_vars()
             call_parameters['dotnetClrPath'] = try_set(get_clr_path(), False, str)
             call_parameters['mlnetPath'] = try_set(get_mlnet_path(), False, str)
             call_parameters['dprepPath'] = try_set(get_dprep_path(), False, str)
+            call_parameters['pythonPath'] = try_set(sys.executable, False, str)
 
             if random_state:
                 call_parameters['seed'] = try_set(random_state, False, six.integer_types)
+
+            if max_slots:
+                call_parameters['max_slots'] = try_set(max_slots, False, six.integer_types)
+
             ret = self._try_call_bridge(
                 px_call,
                 call_parameters,
-                code,
                 verbose,
                 concatenated,
-                output_modelfilename)
+                output_modelfilename,
+                output_predictor_modelfilename)
 
-            out_data = resolve_output(ret)
-            # remove label column from data
-            if out_data is not None and concatenated:
-                out_columns = list(out_data.columns)
-                if hasattr(y, 'columns'):
-                    y_column = y.columns[0]
-                    if y_column in out_columns:
-                        out_columns.remove(y_column)
-                        out_data = out_data[out_columns]
+            out_data = None
+
+            if not cv and self._data_output_format == DataOutputFormat.CSR:
+                out_data = resolve_output_as_csrmatrix(ret)
+            elif not cv and self._data_output_format == DataOutputFormat.LIST:
+                out_data = resolve_output_as_list(ret)
+            else:
+                out_data = resolve_output_as_dataframe(ret)
+                # remove label column from data
+                if out_data is not None and concatenated:
+                    out_columns = list(out_data.columns)
+                    if hasattr(y, 'columns'):
+                        y_column = y.columns[0]
+                        if y_column in out_columns:
+                            out_columns.remove(y_column)
+                            out_data = out_data[out_columns]
+
             if output_metricsfilename:
                 out_metrics = pd.read_csv(
                     output_metricsfilename,
@@ -482,18 +477,15 @@ class Graph(EntryPoint):
 
             if cv:
                 return self._process_graph_run_results(out_data)
-            elif self._output_binary_data_stream:
+            elif self._data_output_format == DataOutputFormat.IDV:
                 output = BinaryDataStream(output_idvfilename)
-                return (output_modelfilename, output, out_metrics)
+                return (output_modelfilename, output, out_metrics, output_predictor_modelfilename)
             else:
-                return (output_modelfilename, out_data, out_metrics)
+                return (output_modelfilename, out_data, out_metrics, output_predictor_modelfilename)
         finally:
             if cv:
                 self._remove_temp_files()
             else:
-                if output_modelfilename:
-                    # os.remove(output_modelfilename)
-                    pass
                 if output_metricsfilename:
                     os.remove(output_metricsfilename)
 

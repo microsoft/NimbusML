@@ -8,12 +8,16 @@ run check_estimator tests
 import json
 import os
 
+from nimbusml.decomposition import FactorizationMachineBinaryClassifier
+from nimbusml.ensemble import EnsembleClassifier
+from nimbusml.ensemble import EnsembleRegressor
 from nimbusml.ensemble import LightGbmBinaryClassifier
 from nimbusml.ensemble import LightGbmClassifier
 from nimbusml.ensemble import LightGbmRanker
 from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
+from nimbusml.linear_model import SgdBinaryClassifier
 from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
@@ -68,11 +72,17 @@ OMITTED_CHECKS = {
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
-                           'check_regressors_int',
+                           'check_regressors_int, '
+                           # todo: investigate
+                           'check_regressors_train',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
     'FastLinearClassifier': 'check_classifiers_train',
     'FastForestRegressor': 'check_fit_score_takes_y',  # bug
+    'EnsembleClassifier': 'check_supervised_y_2d, '
+                          'check_classifiers_train',
+    'EnsembleRegressor': 'check_supervised_y_2d, '
+                         'check_regressors_train',
     # bug in decision_function
     'FastTreesBinaryClassifier':
         'check_decision_proba_consistency',
@@ -87,6 +97,8 @@ OMITTED_CHECKS = {
         'check_estimators_dtypes',
     # tolerance
     'LogisticRegressionClassifier': 'check_classifiers_train',
+    # todo: investigate
+    'OnlineGradientDescentRegressor': 'check_regressors_train',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
         'check_classifiers_train, check_classifiers_classes',
@@ -150,8 +162,8 @@ OMITTED_CHECKS_TUPLE = (
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
-    'NGramFeaturizer, \
-                        WordEmbedding',
+    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer'
+    'NGramExtractor',
     'check_transformer_data_not_an_array, check_pipeline_consistency, '
     'check_fit2d_1feature, check_estimators_fit_returns_self,\
                        check_fit2d_1sample, '
@@ -181,6 +193,9 @@ NOBINARY_CHECKS = [
     'check_classifiers_train']
 
 INSTANCES = {
+    'EnsembleClassifier': EnsembleClassifier(num_models=3),
+    'EnsembleRegressor': EnsembleRegressor(num_models=3),
+    'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
@@ -190,6 +205,7 @@ INSTANCES = {
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'SgdBinaryClassifier': SgdBinaryClassifier(number_of_threads=1, shuffle=False),
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
     'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
@@ -248,7 +264,14 @@ def load_json(file_path):
         return json.loads(content_without_comments)
 
 
-skip_epoints = set(['OneVsRestClassifier', 'TreeFeaturizer'])
+skip_epoints = set([
+    'OneVsRestClassifier',
+    'TreeFeaturizer',
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    'SymSgdBinaryClassifier',
+    'DatasetTransformer'
+])
+
 epoints = []
 my_path = os.path.realpath(__file__)
 my_dir = os.path.dirname(my_path)
@@ -275,9 +298,6 @@ for e in epoints:
     # skip LighGbm for now, because of random crashes.
     if 'LightGbm' in class_name:
         continue
-    # skip SymSgdBinaryClassifier for now, because of crashes.
-    if 'SymSgdBinaryClassifier' in class_name:
-        continue
 
     mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
     the_class = getattr(mod, class_name)
@@ -290,6 +310,14 @@ for e in epoints:
         estimator = estimator << 'F0'
 
     for check in _yield_all_checks(class_name, estimator):
+        # Skip check_dict_unchanged for estimators which
+        # update the classes_ attribute. For more details
+        # see https://github.com/microsoft/NimbusML/pull/200
+        if (check.__name__ == 'check_dict_unchanged') and \
+            (hasattr(estimator, 'predict_proba') or
+             hasattr(estimator, 'decision_function')):
+            continue
+
         if check.__name__ in OMITTED_CHECKS_ALWAYS:
             continue
         if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:

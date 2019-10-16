@@ -3062,6 +3062,29 @@
       ]
     },
     {
+      "Name": "Models.Schema",
+      "Desc": "Retrieve output model schema",
+      "FriendlyName": null,
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "The transform model.",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "Schema",
+          "Type": "DataView",
+          "Desc": "The model schema"
+        }
+      ]
+    },
+    {
       "Name": "Models.Summarizer",
       "Desc": "Summarize a linear regression predictor.",
       "FriendlyName": null,
@@ -11545,7 +11568,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "Logloss"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12042,7 +12065,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "Error"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12539,7 +12562,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "NormalizedDiscountedCumulativeGain"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -12997,7 +13020,7 @@
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
-          "Default": "Default"
+          "Default": "RootMeanSquaredError"
         },
         {
           "Name": "MaximumBinCountPerFeature",
@@ -18042,6 +18065,51 @@
       ]
     },
     {
+      "Name": "Transforms.DatasetScorerEx",
+      "Desc": "Score a dataset with a predictor model",
+      "FriendlyName": null,
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "The dataset to be scored",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "The predictor model to apply to data",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Suffix",
+          "Type": "String",
+          "Desc": "Suffix to append to the score columns",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "ScoredData",
+          "Type": "DataView",
+          "Desc": "The scored dataset"
+        },
+        {
+          "Name": "ScoringTransform",
+          "Type": "TransformModel",
+          "Desc": "The scoring transform"
+        }
+      ]
+    },
+    {
       "Name": "Transforms.DatasetTransformScorer",
       "Desc": "Score a dataset with a transform model",
       "FriendlyName": null,
@@ -18486,7 +18554,6 @@
         },
         {
           "Name": "LabelColumnName",
-          "PassAs": "LabelColumn",
           "Type": "String",
           "Desc": "Column to use for labels",
           "Aliases": [
@@ -21712,6 +21779,79 @@
       ]
     },
     {
+      "Name": "Transforms.PermutationFeatureImportance",
+      "Desc": "Permutation Feature Importance (PFI)",
+      "FriendlyName": "PFI",
+      "ShortName": "PFI",
+      "Inputs": [
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "The path to the model file",
+          "Aliases": [
+            "path"
+          ],
+          "Required": true,
+          "SortOrder": 150.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "UseFeatureWeightFilter",
+          "Type": "Bool",
+          "Desc": "Use feature weights to pre-filter features",
+          "Aliases": [
+            "usefw"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
+          "Name": "NumberOfExamplesToUse",
+          "Type": "Int",
+          "Desc": "Limit the number of examples to evaluate on",
+          "Aliases": [
+            "numexamples"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "PermutationCount",
+          "Type": "Int",
+          "Desc": "The number of permutations to perform",
+          "Aliases": [
+            "permutations"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": 1
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "Metrics",
+          "Type": "DataView",
+          "Desc": "The PFI metrics"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ]
+    },
+    {
       "Name": "Transforms.PredictedLabelColumnOriginalValueConverter",
       "Desc": "Transforms a predicted label column to its original values, unless it is of type bool.",
       "FriendlyName": "Convert Predicted Label",
@@ -21731,6 +21871,82 @@
           "Desc": "The predicted label column",
           "Required": true,
           "SortOrder": 2.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.PrefixColumnConcatenator",
+      "Desc": "Concatenates one or more columns of the same item type.",
+      "FriendlyName": "Concat Transform",
+      "ShortName": "Concat",
+      "Inputs": [
+        {
+          "Name": "Column",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
+          },
+          "Desc": "New column definition(s) (optional form: name:src)",
+          "Aliases": [
+            "col"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
           "IsNullable": false
         }
       ],
@@ -22349,66 +22565,6 @@
           "IsNullable": false
         },
         {
-          "Name": "LabelColumn",
-          "Type": "String",
-          "Desc": "Training labels.",
-          "Aliases": [
-            "label"
-          ],
-          "Required": false,
-          "SortOrder": 4.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "TensorFlowLabel",
-          "Type": "String",
-          "Desc": "TensorFlow label node.",
-          "Aliases": [
-            "TFLabel"
-          ],
-          "Required": false,
-          "SortOrder": 5.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "OptimizationOperation",
-          "Type": "String",
-          "Desc": "The name of the optimization operation in the TensorFlow graph.",
-          "Aliases": [
-            "OptimizationOp"
-          ],
-          "Required": false,
-          "SortOrder": 6.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "LossOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph to compute training loss (Optional)",
-          "Aliases": [
-            "LossOp"
-          ],
-          "Required": false,
-          "SortOrder": 7.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "MetricOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph to compute performance metric during training (Optional)",
-          "Aliases": [
-            "MetricOp"
-          ],
-          "Required": false,
-          "SortOrder": 8.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
           "Name": "BatchSize",
           "Type": "Int",
           "Desc": "Number of samples to use for mini-batch training.",
@@ -22416,60 +22572,6 @@
           "SortOrder": 9.0,
           "IsNullable": false,
           "Default": 64
-        },
-        {
-          "Name": "Epoch",
-          "Type": "Int",
-          "Desc": "Number of training iterations.",
-          "Required": false,
-          "SortOrder": 10.0,
-          "IsNullable": false,
-          "Default": 5
-        },
-        {
-          "Name": "LearningRateOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph which sets optimizer learning rate (Optional).",
-          "Required": false,
-          "SortOrder": 11.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "LearningRate",
-          "Type": "Float",
-          "Desc": "Learning rate to use during optimization.",
-          "Required": false,
-          "SortOrder": 12.0,
-          "IsNullable": false,
-          "Default": 0.01
-        },
-        {
-          "Name": "SaveLocationOperation",
-          "Type": "String",
-          "Desc": "Name of the input in TensorFlow graph that specifiy the location for saving/restoring models from disk.",
-          "Required": false,
-          "SortOrder": 13.0,
-          "IsNullable": false,
-          "Default": "save/Const"
-        },
-        {
-          "Name": "SaveOperation",
-          "Type": "String",
-          "Desc": "Name of the input in TensorFlow graph that specifiy the location for saving/restoring models from disk.",
-          "Required": false,
-          "SortOrder": 14.0,
-          "IsNullable": false,
-          "Default": "save/control_dependency"
-        },
-        {
-          "Name": "ReTrain",
-          "Type": "Bool",
-          "Desc": "Retrain TensorFlow model.",
-          "Required": false,
-          "SortOrder": 15.0,
-          "IsNullable": false,
-          "Default": false
         },
         {
           "Name": "AddBatchDimensionInputs",
@@ -23128,6 +23230,61 @@
           "Type": "PredictorModel",
           "Desc": "Predictor model"
         }
+      ]
+    },
+    {
+      "Name": "Transforms.VariableColumnTransform",
+      "Desc": "Combines the specified input columns in to a single variable length vectorized column.",
+      "FriendlyName": "Variable Column Creator",
+      "ShortName": "Variable Column Creator",
+      "Inputs": [
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Features",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Features",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "LengthColumnName",
+          "Type": "String",
+          "Desc": "Length Column Name",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
       ]
     },
     {
@@ -29001,140 +29158,6 @@
           "Desc": "Single node machine learning process.",
           "FriendlyName": "Single",
           "Settings": []
-        }
-      ]
-    },
-    {
-      "Kind": "PartitionedPathParser",
-      "Components": [
-        {
-          "Name": "ParquetPathParser",
-          "Desc": "Extract name/value pairs from Parquet formatted directory names. Example path: Year=2018/Month=12/data1.parquet",
-          "FriendlyName": "Parquet Partitioned Path Parser",
-          "Aliases": [
-            "ParqPP"
-          ],
-          "Settings": []
-        },
-        {
-          "Name": "SimplePathParser",
-          "Desc": "A simple parser that extracts directory names as column values. Column names are defined as arguments.",
-          "FriendlyName": "Simple Partitioned Path Parser",
-          "Aliases": [
-            "SmplPP"
-          ],
-          "Settings": [
-            {
-              "Name": "Columns",
-              "Type": {
-                "Kind": "Array",
-                "ItemType": {
-                  "Kind": "Struct",
-                  "Fields": [
-                    {
-                      "Name": "Name",
-                      "Type": "String",
-                      "Desc": "Name of the column.",
-                      "Required": true,
-                      "SortOrder": 150.0,
-                      "IsNullable": false
-                    },
-                    {
-                      "Name": "Type",
-                      "Type": {
-                        "Kind": "Enum",
-                        "Values": [
-                          "I1",
-                          "U1",
-                          "I2",
-                          "U2",
-                          "I4",
-                          "U4",
-                          "I8",
-                          "U8",
-                          "R4",
-                          "Num",
-                          "R8",
-                          "TX",
-                          "Text",
-                          "TXT",
-                          "BL",
-                          "Bool",
-                          "TimeSpan",
-                          "TS",
-                          "DT",
-                          "DateTime",
-                          "DZ",
-                          "DateTimeZone",
-                          "UG",
-                          "U16"
-                        ]
-                      },
-                      "Desc": "Data type of the column.",
-                      "Required": false,
-                      "SortOrder": 150.0,
-                      "IsNullable": true,
-                      "Default": null
-                    },
-                    {
-                      "Name": "Source",
-                      "Type": "Int",
-                      "Desc": "Index of the directory representing this column.",
-                      "Required": true,
-                      "SortOrder": 150.0,
-                      "IsNullable": false,
-                      "Default": 0
-                    }
-                  ]
-                }
-              },
-              "Desc": "Column definitions used to override the Partitioned Path Parser. Expected with the format name:type:numeric-source, for example, col=MyFeature:R4:1",
-              "Aliases": [
-                "col"
-              ],
-              "Required": false,
-              "SortOrder": 1.0,
-              "IsNullable": false,
-              "Default": null
-            },
-            {
-              "Name": "Type",
-              "Type": {
-                "Kind": "Enum",
-                "Values": [
-                  "I1",
-                  "U1",
-                  "I2",
-                  "U2",
-                  "I4",
-                  "U4",
-                  "I8",
-                  "U8",
-                  "R4",
-                  "Num",
-                  "R8",
-                  "TX",
-                  "Text",
-                  "TXT",
-                  "BL",
-                  "Bool",
-                  "TimeSpan",
-                  "TS",
-                  "DT",
-                  "DateTime",
-                  "DZ",
-                  "DateTimeZone",
-                  "UG",
-                  "U16"
-                ]
-              },
-              "Desc": "Data type of each column.",
-              "Required": false,
-              "SortOrder": 150.0,
-              "IsNullable": false,
-              "Default": "TX"
-            }
-          ]
         }
       ]
     },

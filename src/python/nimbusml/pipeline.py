@@ -5,6 +5,7 @@
 import inspect
 import itertools
 import os
+import tempfile
 import time
 import warnings
 from collections import OrderedDict, namedtuple, defaultdict
@@ -17,6 +18,8 @@ from pandas import Categorical
 from pandas import DataFrame, Series
 from scipy.sparse import csr_matrix
 from sklearn.utils.validation import check_X_y, check_array
+from sklearn.utils.multiclass import unique_labels
+from zipfile import ZipFile
 
 from .internal.core.base_pipeline_item import BasePipelineItem
 from .internal.entrypoints.data_customtextloader import \
@@ -37,10 +40,15 @@ from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
 from .internal.entrypoints.models_onnxconverter import models_onnxconverter
-from .internal.entrypoints.transforms_datasetscorer import \
-    transforms_datasetscorer
+from .internal.entrypoints.models_schema import models_schema
+from .internal.entrypoints.transforms_datasetscorerex import \
+    transforms_datasetscorerex
+from .internal.entrypoints.transforms_datasettransformscorer import \
+    transforms_datasettransformscorer
 from .internal.entrypoints.transforms_featurecombiner import \
     transforms_featurecombiner
+from .internal.entrypoints.transforms_featurecontributioncalculationtransformer import \
+    transforms_featurecontributioncalculationtransformer
 from .internal.entrypoints.transforms_labelcolumnkeybooleanconverter \
     import \
     transforms_labelcolumnkeybooleanconverter
@@ -53,6 +61,8 @@ from .internal.entrypoints.transforms_modelcombiner import \
     transforms_modelcombiner
 from .internal.entrypoints.transforms_optionalcolumncreator import \
     transforms_optionalcolumncreator
+from .internal.entrypoints.transforms_permutationfeatureimportance import \
+    transforms_permutationfeatureimportance
 from .internal.entrypoints \
     .transforms_predictedlabelcolumnoriginalvalueconverter import \
     transforms_predictedlabelcolumnoriginalvalueconverter
@@ -64,7 +74,7 @@ from .internal.utils.data_roles import Role, DataRoles
 from .internal.utils.data_schema import DataSchema
 from .internal.utils.data_stream import DataStream, ViewDataStream, \
     FileDataStream, BinaryDataStream
-from .internal.utils.entrypoints import Graph
+from .internal.utils.entrypoints import Graph, DataOutputFormat
 from .internal.utils.schema_helper import _extract_label_column
 from .internal.utils.utils import trace, unlist
 
@@ -272,7 +282,7 @@ class Pipeline:
 
     @property
     def last_node(self):
-        if len(self.steps) <= 0:
+        if not self.steps:
             raise TypeError("No steps given.")
         last_step = self.steps[-1]
         return last_step if not isinstance(last_step, tuple) else \
@@ -558,9 +568,12 @@ class Pipeline:
             inputs = OrderedDict([(file_data.replace('$', ''), '')])
 
         # connect transform node inputs/outputs
-        if feature_columns is None and not isinstance(X, BinaryDataStream):
+        if feature_columns is None:
             if schema is None:
-                schema = DataSchema.read_schema(X)
+                if isinstance(X, BinaryDataStream):
+                    schema = X.schema
+                else:
+                    schema = DataSchema.read_schema(X)
             feature_columns = [c.Name for c in schema]
             if label_column:
                 # if label_column is a string, remove it from
@@ -593,6 +606,14 @@ class Pipeline:
             output_data=output_data,
             output_model=output_model,
             strategy_iosklearn=strategy_iosklearn)
+
+        for node in enumerate([n for n in transform_nodes
+                               if n.name == 'Models.DatasetTransformer']):
+            input_name = 'dataset_transformer_model' + str(node[0])
+            inputs[input_name] = node[1].inputs['TransformModel']
+            node[1].inputs['TransformModel'] = '$' + input_name
+            node[1].input_variables.add(node[1].inputs['TransformModel'])
+
         graph_nodes['transform_nodes'] = transform_nodes
         return graph_nodes, feature_columns, inputs, transform_nodes, \
             columns_out
@@ -641,8 +662,7 @@ class Pipeline:
             else:
                 raise NotImplementedError(
                     "Strategy '{0}' to handle unspecified inputs is not "
-                    "implemented".format(
-                        strategy_iosklearn))
+                    "implemented".format(strategy_iosklearn))
 
             if label_column is not None or last_node._use_role(Role.Label):
                 if getattr(last_node, 'label_column_name_', None):
@@ -665,8 +685,7 @@ class Pipeline:
                 last_node.label_column_name = None
                 label_column = None
 
-            if weight_column is not None or last_node._use_role(
-                    Role.Weight):
+            if weight_column is not None or last_node._use_role(Role.Weight):
                 if getattr(last_node, 'example_weight_column_name', None):
                     weight_column = last_node.example_weight_column_name
                 elif weight_column:
@@ -678,8 +697,7 @@ class Pipeline:
             if (hasattr(last_node, 'row_group_column_name_')
                     and last_node.row_group_column_name_ is not None):
                 group_id_column = last_node.row_group_column_name_
-            elif (hasattr(last_node,
-                          'row_group_column_name') and
+            elif (hasattr(last_node, 'row_group_column_name') and
                   last_node.row_group_column_name is not None):
                 group_id_column = last_node.row_group_column_name
             else:
@@ -701,10 +719,8 @@ class Pipeline:
 
             # todo: ideally all the nodes have the same name for params
             # so we dont have to distinguish if its learner or
-            # transformer. We will supply
-            # input_data, output_data & output_model vars. Its up to
-            # node to
-            # use suplied vars
+            # transformer. We will supply input_data, output_data and
+            # output_model vars. Its up to node to use suplied vars.
             learner_node = last_node._get_node(
                 feature_column_name=learner_features,
                 training_data=output_data,
@@ -731,6 +747,7 @@ class Pipeline:
         output_binary_data_stream = params.pop(
             'output_binary_data_stream', False)
         params.pop('parallel', None)
+        do_output_predictor_model = params.pop('output_predictor_model', None)
 
         X, y, columns_renamed, feature_columns, label_column, schema, \
             weights, weight_column = self._preprocess_X_y(X, y, weights)
@@ -745,6 +762,7 @@ class Pipeline:
         input_data = "$input_data"
         output_data = "$output_data"
         output_model = "$output_model"
+        output_predictor_model = "$output_predictor_model"
         predictor_model = "$predictor_model"
 
         graph_nodes, feature_columns, inputs, transform_nodes, \
@@ -759,10 +777,13 @@ class Pipeline:
             self._update_graph_nodes_for_learner(
                 graph_nodes,
                 transform_nodes,
-                columns_out, label_column,
+                columns_out, 
+                label_column,
                 weight_column,
-                output_data, output_model,
-                predictor_model, y,
+                output_data,
+                output_model,
+                predictor_model,
+                y,
                 strategy_iosklearn=strategy_iosklearn)
 
         # graph_nodes contain graph sections, which is needed for CV.
@@ -772,19 +793,33 @@ class Pipeline:
         graph_nodes = list(itertools.chain(*graph_nodes.values()))
 
         # combine output models
-        transform_models = [node.outputs["Model"]
-                            for node in graph_nodes if
-                            "Model" in node.outputs]
-        if learner_node and len(
-                transform_models) > 0:  # no need to combine if there is
-            #  only 1 model
+        transform_models = []
+        for node in graph_nodes:
+            if node.name == 'Models.DatasetTransformer':
+                transform_models.append(node.inputs['TransformModel'])
+            elif "Model" in node.outputs:
+                transform_models.append(node.outputs["Model"])
+        # no need to combine if there is only 1 model
+        if learner_node and len(transform_models) > 0:
             combine_model_node = transforms_manyheterogeneousmodelcombiner(
                 transform_models=transform_models,
-                predictor_model=(
-                    predictor_model if learner_node else None),
+                predictor_model=predictor_model,
                 model=output_model)
             combine_model_node._implicit = True
             graph_nodes.append(combine_model_node)
+            if do_output_predictor_model: 
+                # get implicit_nodes and build predictor model only
+                implicit_nodes = graph_sections['implicit_nodes']
+                implicit_transform_models = []
+                for node in implicit_nodes:
+                    if "Model" in node.outputs:
+                        implicit_transform_models.append(node.outputs["Model"])
+                output_predictor_model_node = transforms_manyheterogeneousmodelcombiner(
+                    transform_models=implicit_transform_models,
+                    predictor_model=predictor_model,
+                    model=output_predictor_model)
+                output_predictor_model_node._implicit = True
+                graph_nodes.append(output_predictor_model_node)
         elif len(transform_models) > 1:
             combine_model_node = transforms_modelcombiner(
                 models=transform_models,
@@ -793,12 +828,13 @@ class Pipeline:
             graph_nodes.append(combine_model_node)
         elif len(graph_nodes) == 0:
             raise RuntimeError(
-                "Unable to process the pipeline len(transform_models)={"
-                "0}.".format(
-                    len(transform_models)))
+                "Unable to process the pipeline len(transform_models)={0}.".
+                    format(len(transform_models)))
 
         # create the graph
         outputs = OrderedDict([(output_model.replace('$', ''), '')])
+        if do_output_predictor_model:
+            outputs[output_predictor_model.replace('$', '')] = ''
         # REVIEW: ideally we should remove output completely from the
         # graph if its not needed
         # however graph validation logic prevents doing that at the moment,
@@ -806,10 +842,18 @@ class Pipeline:
         if learner_node is None:  # last node is transformer
             outputs[output_data.replace(
                 '$', '')] = '' if do_fit_transform else '<null>'
+
+        data_output_format = DataOutputFormat.DF
+        if do_fit_transform:
+            if output_binary_data_stream:
+                data_output_format = DataOutputFormat.IDV
+            elif params.pop('as_csr', False):
+                data_output_format = DataOutputFormat.CSR
+
         graph = Graph(
             inputs,
             outputs,
-            do_fit_transform and output_binary_data_stream,
+            data_output_format,
             *(graph_nodes))
 
         # Checks that every parameter in params was used.
@@ -1109,6 +1153,8 @@ class Pipeline:
                         i, n.__class__.__name__), TrainedWarning)
                 break
 
+        self._extract_classes(y)
+
         graph, X, y, weights, start_time, schema, telemetry_info, \
             learner_features, _, max_slots = self._fit_graph(
                 X, y, verbose, **params)
@@ -1126,10 +1172,9 @@ class Pipeline:
 
         # run the graph
         # REVIEW: we should have the possibility to keep the model in
-        # memory
-        # and not in a file.
+        # memory and not in a file.
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, out_predictor_model) = graph.run(
                 X=X,
                 y=y,
                 random_state=self.random_state,
@@ -1155,6 +1200,8 @@ class Pipeline:
         move_information_about_roles_once_used()
         self.graph_ = graph
         self.model = out_model
+        if out_predictor_model:
+            self.predictor_model = out_predictor_model
         self.data = out_data
         # stop the clock
         self._run_time = time.time() - start_time
@@ -1366,9 +1413,7 @@ class Pipeline:
             optional_node = transforms_optionalcolumncreator(
                 column=[label],
                 data="$input_data" if num_transforms == 0 else
-                output_data +
-                str(
-                    num_transforms),
+                output_data + str(num_transforms),
                 output_data="$optional_data",
                 model=output_model + str(num_transforms + 1))
             optional_node._implicit = True
@@ -1376,24 +1421,20 @@ class Pipeline:
                 data="$optional_data",
                 label_column=label,
                 output_data="$label_data",
-                model=output_model + str(
-                    num_transforms + 2))
+                model=output_model + str(num_transforms + 2))
             label_node._implicit = True
             feature_node = transforms_featurecombiner(
                 data="$label_data",
                 features=features,
                 output_data=output_data,
-                model=output_model + str(
-                    num_transforms + 3))
+                model=output_model + str(num_transforms + 3))
             feature_node._implicit = True
             implicit_nodes = [optional_node, label_node, feature_node]
         elif learner.type in ('classifier', 'ranker'):
             optional_node = transforms_optionalcolumncreator(
                 column=[label],
                 data="$input_data" if num_transforms == 0 else
-                output_data +
-                str(
-                    num_transforms),
+                output_data + str(num_transforms),
                 output_data="$optional_data",
                 model=output_model + str(num_transforms + 1))
             optional_node._implicit = True
@@ -1404,25 +1445,20 @@ class Pipeline:
                 text_key_values=False,
                 model=output_model + str(num_transforms + 2))
             label_node._implicit = True
-
             feature_node = transforms_featurecombiner(
                 data="$label_data",
                 features=features,
                 output_data=output_data,
-                model=output_model + str(
-                    num_transforms + 3))
+                model=output_model + str(num_transforms + 3))
             feature_node._implicit = True
             implicit_nodes = [optional_node, label_node, feature_node]
         elif learner.type in {'recommender', 'sequence'}:
-            raise NotImplementedError(
-                "Type '{0}' is not implemented yet.".format(
-                    learner.type))
+            raise NotImplementedError("Type '{0}' is not implemented yet.".
+                                      format(learner.type))
         else:
             feature_node = transforms_featurecombiner(
                 data="$input_data" if num_transforms == 0 else
-                output_data +
-                str(
-                    num_transforms),
+                output_data + str(num_transforms),
                 features=features,
                 output_data=output_data,
                 model=output_model + str(num_transforms + 1))
@@ -1437,31 +1473,63 @@ class Pipeline:
                                'DCG@1', 'DCG@2', 'DCG@3', ]
         return out_metrics
 
-    @trace
-    def _evaluation(self, evaltype, group_id, **params):
+    def _evaluation_infer(self, evaltype, label_column, group_id,
+                          **params):
         all_nodes = []
+        if not self.steps:
+            if evaltype == 'auto':
+                raise ValueError(
+                    "need to specify 'evaltype' explicitly if model is "
+                    "loaded")
+        common_eval_args = OrderedDict(data="$scoredVectorData",
+                                       overall_metrics="$output_metrics",
+                                       score_column="Score",
+                                       label_column=label_column)
+        params.update(common_eval_args)
 
-        if evaltype == 'binary':
-            all_nodes.extend([
-                models_binaryclassificationevaluator(**params)
-            ])
-        elif evaltype == 'multiclass':
-            all_nodes.extend([
-                models_classificationevaluator(**params)
-            ])
-        elif evaltype == 'regression':
-            all_nodes.extend([
-                models_regressionevaluator(**params)
-            ])
-        elif evaltype == 'cluster':
-            all_nodes.extend([
-                models_clusterevaluator(**params)
-            ])
-        elif evaltype == 'anomaly':
-            all_nodes.extend([
-                models_anomalydetectionevaluator(**params)
-            ])
-        elif evaltype == 'ranking':
+        type_ = self._last_node_type() if evaltype == 'auto' else evaltype
+
+        if type_ == 'binary':
+            all_nodes.extend(
+                [models_binaryclassificationevaluator(**params)])
+
+        elif type_ == 'multiclass':
+            all_nodes.extend(
+                [models_classificationevaluator(**params)])
+
+        elif type_ in ['regressor', 'regression']:
+            all_nodes.extend([models_regressionevaluator(**params)])
+
+        elif type_ in ['clusterer', 'cluster']:
+            label_node = transforms_labelcolumnkeybooleanconverter(
+                data="$scoredVectorData", label_column=label_column,
+                output_data="$label_data")
+            clustering_eval_args = OrderedDict(
+                data="$label_data",
+                overall_metrics="$output_metrics",
+                score_column="Score",
+                label_column=label_column)
+            params.update(clustering_eval_args)
+            all_nodes.extend([label_node,
+                              models_clusterevaluator(**params)
+                              ])
+
+        elif type_ == 'anomaly':
+            label_node = transforms_labelcolumnkeybooleanconverter(
+                data="$scoredVectorData", label_column=label_column,
+                output_data="$label_data")
+            anom_eval_args = OrderedDict(
+                data="$label_data",
+                overall_metrics="$output_metrics",
+                score_column="Score",
+                label_column=label_column
+            )
+            params.update(anom_eval_args)
+            all_nodes.extend(
+                [label_node,
+                 models_anomalydetectionevaluator(**params)])
+
+        elif type_ == 'ranking':
             svd = "$scoredVectorData"
             column = [OrderedDict(Source=group_id, Name=group_id)]
             algo_args = dict(data=svd, output_data=svd, column=column)
@@ -1472,74 +1540,11 @@ class Pipeline:
                 key_node,
                 evaluate_node
             ])
+
         else:
             raise ValueError(
                 "%s is not a valid type for evaluation." %
                 evaltype)
-
-        return all_nodes
-
-    def _evaluation_infer(self, evaltype, label_column, group_id,
-                          **params):
-        all_nodes = []
-        if len(self.steps) == 0:
-            if evaltype == 'auto':
-                raise ValueError(
-                    "need to specify 'evaltype' explicitly if model is "
-                    "loaded")
-        common_eval_args = OrderedDict(data="$scoredVectorData",
-                                       overall_metrics="$output_metrics",
-                                       score_column="Score",
-                                       label_column=label_column)
-        params.update(common_eval_args)
-        if evaltype == 'auto':
-            last_node_type = self._last_node_type()
-            if last_node_type == 'binary':
-                all_nodes.extend(
-                    [models_binaryclassificationevaluator(**params)])
-
-            elif last_node_type == 'multiclass':
-                all_nodes.extend(
-                    [models_classificationevaluator(**params)])
-
-            elif last_node_type == 'regressor':
-                all_nodes.extend([models_regressionevaluator(**params)])
-
-            elif last_node_type == 'clusterer':
-                label_node = transforms_labelcolumnkeybooleanconverter(
-                    data="$scoredVectorData", label_column=label_column,
-                    output_data="$label_data")
-                clustering_eval_args = OrderedDict(
-                    data="$label_data",
-                    overall_metrics="$output_metrics",
-                    score_column="Score",
-                    label_column=label_column)
-                params.update(clustering_eval_args)
-                all_nodes.extend([label_node,
-                                  models_clusterevaluator(**params)
-                                  ])
-
-            elif last_node_type == 'anomaly':
-                label_node = transforms_labelcolumnkeybooleanconverter(
-                    data="$scoredVectorData", label_column=label_column,
-                    output_data="$label_data")
-                anom_eval_args = OrderedDict(
-                    data="$label_data",
-                    overall_metrics="$output_metrics",
-                    score_column="Score",
-                    label_column=label_column
-                )
-                params.update(anom_eval_args)
-                all_nodes.extend(
-                    [label_node,
-                     models_anomalydetectionevaluator(**params)])
-
-            else:
-                raise ValueError(
-                    "evaltype is %s. Last node type is %s" %
-                    evaltype, last_node_type)
-        else:
-            return self._evaluation(evaltype, group_id, **params)
 
         return all_nodes
 
@@ -1695,6 +1700,343 @@ class Pipeline:
                     "ambiguous.")
 
     @trace
+    def get_feature_contributions(self, X, top=10, bottom=10, verbose=0, 
+                                  as_binary_data_stream=False, **params):
+        """
+        Calculates observation level feature contributions. Returns dataframe
+        with raw data, predictions, and feature contributiuons for each
+        prediction. Feature contributions are not supported for transforms, so
+        make sure that the last step in a pipeline is a model. Feature
+        contriutions are supported for the following models:
+
+        * Regression:
+
+            * OrdinaryLeastSquaresRegressor
+            * FastLinearRegressor
+            * OnlineGradientDescentRegressor
+            * PoissonRegressionRegressor
+            * GamRegressor
+            * LightGbmRegressor
+            * FastTreesRegressor
+            * FastForestRegressor
+            * FastTreesTweedieRegressor
+
+        * Binary Classification:
+
+            * AveragedPerceptronBinaryClassifier
+            * LinearSvmBinaryClassifier
+            * LogisticRegressionBinaryClassifier
+            * FastLinearBinaryClassifier
+            * SgdBinaryClassifier
+            * SymSgdBinaryClassifier
+            * GamBinaryClassifier
+            * FastForestBinaryClassifier
+            * FastTreesBinaryClassifier
+            * LightGbmBinaryClassifier
+
+        * Ranking:
+
+            * LightGbmRanker
+
+        :param X: {array-like [n_samples, n_features],
+            :py:class:`nimbusml.FileDataStream` }
+        :param top: the number of positive contributions with highest magnitude
+            to report.
+        :param bottom: The number of negative contributions with highest
+            magnitude to report.
+        :return: dataframe containing the raw data, predicted label, score,
+            probabilities, and feature contributions.
+        """
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before.")
+
+        if len(self.steps) > 0:
+            last_node = self.last_node
+            if last_node.type == 'transform':
+                raise ValueError(
+                    "Pipeline needs a trainer as last step.")
+
+        X, y_temp, columns_renamed, feature_columns, label_column, \
+            schema, weights, weight_column = self._preprocess_X_y(X)
+
+        all_nodes = []
+        inputs = dict([('data', ''), ('predictor_model', self.model)])
+        if isinstance(X, FileDataStream):
+            importtext_node = data_customtextloader(
+                input_file="$file",
+                data="$data",
+                custom_schema=schema.to_string(
+                    add_sep=True))
+            all_nodes = [importtext_node]
+            inputs = dict([('file', ''), ('predictor_model', self.model)])
+
+        score_node = transforms_datasetscorerex(
+            data="$data",
+            predictor_model="$predictor_model",
+            scored_data="$scoredvectordata")
+
+        fcc_node = transforms_featurecontributioncalculationtransformer(
+            data="$scoredvectordata",
+            predictor_model="$predictor_model",
+            output_data="$output_data",
+            top=top,
+            bottom=bottom,
+            normalize=True)
+        
+        all_nodes.extend([score_node, fcc_node])
+
+        outputs = dict(output_data="")
+
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
+
+        graph = Graph(
+            inputs,
+            outputs,
+            data_output_format,
+            *all_nodes)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, out_data, out_metrics, _) = graph.run(
+                X=X,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                telemetry_info=telemetry_info,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        return out_data
+
+    def get_output_columns(self, verbose=0, **params):
+        """
+        Returns the output list of columns for the fitted model.
+        :return: list .
+        """
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before.")
+
+        if len(self.steps) > 0:
+            last_node = self.last_node
+            if last_node.type != 'transform':
+                raise ValueError(
+                    "Pipeline needs a transformer as last step.")
+
+        inputs = dict([('transform_model', self.model)])
+        schema_node = models_schema(
+            model="$transform_model",
+            schema="$output_data")
+        all_nodes = [schema_node]
+
+        outputs = dict(output_data="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            DataOutputFormat.LIST,
+            *all_nodes)
+
+        try:
+            (_, out_data, _, _) = graph.run(
+                X=None,
+                y=None,
+                random_state=self.random_state,
+                model=self.model,
+                no_input_data=True,
+                verbose=verbose,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        return out_data
+    
+    @trace
+    def permutation_feature_importance(self, X, number_of_examples=None,
+                                       permutation_count=1,
+                                       filter_zero_weight_features=False,
+                                       verbose=0, as_binary_data_stream=False,
+                                       **params):
+        """
+        Permutation feature importance (PFI) is a technique to determine the
+        global importance of features in a trained machine learning model. PFI
+        is a simple yet powerful technique motivated by Breiman in section 10
+        of his Random Forests paper (Machine Learning, 2001). The advantage of
+        the PFI method is that it is model agnostic - it works with any model
+        that can be evaluated - and it can use any dataset, not just the
+        training set, to compute feature importance metrics.
+        
+        PFI works by taking a labeled dataset, choosing a feature, and
+        permuting the values for that feature across all the examples, so that
+        each example now has a random value for the feature and the original
+        values for all other features. The evaluation metric (e.g. NDCG) is
+        then calculated for this modified dataset, and the change in the
+        evaluation metric from the original dataset is computed. The larger the
+        change in the evaluation metric, the more important the feature is to
+        the model, i.e. the most important features are those that the model is
+        most sensitive to. PFI works by performing this permutation analysis
+        across all the features of a model, one after another.
+
+        Note that for increasing metrics (e.g. AUC, accuracy, R-Squared, NDCG),
+        the most important features will be those with the highest negative
+        mean change in the metric. Conversely, for decreasing metrics (e.g.
+        Mean Squared Error, Log loss), the most important features will be
+        those with the highest positive mean change in the metric.
+
+        PFI is supported for binary classifiers, classifiers, regressors, and
+        rankers.
+        
+        The mean changes and statndard errors of the means are evaluated for
+        the following metrics are evaluated for PFI:
+
+        * Binary Classification:
+
+            * Area under ROC curve (AUC)
+            * Accuracy
+            * Positive precision
+            * Positive recall
+            * Negative precision
+            * Negative recall
+            * F1 score
+            * Area under Precision-Recall curve (AUPRC)
+
+        * Multiclass classification:
+
+            * Macro accuracy
+            * Micro accuracy
+            * Log loss
+            * Log loss reduction
+            * Top k accuracy
+            * Per-class log loss
+
+        * Regression:
+        
+            * Mean absolute error (MAE)
+            * Mean squared error (MSE)
+            * Root mean squared error (RMSE)
+            * Loss function
+            * R-Squared
+
+        * Ranking
+
+            * Discounted cumulative gains (DCG) @1, @2, and @3
+            * Normalized discounted cumulative gains (NDCG) @1, @2, and @3
+
+        **Reference**
+
+            `Breiman, L. Random Forests. Machine Learning (2001) 45: 5.
+            <https://link.springer.com/content/pdf/10.1023%2FA%3A1010933404324.pdf>`_
+
+        :param X: {array-like [n_samples, n_features],
+            :py:class:`nimbusml.FileDataStream` }
+        :param number_of_examples: Limit the number of examples to evaluate on.
+            ``'None'`` means all examples in the dataset are used.
+        :param permutation_count: The number of permutations to perform.
+        :filter_zero_weight_features: Pre-filter features with zero weight. PFI
+            will not be evaluated on these features.
+        :return: dataframe containing the mean change in evaluation metrics and
+            standard error of the mean for each feature. Features with the
+            largest change in a metric are the most important in the model with
+            respect to that metric.
+        """
+        self.verbose = verbose
+
+        if not self._is_fitted:
+            raise ValueError(
+                "Model is not fitted. Train or load a model before test().")
+
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
+
+        all_nodes = []
+        inputs = dict([('data', ''), ('predictor_model', self.model)])
+        if isinstance(X, FileDataStream):
+            importtext_node = data_customtextloader(
+                input_file="$file",
+                data="$data",
+                custom_schema=schema.to_string(
+                    add_sep=True))
+            all_nodes = [importtext_node]
+            inputs = dict([('file', ''), ('predictor_model', self.model)])
+
+        pfi_node = transforms_permutationfeatureimportance(
+            data="$data",
+            predictor_model="$predictor_model",
+            metrics="$output_data",
+            permutation_count=permutation_count,
+            number_of_examples_to_use=number_of_examples,
+            use_feature_weight_filter=filter_zero_weight_features)
+        
+        all_nodes.extend([pfi_node])
+
+        outputs = dict(output_data="")
+
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
+
+        graph = Graph(
+            inputs,
+            outputs,
+            data_output_format,
+            *all_nodes)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, out_data, out_metrics, _) = graph.run(
+                X=X,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                telemetry_info=telemetry_info,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        out_data = self._fix_pfi_columns(out_data)
+
+        return out_data
+
+    def _fix_pfi_columns(self, data):
+        cols = []
+        for i in range(len(data.columns)):
+            if 'StdErr' in data.columns.values[i]:
+                if data.columns.values[i][:15] == 'PerClassLogLoss' :
+                    cols.append('PerClassLogLoss' + \
+                        data.columns.values[i][21:] + '.StdErr')
+                elif data.columns.values[i][:10] == 'Discounted':
+                    pos = int(data.columns.values[i][-1]) + 1
+                    cols.append('DCG@' + str(pos) + '.StdErr')
+                elif data.columns.values[i][:10] == 'Normalized':
+                    pos = int(data.columns.values[i][-1]) + 1
+                    cols.append('NDCG@' + str(pos) + '.StdErr')
+                else:
+                    cols.append(data.columns.values[i][:-6] + '.StdErr')
+            else:
+                if data.columns.values[i][:10] == 'Discounted':
+                    pos = int(data.columns.values[i][26]) + 1
+                    cols.append('DCG@' + str(pos))
+                elif data.columns.values[i][:10] == 'Normalized':
+                    pos = int(data.columns.values[i][36]) + 1
+                    cols.append('NDCG@' + str(pos))
+                else:
+                    cols.append(data.columns.values[i])
+        data.columns = cols
+        
+        return data
+
+    @trace
     def _predict(self, X, y=None,
                  evaltype='auto', group_id=None,
                  weight=None,
@@ -1728,25 +2070,51 @@ class Pipeline:
                 isinstance(X, DataFrame) and isinstance(y, (str, tuple))):
             y = y_temp
 
+        is_transformer_chain = False
+        with ZipFile(self.model) as model_zip:
+            is_transformer_chain = any('TransformerChain' in item
+                                   for item in model_zip.namelist())
+
         all_nodes = []
-        inputs = dict([('data', ''), ('predictor_model', self.model)])
-        if isinstance(X, FileDataStream):
-            importtext_node = data_customtextloader(
-                input_file="$file",
+        if is_transformer_chain:
+            inputs = dict([('data', ''), ('transform_model', self.model)])
+            if isinstance(X, FileDataStream):
+                importtext_node = data_customtextloader(
+                    input_file="$file",
+                    data="$data",
+                    custom_schema=schema.to_string(
+                        add_sep=True))
+                all_nodes = [importtext_node]
+                inputs = dict([('file', ''), ('transform_model', self.model)])
+
+            score_node = transforms_datasettransformscorer(
                 data="$data",
-                custom_schema=schema.to_string(
-                    add_sep=True))
-            all_nodes = [importtext_node]
-            inputs = dict([('file', ''), ('predictor_model', self.model)])
+                transform_model="$transform_model",
+                scored_data="$scoredVectorData")
+            all_nodes.extend([score_node])
+        else:
+            inputs = dict([('data', ''), ('predictor_model', self.model)])
+            if isinstance(X, FileDataStream):
+                importtext_node = data_customtextloader(
+                    input_file="$file",
+                    data="$data",
+                    custom_schema=schema.to_string(
+                        add_sep=True))
+                all_nodes = [importtext_node]
+                inputs = dict([('file', ''), ('predictor_model', self.model)])
 
-        score_node = transforms_datasetscorer(
-            data="$data",
-            predictor_model="$predictor_model",
-            scored_data="$scoredVectorData")
-        all_nodes.extend([score_node])
+            score_node = transforms_datasetscorerex(
+                data="$data",
+                predictor_model="$predictor_model",
+                scored_data="$scoredVectorData")
+            all_nodes.extend([score_node])
 
-        if hasattr(self, 'steps') and len(self.steps) > 0 \
-                and self.last_node.type == 'classifier':
+        if (evaltype in ['binary', 'multiclass']) or \
+           (hasattr(self, 'steps')
+            and self.steps is not None
+            and len(self.steps) > 0
+            and self.last_node.type == 'classifier'):
+
             select_node = transforms_scorecolumnselector(
                 data="$scoredVectorData",
                 output_data="$scoreColumnsOnlyData", score_column="Score")
@@ -1774,10 +2142,13 @@ class Pipeline:
         else:
             outputs = dict(output_data="")
 
+        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
+                             else DataOutputFormat.DF,
+
         graph = Graph(
             inputs,
             outputs,
-            as_binary_data_stream,
+            data_output_format,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -1785,7 +2156,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, _) = graph.run(
                 X=X,
                 y=y,
                 random_state=self.random_state,
@@ -1797,6 +2168,10 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
+        if is_transformer_chain:
+            out_data['PredictedLabel'] = out_data['PredictedLabel']*1
+
+
         if y is not None:
             # We need to fix the schema for ranking metrics
             if evaltype == 'ranking':
@@ -1807,11 +2182,35 @@ class Pipeline:
         self._write_csv_time = graph._write_csv_time
         return out_data, out_metrics
 
+    def _extract_classes(self, y):
+        if (self.steps and
+            (self.last_node.type in ['classifier', 'anomaly']) and
+            (y is not None) and
+            (not isinstance(y, (str, tuple)))):
+
+            unique_classes = unique_labels(y)
+            if len(unique_classes) < 2:
+                raise ValueError(
+                    "Classifier can't train when only one class is "
+                    "present.")
+            self._add_classes(unique_classes)
+
+    def _extract_classes_from_headers(self, headers):
+        # Note: _classes can not be added to the Pipeline unless
+        # it already exists in the predictor node because the
+        # dtype is required to set the correct type.
+        if self.steps and hasattr(self.last_node, 'classes_'):
+            classes = [x.replace('Score.', '') for x in headers]
+            classes = np.array(classes).astype(self.last_node.classes_.dtype)
+            self._add_classes(classes)
+
     def _add_classes(self, classes):
         # Create classes_ attribute similar to scikit
         # Add both to pipeline and ending classifier
         self.classes_ = classes
-        self.last_node.classes_ = classes
+
+        if self.steps:
+            self.last_node.classes_ = classes
 
     @trace
     def predict(self, X, verbose=0, as_binary_data_stream=False, **params):
@@ -1836,7 +2235,7 @@ class Pipeline:
 
         :return: array, shape = [n_samples, n_classes]
         """
-        if hasattr(self, 'steps') and len(self.steps) > 0:
+        if hasattr(self, 'steps') and self.steps:
             last_node = self.last_node
             last_node._check_implements_method('predict_proba')
 
@@ -1858,11 +2257,7 @@ class Pipeline:
         # for multiclass, scores are probabilities
         pcols = [i for i in scores.columns if i.startswith('Score.')]
         if len(pcols) > 0:
-            # [todo]: this is a bug, predict_proba should not change
-            # internal state of pipeline.
-            # test check_dict_unchanged() detects that, commenting line
-            # for now
-            # self._add_classes([x.replace('Score.', '') for x in pcols])
+            self._extract_classes_from_headers(pcols)
             return scores.loc[:, pcols].values
 
         raise ValueError(
@@ -1880,7 +2275,7 @@ class Pipeline:
         :return: array, shape=(n_samples,) if n_classes == 2 else (
             n_samples, n_classes)
         """
-        if hasattr(self, 'steps') and len(self.steps) > 0:
+        if hasattr(self, 'steps') and self.steps:
             last_node = self.last_node
             last_node._check_implements_method('decision_function')
 
@@ -1903,7 +2298,7 @@ class Pipeline:
 
         # for multiclass with n_classes > 2
         if len(scols) > 2:
-            self._add_classes([x.replace('Score.', '') for x in scols])
+            self._extract_classes_from_headers(scols)
             return scores.loc[:, scols].values
 
         raise ValueError(
@@ -1943,7 +2338,7 @@ class Pipeline:
             otherwise None
             in the returned tuple.
         :return: tuple (dataframe of evaluation metrics, dataframe of
-            scores). Is scores are
+            scores). If scores are
             required, set `output_scores`=True, otherwise None is
             returned by default.
         """
@@ -2040,7 +2435,6 @@ class Pipeline:
     def transform(
             self,
             X,
-            y=None,
             verbose=0,
             as_binary_data_stream=False,
             **params):
@@ -2061,18 +2455,7 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before test("
                 ").")
 
-        if y is not None:
-            if len(self.steps) > 0:
-                last_node = self.last_node
-                if last_node.type == 'transform':
-                    raise ValueError(
-                        "Pipeline needs a trainer as last step for test()")
-
-        X, y_temp, columns_renamed, feature_columns, label_column, \
-            schema, weights, weight_column = self._preprocess_X_y(X, y)
-
-        if not isinstance(y, (str, tuple)):
-            y = y_temp
+        X, _, _, _, _, schema, _, _ = self._preprocess_X_y(X)
 
         all_nodes = []
 
@@ -2093,10 +2476,16 @@ class Pipeline:
 
         all_nodes.extend([apply_node])
 
+        data_output_format = DataOutputFormat.DF
+        if as_binary_data_stream:
+            data_output_format = DataOutputFormat.IDV
+        elif params.pop('as_csr', False):
+            data_output_format = DataOutputFormat.CSR
+
         graph = Graph(
             inputs,
             dict(output_data=""),
-            as_binary_data_stream,
+            data_output_format,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -2105,7 +2494,7 @@ class Pipeline:
         max_slots = params.pop('max_slots', -1)
 
         try:
-            (out_model, out_data, out_metrics) = graph.run(
+            (out_model, out_data, out_metrics, _) = graph.run(
                 X=X,
                 random_state=self.random_state,
                 model=self.model,
@@ -2168,7 +2557,7 @@ class Pipeline:
         graph = Graph(
             inputs,
             outputs,
-            False,
+            DataOutputFormat.DF,
             *all_nodes)
 
         class_name = type(self).__name__
@@ -2176,7 +2565,7 @@ class Pipeline:
         telemetry_info = ".".join([class_name, method_name])
 
         try:
-            (_, summary_data, _) = graph.run(
+            (_, summary_data, _, _) = graph.run(
                 X=None,
                 y=None,
                 random_state=self.random_state,
@@ -2189,53 +2578,12 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
-        self._validate_model_summary(summary_data)
         self.model_summary = summary_data
 
         # stop the clock
         self._run_time = time.time() - start_time
         self._write_csv_time = graph._write_csv_time
         return self.model_summary
-
-    @trace
-    def _validate_model_summary(self, model_summary):
-        """
-        Validates model summary has correct format
-
-        :param model_summary: model summary dataframes
-
-        """
-        if not isinstance(model_summary, (DataFrame)):
-            raise TypeError(
-                "Unexpected type {0} for model_summary, type DataFrame "
-                "is expected ".format(
-                    type(model_summary)))
-
-        col_names = [
-            'Bias',
-            'ClassNames',
-            'Coefficients',
-            'PredictorName',
-            'Summary',
-            'VectorName'
-        ]
-
-        col_name_prefixes = [
-            'Weights',
-            'Gains',
-            'Support vectors.',
-            'VectorData'
-        ]
-
-        for col in model_summary.columns:
-            if col in col_names:
-                pass
-            elif any([col.startswith(pre) for pre in col_name_prefixes]):
-                pass
-            else:
-                raise TypeError(
-                    "Unsupported '{0}' column is in model_summary".format(
-                        col))
 
     @trace
     def save_model(self, dst):
@@ -2265,6 +2613,62 @@ class Pipeline:
             raise ValueError("file not found %s" % src)
         self.model = src
         self.steps = []
+
+    def __getstate__(self):
+        odict = {'export_version': 2}
+
+        if hasattr(self, 'steps'):
+            odict['steps'] = self.steps
+
+        if (hasattr(self, 'model') and 
+            self.model is not None and
+            os.path.isfile(self.model)):
+
+            with open(self.model, "rb") as f:
+                odict['modelbytes'] = f.read()
+
+        if (hasattr(self, 'predictor_model') and 
+            self.predictor_model is not None and
+            os.path.isfile(self.predictor_model)):
+
+            with open(self.predictor_model, "rb") as f:
+                odict['predictor_model_bytes'] = f.read()
+
+        return odict
+
+    def __setstate__(self, state):
+        self.steps = []
+        self.model = None
+        self.random_state = None
+
+        if state.get('export_version', 0) == 0:
+            # Pickled pipelines which were created
+            # before export_version was added used
+            # the default implementation which uses
+            # the instances __dict__.
+            if 'steps' in state:
+                self.steps = state['steps']
+
+        elif state.get('export_version', 0) in {1, 2}:
+            if 'steps' in state:
+                self.steps = state['steps']
+
+            if 'modelbytes' in state:
+                (fd, modelfile) = tempfile.mkstemp()
+                fl = os.fdopen(fd, "wb")
+                fl.write(state['modelbytes'])
+                fl.close()
+                self.model = modelfile
+
+            if 'predictor_model_bytes' in state:
+                (fd, modelfile) = tempfile.mkstemp()
+                fl = os.fdopen(fd, "wb")
+                fl.write(state['predictor_model_bytes'])
+                fl.close()
+                self.predictor_model = modelfile
+
+        else:
+            raise ValueError('Pipeline version not supported.')
 
     @trace
     def export_to_onnx(self,
@@ -2346,7 +2750,7 @@ class Pipeline:
                 model=self.model,
                 verbose=verbose,
                 is_summary=False,
-                is_onnx_export=True,
+                no_input_data=True,
                 telemetry_info=telemetry_info)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
@@ -2401,3 +2805,107 @@ class Pipeline:
         else:
             raise ValueError(
                 "cannot generate score for {0}).".format(task_type))
+
+
+    @classmethod
+    def combine_models(cls, *items, **params):
+        """
+        Combine the models of multiple pipelines, transforms
+        and/or predictors in to a single model. The models are
+        combined in the order they are seen.
+
+        :param items: the fitted pipelines, transforms and/or
+            predictors which contain the models to join.
+
+        :param contains_predictor: Set to `True` if the
+            last item contains or is a predictor. Set to
+            `False` if `items` only contains transforms.
+            The default is True.
+
+        :return: A new Pipeline which is backed by a model that
+            is the combination of all the models passed in
+            through `items`.
+        """
+        if len(items) == 0:
+            raise RuntimeError(
+                'At least one transform, predictor'
+                'or pipeline must be specified.')
+
+        for item in items:
+            if not item._is_fitted:
+                raise RuntimeError(
+                    'Item must be fitted before'
+                    'models can be combined.')
+
+        contains_predictor = params.get('contains_predictor', True)
+        verbose = params.get('verbose', 0)
+
+        get_model = lambda x: x.model if hasattr(x, 'model') else x.model_
+
+        if len(items) == 1:
+            return Pipeline(model=get_model(items[0]))
+
+        start_time = time.time()
+
+        nodes = []
+        inputs = {}
+        transform_models = []
+
+        for index, item in enumerate(items[:-1], start=1):
+            var_name = 'transform_model' + str(index)
+            inputs[var_name] = get_model(item)
+            transform_models.append("$" + var_name)
+
+        if contains_predictor:
+            inputs['predictor_model'] = get_model(items[-1])
+
+            combine_models_node = transforms_manyheterogeneousmodelcombiner(
+                transform_models=transform_models,
+                predictor_model='$predictor_model',
+                model='$output_model')
+            nodes.append(combine_models_node)
+
+        else:
+            var_name = 'transform_model' + str(len(items))
+            inputs[var_name] = get_model(items[-1])
+            transform_models.append("$" + var_name)
+
+            combine_models_node = transforms_modelcombiner(
+                models=transform_models,
+                output_model='$output_model')
+            nodes.append(combine_models_node)
+
+        outputs = dict(output_model="")
+
+        graph = Graph(
+            inputs,
+            outputs,
+            DataOutputFormat.DF,
+            *nodes)
+
+        class_name = cls.__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            (out_model, _, _, _) = graph.run(
+                X=None,
+                y=None,
+                random_state=None,
+                model=None,
+                verbose=verbose,
+                is_summary=False,
+                telemetry_info=telemetry_info,
+                no_input_data=True,
+                **params)
+        except RuntimeError as e:
+            raise e
+
+        pipeline = Pipeline(model=out_model)
+
+        # stop the clock
+        pipeline._run_time = time.time() - start_time
+        pipeline._write_csv_time = graph._write_csv_time
+
+        return pipeline
+

@@ -1,6 +1,6 @@
 # NimbusML
 
-`nimbusml` is a Python module that provides experimental Python bindings for [ML.NET](https://github.com/dotnet/machinelearning). 
+`nimbusml` is a Python module that provides Python bindings for [ML.NET](https://github.com/dotnet/machinelearning). 
 
 ML.NET was originally developed in Microsoft Research and is used across many product groups in Microsoft like Windows, Bing, PowerPoint, Excel and others. `nimbusml` was built to enable data science teams that are more familiar with Python to take advantage of ML.NET's functionality and performance. 
 
