@@ -311,7 +311,7 @@ then
 
     if [ ${__runExtendedTests} = true ]
     then 
-        "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
+        "${PythonExe}" -m pytest -n 2 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
 fi
 
