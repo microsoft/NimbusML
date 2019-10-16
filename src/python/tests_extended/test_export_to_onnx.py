@@ -9,7 +9,6 @@ import contextlib
 import io
 import json
 import os
-import pandas
 import sys
 import tempfile
 import numpy as np
@@ -20,7 +19,7 @@ from nimbusml.cluster import KMeansPlusPlus
 from nimbusml.datasets import get_dataset
 from nimbusml.datasets.image import get_RevolutionAnalyticslogo, get_Microsoftlogo
 from nimbusml.decomposition import PcaTransformer, PcaAnomalyDetector
-from nimbusml.ensemble import FastForestBinaryClassifier, LightGbmRanker
+from nimbusml.ensemble import FastForestBinaryClassifier, FastTreesTweedieRegressor, LightGbmRanker
 from nimbusml.feature_extraction.categorical import OneHotVectorizer, OneHotHashVectorizer
 from nimbusml.feature_extraction.image import Loader, Resizer, PixelExtractor
 from nimbusml.feature_extraction.text import NGramFeaturizer
@@ -30,11 +29,11 @@ from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.naive_bayes import NaiveBayesClassifier
 from nimbusml.preprocessing import TensorFlowScorer, FromKey, ToKey
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter, RangeFilter
-from nimbusml.preprocessing.missing_values import Handler, Indicator
-from nimbusml.preprocessing.normalization import Binner, GlobalContrastRowScaler
+from nimbusml.preprocessing.missing_values import Filter, Handler, Indicator
+from nimbusml.preprocessing.normalization import Binner, GlobalContrastRowScaler, LpScaler
 from nimbusml.preprocessing.schema import (ColumnConcatenator, TypeConverter,
                                            ColumnDuplicator, ColumnSelector)
-from nimbusml.preprocessing.text import CharTokenizer
+from nimbusml.preprocessing.text import CharTokenizer, WordTokenizer
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
                                  SsaForecaster)
@@ -71,11 +70,18 @@ file_path = get_dataset("gen_tickettrain").as_filepath()
 gen_tt_df = pd.read_csv(file_path)
 gen_tt_df['group'] = gen_tt_df['group'].astype(np.uint32)
 
+#      Unnamed: 0  Label  Solar_R  Wind  Temp  Month  Day
+# 0             1   41.0    190.0   7.4    67      5    1
+# 1             2   36.0    118.0   8.0    72      5    2
+airquality_df = get_dataset("airquality").as_df().fillna(0)
+airquality_df = airquality_df[airquality_df.Ozone.notnull()]
+
 #      Sentiment                                      SentimentText
 # 0            1    ==RUDE== Dude, you are rude upload that carl...
 # 1            1    == OK! ==  IM GOING TO VANDALIZE WILD ONES W...
 file_path = get_dataset("wiki_detox_train").as_filepath()
 wiki_detox_df = pd.read_csv(file_path, sep='\t')
+wiki_detox_df = wiki_detox_df.head(10)
 
 #                     Path  Label
 # 0  C:\repo\src\python...   True
@@ -111,6 +117,8 @@ INSTANCES = {
                                                              label='Setosa'),
     'FastLinearBinaryClassifier': FastLinearBinaryClassifier(feature=['Sepal_Width', 'Sepal_Length'],
                                                              label='Setosa'),
+    'FastTreesTweedieRegressor': FastTreesTweedieRegressor(label='Ozone'),
+    'Filter': Filter(columns=[ 'Petal_Length', 'Petal_Width']),
     'FromKey': Pipeline([
         ToKey(columns=['Setosa']),
         FromKey(columns=['Setosa'])
@@ -133,6 +141,14 @@ INSTANCES = {
                                      label='rank',
                                      group_id='group'),
     'Loader': Loader(columns={'ImgPath': 'Path'}),
+    'LpScaler': Pipeline([
+        ColumnConcatenator() << {
+            'concated_columns': [
+                'Petal_Length',
+                'Sepal_Width',
+                'Sepal_Length']},
+        LpScaler(columns={'normed_columns': 'concated_columns'})
+    ]),
     'MutualInformationSelector': Pipeline([
         ColumnConcatenator(columns={'Features': ['Sepal_Width', 'Sepal_Length', 'Petal_Width']}),
         MutualInformationSelector(
@@ -146,7 +162,7 @@ INSTANCES = {
     'OneHotHashVectorizer': OneHotHashVectorizer(columns=['education_str']),
     'OneHotVectorizer': OneHotVectorizer(columns=['education_str']),
     'PcaAnomalyDetector': PcaAnomalyDetector(rank=3),
-    'PcaTransformer': PcaTransformer(rank=3),
+    'PcaTransformer':  PcaTransformer(rank=2),
     'PixelExtractor': Pipeline([
         Loader(columns={'ImgPath': 'Path'}),
         PixelExtractor(columns={'ImgPixels': 'ImgPath'}),
@@ -177,7 +193,8 @@ INSTANCES = {
             'frozen_saved_model.pb'),
         columns={'c': ['a', 'b']}),
     'ToKey': ToKey(columns={'edu_1': 'education'}),
-    'TypeConverter': TypeConverter(columns=['age'], result_type='R4')
+    'TypeConverter': TypeConverter(columns=['age'], result_type='R4'),
+    'WordTokenizer': WordTokenizer(char_array_term_separators=[" "]) << {'wt': 'SentimentText'}
 }
 
 DATASETS = {
@@ -185,6 +202,7 @@ DATASETS = {
     'Binner': iris_no_label_df,
     'BootstrapSampler': infert_df,
     'CharTokenizer': wiki_detox_df,
+    'EnsembleRegressor': iris_regression_df,
     'FactorizationMachineBinaryClassifier': iris_binary_df,
     'FastForestBinaryClassifier': iris_no_label_df,
     'FastForestRegressor': iris_regression_df,
@@ -193,15 +211,18 @@ DATASETS = {
     'FastLinearRegressor': iris_regression_df,
     'FastTreesBinaryClassifier': iris_binary_df, 
     'FastTreesRegressor': iris_regression_df,
-    'FastTreesTweedieRegressor': iris_regression_df,
+    'FastTreesTweedieRegressor': airquality_df,
+    'Filter': iris_no_label_df,
     'GamBinaryClassifier': iris_binary_df,
     'GamRegressor': iris_regression_df,
     'GlobalContrastRowScaler': iris_df.astype(np.float32),
     'LightGbmRanker': gen_tt_df,
+    'LinearSvmBinaryClassifier': iris_binary_df,
     'Loader': image_paths_df,
     'LogisticRegressionBinaryClassifier': iris_binary_df,
     'LogisticRegressionClassifier': iris_binary_df,
     'LogMeanVarianceScaler': iris_no_label_df,
+    'LpScaler': iris_no_label_df.drop(['Setosa'], axis=1).astype(np.float32),
     'MeanVarianceScaler': iris_no_label_df,
     'MinMaxScaler': iris_no_label_df,
     'NGramFeaturizer': wiki_detox_df,
@@ -210,14 +231,15 @@ DATASETS = {
     'OnlineGradientDescentRegressor': iris_regression_df,
     'OrdinaryLeastSquaresRegressor': iris_regression_df,
     'PcaAnomalyDetector': iris_no_label_df,
-    'PcaTransformer': iris_no_label_df,
+    'PcaTransformer': iris_regression_df,
     'PixelExtractor': image_paths_df,
     'PoissonRegressionRegressor': iris_regression_df,
     'Resizer': image_paths_df,
     'SgdBinaryClassifier': iris_binary_df,
     'SymSgdBinaryClassifier': iris_binary_df,
     'ToKey': infert_df,
-    'TypeConverter': infert_onehot_df
+    'TypeConverter': infert_onehot_df,
+    'WordTokenizer': wiki_detox_df
 }
 
 REQUIRES_EXPERIMENTAL = {
