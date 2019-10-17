@@ -4,9 +4,9 @@
 
 `nimbusml` aims to enable data science teams that are more familiar with Python
 to take advantage of ML.NET's functionality and performance. It provides
-battle-tested state-of-the-art ML algorithms, transforms, and components. The
+battle-tested, state-of-the-art ML algorithms, transforms, and components. The
 components are authored by the team members, as well as numerous contributors
-from MSR, CISL, Bing and other teams at Microsoft.
+from MSR, CISL, Bing, and other teams at Microsoft.
 
 `nimbusml` is interoperable with `scikit-learn` estimators and transforms,
 while adding a suite of fast, highly optimized, and scalable algorithms written
