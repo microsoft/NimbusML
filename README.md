@@ -6,7 +6,7 @@ ML.NET was originally developed in Microsoft Research and is used across many pr
 
 `nimbusml` enables training ML.NET pipelines or integrating ML.NET components directly into [scikit-learn](https://scikit-learn.org/stable/) pipelines. It adheres to existing `scikit-learn` conventions, allowing simple interoperability between `nimbusml` and `scikit-learn` components, while adding a suite of fast, highly optimized, and scalable algorithms, transforms, and components written in C++ and C\#.
 
-See examples below showing interoperability with `scikit-learn`. A more detailed example in the [documentation](https://docs.microsoft.com/en-us/nimbusml/tutorials/b_c-sentiment-analysis-3-combining-nimbusml-and-scikit-learn) shows using a `nimbusml` component in a `scikit-learn` pipeline, and creating pipeline using only `nimbusml` components.
+See examples below showing interoperability with `scikit-learn`. A more detailed example in the [documentation](https://docs.microsoft.com/en-us/nimbusml/tutorials/b_c-sentiment-analysis-3-combining-nimbusml-and-scikit-learn) shows how to use a `nimbusml` component in a `scikit-learn` pipeline, and create a pipeline using only `nimbusml` components.
 
 `nimbusml` supports `numpy.ndarray`, `scipy.sparse_cst`, and `pandas.DataFrame` as inputs. In addition, `nimbusml` also supports streaming from files without loading the dataset into memory with `FileDataStream`, which allows training on data significantly exceeding memory.
 
