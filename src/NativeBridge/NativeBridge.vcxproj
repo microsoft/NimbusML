@@ -150,7 +150,7 @@
       <PreprocessorDefinitions>CORECLR;_DEBUG;_WINDOWS;_USRDLL;PYBRIDGE_EXPORTS;BOOST_USE_STATIC_LIBS;BOOST_PYTHON_STATIC_LIB;BOOST_ALL_NO_LIB;BOOST_NUMPY_STATIC_LIB;_HAS_ITERATOR_DEBUGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(BoostRoot)\Include;$(PythonRoot)\include</AdditionalIncludeDirectories>
       <MinimalRebuild>true</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
