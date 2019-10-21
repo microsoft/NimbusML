@@ -1,3 +1,7 @@
+# -------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+# -------------------------------------------------------------------------
 # Finds all HTTP URLs found in the NimbusML repository
 # Converts all valid HTTP links to HTTPS
 # Usage: python3 FindHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]
