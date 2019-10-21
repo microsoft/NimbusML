@@ -324,7 +324,7 @@ then
                 yum install glibc-devel -y
             }
         fi
-        "${PythonExe}" -m pytest -n 2 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
+        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
 fi
 

@@ -423,7 +423,7 @@ if errorlevel 1 (
 )
 
 if "%RunExtendedTests%" == "True" (
-    call "%PythonExe%" -m pytest -n 2 --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
     if errorlevel 1 (
         goto :Exit_Error
     )
