@@ -39,14 +39,14 @@
         More details about LD-SVM can be found in this paper `Local deep
         kernel
         learning for efficient non-linear SVM prediction
-        <http://research.microsoft.com/en-
+        <https://research.microsoft.com/en-
         us/um/people/manik/pubs/Jose13.pdf>`_.
         
 
         **Reference**
     
             `Local deep kernel learning for efficient non-linear SVM prediction
-            <http://research.microsoft.com/en-
+            <https://research.microsoft.com/en-
             us/um/people/manik/pubs/Jose13.pdf>`_
     
 
