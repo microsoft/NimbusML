@@ -24,7 +24,7 @@
         the default is to normalize features before training.
 
         ``SupervisedBinner`` implements the `Entropy-Based Discretization
-        <https://www.aaai.org/Papers/KDD/1996/KDD96-019.pdf>`_.
+        <http://www.aaai.org/Papers/KDD/1996/KDD96-019.pdf>`_.
         Partition of the data is performed recursively to select the split
         with highest entropy gain with respect to the label.
         Therefore, the final binned features will have high correlation with

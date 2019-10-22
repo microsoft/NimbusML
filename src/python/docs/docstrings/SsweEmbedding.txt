@@ -7,12 +7,12 @@
     versions of `GloVe Models
     <https://nlp.stanford.edu/projects/glove/>`_, `FastText
     <https://en.wikipedia.org/wiki/FastText>`_, and `Sswe
-    <https://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
+    <http://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
 
     .. remarks::
         Sentiment-specific word embedding (SSWE) is a DNN featurizer
         developed
-        by MSRA (`paper <https://anthology.aclweb.org/P/P14/P14-1146.pdf>`_).
+        by MSRA (`paper <http://anthology.aclweb.org/P/P14/P14-1146.pdf>`_).
         It
         incorporates sentiment information into the neural network to learn
         sentiment specific word embedding. It proves to be useful in various

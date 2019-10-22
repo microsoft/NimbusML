@@ -34,14 +34,14 @@ class SgdBinaryClassifier(core, BasePredictor, ClassifierMixin):
         associated optimization problem is sparse, then Hogwild SGD achieves
         a
         nearly optimal rate of convergence. For a detailed reference, please
-        refer to `https://arxiv.org/pdf/1106.5730v2.pdf
-        <https://arxiv.org/pdf/1106.5730v2.pdf>`_.
+        refer to `http://arxiv.org/pdf/1106.5730v2.pdf
+        <http://arxiv.org/pdf/1106.5730v2.pdf>`_.
 
 
         **Reference**
 
-            `https://arxiv.org/pdf/1106.5730v2.pdf
-            <https://arxiv.org/pdf/1106.5730v2.pdf>`_
+            `http://arxiv.org/pdf/1106.5730v2.pdf
+            <http://arxiv.org/pdf/1106.5730v2.pdf>`_
 
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
