@@ -89,12 +89,4 @@ def makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore):
             for fileValue in invalidUrlsStore[urlKey]:
                 writer3.writerow([urlKey, fileValue])
     return 
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python3 findHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]")
-        exit(1)
-    findHttpUrls(sys.argv[1])
     
-if __name__ == "__main__":
-    main()

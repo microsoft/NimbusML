@@ -33,13 +33,3 @@ def changeUrls(pathToReportCsv, pathToRootDirectory):
                 print("Altered {} in file: {}".format(row[0], absolutePath))
                 line_count += 1
         print(f'Processed {line_count} URLs.')
-
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: python3 changeHttpURLsToHttps.py [PATH_TO_Report_FindHttpURLs.txt] [PATH_TO_ORIGINAL_NIMBUSML_DIRECTORY]")
-        exit(1)
-    changeUrls(sys.argv[1], sys.argv[2])
-
-
-if __name__ == "__main__":
-    main()
