@@ -148,7 +148,7 @@ setup(
 
     # Although 'package_data' is the preferred approach, in some case
     # you may need to place data files outside of your packages. See:
-    # http://docs.python.org/3.4/distutils/setupscript.html#installing
+    # https://docs.python.org/3.4/distutils/setupscript.html#installing
     # -additional-files # noqa
     # In this case, 'data_file' will be installed into
     # '<sys.prefix>/my_data'

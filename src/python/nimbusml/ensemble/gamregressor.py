@@ -41,7 +41,7 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
         functions learned will step between the discretization boundaries.
 
         This implementation is based on the this `paper
-        <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_,
+        <https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_,
         but diverges from it in several important respects: most
         significantly,
         in each round of boosting, rather than do one feature at a time, it
@@ -77,7 +77,7 @@ class GamRegressor(core, BasePredictor, RegressorMixin):
             `Generalized additive models
             <https://en.wikipedia.org/wiki/Generalized_additive_model>`_,
             `Intelligible Models for Classification and Regression
-            <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
+            <https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
 
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.

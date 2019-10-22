@@ -13,14 +13,14 @@
         associated optimization problem is sparse, then Hogwild SGD achieves
         a
         nearly optimal rate of convergence. For a detailed reference, please
-        refer to `http://arxiv.org/pdf/1106.5730v2.pdf
-        <http://arxiv.org/pdf/1106.5730v2.pdf>`_.
+        refer to `https://arxiv.org/pdf/1106.5730v2.pdf
+        <https://arxiv.org/pdf/1106.5730v2.pdf>`_.
 
 
         **Reference**
     
-            `http://arxiv.org/pdf/1106.5730v2.pdf
-            <http://arxiv.org/pdf/1106.5730v2.pdf>`_
+            `https://arxiv.org/pdf/1106.5730v2.pdf
+            <https://arxiv.org/pdf/1106.5730v2.pdf>`_
     
 
     :param normalize: Specifies the type of automatic normalization used:
