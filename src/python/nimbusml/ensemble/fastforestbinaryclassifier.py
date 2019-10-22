@@ -55,7 +55,7 @@ class FastForestBinaryClassifier(
         **Reference**
 
             `Wikipedia: Random forest
-            <http://en.wikipedia.org/wiki/Random_forest>`_
+            <https://en.wikipedia.org/wiki/Random_forest>`_
 
             `Quantile regression forest
             <http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf>`_
