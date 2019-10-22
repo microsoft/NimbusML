@@ -17,15 +17,21 @@ from urlextract import URLExtract
 
 def findHttpUrls(searchRootDirectory):
     extractor = URLExtract()
-    for root, _, files in os.walk(searchRootDirectory, onerror=None): 
-        for filename in files: 
-            filePath = os.path.abspath(os.path.join(root, filename)) 
+    lengthOfOriginalRootPath = -1
+    for root, _, files in os.walk(searchRootDirectory, onerror=None):
+        if lengthOfOriginalRootPath == -1:
+             lengthOfOriginalRootPath = len(root)
+        for filename in files:
+            absoluteFilePath = os.path.join(root, filename)
+            relativeFilePath = '.' + absoluteFilePath[lengthOfOriginalRootPath-1:]
             try:
-                with open(filePath, "rb") as f:
+                with open(absoluteFilePath, "rb") as f:
                     data = f.read()
                     try:
                         data = data.decode("utf-8")  
-                    except ValueError: 
+                    except Exception as e:
+                        print("Unable to decodefile: {} in UTF-8 Encoding.".format(relativeFilePath)) 
+                        print(str(e))
                         continue
                     currentUrlList = extractor.find_urls(data)
                     currentUrlList = [url for url in currentUrlList if url[:5] == "http:"]
@@ -37,39 +43,36 @@ def findHttpUrls(searchRootDirectory):
                                 try:
                                     newRequest = requests.get(changedSelectedUrl)
                                     if newRequest.status_code == 200:
-                                        alterableUrlsStore.append([filePath, selectedUrl])
+                                        alterableUrlsStore.append([selectedUrl, relativeFilePath])
                                     else:
-                                        nonAlterableUrlsStore.append([filePath, selectedUrl])
+                                        nonAlterableUrlsStore.append([selectedUrl, relativeFilePath])
                                 except:
-                                    nonAlterableUrlsStore.append([filePath, selectedUrl])
+                                    nonAlterableUrlsStore.append([selectedUrl, relativeFilePath])
                             else:
-                                invalidUrlsStore.append([filePath, selectedUrl])
+                                invalidUrlsStore.append([selectedUrl, relativeFilePath])
                         except ConnectionError:
-                            invalidUrlsStore.append([filePath, selectedUrl])
+                            invalidUrlsStore.append([selectedUrl, relativeFilePath])
             except (IOError, OSError):
                 pass
     return
 
 def makeReports():
     fieldnames = ['filepath', 'url']
-    if makeAlterableUrlsReport:
-        with open('Report_AlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["filepath","url"])
-            for pair in alterableUrlsStore:
-                writer.writerow([pair[0], pair[1]])
-    if makeNonAlterableUrlsStore:
-        with open('Report_NonAlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["filepath","url"])
-            for pair in alterableUrlsStore:
-                writer.writerow([pair[0], pair[1]])
-    if makeInvalidUrlsStore:
-        with open('Report_InvalidUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["filepath","url"])
-            for pair in alterableUrlsStore:
-                writer.writerow([pair[0], pair[1]])
+    with open('Report_AlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["url", "relativeFilepath"])
+        for pair in alterableUrlsStore:
+            writer.writerow([pair[0], pair[1]])
+    with open('Report_NonAlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["url", "relativeFilepath"])
+        for pair in alterableUrlsStore:
+            writer.writerow([pair[0], pair[1]])
+    with open('Report_InvalidUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["url", "relativeFilepath"])
+        for pair in alterableUrlsStore:
+            writer.writerow([pair[0], pair[1]])
     return 
 
 def main():
@@ -82,8 +85,5 @@ def main():
 alterableUrlsStore = []
 invalidUrlsStore = []
 nonAlterableUrlsStore = []
-makeAlterableUrlsReport = True
-makeNonAlterableUrlsStore = False
-makeInvalidUrlsStore = False
 if __name__ == "__main__":
     main()
