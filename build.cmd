@@ -431,18 +431,28 @@ if "%RunExtendedTests%" == "True" (
 )
 
 :Exit_Success
+call :CleanUpDotnet
+endlocal
+exit /b %ERRORLEVEL%
+
+:Exit_Error
+call :CleanUpDotnet
+endlocal
+echo Failed with error %ERRORLEVEL%
+exit /b %ERRORLEVEL%
+
+:CleanUpDotnet
+:: Save the error level so it can be
+:: restored when exiting the function
+set PrevErrorLevel=%ERRORLEVEL%
+
 :: Shutdown all dotnet persistent servers so that the
 :: dotnet executable is not left open in the background.
 :: As of dotnet 2.1.3 three servers are left running in
 :: the background. This will shutdown them all down.
 :: See here for more info: https://github.com/dotnet/cli/issues/9458
+:: This fixes an issue when re-running the build script because
+:: the build script was trying to replace the existing dotnet
+:: binaries which were sometimes still in use.
 call "%_dotnet%" build-server shutdown
-endlocal
-exit /b %ERRORLEVEL%
-
-:Exit_Error
-:: See comment above
-call "%_dotnet%" build-server shutdown
-endlocal
-echo Failed with error %ERRORLEVEL%
-exit /b %ERRORLEVEL%
+exit /b %PrevErrorLevel%
