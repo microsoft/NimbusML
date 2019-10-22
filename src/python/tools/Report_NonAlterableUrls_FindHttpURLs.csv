@@ -1,0 +1,14 @@
+url	relativeFilepath
+http://jmlr.org/papers/volume12/duchi11a/duchi11a.pdf	.\src\python\docs\docstrings\FactorizationMachineBinaryClassifier.txt
+http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf	.\src\python\docs\docstrings\FastForestBinaryClassifier.txt
+http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf	.\src\python\docs\docstrings\FastForestRegressor.txt
+http://fontawesome.io	.\src\python\docs\sphinx\ci_script\_static\mystyle.css
+http://fontawesome.io/license	.\src\python\docs\sphinx\ci_script\_static\mystyle.css
+http://wiki.fast.ai/index.php/Log_Loss	.\src\python\docs\sphinx\concepts\metrics.rst
+http://pages.cs.wisc.edu/~boyd/aucpr_final.pdf	.\src\python\docs\sphinx\concepts\metrics.rst
+http://jmlr.org/papers/volume12/duchi11a/duchi11a.pdf	.\src\python\nimbusml\decomposition\factorizationmachinebinaryclassifier.py
+http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf	.\src\python\nimbusml\ensemble\fastforestbinaryclassifier.py
+http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf	.\src\python\nimbusml\ensemble\fastforestregressor.py
+http://jmlr.org/papers/volume12/duchi11a/duchi11a.pdf	.\src\python\nimbusml\internal\core\decomposition\factorizationmachinebinaryclassifier.py
+http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf	.\src\python\nimbusml\internal\core\ensemble\fastforestbinaryclassifier.py
+http://jmlr.org/papers/volume7/meinshausen06a/meinshausen06a.pdf	.\src\python\nimbusml\internal\core\ensemble\fastforestregressor.py
