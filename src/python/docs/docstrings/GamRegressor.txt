@@ -21,7 +21,7 @@
         functions learned will step between the discretization boundaries.
 
         This implementation is based on the this `paper
-        <https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_,
+        <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_,
         but diverges from it in several important respects: most
         significantly,
         in each round of boosting, rather than do one feature at a time, it
@@ -57,7 +57,7 @@
             `Generalized additive models
             <https://en.wikipedia.org/wiki/Generalized_additive_model>`_,
             `Intelligible Models for Classification and Regression
-            <https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
+            <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.352.7619>`_
     
 
     :param normalize: Specifies the type of automatic normalization used:
