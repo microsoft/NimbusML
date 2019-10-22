@@ -2,10 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 # -------------------------------------------------------------------------
-
 # Finds all HTTP URLs found in the NimbusML repository
 # Converts all valid HTTP links to HTTPS
-# Usage: python3 findHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]
+# Usage: python3 FindHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]
 # Output: Report_AlterableUrls_FindHttpURLs.csv, [Report_NonAlterableUrls_FindHttpURLs.csv, Report_InvalidUrls_FindHttpURLs.csv]
 
 # Required non-standard pip library: urlextract
@@ -14,21 +13,9 @@ import sys
 import os
 import requests
 import csv
-import collections
 from urlextract import URLExtract
 
-def addToDictionary(dict, key, value):
-    if key not in dict:
-        dict[key] = [value]
-    else:
-        if value not in dict[key]:
-            dict[key].append(value)
-    return dict
-
 def findHttpUrls(searchRootDirectory):
-    alterableUrlsStore = {}
-    nonAlterableUrlsStore = {}
-    invalidUrlsStore = {}
     extractor = URLExtract()
     lengthOfOriginalRootPath = -1
     for root, _, files in os.walk(searchRootDirectory, onerror=None):
@@ -36,7 +23,7 @@ def findHttpUrls(searchRootDirectory):
              lengthOfOriginalRootPath = len(root)
         for filename in files:
             absoluteFilePath = os.path.join(root, filename)
-            relativeFilePath = '.' + absoluteFilePath[lengthOfOriginalRootPath:]
+            relativeFilePath = '.' + absoluteFilePath[lengthOfOriginalRootPath-1:]
             try:
                 with open(absoluteFilePath, "rb") as f:
                     data = f.read()
@@ -56,45 +43,47 @@ def findHttpUrls(searchRootDirectory):
                                 try:
                                     newRequest = requests.get(changedSelectedUrl)
                                     if newRequest.status_code == 200:
-                                        alterableUrlsStore = addToDictionary(alterableUrlsStore, relativeFilePath, selectedUrl)
+                                        alterableUrlsStore.append([selectedUrl, relativeFilePath])
                                     else:
-                                        nonAlterableUrlsStore = addToDictionary(nonAlterableUrlsStore, relativeFilePath, selectedUrl)
+                                        nonAlterableUrlsStore.append([selectedUrl, relativeFilePath])
                                 except:
-                                    nonAlterableUrlsStore = addToDictionary(nonAlterableUrlsStore, relativeFilePath, selectedUrl)
+                                    nonAlterableUrlsStore.append([selectedUrl, relativeFilePath])
                             else:
-                                invalidUrlsStore = addToDictionary(invalidUrlsStore, relativeFilePath, selectedUrl)
+                                invalidUrlsStore.append([selectedUrl, relativeFilePath])
                         except ConnectionError:
-                            invalidUrlsStore = addToDictionary(invalidUrlsStore, relativeFilePath, selectedUrl)
+                            invalidUrlsStore.append([selectedUrl, relativeFilePath])
             except (IOError, OSError):
                 pass
-    makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore)
+    return
 
-def makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore):
+def makeReports():
+    fieldnames = ['filepath', 'url']
     with open('Report_AlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
-        writer = csv.writer(csv_file, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["url", "relativeFilepath"])
-        for fileKey in alterableUrlsStore:
-            for url in alterableUrlsStore[fileKey]:
-                writer.writerow([url, fileKey])
+        for pair in alterableUrlsStore:
+            writer.writerow([pair[0], pair[1]])
     with open('Report_NonAlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
-        writer = csv.writer(csv_file, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["url", "relativeFilepath"])
-        for fileKey in nonAlterableUrlsStore:
-            for url in nonAlterableUrlsStore[fileKey]:
-                writer.writerow([url, fileKey])
+        for pair in alterableUrlsStore:
+            writer.writerow([pair[0], pair[1]])
     with open('Report_InvalidUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
-        writer = csv.writer(csv_file, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["url", "relativeFilepath"])
-        for fileKey in invalidUrlsStore:
-            for url in invalidUrlsStore[fileKey]:
-                writer.writerow([url, fileKey])
+        for pair in alterableUrlsStore:
+            writer.writerow([pair[0], pair[1]])
     return 
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 findHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]")
+        print("Usage: python3 FindHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]")
         exit(1)
     findHttpUrls(sys.argv[1])
-    
+    makeReports()
+
+alterableUrlsStore = []
+invalidUrlsStore = []
+nonAlterableUrlsStore = []
 if __name__ == "__main__":
     main()
