@@ -326,6 +326,9 @@ class TestEstimatorChecks(unittest.TestCase):
                 except Exception as e:
                     failed_checks.add(check.__name__)
 
+                if class_name == "OrdinaryLeastSquaresRegressor" and check.__name__ == "check_estimators_dtypes":
+                    failed_checks.add(check.__name__)
+
             if len(failed_checks) > 0:
                 self.fail(msg=str(failed_checks))
 
