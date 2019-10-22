@@ -28,7 +28,7 @@ class LightLda(BasePipelineItem, DefaultSignature):
         topical vectors. LightLDA is an extremely
         efficient implementation of LDA developed in MSR-Asia that
         incorporates a number of optimization techniques
-        `(https://arxiv.org/abs/1412.1576) <https://arxiv.org/abs/1412.1576>`_.
+        `(http://arxiv.org/abs/1412.1576) <http://arxiv.org/abs/1412.1576>`_.
         With the LDA transform, we can
         train a topic model to produce 1 million topics with 1 million
         vocabulary on a 1-billion-token document set one

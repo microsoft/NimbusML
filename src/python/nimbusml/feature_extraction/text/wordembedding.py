@@ -31,7 +31,7 @@ class WordEmbedding(core, BaseTransform, TransformerMixin):
         available options are various versions of `GloVe Models
         <https://nlp.stanford.edu/projects/glove/>`_, `FastText
         <https://en.wikipedia.org/wiki/FastText>`_, and `Sswe
-        <https://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
+        <http://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
 
 
     :param columns: a dictionary of key-value pairs, where key is the output

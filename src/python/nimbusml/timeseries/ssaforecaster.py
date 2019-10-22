@@ -31,7 +31,7 @@ class SsaForecaster(core, BaseTransform, TransformerMixin):
         input time-series where each component in the spectrum corresponds to a
         trend, seasonal or noise component in the time-series. For details of the
         Singular Spectrum Analysis (SSA), refer to `this document
-        <https://arxiv.org/pdf/1206.6910.pdf>`_.
+        <http://arxiv.org/pdf/1206.6910.pdf>`_.
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 

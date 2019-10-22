@@ -29,10 +29,10 @@
             us/library/azure/dn913103.aspx>`_
     
             `Estimating the Support of a High-Dimensional Distribution
-            <https://research.microsoft.com/pubs/69731/tr-99-87.pdf>`_
+            <http://research.microsoft.com/pubs/69731/tr-99-87.pdf>`_
     
             `New Support Vector Algorithms
-            <https://www.stat.purdue.edu/~yuzhu/stat598m3/Papers/NewSVM.pdf>`_
+            <http://www.stat.purdue.edu/~yuzhu/stat598m3/Papers/NewSVM.pdf>`_
     
             `LIBSVM: A Library for Support Vector Machines
             <https://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf>`_

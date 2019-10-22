@@ -35,7 +35,7 @@ class FastTreesTweedieRegressor(
             <https://en.wikipedia.org/wiki/Gradient_boosting#Gradient_tree_boosting>`_
 
             `Greedy function approximation: A gradient boosting machine.
-            <https://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
+            <http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
 
     :param number_of_trees: Specifies the total number of decision trees to
         create in the ensemble. By creating more decision trees, you can
