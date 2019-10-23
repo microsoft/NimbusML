@@ -2,7 +2,6 @@ url	relativeFilepath
 http://schemas.microsoft.com/developer/msbuild/2003	.\src\CommonCpp.props
 http://schemas.microsoft.com/developer/msbuild/2003	.\src\NativeBridge\NativeBridge.vcxproj
 http://schemas.microsoft.com/developer/msbuild/2003	.\src\python\nimbusml.pyproj
-http://www.nvidia.com/Drivers	.\src\DotNetBridge\MessageValidator.cs
 http://www.jmlr.org/papers/volume14/shalev-	.\src\python\docs\docstrings\FastLinearBinaryClassifier.txt
 http://www.jmlr.org/papers/volume14/shalev-	.\src\python\docs\docstrings\FastLinearClassifier.txt
 http://www.jmlr.org/papers/volume14/shalev-	.\src\python\docs\docstrings\FastLinearRegressor.txt
