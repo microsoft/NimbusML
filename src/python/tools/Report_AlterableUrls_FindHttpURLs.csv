@@ -62,6 +62,7 @@ http://web.stanford.edu/group/mmds/slides2010/Martinsson.pdf	.\src\python\nimbus
 http://arxiv.org/pdf/1106.5730v2.pdf	.\src\python\docs\docstrings\SgdBinaryClassifier.txt
 http://arxiv.org/pdf/1106.5730v2.pdf	.\src\python\nimbusml\internal\core\linear_model\sgdbinaryclassifier.py
 http://arxiv.org/pdf/1106.5730v2.pdf	.\src\python\nimbusml\linear_model\sgdbinaryclassifier.py
+http://www2.spsc.tugraz.at/www-archive/AdvancedSignalProcessing/WS05-Mistral/advances.pdf	.\src\python\docs\docstrings\SigmoidKernel.txt
 http://arxiv.org/pdf/1206.6910.pdf	.\src\python\docs\docstrings\SsaForecaster.txt
 http://arxiv.org/pdf/1206.6910.pdf	.\src\python\nimbusml\internal\core\timeseries\ssaforecaster.py
 http://arxiv.org/pdf/1206.6910.pdf	.\src\python\nimbusml\timeseries\ssaforecaster.py

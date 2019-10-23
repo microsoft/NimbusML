@@ -798,7 +798,7 @@
     <Compile Include="tools\compiler_utils.py" />
     <Compile Include="tools\doc_builder.py" />
     <Compile Include="tools\entrypoint_compiler.py" />
-    <Compile Include="tools\findHttpURLs.py" />
+    <Compile Include="tools\findHttpURLs.py" /> 
     <Compile Include="tools\fix_line_widths.py" />
     <Compile Include="tools\loss_processor.py" />
     <Compile Include="tools\manifest_diff_parser.py" />

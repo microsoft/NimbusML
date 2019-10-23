@@ -3,8 +3,7 @@
     Apply sigmoid function. tanh(gamma*<x,y>+c).
 
     .. remarks::
-        `SigmoidKernel <https://www2.spsc.tugraz.at/www-
-        archive/AdvancedSignalProcessing/WS05-Mistral/advances.pdf>`_ is a
+        `SigmoidKernel <https://www2.spsc.tugraz.at/www-archive/AdvancedSignalProcessing/WS05-Mistral/advances.pdf>`_ is a
         kernel function
         that computes the similarity between two features.
 
