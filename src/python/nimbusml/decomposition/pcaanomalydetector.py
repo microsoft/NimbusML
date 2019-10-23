@@ -62,8 +62,7 @@ class PcaAnomalyDetector(core, BasePredictor, ClassifierMixin):
             <https://arxiv.org/abs/0809.2274>`_,
             `Finding Structure with Randomness: Probabilistic Algorithms for
             Constructing Approximate Matrix Decompositions
-            <http://users.cms.caltech.edu/~jtropp/papers/HMT11-Finding-Structure-
-            SIREV.pdf>`_
+            <http://users.cms.caltech.edu/~jtropp/papers/HMT11-Finding-Structure-SIREV.pdf>`_
 
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
