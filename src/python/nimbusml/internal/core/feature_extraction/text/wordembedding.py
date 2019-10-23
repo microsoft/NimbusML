@@ -28,7 +28,7 @@ class WordEmbedding(BasePipelineItem, DefaultSignature):
         available options are various versions of `GloVe Models
         <https://nlp.stanford.edu/projects/glove/>`_, `FastText
         <https://en.wikipedia.org/wiki/FastText>`_, and `Sswe
-        <http://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
+        <https://anthology.aclweb.org/P/P14/P14-1146.pdf>`_.
 
 
     :param model_kind: Pre-trained model used to create the vocabulary.
