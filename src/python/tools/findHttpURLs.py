@@ -15,6 +15,7 @@ import os
 import requests
 import csv
 import collections
+import pathlib
 from urlextract import URLExtract
 
 def addToDictionary(dict, key, value):
@@ -35,6 +36,8 @@ def findHttpUrls(searchRootDirectory):
         if lengthOfOriginalRootPath == -1:
              lengthOfOriginalRootPath = len(root)
         for filename in files:
+            if pathlib.Path(filename).suffix in ['.props', '.pyproj', '.vcxproj', '.snk'] or '.git' in root:
+                continue 
             absoluteFilePath = os.path.join(root, filename)
             relativeFilePath = '.' + absoluteFilePath[lengthOfOriginalRootPath:]
             try:
