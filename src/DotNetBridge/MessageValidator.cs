@@ -195,7 +195,7 @@ namespace Microsoft.ML.DotNetBridge
                 {
                     return "Failed to initialize CUDA runtime. Possible reasons:" + "\n" +
                             @"1. The machine does not have CUDA-capable card. Supported devices have compute capability 2.0 and higher." + "\n" +
-                            @"2. Outdated graphics drivers. Please install the latest drivers from https://www.nvidia.com/Drivers ." + "\n" +
+                            @"2. Outdated graphics drivers. Please install the latest drivers from https://www.nvidia.com/Download/index.aspx?lang=en-us ." + "\n" +
                             @"3. CUDA runtime DLLs are missing, please see the GPU acceleration help for the installation instructions.";
                 }
             )
