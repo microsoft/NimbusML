@@ -416,7 +416,7 @@ set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
 set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
 
-call "%PythonExe%" -m pytest -n %NumConcurrentTests% --assert=plain --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --assert=plain --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
 if errorlevel 1 (
     goto :Exit_Error
 )
