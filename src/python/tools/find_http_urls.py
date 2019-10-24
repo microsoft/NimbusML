@@ -5,8 +5,8 @@
 
 # Finds all HTTP URLs found in the NimbusML repository
 # Converts all valid HTTP links to HTTPS
-# Usage: python3 findHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]
-# Output: Report_AlterableUrls_FindHttpURLs.csv, [Report_NonAlterableUrls_FindHttpURLs.csv, Report_InvalidUrls_FindHttpURLs.csv]
+# Usage: python3 find_http_urls.py [PATH_TO_NimbusML_REPOSITORY]
+# Output: report_alterable_urls_find_http_urls.csv, report_non_alterable_urls_find_http_urls.csv, report_invalid_urls_find_http_urls.csv
 
 # Required non-standard pip library: urlextract
 
@@ -73,19 +73,19 @@ def findHttpUrls(searchRootDirectory):
     makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore)
 
 def makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore):
-    with open('Report_AlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
+    with open('report_alterable_urls_find_http_urls.csv', mode='w', newline='') as csv_file:
         writer1 = csv.writer(csv_file, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer1.writerow(["url", "relativeFilepath"])
         for urlKey in alterableUrlsStore:
             for fileValue in alterableUrlsStore[urlKey]:
                 writer1.writerow([urlKey, fileValue])
-    with open('Report_NonAlterableUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
+    with open('report_non_alterable_urls_find_http_urls.csv', mode='w', newline='') as csv_file:
         writer2 = csv.writer(csv_file, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer2.writerow(["url", "relativeFilepath"])
         for urlKey in nonAlterableUrlsStore:
             for fileValue in nonAlterableUrlsStore[urlKey]:
                 writer2.writerow([urlKey, fileValue])
-    with open('Report_InvalidUrls_FindHttpURLs.csv', mode='w', newline='') as csv_file:
+    with open('report_invalid_urls_find_http_urls.csv', mode='w', newline='') as csv_file:
         writer3 = csv.writer(csv_file, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer3.writerow(["url", "relativeFilepath"])
         for urlKey in invalidUrlsStore:
@@ -95,7 +95,7 @@ def makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 findHttpURLs.py [PATH_TO_NimbusML_REPOSITORY]")
+        print("Usage: python3 find_http_urls.py [PATH_TO_NimbusML_REPOSITORY]")
         exit(1)
     findHttpUrls(sys.argv[1])
     
