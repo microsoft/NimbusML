@@ -157,6 +157,7 @@ OMITTED_CHECKS = {
         'check_estimators_overwrite_params, \
         check_estimator_sparse_data, check_estimators_pickle, '
         'check_estimators_nan_inf',
+    'OrdinaryLeastSquaresRegressor': 'check_fit2d_1sample'
 }
 
 OMITTED_CHECKS_TUPLE = (
