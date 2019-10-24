@@ -408,7 +408,7 @@ if "%RunTests%" == "False" (
 echo ""
 echo "#################################"
 echo "Running tests ... "
-echo "#################################"
+echo "#################################" 
 set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
