@@ -5,7 +5,7 @@
 
 # Finds all HTTP URLs found in the NimbusML repository
 # Converts all valid HTTP links to HTTPS
-# Usage: python3 find_http_urls.py [path_to_NimbusML_repository]
+# Usage: python3 find_http_urls.py path_to_repo
 # Output: alterable_urls.csv, non_alterable_urls.csv, invalid_urls.csv
 
 # Required non-standard pip library: urlextract
