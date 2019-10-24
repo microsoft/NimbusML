@@ -9,6 +9,7 @@ import json
 import os
 import unittest
 
+from nimbusml.cluster import KMeansPlusPlus
 from nimbusml.decomposition import FactorizationMachineBinaryClassifier
 from nimbusml.ensemble import EnsembleClassifier
 from nimbusml.ensemble import EnsembleRegressor
@@ -197,6 +198,7 @@ INSTANCES = {
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
     'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
+    'KMeansPlusPlus': KMeansPlusPlus(n_clusters=2),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(

@@ -71,7 +71,7 @@ learners = [
     GamBinaryClassifier(),
     PcaAnomalyDetector(),
     FactorizationMachineBinaryClassifier(),
-    KMeansPlusPlus(),
+    KMeansPlusPlus(n_clusters=2),
     NaiveBayesClassifier(),
     FastForestBinaryClassifier(number_of_trees=2), 
     FastForestRegressor(number_of_trees=2),
