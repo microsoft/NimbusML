@@ -95,7 +95,7 @@ def makeReports(alterableUrlsStore, nonAlterableUrlsStore, invalidUrlsStore):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 find_http_urls.py [PATH_TO_NimbusML_REPOSITORY]")
+        print("Usage: python3 find_http_urls.py path_to_repo")
         exit(1)
     findHttpUrls(sys.argv[1])
     

@@ -35,7 +35,7 @@ def changeUrls(pathToReportCsv, pathToRootDirectory):
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: python3 change_to_https.py [PATH_TO_alterable_urls.csv] [PATH_TO_ORIGINAL_NIMBUSML_DIRECTORY]")
+        print("Usage: python3 change_to_https.py urls.csv path_to_repo")
         exit(1)
     changeUrls(sys.argv[1], sys.argv[2])
 
