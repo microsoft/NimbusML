@@ -388,7 +388,7 @@ if "%InstallPythonPackages%" == "True" (
     echo "Installing python packages ... "
     echo "#################################"
     call "%PythonExe%" -m pip install --upgrade pip
-    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist pytest-replay graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
     if %PythonVersion% == 2.7 (
         call "%PythonExe%" -m pip install --upgrade pyzmq
@@ -416,7 +416,7 @@ set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
 set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
 
-call "%PythonExe%" -m pytest -n %NumConcurrentTests% --assert=plain --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --replay-record-dir=target --assert=plain --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
 if errorlevel 1 (
     goto :Exit_Error
 )
