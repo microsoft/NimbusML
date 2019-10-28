@@ -8,6 +8,7 @@ run check_estimator tests
 import json
 import os
 
+from nimbusml.decomposition import FactorizationMachineBinaryClassifier
 from nimbusml.ensemble import EnsembleClassifier
 from nimbusml.ensemble import EnsembleRegressor
 from nimbusml.ensemble import LightGbmBinaryClassifier
@@ -177,7 +178,8 @@ OMITTED_CHECKS_TUPLE = (
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
-    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer',
+    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer'
+    'NGramExtractor',
     'check_transformer_data_not_an_array, check_pipeline_consistency, '
     'check_fit2d_1feature, check_estimators_fit_returns_self,\
                        check_fit2d_1sample, '
@@ -210,6 +212,7 @@ INSTANCES = {
     'DateTimeSplitter': DateTimeSplitter(prefix='dt', columns=['F0']),
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
+    'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(

@@ -145,8 +145,8 @@ sphinx_gallery_conf = {
     'relative': True,
     'reference_url': {
         'nimbusml': None,
-        'matplotlib': 'http://matplotlib.org',
-        'numpy': 'http://www.numpy.org/',
+        'matplotlib': 'https://matplotlib.org',
+        'numpy': 'https://www.numpy.org/',
         'scipy': 'https://www.scipy.org/'},
 }
 

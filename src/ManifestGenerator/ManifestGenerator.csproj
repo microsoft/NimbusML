@@ -1,18 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{D3AED287-722F-4243-966E-77AD0652B38E}</ProjectGuid>
-	<OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
+    <DefineConstants>CORECLR</DefineConstants>
     <AssemblyName>ManifestGenerator</AssemblyName>
     <RootNamespace>ManifestGenerator</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>$(OutputBase)</OutputPath>
-    <Configurations>Debug;Release</Configurations>
-    <StartupObject>Microsoft.MachineLearning.ManifestGenerator.ManifestGenerator</StartupObject>
+    <OutputPath>..\$(Platform)\$(Configuration)\</OutputPath>
+    <Configurations>DbgWinPy3.7;DbgWinPy3.6;DbgWinPy3.5;DbgWinPy2.7;RlsWinPy3.7;RlsWinPy3.6;RlsWinPy3.5;RlsWinPy2.7;DbgLinPy3.7;DbgLinPy3.6;DbgLinPy3.5;DbgLinPy2.7;RlsLinPy3.7;RlsLinPy3.6;RlsLinPy3.5;RlsLinPy2.7;RlsMacPy3.7;RlsMacPy3.6</Configurations>
+    <StartupObject>Microsoft.ML.ManifestGenerator.ManifestGenerator</StartupObject>
+    <Version>0.1.0</Version>
+    <Company>Microsoft Corporation</Company>
+    <Copyright>(c) Microsoft Corporation. All rights reserved.</Copyright>
+    <RepositoryUrl>https://github.com/Microsoft/NimbusML</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Microsoft/NimbusML</PackageProjectUrl>
+    <LangVersion>latest</LangVersion>
     <ApplicationIcon />
-	<TargetFramework>netcoreapp2.0</TargetFramework>
+    <ProjectGuid>{D3AED287-722F-4243-966E-77AD0652B38E}</ProjectGuid>
+	<OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,13 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.HalLearners" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.Onnx" Version="0.7.0" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.7.0" />
+    <ProjectReference Include="..\DotNetBridge\DotNetBridge.csproj" />
   </ItemGroup>
 
 </Project>
