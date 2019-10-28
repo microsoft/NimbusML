@@ -792,11 +792,13 @@
     <Compile Include="tests_extended\test_docs_notebooks.py" />
     <Compile Include="tests\test_pyproj.py" />
     <Compile Include="tests_extended\test_docs_example.py" />
+    <Compile Include="tools\change_to_https.py" />
     <Compile Include="tools\codegen_checker.py" />
     <Compile Include="tools\code_fixer.py" />
     <Compile Include="tools\compiler_utils.py" />
     <Compile Include="tools\doc_builder.py" />
     <Compile Include="tools\entrypoint_compiler.py" />
+    <Compile Include="tools\find_http_urls.py" />
     <Compile Include="tools\fix_line_widths.py" />
     <Compile Include="tools\loss_processor.py" />
     <Compile Include="tools\manifest_diff_parser.py" />
