@@ -18,7 +18,7 @@ data = pandas.DataFrame(data=dict(
 X = data[['Path']]
 y = data[['Label']]
 
-# define the training pipeline
+# define the training pipeline 
 pipeline = Pipeline([
     Loader(columns={'ImgPath': 'Path'}),
     Resizer(image_width=32, image_height=32,
