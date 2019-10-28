@@ -450,7 +450,7 @@ echo Failed with error %ERRORLEVEL%
 exit /b %ERRORLEVEL%
 
 :CleanUpDotnet
-:: Save the error level so it can be 
+:: Save the error level so it can be
 :: restored when exiting the function
 set PrevErrorLevel=%ERRORLEVEL%
 
