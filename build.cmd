@@ -416,11 +416,11 @@ set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
 set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
 
-call "%PythonExe%" -m pytest -n %NumConcurrentTests% --assert=plain --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
 if errorlevel 1 (
     :: Rerun any failed tests to give them one more
     :: chance in case the errors were intermittent.
-    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --assert=plain --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
     if errorlevel 1 (
         goto :Exit_Error
     )
@@ -429,7 +429,12 @@ if errorlevel 1 (
 if "%RunExtendedTests%" == "True" (
     call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
     if errorlevel 1 (
-        goto :Exit_Error
+        :: Rerun any failed tests to give them one more
+        :: chance in case the errors were intermittent.
+        call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+        if errorlevel 1 (
+            goto :Exit_Error
+        )
     )
 )
 
