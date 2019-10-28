@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ###############################################################################
 # Get schema from a fitted pipeline example.
 import numpy as np
@@ -30,4 +31,4 @@ pipe.fit(data)
 schema = pipe.get_output_columns()
 
 print(schema[0:5])
-# ['Sentiment', 'SentimentText', 'features.Char.<?>|=|=', 'features.Char.=|=|r', 'features.Char.=|r|u']
+# ['Sentiment', 'SentimentText', 'features.Char.<␂>|=|=', 'features.Char.=|=|r', 'features.Char.=|r|u']

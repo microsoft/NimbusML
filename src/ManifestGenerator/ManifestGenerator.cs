@@ -3,56 +3,79 @@
 // Licensed under the MIT License.
 //------------------------------------------------------------------------------
 
+using System;
 using System.IO;
-using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.EntryPoints.JsonUtils;
-using Microsoft.ML.Runtime.ImageAnalytics;
-using Microsoft.ML.Runtime.Learners;
-using Microsoft.ML.Runtime.LightGBM;
-using Microsoft.ML.Runtime.Model.Onnx;
-using Microsoft.ML.Runtime.PipelineInference;
-using Microsoft.ML.Trainers.FastTree;
-using Microsoft.ML.Trainers.KMeans;
-using Microsoft.ML.Trainers.PCA;
-using Microsoft.ML.Trainers.SymSgd;
-using Microsoft.ML.Transforms;
-using Microsoft.ML.Transforms.Categorical;
-using Newtonsoft.Json;
+using System.Linq;
+using Microsoft.ML.DotNetBridge;
 
-namespace Microsoft.MachineLearning.ManifestGenerator
+
+namespace Microsoft.ML.ManifestGenerator
 {
     public static class ManifestGenerator
     {
-        public static void Main()
-        {
-            using (var env = new ConsoleEnvironment())
-            {
-                env.ComponentCatalog.RegisterAssembly(typeof(TextLoader).Assembly); // ML.Data
-                env.ComponentCatalog.RegisterAssembly(typeof(LinearPredictor).Assembly); // ML.StandardLearners
-                env.ComponentCatalog.RegisterAssembly(typeof(CategoricalTransform).Assembly); // ML.Transforms
-                env.ComponentCatalog.RegisterAssembly(typeof(FastTreeBinaryPredictor).Assembly); // ML.FastTree
-                env.ComponentCatalog.RegisterAssembly(typeof(KMeansPredictor).Assembly); // ML.KMeansClustering
-                env.ComponentCatalog.RegisterAssembly(typeof(PcaPredictor).Assembly); // ML.PCA
-                env.ComponentCatalog.RegisterAssembly(typeof(Experiment).Assembly); // ML.Legacy
-                env.ComponentCatalog.RegisterAssembly(typeof(LightGbmBinaryPredictor).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(TensorFlowTransform).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(ImageLoaderTransform).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(SymSgdClassificationTrainer).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly);
-                env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
-                var catalog = env.ComponentCatalog;
-                var jObj = JsonManifestUtils.BuildAllManifests(env, catalog);
+        private const int ERROR_SUCCESS = 0;
+        private const int ERROR_BAD_ARGUMENTS = 1;
+        private const int ERROR_MANIFEST_INVALID = 2;
 
-                var jPath = "manifest.json";
-                using (var file = File.OpenWrite(jPath))
-                using (var writer = new StreamWriter(file))
-                using (var jw = new JsonTextWriter(writer))
+        public static void ShowUsage()
+        {
+            string usage =
+            "Usage:\n" +
+            "    create MANIFEST_PATH        Creates a new manifest given the\n" +
+            "                                current assemblies and stores it\n" +
+            "                                in the file MANIFEST_PATH.\n" +
+            "    verify MANIFEST_PATH        Checks if the manifest specified by\n" +
+            "                                MANIFEST_PATH is valid given the\n" +
+            "                                the current assemblies.\n" +
+            "\n";
+
+            Console.WriteLine(usage);
+        }
+
+        public static int Main(string[] args)
+        {
+            int exitCode = ERROR_BAD_ARGUMENTS;
+
+            if (args.Length == 2)
+            {
+                if (args[0].ToLower() == "create")
                 {
-                    jw.Formatting = Formatting.Indented;
-                    jObj.WriteTo(jw);
+                    ManifestUtils.ShowAssemblyInfo();
+                    ManifestUtils.GenerateManifest(args[1]);
+
+                    exitCode = ERROR_SUCCESS;
+                }
+                else if (args[0].ToLower() == "verify")
+                {
+                    string tmpFilePath = Path.GetTempFileName();
+                    ManifestUtils.GenerateManifest(tmpFilePath);
+
+                    exitCode = FilesMatch(args[1], tmpFilePath) ?
+                               exitCode = ERROR_SUCCESS :
+                               exitCode = ERROR_MANIFEST_INVALID;
+
+                    File.Delete(tmpFilePath);
                 }
             }
+
+            if (exitCode == ERROR_BAD_ARGUMENTS)
+            {
+                Console.WriteLine("ManifestGenerator: Error - Invalid Arguments.");
+                ShowUsage();
+            }
+
+            return exitCode;
+        }
+
+        private static bool FilesMatch(string path1, string path2)
+        {
+            long fileLength1 = new FileInfo(path1).Length;
+            long fileLength2 = new FileInfo(path2).Length;
+            if (fileLength1 != fileLength2) return false;
+
+            // TODO: read in only parts of the file at a time
+            bool bytesMatch = File.ReadAllBytes(path1).SequenceEqual(File.ReadAllBytes(path2));
+            return bytesMatch;
         }
     }
 }
