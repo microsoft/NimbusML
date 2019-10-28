@@ -71,7 +71,7 @@ learners = [
     GamBinaryClassifier(),
     PcaAnomalyDetector(),
     FactorizationMachineBinaryClassifier(),
-    KMeansPlusPlus(),
+    KMeansPlusPlus(n_clusters=2),
     NaiveBayesClassifier(),
     FastForestBinaryClassifier(number_of_trees=2), 
     FastForestRegressor(number_of_trees=2),
@@ -119,24 +119,24 @@ class TestModelSummary(unittest.TestCase):
         ols.summary()
 
     def test_pipeline_summary_is_refreshed_after_refitting(self):
-        predictor = OrdinaryLeastSquaresRegressor(normalize='No', l2_regularization=0)
+        predictor = OrdinaryLeastSquaresRegressor()
         pipeline = Pipeline([predictor])
 
         pipeline.fit([0,1,2,3], [1,2,3,4])
         summary1 = pipeline.summary()
 
-        pipeline.fit([0,1,2,3], [2,5,8,11])
+        pipeline.fit([0,1,2.5,3], [2,5,8,11])
         summary2 = pipeline.summary()
 
         self.assertFalse(summary1.equals(summary2))
 
     def test_predictor_summary_is_refreshed_after_refitting(self):
-        predictor = OrdinaryLeastSquaresRegressor(normalize='No', l2_regularization=0)
+        predictor = OrdinaryLeastSquaresRegressor()
 
         predictor.fit([0,1,2,3], [1,2,3,4])
         summary1 = predictor.summary()
 
-        predictor.fit([0,1,2,3], [2,5,8,11])
+        predictor.fit([0,1,2.5,3], [2,5,8,11])
         summary2 = predictor.summary()
 
         self.assertFalse(summary1.equals(summary2))
