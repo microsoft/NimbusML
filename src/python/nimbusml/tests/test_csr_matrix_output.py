@@ -49,8 +49,7 @@ class TestCsrMatrixOutput(unittest.TestCase):
         result = pd.DataFrame(result.todense())
 
         train_data = {0: [1, 0, 0, 4],
-                      #1: [2, 3, 0, 5]}
-                      1: [2, 3, 1, 5]}
+                      1: [2, 3, 0, 5]}
         expected_result = pd.DataFrame(train_data).astype(np.float32)
 
         self.assertTrue(result.equals(expected_result))

@@ -129,7 +129,6 @@ class TestModelSummary(unittest.TestCase):
         summary2 = pipeline.summary()
 
         self.assertFalse(summary1.equals(summary2))
-        self.assertTrue(False)
 
     def test_predictor_summary_is_refreshed_after_refitting(self):
         predictor = OrdinaryLeastSquaresRegressor()
