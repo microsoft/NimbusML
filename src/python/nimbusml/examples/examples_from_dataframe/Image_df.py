@@ -18,7 +18,7 @@ y = data[['Label']]
 
 # transforms and learners
 transform_1 = Loader() << 'Path'
-transform_2 = Resizer(image_width=227, image_height=227)
+transform_2 = Resizer(image_width=32, image_height=32)
 transform_3 = PixelExtractor()
 algo = FastLinearBinaryClassifier() << 'Path'
 
