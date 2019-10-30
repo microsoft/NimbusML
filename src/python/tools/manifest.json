@@ -2308,6 +2308,90 @@
       "Outputs": []
     },
     {
+      "Name": "Models.OnnxTransformer",
+      "Desc": "Applies an ONNX model to a dataset.",
+      "FriendlyName": "Onnx Transformer",
+      "ShortName": "onnx-xf",
+      "Inputs": [
+        {
+          "Name": "ModelFile",
+          "Type": "String",
+          "Desc": "Path to the onnx model file.",
+          "Aliases": [
+            "model"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "InputColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Name of the input column.",
+          "Required": false,
+          "SortOrder": 1.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "OutputColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Name of the output column.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "GpuDeviceId",
+          "Type": "Int",
+          "Desc": "GPU device id to run on (e.g. 0,1,..). Null for CPU. Requires CUDA 9.1.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "FallbackToCpu",
+          "Type": "Bool",
+          "Desc": "If true, resumes execution on CPU upon GPU error. If false, will raise the GPU execption.",
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "ONNX transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ]
+    },
+    {
       "Name": "Models.OvaModelCombiner",
       "Desc": "Combines a sequence of PredictorModels into a single model",
       "FriendlyName": null,
