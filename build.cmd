@@ -388,7 +388,7 @@ if "%InstallPythonPackages%" == "True" (
     echo "Installing python packages ... "
     echo "#################################"
     call "%PythonExe%" -m pip install --upgrade pip
-    call "%PythonExe%" -m pip install --upgrade nose pytest graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
     if %PythonVersion% == 2.7 (
         call "%PythonExe%" -m pip install --upgrade pyzmq
@@ -414,35 +414,53 @@ set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
 set TestsPath3=%__currentScriptDir%src\python\tests_extended
 set ReportPath=%__currentScriptDir%build\TestCoverageReport
-call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
-if errorlevel 1 (
-    goto :Exit_Error
-)
-call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath2%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
-if errorlevel 1 (
-    goto :Exit_Error
-)
+set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
 
-if "%RunExtendedTests%" == "True" (
-    call "%PythonExe%" -m pytest --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+if errorlevel 1 (
+    :: Rerun any failed tests to give them one more
+    :: chance in case the errors were intermittent.
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
     if errorlevel 1 (
         goto :Exit_Error
     )
 )
 
+if "%RunExtendedTests%" == "True" (
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    if errorlevel 1 (
+        :: Rerun any failed tests to give them one more
+        :: chance in case the errors were intermittent.
+        call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+        if errorlevel 1 (
+            goto :Exit_Error
+        )
+    )
+)
+
 :Exit_Success
+call :CleanUpDotnet
+endlocal
+exit /b %ERRORLEVEL%
+
+:Exit_Error
+call :CleanUpDotnet
+endlocal
+echo Failed with error %ERRORLEVEL%
+exit /b %ERRORLEVEL%
+
+:CleanUpDotnet
+:: Save the error level so it can be
+:: restored when exiting the function
+set PrevErrorLevel=%ERRORLEVEL%
+
 :: Shutdown all dotnet persistent servers so that the
 :: dotnet executable is not left open in the background.
 :: As of dotnet 2.1.3 three servers are left running in
 :: the background. This will shutdown them all down.
 :: See here for more info: https://github.com/dotnet/cli/issues/9458
+:: This fixes an issue when re-running the build script because
+:: the build script was trying to replace the existing dotnet
+:: binaries which were sometimes still in use.
 call "%_dotnet%" build-server shutdown
-endlocal
-exit /b %ERRORLEVEL%
-
-:Exit_Error
-:: See comment above
-call "%_dotnet%" build-server shutdown
-endlocal
-echo Failed with error %ERRORLEVEL%
-exit /b %ERRORLEVEL%
+exit /b %PrevErrorLevel%
