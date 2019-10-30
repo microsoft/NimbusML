@@ -342,6 +342,7 @@
     <Compile Include="nimbusml\internal\entrypoints\models_multioutputregressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_naivecalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_oneversusall.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_onnxconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_ovamodelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
