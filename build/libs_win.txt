@@ -13,3 +13,4 @@ TensorFlow.NET.dll
 NumSharp.Core.dll
 System.Drawing.Common.dll
 Microsoft.ML.*
+onnxruntime.dll
