@@ -98,7 +98,8 @@ SKIP = {
     'Sentiment',
     'TensorFlowScorer',
     'TreeFeaturizer',
-    'WordEmbedding'
+    'WordEmbedding',
+    'OnnxRunner'
 }
 
 INSTANCES = {
