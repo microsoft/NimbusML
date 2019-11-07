@@ -5,6 +5,7 @@
 
 import os
 import pickle
+import tempfile
 import unittest
 
 import numpy as np
@@ -32,6 +33,12 @@ label_column = 'label'
 (train, label) = get_X_y(train_file, label_column, sep=',')
 (test, test_label) = get_X_y(test_file, label_column, sep=',')
 
+def get_temp_file(suffix=None):
+    fd, file_name = tempfile.mkstemp(suffix=suffix)
+    fl = os.fdopen(fd, 'w')
+    fl.close()
+    return file_name
+
 
 class TestLoadSave(unittest.TestCase):
 
@@ -48,7 +55,7 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
 
         # Save with pickle
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
         with open(pickle_filename, 'wb') as f:
             pickle.dump(model_nimbusml, f)
 
@@ -65,9 +72,10 @@ class TestLoadSave(unittest.TestCase):
             test, test_label, output_scores=True)
 
         # Save load with pipeline methods
-        model_nimbusml.save_model('model.nimbusml.m')
+        model_filename = get_temp_file(suffix='.m')
+        model_nimbusml.save_model(model_filename)
         model_nimbusml_load = Pipeline()
-        model_nimbusml_load.load_model('model.nimbusml.m')
+        model_nimbusml_load.load_model(model_filename)
 
         score1 = model_nimbusml.predict(test).head(5)
         score2 = model_nimbusml_load.predict(test).head(5)
@@ -82,7 +90,7 @@ class TestLoadSave(unittest.TestCase):
             model_nimbusml_load.sum().sum(),
             decimal=2)
 
-        os.remove('model.nimbusml.m')
+        os.remove(model_filename)
 
     def test_model_datastream(self):
         model_nimbusml = Pipeline(
@@ -97,7 +105,7 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
 
         # Save with pickle
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
         with open(pickle_filename, 'wb') as f:
             pickle.dump(model_nimbusml, f)
 
@@ -120,9 +128,10 @@ class TestLoadSave(unittest.TestCase):
             decimal=2)
 
         # Save load with pipeline methods
-        model_nimbusml.save_model('model.nimbusml.m')
+        model_filename = get_temp_file(suffix='.m')
+        model_nimbusml.save_model(model_filename)
         model_nimbusml_load = Pipeline()
-        model_nimbusml_load.load_model('model.nimbusml.m')
+        model_nimbusml_load.load_model(model_filename)
 
         score1 = model_nimbusml.predict(test).head(5)
         score2 = model_nimbusml_load.predict(test).head(5)
@@ -137,7 +146,7 @@ class TestLoadSave(unittest.TestCase):
             model_nimbusml_load.sum().sum(),
             decimal=2)
 
-        os.remove('model.nimbusml.m')
+        os.remove(model_filename)
 
     def test_pipeline_saves_complete_model_file_when_pickled(self):
         model_nimbusml = Pipeline(
@@ -152,7 +161,7 @@ class TestLoadSave(unittest.TestCase):
         model_nimbusml.fit(train, label)
         metrics, score = model_nimbusml.test(test, test_label, output_scores=True)
 
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
 
         # Save with pickle
         with open(pickle_filename, 'wb') as f:
@@ -202,7 +211,7 @@ class TestLoadSave(unittest.TestCase):
                      shuffle=False,
                      number_of_threads=1))])
 
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
 
         # Save with pickle
         with open(pickle_filename, 'wb') as f:
@@ -234,7 +243,7 @@ class TestLoadSave(unittest.TestCase):
         fc = model_nimbusml.get_feature_contributions(test)
 
         # Save with pickle
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
         with open(pickle_filename, 'wb') as f:
             pickle.dump(model_nimbusml, f)
         # Unpickle model
@@ -260,7 +269,7 @@ class TestLoadSave(unittest.TestCase):
         fc = model_nimbusml.get_feature_contributions(test)
 
         # Save with pickle
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
         with open(pickle_filename, 'wb') as f:
             pickle.dump(model_nimbusml, f)
         # Unpickle model
@@ -287,7 +296,7 @@ class TestLoadSave(unittest.TestCase):
         fc = model_nimbusml.get_feature_contributions(test)
 
         # Save the model to zip
-        model_filename = 'nimbusml_model.zip'
+        model_filename = get_temp_file(suffix='.zip')
         model_nimbusml.save_model(model_filename)
         # Load the model from zip
         model_nimbusml_zip = Pipeline()
@@ -312,7 +321,7 @@ class TestLoadSave(unittest.TestCase):
         fc = model_nimbusml.get_feature_contributions(test)
 
         # Save the model to zip
-        model_filename = 'nimbusml_model.zip'
+        model_filename = get_temp_file(suffix='.zip')
         model_nimbusml.save_model(model_filename)
         # Load the model from zip
         model_nimbusml_zip = Pipeline()
@@ -347,7 +356,7 @@ class TestLoadSave(unittest.TestCase):
         self.assertTrue(pipeline.predictor_model)
         self.assertNotEqual(pipeline.model, pipeline.predictor_model)
 
-        pickle_filename = 'nimbusml_model.p'
+        pickle_filename = get_temp_file(suffix='.p')
         with open(pickle_filename, 'wb') as f:
             pickle.dump(pipeline, f)
 

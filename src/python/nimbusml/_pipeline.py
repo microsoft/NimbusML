@@ -1529,10 +1529,14 @@ class Pipeline:
                  models_anomalydetectionevaluator(**params)])
 
         elif type_ == 'ranking':
-            svd = "$scoredVectorData"
             column = [OrderedDict(Source=group_id, Name=group_id)]
-            algo_args = dict(data=svd, output_data=svd, column=column)
+            algo_args = dict(
+                data="$scoredVectorData",
+                output_data="$scoredVectorData2",
+                column=column)
             key_node = transforms_texttokeyconverter(**algo_args)
+
+            params['data'] = "$scoredVectorData2"
             evaluate_node = models_rankingevaluator(
                 group_id_column=group_id, **params)
             all_nodes.extend([
@@ -1834,7 +1838,7 @@ class Pipeline:
 
         inputs = dict([('transform_model', self.model)])
         schema_node = models_schema(
-            transform_model="$transform_model",
+            model="$transform_model",
             schema="$output_data")
         all_nodes = [schema_node]
 

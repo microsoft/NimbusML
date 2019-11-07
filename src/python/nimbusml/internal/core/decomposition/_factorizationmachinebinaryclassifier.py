@@ -42,7 +42,7 @@ class FactorizationMachineBinaryClassifier(
             `Field Aware Factorization Machines
             <https://www.csie.ntu.edu.tw/~r01922136/slides/ffm.pdf>`_,
             `Field-aware Factorization Machines for CTR Prediction
-            <http://www.csie.ntu.edu.tw/~cjlin/papers/ffm.pdf>`_,
+            <https://www.csie.ntu.edu.tw/~cjlin/papers/ffm.pdf>`_,
             `Adaptive Subgradient Methods for Online Learning and Stochastic
             Optimization
             <http://jmlr.org/papers/volume12/duchi11a/duchi11a.pdf>`_

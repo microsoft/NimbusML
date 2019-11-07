@@ -81,7 +81,7 @@ class FastTreesBinaryClassifier(
             <https://en.wikipedia.org/wiki/Gradient_boosting#Gradient_tree_boosting>`_
 
             `Greedy function approximation: A gradient boosting machine.
-            <http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
+            <https://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1013203451>`_
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.
 

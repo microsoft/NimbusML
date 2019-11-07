@@ -5,7 +5,6 @@
 
 using System;
 using System.Globalization;
-using Microsoft.ML;
 using Microsoft.ML.Runtime;
 
 namespace Microsoft.ML.DotNetBridge

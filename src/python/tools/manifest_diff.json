@@ -242,13 +242,13 @@
       "Type": "Classifier",
       "Predict_Proba" : true,
       "Decision_Function" : true,
-      "Inputs": [
-        {
-        "Name": "Lambda",
-        "NewName": "l2_regularization",
-        "Desc": "L2 regularization weight. It also controls the learning rate, with the learning rate being inversely proportional to it."
-        }
-      ]
+	  "Inputs": [
+	    {
+		  "Name": "Lambda",
+		  "NewName": "l2_regularization",
+		  "Desc": "L2 regularization weight. It also controls the learning rate, with the learning rate being inversely proportional to it."
+		}
+	  ]
     },
     {
       "Name": "Trainers.EnsembleClassification",
@@ -748,6 +748,12 @@
     {
       "Name": "Transforms.TextFeaturizer",
       "NewName": "NGramFeaturizer",
+      "Module": "feature_extraction.text",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.NGramTranslator",
+      "NewName": "NGramExtractor",
       "Module": "feature_extraction.text",
       "Type": "Transform"
     },
