@@ -240,7 +240,7 @@ private:
 
         if (bp::extract<const char*>(str(s).encode("utf_8")).check())
         {
-			 size = -1;
+			size = -1;
             missing = -1;
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
 #if _MSC_VER
