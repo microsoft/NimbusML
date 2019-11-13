@@ -34,7 +34,7 @@ class TestNGramFeaturizer(unittest.TestCase):
             word_feature_extractor=n_gram(),
             vector_normalizer='None') << 'SentimentText'
         X_train = texttransform.fit_transform(X_train[:100])
-        sum = X_train.iloc[:].sum().sum()
+        sum = X_train.iloc[:].sum()
         print(sum)
         assert_equal(sum, 30513, "sum of all features is incorrect!")
 
