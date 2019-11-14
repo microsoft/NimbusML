@@ -162,6 +162,13 @@ def clear_repo(repo_dir):
         rmdir(dir_entry)
 
 
+def git_add_all_modifications(repo_dir):
+    cwd = os.getcwd()
+    os.chdir(repo_dir)
+    subprocess.run(['git', 'add', '-A'])
+    os.chdir(cwd)
+
+
 def get_master_repo(commit=None):
     tmp_dir = tempfile.mkdtemp()
     cwd = os.getcwd()
@@ -368,6 +375,8 @@ def main():
     rename_pipeline(repo_dir)
 
     fix_files(repo_dir)
+
+    git_add_all_modifications(repo_dir)
 
 
 if __name__ == '__main__':
