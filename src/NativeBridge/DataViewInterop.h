@@ -238,7 +238,7 @@ private:
         assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
         auto s = pdata->_vtextdata[txCol][index];
 
-        if (bp::extract<const char*>((str(s).encode("utf_8"))).check())
+        if (bp::extract<const char*>(str(s).encode("utf_8")).check())
         {
             size = -1;
             missing = -1;
@@ -248,18 +248,15 @@ private:
                 size = 0;
                 pch = 0;
             }
-            else
-            {
 #if _MSC_VER
-                Utf8ToUtf16le(pch, pch, size);
+            Utf8ToUtf16le(pch, pch, size);
 #endif
-                pdata->_vtextdata_cache.push_back((char*)pch);
-            }
+            pdata->_vtextdata_cache.push_back((char*)pch);
         }
         else
         {
             // Missing values in Python are float.NaN.
-            assert(bp::extract<float>(str(s).encode("utf_8")).check());
+            assert(bp::extract<float>(s).check());
             missing = 1;
         }
     }
