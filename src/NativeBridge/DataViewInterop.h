@@ -243,7 +243,11 @@ private:
             size = -1;
             missing = -1;
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
+#if _MSC_VER
+            if ((str(s)).is_none())
+#else
             if ((str(s).encode("utf_8")).is_none())
+#endif
             {
                 size = 0;
                 pch = 0;
