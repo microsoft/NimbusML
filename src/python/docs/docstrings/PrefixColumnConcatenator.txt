@@ -1,0 +1,16 @@
+    """
+
+    Concatenates one or more columns of the same item type.
+
+    .. seealso::
+        :py:class:`ColumnDropper
+        <nimbusml.preprocessing.schema.ColumnDropper>`,
+        :py:class:`ColumnSelector
+        <nimbusml.preprocessing.schema.ColumnSelector>`.
+
+    .. index:: transform, schema
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/PrefixColumnConcatenator.py
+              :language: python
+    """
