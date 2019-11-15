@@ -13,7 +13,7 @@ from pathlib import Path
 from code_fixer import run_autopep
 
 
-description = """
+description = """ 
 This module helps with merging the changes from the master branch
 in to the temp/docs branch. Here are the steps it takes:
 
