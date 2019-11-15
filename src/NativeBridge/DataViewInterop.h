@@ -245,6 +245,14 @@ private:
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
 #if _MSC_VER
             Utf8ToUtf16le(pch, pch, size);
+#else
+            if (str(s).encode("utf_8").is_none())
+            {
+                int pchSize = 0;
+                while (pch[pchSize] != '\0') pchSize++;
+                size = pchSize;
+                pch = 0;
+            }
 #endif
             pdata->_vtextdata_cache.push_back((char*)pch);
         }
