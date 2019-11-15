@@ -21,7 +21,16 @@ class PrefixColumnConcatenator(
         DefaultSignature):
     """
 
-    Concatenates one or more columns of the same item type.
+    Combines several columns into a single vector-valued column by prefix.
+
+    .. remarks::
+        ``PrefixColumnConcatenator`` creates a single vector-valued column from
+        multiple
+        columns. It can be performed on data before training a model. The
+        concatenation
+        can significantly speed up the processing of data when the number of
+        columns
+        is as large as hundreds to thousands.
 
     :param params: Additional arguments sent to compute engine.
 
