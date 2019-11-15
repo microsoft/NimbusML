@@ -11,6 +11,7 @@ __all__ = ["ColumnDropper"]
 
 
 import warnings
+
 from sklearn.base import TransformerMixin
 
 from ...base_transform import BaseTransform
@@ -56,12 +57,11 @@ class ColumnDropper(core, BaseTransform, TransformerMixin):
             self,
             columns=None,
             **params):
-        
+
         warnings.warn(
             "ColumnDropper is will be deprecated in future releases."
-            "Use ColumnSelector(drop_columns) instead.", 
-            PendingDeprecationWarning
-        )
+            "Use ColumnSelector(drop_columns) instead.",
+            PendingDeprecationWarning)
 
         if columns:
             params['columns'] = columns

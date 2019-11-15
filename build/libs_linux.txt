@@ -1,3 +1,4 @@
+Google.Protobuf.dll
 Newtonsoft.Json.dll
 libCpuMathNative.so
 libFastTreeNative.so

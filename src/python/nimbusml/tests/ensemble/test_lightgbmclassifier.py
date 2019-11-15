@@ -19,8 +19,6 @@ from sklearn.utils.testing import assert_greater
 
 class TestLightGbmClassifier(unittest.TestCase):
 
-    @unittest.skipIf(platform.system() in ("Linux", "Darwin") and six.PY2,
-                     "encoding/decoding issues with linux py2.7, bug 286536")
     def test_lightgbmclassifier(self):
         np.random.seed(0)
         train_file = get_dataset('wiki_detox_train').as_filepath()
