@@ -88,7 +88,7 @@ To build `nimbusml` from source please visit our [developer guide](docs/develope
 
 ## Contributing
 
-The contributions guide can be found [here](CONTRIBUTING.md). Given the experimental nature of this project, support will be provided on a best-effort basis. We suggest opening an issue for discussion before starting a PR with big changes.
+The contributions guide can be found [here](CONTRIBUTING.md). 
 
 ## Support
 
