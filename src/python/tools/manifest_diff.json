@@ -790,7 +790,7 @@
       "Name": "Transforms.PrefixColumnConcatenator",
       "NewName": "PrefixColumnConcatenator",
       "Module": "preprocessing.schema",
-      "Type": "Transform"
+      "Type": "Transform" 
     }
   ],
   "Components": [
