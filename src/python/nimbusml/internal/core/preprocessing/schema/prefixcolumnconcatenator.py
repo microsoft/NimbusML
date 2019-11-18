@@ -85,7 +85,8 @@ class PrefixColumnConcatenator(
 
         # validate output
         if output_columns is None:
-            output_columns = input_columns
+            raise ValueError(
+                "'None' output passed when it cannot be none.")
 
         if not isinstance(output_columns, list):
             raise ValueError(
