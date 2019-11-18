@@ -67,10 +67,10 @@ class AveragedPerceptronBinaryClassifier(
             <https://en.wikipedia.org/wiki/Perceptron>`_
 
             `Large Margin Classification Using the Perceptron Algorithm
-            <http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.48.8200>`_
+            <https://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.48.8200>`_
 
             `Discriminative Training Methods for Hidden Markov Models
-            <http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.6725>`_
+            <https://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.6725>`_
 
 
     :param feature: see `Columns </nimbusml/concepts/columns>`_.

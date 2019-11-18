@@ -7,5 +7,3 @@ __all__ = [
     'PixelExtractor',
     'Resizer'
 ]
-
-

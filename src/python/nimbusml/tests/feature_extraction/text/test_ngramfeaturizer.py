@@ -18,8 +18,6 @@ from sklearn.utils.testing import assert_equal
 
 class TestNGramFeaturizer(unittest.TestCase):
 
-    @unittest.skipIf(os.name != "nt" and six.PY2,
-                     "encoding/decoding issues with linux py2.7, bug 286536")
     def test_ngramfeaturizer(self):
         np.random.seed(0)
         train_file = get_dataset('wiki_detox_train').as_filepath()

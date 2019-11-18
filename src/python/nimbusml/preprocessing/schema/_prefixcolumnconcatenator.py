@@ -17,7 +17,10 @@ from ...internal.core.preprocessing.schema._prefixcolumnconcatenator import \
 from ...internal.utils.utils import trace
 
 
-class PrefixColumnConcatenator(core, BaseTransform, TransformerMixin):
+class PrefixColumnConcatenator(
+        core,
+        BaseTransform,
+        TransformerMixin):
     """
 
     Combines several columns into a single vector-valued column by prefix.

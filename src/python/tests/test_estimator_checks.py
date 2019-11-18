@@ -7,7 +7,9 @@ run check_estimator tests
 """
 import json
 import os
+import unittest
 
+from nimbusml.cluster import KMeansPlusPlus
 from nimbusml.decomposition import FactorizationMachineBinaryClassifier
 from nimbusml.ensemble import EnsembleClassifier
 from nimbusml.ensemble import EnsembleRegressor
@@ -155,6 +157,7 @@ OMITTED_CHECKS = {
         'check_estimators_overwrite_params, \
         check_estimator_sparse_data, check_estimators_pickle, '
         'check_estimators_nan_inf',
+    'OrdinaryLeastSquaresRegressor': 'check_fit2d_1sample'
 }
 
 OMITTED_CHECKS_TUPLE = (
@@ -162,7 +165,8 @@ OMITTED_CHECKS_TUPLE = (
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
-    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer',
+    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer'
+    'NGramExtractor',
     'check_transformer_data_not_an_array, check_pipeline_consistency, '
     'check_fit2d_1feature, check_estimators_fit_returns_self,\
                        check_fit2d_1sample, '
@@ -195,6 +199,7 @@ INSTANCES = {
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
     'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
+    'KMeansPlusPlus': KMeansPlusPlus(n_clusters=2),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
@@ -246,13 +251,13 @@ MULTI_OUTPUT_EX = [
 
 MULTI_OUTPUT.extend(MULTI_OUTPUT_EX)
 
-
-def my_import(name):
-    components = name.split('.')
-    mod = __import__(components[0])
-    for comp in components[1:]:
-        mod = getattr(mod, comp)
-    return mod
+skip_epoints = set([
+    'OneVsRestClassifier',
+    'TreeFeaturizer',
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    'SymSgdBinaryClassifier',
+    'DatasetTransformer'
+])
 
 
 def load_json(file_path):
@@ -262,100 +267,79 @@ def load_json(file_path):
         content_without_comments = '\n'.join(lines)
         return json.loads(content_without_comments)
 
+def get_epoints():
+    epoints = []
+    my_path = os.path.realpath(__file__)
+    my_dir = os.path.dirname(my_path)
+    manifest_diff_json = os.path.join(my_dir, '..', 'tools',
+                                      'manifest_diff.json')
+    manifest_diff = load_json(manifest_diff_json)
+    for e in manifest_diff['EntryPoints']:
+        if (e['NewName'] not in skip_epoints) and ('LightGbm' not in e['NewName']):
+            epoints.append((e['Module'], e['NewName']))
 
-skip_epoints = set([
-    'OneVsRestClassifier',
-    'TreeFeaturizer',
-    # skip SymSgdBinaryClassifier for now, because of crashes.
-    'SymSgdBinaryClassifier',
-    'DatasetTransformer'
-])
+    return epoints
 
-epoints = []
-my_path = os.path.realpath(__file__)
-my_dir = os.path.dirname(my_path)
-manifest_diff_json = os.path.join(my_dir, '..', 'tools',
-                                  'manifest_diff.json')
-manifest_diff = load_json(manifest_diff_json)
-for e in manifest_diff['EntryPoints']:
-    if e['NewName'] not in skip_epoints:
-        epoints.append((e['Module'], e['NewName']))
 
-all_checks = {}
-all_failed_checks = {}
-all_passed_checks = {}
-total_checks_passed = 0
+class TestEstimatorChecks(unittest.TestCase):
+    # This method is a static method of the class
+    # because there were pytest fixture related
+    # issues when the method was in the global scope.
+    @staticmethod
+    def generate_test_method(epoint):
+        def method(self):
+            failed_checks = set()
+            passed_checks = set()
+            class_name = epoint[1]
+            print("\n======== now Estimator is %s =========== " % class_name)
 
-print("total entrypoints: {}", len(epoints))
+            mod = __import__('nimbusml.' + epoint[0], fromlist=[str(class_name)])
+            the_class = getattr(mod, class_name)
+            if class_name in INSTANCES:
+                estimator = INSTANCES[class_name]
+            else:
+                estimator = the_class()
 
-for e in epoints:
-    checks = set()
-    failed_checks = set()
-    passed_checks = set()
-    class_name = e[1]
-    print("======== now Estimator is %s =========== " % class_name)
-    # skip LighGbm for now, because of random crashes.
-    if 'LightGbm' in class_name:
-        continue
-    # skip SymSgdBinaryClassifier for now, because of crashes.
-    if 'SymSgdBinaryClassifier' in class_name:
-        continue
+            if estimator._use_single_input_as_string():
+                estimator = estimator << 'F0'
 
-    mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
-    the_class = getattr(mod, class_name)
-    if class_name in INSTANCES:
-        estimator = INSTANCES[class_name]
-    else:
-        estimator = the_class()
+            for check in _yield_all_checks(class_name, estimator):
+                # Skip check_dict_unchanged for estimators which
+                # update the classes_ attribute. For more details
+                # see https://github.com/microsoft/NimbusML/pull/200
+                if (check.__name__ == 'check_dict_unchanged') and \
+                    (hasattr(estimator, 'predict_proba') or
+                     hasattr(estimator, 'decision_function')):
+                    continue
 
-    if estimator._use_single_input_as_string():
-        estimator = estimator << 'F0'
+                if check.__name__ in OMITTED_CHECKS_ALWAYS:
+                    continue
+                if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
+                    continue
+                if class_name in OMITTED_CHECKS and check.__name__ in \
+                        OMITTED_CHECKS[class_name]:
+                    continue
+                if class_name in OMITTED_CHECKS_TUPLE[0] and check.__name__ in \
+                        OMITTED_CHECKS_TUPLE[1]:
+                    continue
 
-    for check in _yield_all_checks(class_name, estimator):
-        # Skip check_dict_unchanged for estimators which
-        # update the classes_ attribute. For more details
-        # see https://github.com/microsoft/NimbusML/pull/200
-        if (check.__name__ == 'check_dict_unchanged') and \
-            (hasattr(estimator, 'predict_proba') or
-             hasattr(estimator, 'decision_function')):
-            continue
+                try:
+                    check(class_name, estimator.clone())
+                    passed_checks.add(check.__name__)
+                except Exception as e:
+                    failed_checks.add(check.__name__)
 
-        if check.__name__ in OMITTED_CHECKS_ALWAYS:
-            continue
-        if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
-            continue
-        if class_name in OMITTED_CHECKS and check.__name__ in \
-                OMITTED_CHECKS[class_name]:
-            continue
-        if class_name in OMITTED_CHECKS_TUPLE[0] and check.__name__ in \
-                OMITTED_CHECKS_TUPLE[1]:
-            continue
-        checks.add(check.__name__)
-        try:
-            check(class_name, estimator.clone())
-            passed_checks.add(check.__name__)
-            total_checks_passed = total_checks_passed + 1
-        except Exception as e:
-            failed_checks.add(check.__name__)
+            if len(failed_checks) > 0:
+                self.fail(msg=str(failed_checks))
 
-    if frozenset(checks) not in all_checks:
-        all_checks[frozenset(checks)] = []
-    all_checks[frozenset(checks)].append(class_name)
+        return method
 
-    if len(failed_checks) > 0:
-        if frozenset(failed_checks) not in all_failed_checks:
-            all_failed_checks[frozenset(failed_checks)] = []
-        all_failed_checks[frozenset(failed_checks)].append(class_name)
 
-    if frozenset(passed_checks) not in all_passed_checks:
-        all_passed_checks[frozenset(passed_checks)] = []
-    all_passed_checks[frozenset(passed_checks)].append(class_name)
+for epoint in get_epoints():
+    test_name = 'test_%s' % epoint[1].lower()
+    method = TestEstimatorChecks.generate_test_method(epoint)
+    setattr(TestEstimatorChecks, test_name, method)
 
-if len(all_failed_checks) > 0:
-    print("Following tests failed for components:")
-    for key, value in all_failed_checks.items():
-        print('========================')
-        print(key)
-        print(value)
-    raise RuntimeError("estimator checks failed")
-print("success, total checks passed %s ", total_checks_passed)
+
+if __name__ == '__main__':
+    unittest.main()

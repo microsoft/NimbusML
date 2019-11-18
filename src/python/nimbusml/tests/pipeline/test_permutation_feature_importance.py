@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 import os
+import tempfile
 import unittest
 
 from nimbusml import FileDataStream
@@ -15,6 +16,14 @@ from nimbusml.linear_model import LogisticRegressionBinaryClassifier, \
 from nimbusml.preprocessing import ToKey
 from numpy.testing import assert_almost_equal
 from pandas.testing import assert_frame_equal
+
+
+def get_temp_model_file():
+    fd, file_name = tempfile.mkstemp(suffix='.zip')
+    fl = os.fdopen(fd, 'w')
+    fl.close()
+    return file_name
+
 
 class TestPermutationFeatureImportance(unittest.TestCase):
 
@@ -65,7 +74,7 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         assert_almost_equal(self.binary_pfi['AreaUnderPrecisionRecallCurve'].sum(), -0.19365, 5)
 
     def test_binary_classifier_from_loaded_model(self):
-        model_path = "model.zip"
+        model_path = get_temp_model_file()
         self.binary_model.save_model(model_path)
         loaded_model = Pipeline()
         loaded_model.load_model(model_path)
@@ -81,7 +90,7 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         assert_almost_equal(self.classifier_pfi['PerClassLogLoss.1'].sum(), 0.419826, 6)
 
     def test_classifier_from_loaded_model(self):
-        model_path = "model.zip"
+        model_path = get_temp_model_file()
         self.classifier_model.save_model(model_path)
         loaded_model = Pipeline()
         loaded_model.load_model(model_path)
@@ -96,7 +105,7 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         assert_almost_equal(self.regressor_pfi['RSquared'].sum(), -0.203612, 6)
 
     def test_regressor_from_loaded_model(self):
-        model_path = "model.zip"
+        model_path = get_temp_model_file()
         self.regressor_model.save_model(model_path)
         loaded_model = Pipeline()
         loaded_model.load_model(model_path)
@@ -113,7 +122,7 @@ class TestPermutationFeatureImportance(unittest.TestCase):
         assert_almost_equal(self.ranker_pfi['NDCG@3'].sum(), -0.236544, 6)
 
     def test_ranker_from_loaded_model(self):
-        model_path = "model.zip"
+        model_path = get_temp_model_file()
         self.ranker_model.save_model(model_path)
         loaded_model = Pipeline()
         loaded_model.load_model(model_path)
