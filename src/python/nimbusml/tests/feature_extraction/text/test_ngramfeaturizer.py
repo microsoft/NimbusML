@@ -27,8 +27,8 @@ class TestNGramFeaturizer(unittest.TestCase):
         (train,
          label) = get_X_y(train_file,
                           label_column='Sentiment',
-                          sep='\t',)
-                          encoding="utf-8"
+                          sep='\t',
+                          encoding="utf-8")
         X_train, X_test, y_train, y_test = train_test_split(
             train['SentimentText'], label)
 
