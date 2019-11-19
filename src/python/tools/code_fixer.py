@@ -247,12 +247,18 @@ onevsrestclassifier_1_correct = """
         all_args['output_for_sub_graph'] = {'Model' : \
 all_args['predictor_model']}"""
 
+prefixcolumnconcatenator_1 = "output_columns = input_columns"
+prefixcolumnconcatenator_1_correct = """raise ValueError(
+                "'None' output passed when it cannot be none.")"""
+
 signature_fixes_core = {
     'NGramFeaturizer': (textTransform_1, textTransform_1_correct),
     'ColumnConcatenator': [(concatColumns_1, concatColumns_1_correct)],
     'ColumnSelector': [(columnselector_1, columnselector_1_correct)],
     'OneVsRestClassifier': [
         (onevsrestclassifier_1, onevsrestclassifier_1_correct)],
+    'PrefixColumnConcatenator': (prefixcolumnconcatenator_1,
+                                 prefixcolumnconcatenator_1_correct)
 }
 
 

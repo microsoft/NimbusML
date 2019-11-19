@@ -785,6 +785,12 @@
       "NewName": "TypeConverter",
       "Module": "preprocessing.schema",
       "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.PrefixColumnConcatenator",
+      "NewName": "PrefixColumnConcatenator",
+      "Module": "preprocessing.schema",
+      "Type": "Transform" 
     }
   ],
   "Components": [
