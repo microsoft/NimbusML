@@ -236,23 +236,25 @@ private:
     {
         CxInt64 txCol = pdata->_mptxt[col];
         assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
-        auto s = pdata->_vtextdata[txCol][index];
+        bp::object s = pdata->_vtextdata[txCol][index];
 
         if (bp::extract<const char*>(str(s).encode("utf_8")).check())
         {
             size = -1;
             missing = -1;
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
-#if _MSC_VER
-            Utf8ToUtf16le(pch, pch, size);
-#else
-            if (str(s).encode("utf_8").is_none())
+            if (s.is_none())
             {
                 size = 0;
                 pch = 0;
             }
+            else
+            {
+#if _MSC_VER
+                Utf8ToUtf16le(pch, pch, size);
 #endif
-            pdata->_vtextdata_cache.push_back((char*)pch);
+                pdata->_vtextdata_cache.push_back((char*)pch);
+            }
         }
         else
         {
