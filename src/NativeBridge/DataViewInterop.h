@@ -245,7 +245,6 @@ private:
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
             if (s.is_none())
             {
-                std::cout << "DataViewInterop.h - Line 248" << std::endl;
                 size = 0;
                 pch = 0;
             }

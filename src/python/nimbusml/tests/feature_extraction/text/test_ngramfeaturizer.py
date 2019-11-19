@@ -36,14 +36,11 @@ class TestNGramFeaturizer(unittest.TestCase):
         texttransform = NGramFeaturizer(
             word_feature_extractor=n_gram(),
             vector_normalizer='None') << 'SentimentText'
-        print("X_train Before fit\n")
-        print(X_train.values)
-        print("Len of X_train before fitting: ", len(X_train))
         X_train = texttransform.fit_transform(X_train[:100])
-        print("X_train After fit\n")
-        print(X_train)
-        print("X_train.iloc[:]\n")
-        print(X_train.iloc[:])
+        print("X_train Column Names Start\n")
+        for col in X_train.columns:
+            print(col)
+        print("X_train Column Names End\n")
         print("X_train.iloc[:].sum()\n")
         print(X_train.iloc[:].sum())
         sum = X_train.iloc[:].sum().sum()
