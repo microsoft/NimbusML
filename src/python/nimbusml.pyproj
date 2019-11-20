@@ -802,6 +802,7 @@
     <Compile Include="tools\fix_line_widths.py" />
     <Compile Include="tools\loss_processor.py" />
     <Compile Include="tools\manifest_diff_parser.py" />
+    <Compile Include="tools\temp_docs_updater.py" />
     <Compile Include="tools\update_nimbusml_version.py" />
     <Compile Include="nimbusml\tests\test_syntax_onehotvectorizer.py" />
     <Compile Include="nimbusml\tests\utils\test_exports.py" />
