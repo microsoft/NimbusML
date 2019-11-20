@@ -38,14 +38,14 @@ class TestNGramFeaturizer(unittest.TestCase):
             vector_normalizer='None') << 'SentimentText'
         print("X_train Before Just Fit Column Names Start\n")
         X_train_fit = texttransform.fit(X_train[:100])
-        for col in X_train_fit.columns:
-            print(col)
+        print(X_train_fit)
         print("X_train Before Just Fit Column Names End\n")
         print("X_train Before Just Transform Column Names Start\n")
-        X_train_transform = X_train_fit.transform()
+        X_train_transform = X_train_fit.transform(X_train[:100])
         for col in X_train_transform.columns:
             print(col)
         print("X_train Before Just Transform Column Names End\n")
+        print("Len of X_train_transform: {}".format(len(X_train_transform)))
         #X_train = texttransform.fit_transform(X_train[:100])
 
 
@@ -53,9 +53,9 @@ class TestNGramFeaturizer(unittest.TestCase):
         #for col in X_train.columns:
         #    print(col)
         #print("X_train Column Names End\n")
-        print("X_train.iloc[:].sum()\n")
-        print(X_train.iloc[:].sum())
-        sum = X_train.iloc[:].sum().sum()
+        print("X_train_transform.iloc[:].sum()\n")
+        print(X_train_transform.iloc[:].sum())
+        sum = X_train_transform.iloc[:].sum().sum()
         print("Sum")
         print(sum)
         assert_equal(sum, 30513, "sum of all features is incorrect!")
