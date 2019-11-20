@@ -49,13 +49,14 @@ class TestNGramFeaturizer(unittest.TestCase):
             print(fea)
         print("X_train Model Just Fit Column Names End\n")
 
-"""         print("X_train Before Just Transform Column Names Start\n")
+        #print("X_train Before Just Transform Column Names Start\n")
         X_train_transform = pipe.transform(X_train[:100])
-        for col in X_train_transform.columns:
-            print(col)
-        print("X_train Before Just Transform Column Names End\n")
+        #for col in X_train_transform.columns:
+        #    print(col)
+        #print("X_train Before Just Transform Column Names End\n")
 
-        print("Len of X_train_transform: {}".format(len(X_train_transform))) """
+        #print("Len of X_train_transform: {}".format(len(X_train_transform)))
+        
         #X_train = texttransform.fit_transform(X_train[:100])
 
 
