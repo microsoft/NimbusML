@@ -25,9 +25,9 @@ class Dart(Component):
         <https://arxiv.org/abs/1505.01866>`_ is an
         ensemble method of boosted regression trees. The Dropouts meet
         Multiple Additive Regression
-    Trees (DART) employs dropouts in MART and overcomes the issues of over-
+        Trees (DART) employs dropouts in MART and overcomes the issues of over-
         specialization of MART,
-    achiving better performance in many tasks.
+        achiving better performance in many tasks.
 
 
         **Reference**

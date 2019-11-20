@@ -1,6 +1,6 @@
     """
 
-    Loaders image data.
+    Loads image data.
 
     .. remarks::
         ``Loader`` loads images from paths.
