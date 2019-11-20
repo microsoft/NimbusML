@@ -2073,13 +2073,9 @@ class Pipeline:
                 isinstance(X, DataFrame) and isinstance(y, (str, tuple))):
             y = y_temp
 
-        is_transformer_chain = False
-        with ZipFile(self.model) as model_zip:
-            is_transformer_chain = any('TransformerChain' in item
-                                   for item in model_zip.namelist())
-
         all_nodes = []
-        if is_transformer_chain:
+        if (hasattr(self, '_is_transformer_chain') and
+            self._is_transformer_chain):
             inputs = dict([('data', ''), ('transform_model', self.model)])
             if isinstance(X, FileDataStream):
                 importtext_node = data_customtextloader(
@@ -2616,6 +2612,10 @@ class Pipeline:
             raise ValueError("file not found %s" % src)
         self.model = src
         self.steps = []
+
+        with ZipFile(self.model) as model_zip:
+            self._is_transformer_chain = any('TransformerChain' in item
+                                             for item in model_zip.namelist())
 
     def __getstate__(self):
         odict = {'export_version': 2}
