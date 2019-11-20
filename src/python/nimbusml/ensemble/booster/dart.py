@@ -26,7 +26,7 @@ class Dart(core):
         Multiple Additive Regression
         Trees (DART) employs dropouts in MART and overcomes the issues of over-
         specialization of MART,
-        achiving better performance in many tasks.
+        achieving better performance in many tasks.
 
 
         **Reference**
