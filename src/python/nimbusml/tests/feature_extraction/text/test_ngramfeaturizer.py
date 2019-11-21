@@ -14,7 +14,7 @@ import six
 from nimbusml import Pipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.text import NGramFeaturizer
-from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
+from nimbusml.feature_extraction.text.extractor import Ngram
 from nimbusml.utils import get_X_y
 from sklearn.model_selection import train_test_split
 from sklearn.utils.testing import assert_equal
@@ -35,19 +35,19 @@ class TestNGramFeaturizer(unittest.TestCase):
 
         # map text reviews to vector space
         texttransform = NGramFeaturizer(
-            word_feature_extractor=n_gram(),
+            word_feature_extractor=Ngram(),
             vector_normalizer='None') << 'SentimentText'
 
         pipe = Pipeline([texttransform])
 
-        print("X_train Model Just Fit Column Names Start\n")
+        print("X_train Model Just Fit Column Names Start--------------------------------------------------\n")
         pipe.fit(X_train[:100])
         print("Name,Size of trained model {},{} bytes".format(pipe.model,os.path.getsize(pipe.model)))
         schema = pipe.get_output_columns()
         print("Schema of pipeline - Len of schema: {}".format(len(schema)))
         for fea in schema:
             print(fea)
-        print("X_train Model Just Fit Column Names End\n")
+        print("X_train Model Just Fit Column Names End--------------------------------------------------\n")
 
         #print("X_train Before Just Transform Column Names Start\n")
         X_train_transform = pipe.transform(X_train[:100])
@@ -64,12 +64,15 @@ class TestNGramFeaturizer(unittest.TestCase):
         #for col in X_train.columns:
         #    print(col)
         #print("X_train Column Names End\n")
-        print("X_train_transform.iloc[:].sum() Start\n")
+        print("X_train_transform.iloc[:].sum() Values Start--------------------------------------------------\n")
         print(X_train_transform.iloc[:].sum().values)
+        print("X_train_transform.iloc[:].sum() Values End--------------------------------------------------\n")
+
+        print("X_train_transform.iloc[:].sum() IterItems Start--------------------------------------------------\n")
         for col, val in X_train_transform.iloc[:].sum().iteritems():
             print(col)
             print(val)
-        print("X_train_transform.iloc[:].sum() End\n")
+        print("X_train_transform.iloc[:].sum() IterItems End--------------------------------------------------\n")
         sum = X_train_transform.iloc[:].sum().sum()
         print("Sum")
         print(sum)
