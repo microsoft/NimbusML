@@ -18,7 +18,7 @@ from ....internal.utils.utils import trace
 class Ngram(core):
     """
 
-    Extracts NGrams from text and convert them to vector using
+    Extracts NGrams from text and converts them to vector using
     dictionary.
 
     .. remarks::

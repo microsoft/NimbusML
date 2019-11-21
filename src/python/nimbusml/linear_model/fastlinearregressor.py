@@ -22,7 +22,7 @@ class FastLinearRegressor(core, BasePredictor, RegressorMixin):
     """
 
     A Stochastic Dual Coordinate Ascent (SDCA) optimization trainer
-    for linear binary classification and regression.
+    for linear regression.
 
     .. remarks::
         ``FastLinearRegressor`` is a trainer based on the Stochastic Dual
