@@ -18,7 +18,7 @@ from .....utils.utils import trace, try_set
 class NgramHash(Component):
     """
 
-    Extracts NGrams from text and convert them to vector using hashing
+    Extracts NGrams from text and converts them to vector using hashing
     trick.
 
     .. remarks::
