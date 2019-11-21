@@ -32,25 +32,26 @@ class TestNGramFeaturizer(unittest.TestCase):
                           encoding="utf-8")
         X_train, X_test, y_train, y_test = train_test_split(
             train['SentimentText'], label)
-
+ 
         # map text reviews to vector space
         texttransform = NGramFeaturizer(
             word_feature_extractor=Ngram(),
             vector_normalizer='None') << 'SentimentText'
 
         pipe = Pipeline([texttransform])
-
-        print("X_train Model Just Fit Column Names Start--------------------------------------------------\n")
+        sentences = X_train[:100].tolist()
+        #print("X_train Model Just Fit Column Names Start--------------------------------------------------\n")
         pipe.fit(X_train[:100])
         print("Name,Size of trained model {},{} bytes".format(pipe.model,os.path.getsize(pipe.model)))
         schema = pipe.get_output_columns()
         print("Schema of pipeline - Len of schema: {}".format(len(schema)))
-        for fea in schema:
-            print(fea)
-        print("X_train Model Just Fit Column Names End--------------------------------------------------\n")
+        #for fea in schema:
+        #    print(fea)
+        #print("X_train Model Just Fit Column Names End--------------------------------------------------\n")
 
         #print("X_train Before Just Transform Column Names Start\n")
         X_train_transform = pipe.transform(X_train[:100])
+        #print(X_train_transform.iloc[:3])
         #for col in X_train_transform.columns:
         #    print(col)
         #print("X_train Before Just Transform Column Names End\n")
@@ -58,20 +59,25 @@ class TestNGramFeaturizer(unittest.TestCase):
         #print("Len of X_train_transform: {}".format(len(X_train_transform)))
         
         #X_train = texttransform.fit_transform(X_train[:100])
+        
 
 
         #print("X_train Column Names Start\n")
         #for col in X_train.columns:
         #    print(col)
         #print("X_train Column Names End\n")
-        print("X_train_transform.iloc[:].sum() Values Start--------------------------------------------------\n")
-        print(X_train_transform.iloc[:].sum().values)
-        print("X_train_transform.iloc[:].sum() Values End--------------------------------------------------\n")
+        #print("X_train_transform.iloc[:].sum() Values Start--------------------------------------------------\n")
+        #print(X_train_transform.iloc[:].sum().values)
+        #print("X_train_transform.iloc[:].sum() Values End--------------------------------------------------\n")
 
         print("X_train_transform.iloc[:].sum() IterItems Start--------------------------------------------------\n")
-        for col, val in X_train_transform.iloc[:].sum().iteritems():
+        for col, vals in X_train_transform.iteritems():
             print(col)
-            print(val)
+            valList = vals.tolist()
+            for i in range(len(valList)):
+                if valList[i] > 0:
+                    print("Found {} f's for Line {}: {}".format(valList[i], i+1, sentences[i]))
+                    
         print("X_train_transform.iloc[:].sum() IterItems End--------------------------------------------------\n")
         sum = X_train_transform.iloc[:].sum().sum()
         print("Sum")
