@@ -617,9 +617,9 @@ class Pipeline:
         return graph_nodes, feature_columns, inputs, transform_nodes, \
             columns_out
 
-    def _update_graph_nodes_for_learner(
+    def _get_graph_nodes_for_learner(
             self,
-            graph_nodes,
+            learner,
             transform_nodes,
             columns_out,
             label_column,
@@ -629,108 +629,106 @@ class Pipeline:
             predictor_model,
             y,
             strategy_iosklearn):
-        last_node = self.last_node  # could be predictor or transformer
-        if last_node.type != 'transform':  # last node is predictor
+        graph_nodes = {}
+
+        if hasattr(
+                learner,
+                'feature_column_name') and learner.feature_column_name is \
+                not None:
+            if isinstance(learner.feature_column_name, list):
+                learner_features = learner.feature_column_name
+                learner.feature_column_name = 'Features'
+            else:
+                learner_features = [learner.feature_column_name]
+        elif strategy_iosklearn in ("previous", "accumulate"):
             if hasattr(
-                    last_node,
-                    'feature_column_name') and last_node.feature_column_name is \
-                    not None:
-                if isinstance(last_node.feature_column_name, list):
-                    learner_features = last_node.feature_column_name
-                    last_node.feature_column_name = 'Features'
+                    learner,
+                    'feature') and learner.feature is not None:
+                if isinstance(learner.feature, list):
+                    learner_features = learner.feature
                 else:
-                    learner_features = [last_node.feature_column_name]
-            elif strategy_iosklearn in ("previous", "accumulate"):
-                if hasattr(
-                        last_node,
-                        'feature') and last_node.feature is not None:
-                    if isinstance(last_node.feature, list):
-                        learner_features = last_node.feature
-                    else:
-                        learner_features = [last_node.feature]
-                    last_node.feature_column_name = 'Features'
-                elif isinstance(columns_out, list):
-                    learner_features = columns_out
-                    last_node.feature_column_name = 'Features'
-                elif columns_out is None:
-                    learner_features = ['Features']
-                    last_node.feature_column_name = 'Features'
-                else:
-                    learner_features = [columns_out]
-                    last_node.feature_column_name = 'Features'
+                    learner_features = [learner.feature]
+                learner.feature_column_name = 'Features'
+            elif isinstance(columns_out, list):
+                learner_features = columns_out
+                learner.feature_column_name = 'Features'
+            elif columns_out is None:
+                learner_features = ['Features']
+                learner.feature_column_name = 'Features'
             else:
-                raise NotImplementedError(
-                    "Strategy '{0}' to handle unspecified inputs is not "
-                    "implemented".format(strategy_iosklearn))
-
-            if label_column is not None or last_node._use_role(Role.Label):
-                if getattr(last_node, 'label_column_name_', None):
-                    label_column = last_node.label_column_name_
-                elif getattr(last_node, 'label_column_name', None):
-                    label_column = last_node.label_column_name
-                elif label_column:
-                    last_node.label_column_name = label_column
-                elif y is None:
-                    if label_column is None:
-                        label_column = Role.Label
-                    last_node.label_column_name = label_column
-                else:
-                    label_column = _extract_label_column(
-                        last_node, DataSchema.read_schema(y))
-                    if label_column is None:
-                        label_column = Role.Label
-                    last_node.label_column_name = label_column
-            else:
-                last_node.label_column_name = None
-                label_column = None
-
-            if weight_column is not None or last_node._use_role(Role.Weight):
-                if getattr(last_node, 'example_weight_column_name', None):
-                    weight_column = last_node.example_weight_column_name
-                elif weight_column:
-                    last_node.example_weight_column_name = weight_column
-            else:
-                last_node.example_weight_column_name = None
-                weight_column = None
-
-            if (hasattr(last_node, 'row_group_column_name_')
-                    and last_node.row_group_column_name_ is not None):
-                group_id_column = last_node.row_group_column_name_
-            elif (hasattr(last_node, 'row_group_column_name') and
-                  last_node.row_group_column_name is not None):
-                group_id_column = last_node.row_group_column_name
-            else:
-                group_id_column = None
-
-            # Training.
-            implicit_nodes = self._process_learner(
-                learner=last_node,
-                features=learner_features,
-                label=label_column,
-                weight=weight_column,
-                num_transforms=len(transform_nodes),
-                output_data=output_data,
-                output_model=output_model)
-            graph_nodes['implicit_nodes'] = implicit_nodes
-
-            # Check roles
-            last_node._check_roles()
-
-            # todo: ideally all the nodes have the same name for params
-            # so we dont have to distinguish if its learner or
-            # transformer. We will supply input_data, output_data and
-            # output_model vars. Its up to node to use suplied vars.
-            learner_node = last_node._get_node(
-                feature_column_name=learner_features,
-                training_data=output_data,
-                predictor_model=predictor_model,
-                label_column_name=label_column,
-                example_weight_column_name=weight_column,
-                row_group_column_name=group_id_column)
-            graph_nodes['learner_node'] = [learner_node]
-            return graph_nodes, learner_node, learner_features
+                learner_features = [columns_out]
+                learner.feature_column_name = 'Features'
         else:
-            return graph_nodes, None, None
+            raise NotImplementedError(
+                "Strategy '{0}' to handle unspecified inputs is not "
+                "implemented".format(strategy_iosklearn))
+
+        if label_column is not None or learner._use_role(Role.Label):
+            if getattr(learner, 'label_column_name_', None):
+                label_column = learner.label_column_name_
+            elif getattr(learner, 'label_column_name', None):
+                label_column = learner.label_column_name
+            elif label_column:
+                learner.label_column_name = label_column
+            elif y is None:
+                if label_column is None:
+                    label_column = Role.Label
+                learner.label_column_name = label_column
+            else:
+                label_column = _extract_label_column(
+                    learner, DataSchema.read_schema(y))
+                if label_column is None:
+                    label_column = Role.Label
+                learner.label_column_name = label_column
+        else:
+            learner.label_column_name = None
+            label_column = None
+
+        if weight_column is not None or learner._use_role(Role.Weight):
+            if getattr(learner, 'example_weight_column_name', None):
+                weight_column = learner.example_weight_column_name
+            elif weight_column:
+                learner.example_weight_column_name = weight_column
+        else:
+            learner.example_weight_column_name = None
+            weight_column = None
+
+        if (hasattr(learner, 'row_group_column_name_')
+                and learner.row_group_column_name_ is not None):
+            group_id_column = learner.row_group_column_name_
+        elif (hasattr(learner, 'row_group_column_name') and
+              learner.row_group_column_name is not None):
+            group_id_column = learner.row_group_column_name
+        else:
+            group_id_column = None
+
+        # Training.
+        implicit_nodes = self._process_learner(
+            learner=learner,
+            features=learner_features,
+            label=label_column,
+            weight=weight_column,
+            num_transforms=len(transform_nodes),
+            output_data=output_data,
+            output_model=output_model)
+        graph_nodes['implicit_nodes'] = implicit_nodes
+
+        # Check roles
+        learner._check_roles()
+
+        # todo: ideally all the nodes have the same name for params
+        # so we dont have to distinguish if its learner or
+        # transformer. We will supply input_data, output_data and
+        # output_model vars. Its up to node to use suplied vars.
+        learner_node = learner._get_node(
+            feature_column_name=learner_features,
+            training_data=output_data,
+            predictor_model=predictor_model,
+            label_column_name=label_column,
+            example_weight_column_name=weight_column,
+            row_group_column_name=group_id_column)
+        graph_nodes['learner_node'] = [learner_node]
+        return graph_nodes, learner_features
 
     def _fit_graph(self, X, y, verbose, **params):
         # start the clock!
@@ -771,19 +769,22 @@ class Pipeline:
                 feature_columns, label_column, output_data, output_model,
                 strategy_iosklearn=strategy_iosklearn)
 
-        # see if the is a learner at the end
-        graph_nodes, learner_node, learner_features = \
-            self._update_graph_nodes_for_learner(
-                graph_nodes,
-                transform_nodes,
-                columns_out, 
-                label_column,
-                weight_column,
-                output_data,
-                output_model,
-                predictor_model,
-                y,
-                strategy_iosklearn=strategy_iosklearn)
+        last_node = self.last_node
+        learner_exists = False
+        learner_features = None
+
+        if last_node.type != 'transform':
+            learner_exists = True
+
+            if not last_node.is_parallel_ensemble:
+                learner_graph_nodes, learner_features = \
+                    self._get_graph_nodes_for_learner(
+                        last_node, transform_nodes, columns_out,
+                        label_column, weight_column, output_data,
+                        output_model, predictor_model, y,
+                        strategy_iosklearn=strategy_iosklearn)
+
+                graph_nodes.update(learner_graph_nodes)
 
         # graph_nodes contain graph sections, which is needed for CV.
         # Save it, then flatten it, which is what the rest of the code
@@ -799,7 +800,7 @@ class Pipeline:
             elif "Model" in node.outputs:
                 transform_models.append(node.outputs["Model"])
         # no need to combine if there is only 1 model
-        if learner_node and len(transform_models) > 0:
+        if learner_exists and len(transform_models) > 0:
             combine_model_node = transforms_manyheterogeneousmodelcombiner(
                 transform_models=transform_models,
                 predictor_model=predictor_model,
@@ -838,7 +839,7 @@ class Pipeline:
         # graph if its not needed
         # however graph validation logic prevents doing that at the moment,
         # revisit this at later point, bug# 249112
-        if learner_node is None:  # last node is transformer
+        if not learner_exists:  # last node is transformer
             outputs[output_data.replace(
                 '$', '')] = '' if do_fit_transform else '<null>'
 

@@ -27,6 +27,7 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         if 'type' not in params:
             raise KeyError("type must be specified")
         BasePipelineItem.__init__(self, **params)
+        self._is_parallel_ensemble = params.get('is_parallel_ensemble', False)
 
     @trace
     def fit(self, X, y=None, **params):
@@ -54,6 +55,14 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         self.model_ = pipeline.model
         set_shape(self, X)
         return self
+
+    @property
+    def is_parallel_ensemble(self):
+        """
+        Tells if the predictor is an ensemble that depends
+        on other predictors which run in parallel.
+        """
+        return self._is_parallel_ensemble
 
     @property
     def _is_fitted(self):
