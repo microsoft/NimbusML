@@ -2167,9 +2167,11 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
-        if is_transformer_chain:
+        if (hasattr(self, '_is_transformer_chain')
+            and self._is_transformer_chain
+            and hasattr(out_data, 'PredictedLabel')
+            and out_data.PredictedLabel.dtype == 'bool'):
             out_data['PredictedLabel'] = out_data['PredictedLabel']*1
-
 
         if y is not None:
             # We need to fix the schema for ranking metrics
