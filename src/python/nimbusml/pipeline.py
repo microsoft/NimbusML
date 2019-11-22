@@ -119,10 +119,10 @@ class Pipeline:
         for more details on how to select these.
 
     :param steps: the list of operator or (name, operator) tuples  that
-    are chained in the appropriate order.
+        are chained in the appropriate order.
 
     :param model: the path to the model file (".zip") if want to load a
-    model directly from file (such as a trained model from ML.NET).
+        model directly from file (such as a trained model from ML.NET).
 
     :param random_state: the integer used as the random seed.
 
