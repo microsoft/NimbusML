@@ -26,8 +26,10 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
     def __init__(self, **params):
         if 'type' not in params:
             raise KeyError("type must be specified")
+
+        self._is_parallel_ensemble = params.pop('is_parallel_ensemble', False)
+
         BasePipelineItem.__init__(self, **params)
-        self._is_parallel_ensemble = params.get('is_parallel_ensemble', False)
 
     @trace
     def fit(self, X, y=None, **params):
