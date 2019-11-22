@@ -14,7 +14,7 @@ import six
 from nimbusml import Pipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.text import NGramFeaturizer
-from nimbusml.feature_extraction.text.extractor import Ngram
+from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
 from nimbusml.utils import get_X_y
 from sklearn.model_selection import train_test_split
 from sklearn.utils.testing import assert_equal
@@ -35,7 +35,7 @@ class TestNGramFeaturizer(unittest.TestCase):
  
         # map text reviews to vector space
         texttransform = NGramFeaturizer(
-            word_feature_extractor=Ngram(),
+            word_feature_extractor=n_gram(),
             vector_normalizer='None') << 'SentimentText'
 
         pipe = Pipeline([texttransform])
