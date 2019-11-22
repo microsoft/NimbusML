@@ -629,7 +629,7 @@ class Pipeline:
             predictor_model,
             y,
             strategy_iosklearn):
-        graph_nodes = {}
+        graph_nodes = OrderedDict()
 
         if hasattr(
                 learner,
@@ -702,7 +702,6 @@ class Pipeline:
         else:
             group_id_column = None
 
-        # Training.
         implicit_nodes = self._process_learner(
             learner=learner,
             features=learner_features,
@@ -713,7 +712,6 @@ class Pipeline:
             output_model=output_model)
         graph_nodes['implicit_nodes'] = implicit_nodes
 
-        # Check roles
         learner._check_roles()
 
         # todo: ideally all the nodes have the same name for params
