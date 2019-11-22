@@ -18,7 +18,7 @@ from ...base_pipeline_item import BasePipelineItem, DefaultSignature
 class Loader(BasePipelineItem, DefaultSignature):
     """
 
-    Loaders image data.
+    Loads image data.
 
     .. remarks::
         ``Loader`` loads images from paths.
