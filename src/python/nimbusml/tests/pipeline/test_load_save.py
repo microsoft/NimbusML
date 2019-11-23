@@ -11,7 +11,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from nimbusml import Pipeline
+from nimbusml import FileDataStream, Pipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier, OnlineGradientDescentRegressor
@@ -32,6 +32,8 @@ categorical_columns = [
 label_column = 'label'
 (train, label) = get_X_y(train_file, label_column, sep=',')
 (test, test_label) = get_X_y(test_file, label_column, sep=',')
+
+mlnet_model = os.path.join(os.path.dirname(__file__), '..', 'utils', 'models', 'UciAdultMlNetModel.zip')
 
 def get_temp_file(suffix=None):
     fd, file_name = tempfile.mkstemp(suffix=suffix)
@@ -147,6 +149,12 @@ class TestLoadSave(unittest.TestCase):
             decimal=2)
 
         os.remove(model_filename)
+
+    def test_mlnet_model_can_be_scored(self):
+        data = FileDataStream.read_csv(test_file, sep=',', numeric_dtype=np.float32)
+        model = Pipeline()
+        model.load_model(mlnet_model)
+        model.predict(data)
 
     def test_pipeline_saves_complete_model_file_when_pickled(self):
         model_nimbusml = Pipeline(
