@@ -2536,6 +2536,12 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before "
                 "summary().")
 
+        # check if Field Aware FactorizationMachine exists in the steps
+        from .decomposition.factorizationmachinebinaryclassifier import FactorizationMachineBinaryClassifier
+        for step in self.steps:
+            if isinstance(step, FactorizationMachineBinaryClassifier):
+                raise TypeError("FieldAwareFactorizationMachine doesn't have summary function")
+
         # check last step is predictor in case there are steps in pipeline
         # importing here to break cycle import cycle dependency between
         # pipeline and base_predictor
@@ -2543,7 +2549,7 @@ class Pipeline:
         if len(self.steps) > 0 and not isinstance(
                 self.last_node, BasePredictor):
             raise ValueError(
-                "Summary is availabe only for predictor types, instead "
+                "Summary is available only for predictor types, instead "
                 "got " +
                 self.last_node.type)
 
