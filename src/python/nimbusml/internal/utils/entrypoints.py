@@ -26,7 +26,7 @@ from .dataframes import resolve_dataframe, resolve_csr_matrix, pd_concat, \
     resolve_output_as_dataframe, resolve_output_as_csrmatrix, \
     resolve_output_as_list
 from .utils import try_set, set_clr_environment_vars, get_clr_path, \
-    get_mlnet_path, get_dprep_path
+    get_mlnet_path, get_dprep_path, replace_str_values
 from ..libs.pybridge import px_call
 
 
@@ -116,6 +116,10 @@ class EntryPoint:
             indent=EntryPoint.indent,
             sort_keys=EntryPoint.sort_keys)
 
+    def __eq__(self, other):
+        return isinstance(other, EntryPoint) and \
+               (self.to_dict() == other.to_dict())
+
     def to_dict(self):
         """
         convert to dictionary
@@ -133,6 +137,28 @@ class EntryPoint:
                 Name=self.name,
                 Inputs=self.inputs,
                 Outputs=self.outputs)
+
+    def rename_input_var(self, old, new):
+        if old in self.input_variables:
+            self.input_variables.remove(old)
+            self.input_variables.add(new)
+            replace_str_values(self.inputs, old, new)
+
+    def rename_input_vars(self, rename_func):
+        input_variables = self.input_variables.copy()
+        for input_variable in input_variables:
+            self.rename_input_var(input_variable, rename_func(input_variable))
+
+    def rename_output_var(self, old, new):
+        if old in self.output_variables:
+            self.output_variables.remove(old)
+            self.output_variables.add(new)
+            replace_str_values(self.outputs, old, new)
+
+    def rename_output_vars(self, rename_func):
+        output_variables = self.output_variables.copy()
+        for output_variable in output_variables:
+            self.rename_output_var(output_variable, rename_func(output_variable))
 
 
 def _get_temp_file(suffix=None):

@@ -728,6 +728,62 @@ class Pipeline:
         graph_nodes['learner_node'] = [learner_node]
         return graph_nodes, learner_features
 
+    def _get_parallel_ensemble_nodes(
+            self,
+            ensemble,
+            get_nodes_func,
+            output_model):
+        nodes = []
+        predictor_models = []
+        learner_features = None
+        graph_nodes = OrderedDict([('implicit_nodes', [])])
+
+        for estimator in ensemble._estimators:
+            learner_graph_nodes, learner_features = get_nodes_func(estimator)
+            nodes.append(learner_graph_nodes)
+
+        for index, learner_graph_nodes in enumerate(nodes, start=1):
+            implicit_nodes = learner_graph_nodes['implicit_nodes']
+            suffix = '_p' + str(index)
+            add_suffix_func = lambda v: v + suffix
+            transform_models = []
+
+            for ep_index, ep in enumerate(implicit_nodes, start=1):
+                # Add suffix to the variables for the implicit nodes for
+                # each learner so they don't conflict with other learners.
+                # The input variables of the first implicit node should
+                # not be changed
+                if ep_index != 1:
+                    ep.rename_input_vars(add_suffix_func)
+                ep.rename_output_vars(add_suffix_func)
+
+                if "Model" in ep.outputs:
+                    transform_models.append(ep.outputs["Model"])
+
+            learner_node = learner_graph_nodes['learner_node'][0]
+            learner_node.rename_input_vars(add_suffix_func)
+            learner_node.rename_output_vars(add_suffix_func)
+
+            predictor_model = "$predictor_model_combined" + suffix
+            predictor_models.append(predictor_model)
+
+            combine_model_node = transforms_manyheterogeneousmodelcombiner(
+                transform_models=transform_models,
+                predictor_model=learner_node.outputs['PredictorModel'],
+                model=predictor_model)
+            combine_model_node._implicit = True
+
+            graph_nodes['implicit_nodes'].extend(implicit_nodes)
+            graph_nodes['implicit_nodes'].append(learner_node)
+            graph_nodes['implicit_nodes'].append(combine_model_node)
+
+        learner_node = ensemble._get_node(
+            models=predictor_models,
+            predictor_model=output_model)
+        graph_nodes['learner_node'] = [learner_node]
+
+        return graph_nodes, learner_features
+
     def _fit_graph(self, X, y, verbose, **params):
         # start the clock!
         start_time = time.time()
@@ -774,15 +830,23 @@ class Pipeline:
         if last_node.type != 'transform':
             learner_exists = True
 
-            if not last_node.is_parallel_ensemble:
-                learner_graph_nodes, learner_features = \
-                    self._get_graph_nodes_for_learner(
-                        last_node, transform_nodes, columns_out,
-                        label_column, weight_column, output_data,
-                        output_model, predictor_model, y,
-                        strategy_iosklearn=strategy_iosklearn)
+            get_graph_nodes_for_learner = lambda learner: \
+                self._get_graph_nodes_for_learner(
+                    learner, transform_nodes, columns_out,
+                    label_column, weight_column, output_data,
+                    output_model, predictor_model, y,
+                    strategy_iosklearn=strategy_iosklearn)
 
-                graph_nodes.update(learner_graph_nodes)
+            if last_node.is_parallel_ensemble:
+                learner_graph_nodes, learner_features = \
+                    self._get_parallel_ensemble_nodes(
+                        last_node, get_graph_nodes_for_learner, output_model)
+
+            else:
+                learner_graph_nodes, learner_features = \
+                    get_graph_nodes_for_learner(last_node)
+
+            graph_nodes.update(learner_graph_nodes)
 
         # graph_nodes contain graph sections, which is needed for CV.
         # Save it, then flatten it, which is what the rest of the code
@@ -790,44 +854,45 @@ class Pipeline:
         graph_sections = graph_nodes
         graph_nodes = list(itertools.chain(*graph_nodes.values()))
 
-        # combine output models
-        transform_models = []
-        for node in graph_nodes:
-            if node.name == 'Models.DatasetTransformer':
-                transform_models.append(node.inputs['TransformModel'])
-            elif "Model" in node.outputs:
-                transform_models.append(node.outputs["Model"])
-        # no need to combine if there is only 1 model
-        if learner_exists and len(transform_models) > 0:
-            combine_model_node = transforms_manyheterogeneousmodelcombiner(
-                transform_models=transform_models,
-                predictor_model=predictor_model,
-                model=output_model)
-            combine_model_node._implicit = True
-            graph_nodes.append(combine_model_node)
-            if do_output_predictor_model: 
-                # get implicit_nodes and build predictor model only
-                implicit_nodes = graph_sections['implicit_nodes']
-                implicit_transform_models = []
-                for node in implicit_nodes:
-                    if "Model" in node.outputs:
-                        implicit_transform_models.append(node.outputs["Model"])
-                output_predictor_model_node = transforms_manyheterogeneousmodelcombiner(
-                    transform_models=implicit_transform_models,
+        if not last_node.is_parallel_ensemble:
+            # combine output models
+            transform_models = []
+            for node in graph_nodes:
+                if node.name == 'Models.DatasetTransformer':
+                    transform_models.append(node.inputs['TransformModel'])
+                elif "Model" in node.outputs:
+                    transform_models.append(node.outputs["Model"])
+            # no need to combine if there is only 1 model
+            if learner_exists and len(transform_models) > 0:
+                combine_model_node = transforms_manyheterogeneousmodelcombiner(
+                    transform_models=transform_models,
                     predictor_model=predictor_model,
-                    model=output_predictor_model)
-                output_predictor_model_node._implicit = True
-                graph_nodes.append(output_predictor_model_node)
-        elif len(transform_models) > 1:
-            combine_model_node = transforms_modelcombiner(
-                models=transform_models,
-                output_model=output_model)
-            combine_model_node._implicit = True
-            graph_nodes.append(combine_model_node)
-        elif len(graph_nodes) == 0:
-            raise RuntimeError(
-                "Unable to process the pipeline len(transform_models)={0}.".
-                    format(len(transform_models)))
+                    model=output_model)
+                combine_model_node._implicit = True
+                graph_nodes.append(combine_model_node)
+                if do_output_predictor_model: 
+                    # get implicit_nodes and build predictor model only
+                    implicit_nodes = graph_sections['implicit_nodes']
+                    implicit_transform_models = []
+                    for node in implicit_nodes:
+                        if "Model" in node.outputs:
+                            implicit_transform_models.append(node.outputs["Model"])
+                    output_predictor_model_node = transforms_manyheterogeneousmodelcombiner(
+                        transform_models=implicit_transform_models,
+                        predictor_model=predictor_model,
+                        model=output_predictor_model)
+                    output_predictor_model_node._implicit = True
+                    graph_nodes.append(output_predictor_model_node)
+            elif len(transform_models) > 1:
+                combine_model_node = transforms_modelcombiner(
+                    models=transform_models,
+                    output_model=output_model)
+                combine_model_node._implicit = True
+                graph_nodes.append(combine_model_node)
+            elif len(graph_nodes) == 0:
+                raise RuntimeError(
+                    "Unable to process the pipeline len(transform_models)={0}.".
+                        format(len(transform_models)))
 
         # create the graph
         outputs = OrderedDict([(output_model.replace('$', ''), '')])

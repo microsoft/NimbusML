@@ -68,6 +68,26 @@ def unlist(mylist):
             yield elem
 
 
+def replace_str_values(data, old, new):
+    """
+    replace all occurences of the string old with the string
+    new in data which can either be a list or a dictionary.
+    Recursively replace if the values are themselves lists
+    or dictionaries.
+    """
+    iterator = []
+    if isinstance(data, dict):
+        iterator = data.items()
+    elif isinstance(data, list):
+        iterator = enumerate(data)
+
+    for key, value in iterator:
+        if isinstance(value, str) and (value == old):
+            data[key] = new
+        elif isinstance(value, (list, dict)):
+            replace_str_values(value, old, new)
+
+
 def try_set(
         obj,
         none_acceptable=False,
