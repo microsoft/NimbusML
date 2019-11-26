@@ -96,23 +96,7 @@ class TestModelSummary(unittest.TestCase):
                 [OneHotVectorizer() << categorical_columns, learner])
             train_stream = FileDataStream(train_file, schema=file_schema)
             pipeline.fit(train_stream, label_column)
-            # If Pipeline does contain FactorizationMachineBinaryClassifier,
-            # check for TypeError thrown by pipeline as 
-            # FactorizationMachineBinaryClassifier does not support summary()
-            # Else, Pipeline does not contain FactorizationMachineBinaryClassifier,
-            # thus check for summary
-            containsFactorizationMachineBinaryClassifier = False
-            for step in pipeline.steps:
-                if isinstance(step, FactorizationMachineBinaryClassifier):
-                    containsFactorizationMachineBinaryClassifier = True
-            if containsFactorizationMachineBinaryClassifier:
-                    try:
-                        pipeline.summary()
-                        assert False
-                    except TypeError:
-                        assert True
-            else:
-                pipeline.summary()
+            pipeline.summary()
 
     @unittest.skip("No unsupported learners")
     def test_model_summary_not_supported(self):
