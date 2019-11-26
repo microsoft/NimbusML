@@ -2536,12 +2536,6 @@ class Pipeline:
                 "Model is not fitted. Train or load a model before "
                 "summary().")
 
-        # check if Field Aware FactorizationMachine exists in the steps
-        from .decomposition.factorizationmachinebinaryclassifier import FactorizationMachineBinaryClassifier
-        for step in self.steps:
-            if isinstance(step, FactorizationMachineBinaryClassifier):
-                raise TypeError("FieldAwareFactorizationMachine doesn't have summary function")
-
         # check last step is predictor in case there are steps in pipeline
         # importing here to break cycle import cycle dependency between
         # pipeline and base_predictor
@@ -2587,6 +2581,10 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
+        # .summary() not supported if size of summary_data
+        # is less or equal to 1 (if only PredictedName in summary_data)
+        if summary_data.size == 1 and summary_data.columns.values == ["PredictorName"]:
+            raise TypeError("One or more transformers in this pipeline do not support the .summary() function.")
         self.model_summary = summary_data
 
         # stop the clock
