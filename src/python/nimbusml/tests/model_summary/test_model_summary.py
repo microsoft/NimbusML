@@ -66,25 +66,25 @@ learners = [
     #SymSgdBinaryClassifier(),
     OrdinaryLeastSquaresRegressor(),
     PoissonRegressionRegressor(),
-    OneVsRestClassifier(FastLinearBinaryClassifier()),
     GamRegressor(),
     GamBinaryClassifier(),
     PcaAnomalyDetector(),
-    FactorizationMachineBinaryClassifier(),
-    KMeansPlusPlus(n_clusters=2),
-    NaiveBayesClassifier(),
     FastForestBinaryClassifier(number_of_trees=2), 
     FastForestRegressor(number_of_trees=2),
     FastTreesBinaryClassifier(number_of_trees=2),
     FastTreesRegressor(number_of_trees=2),
     FastTreesTweedieRegressor(number_of_trees=2),
     LightGbmRegressor(number_of_iterations=2),
-    LightGbmClassifier(),
     LightGbmBinaryClassifier(number_of_iterations=2)
 ]
 
 learners_not_supported = [
-    #PcaTransformer(), # REVIEW: crashes
+    FactorizationMachineBinaryClassifier(),
+    OneVsRestClassifier(FastLinearBinaryClassifier()),
+    FactorizationMachineBinaryClassifier(),
+    KMeansPlusPlus(n_clusters=2),
+    NaiveBayesClassifier(),
+    LightGbmClassifier()
 ]
 
 
@@ -96,9 +96,12 @@ class TestModelSummary(unittest.TestCase):
                 [OneHotVectorizer() << categorical_columns, learner])
             train_stream = FileDataStream(train_file, schema=file_schema)
             pipeline.fit(train_stream, label_column)
-            pipeline.summary()
+            print(learner)
+            try:
+                pipeline.summary()
+            except:
+                assert False, ("Troubled learner: ", learner)
 
-    @unittest.skip("No unsupported learners")
     def test_model_summary_not_supported(self):
         for learner in learners_not_supported:
             pipeline = Pipeline(
