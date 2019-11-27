@@ -110,6 +110,18 @@ class TestModelSummary(unittest.TestCase):
             pipeline.fit(train_stream, label_column)
             assert_raises(TypeError, pipeline.summary)
 
+    def test_model_summary_not_supported_specific(self):
+        path = get_dataset('infert').as_filepath()
+        data = FileDataStream.read_csv(path, sep=',',
+                               names={0: 'row_num', 5: 'case'})
+        pipeline = Pipeline([
+            OneHotVectorizer(columns={'edu': 'education'}),
+            FactorizationMachineBinaryClassifier(feature=['induced', 'edu', 'parity'],
+                                         label='case')
+        ])
+        pipeline.fit(data)
+        assert_raises(TypeError, pipeline.summary)
+
     def test_summary_called_back_to_back_on_predictor(self):
         """
         When a predictor is fit without using a Pipeline,
