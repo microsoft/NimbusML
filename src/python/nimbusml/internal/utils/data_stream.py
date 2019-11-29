@@ -8,6 +8,7 @@ Owns nimbusml's containers.
 import os
 import tempfile
 from shutil import copyfile
+from pathlib import Path
 
 from .data_roles import DataRoles
 from .data_schema import DataSchema
@@ -229,6 +230,10 @@ class FileDataStream(DataStream):
         :param schema: filename schema
         """
         super(FileDataStream, self).__init__(schema, roles)
+
+        if isinstance(filename, Path):
+            filename = str(filename.resolve())
+
         self._filename = filename
 
     def __repr__(self):

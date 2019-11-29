@@ -10,6 +10,7 @@ import numpy
 import pandas
 from nimbusml import DataSchema
 from nimbusml import FileDataStream
+from pathlib import Path
 
 try:
     from pandas.testing import assert_frame_equal
@@ -29,6 +30,17 @@ class TestDataStream(unittest.TestCase):
         fi2 = fi.clone()
         assert repr(fi) == repr(fi2)
         os.remove(f.name)
+
+    def test_data_stream_path_object(self):
+        df = pandas.DataFrame(dict(a=[0, 1], b=[0.1, 0.2]))
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+            df.to_csv(f, sep=',', index=False)
+        
+        fi = FileDataStream.read_csv(Path(f.name), sep=',')
+        fi2 = fi.clone()
+        assert repr(fi) == repr(fi2)
+        os.remove(f.name)
+
 
     def test_data_header_no_dataframe(self):
         li = [1.0, 1.0, 2.0]
