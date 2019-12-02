@@ -33,11 +33,6 @@ class TestWordEmbedding(unittest.TestCase):
     # 'https://aka.ms/tlc-resources/text/dssm/AdSelectionFullyConnect.zip': An
     # error occurred while sending the request. Problem with the SSL CA cert
     # (path? access rights?)
-    @unittest.skipIf(
-        os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
-        "not supported on this platform")
     def test_ssweembedding(self):
         wordvectors = pd.DataFrame(data=dict(w1=["like", "hate", "okay"],
                                              w2=["great", "horrible",
@@ -67,11 +62,6 @@ class TestWordEmbedding(unittest.TestCase):
     # 'https://aka.ms/tlc-resources/text/dssm/AdSelectionFullyConnect.zip': An
     # error occurred while sending the request. Problem with the SSL CA cert
     # (path? access rights?)
-    @unittest.skipIf(
-        os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
-        "not supported on this platform")
     def test_word_embedding_example(self):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
@@ -108,11 +98,6 @@ class TestWordEmbedding(unittest.TestCase):
     # 'https://aka.ms/tlc-resources/text/dssm/AdSelectionFullyConnect.zip': An
     # error occurred while sending the request. Problem with the SSL CA cert
     # (path? access rights?)
-    @unittest.skipIf(
-        os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
-        "not supported on this platform")
     def test_word_embedding_example2(self):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
@@ -146,11 +131,6 @@ class TestWordEmbedding(unittest.TestCase):
     # 'https://aka.ms/tlc-resources/text/dssm/AdSelectionFullyConnect.zip': An
     # error occurred while sending the request. Problem with the SSL CA cert
     # (path? access rights?)
-    @unittest.skipIf(
-        os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
-        "not supported on this platform")
     def test_word_embedding_example_dict_same_name(self):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
