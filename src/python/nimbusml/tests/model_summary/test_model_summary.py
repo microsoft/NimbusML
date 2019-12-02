@@ -116,7 +116,12 @@ class TestModelSummary(unittest.TestCase):
                                          label='case')
         ])
         pipeline.fit(data)
-        assert_raises(TypeError, pipeline.summary)
+        try:
+            pipeline.summary()
+        except TypeError as e:
+            self.assertEqual(e.args[0], "One or more transformers in this pipeline do not support the .summary() function.")
+        else:
+            assert False
 
     def test_summary_called_back_to_back_on_predictor(self):
         """
