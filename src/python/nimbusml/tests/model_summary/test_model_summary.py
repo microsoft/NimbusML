@@ -96,10 +96,7 @@ class TestModelSummary(unittest.TestCase):
                 [OneHotVectorizer() << categorical_columns, learner])
             train_stream = FileDataStream(train_file, schema=file_schema)
             pipeline.fit(train_stream, label_column)
-            try:
-                pipeline.summary()
-            except:
-                assert False, ("Troubled learner: ", learner)
+            pipeline.summary()
 
     def test_model_summary_not_supported(self):
         for learner in learners_not_supported:
