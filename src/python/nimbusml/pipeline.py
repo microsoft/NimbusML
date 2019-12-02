@@ -2584,7 +2584,7 @@ class Pipeline:
         # .summary() not supported if size of summary_data
         # is less or equal to 1 (if only PredictedName in summary_data)
         if summary_data.size == 1 and summary_data.columns.values == ["PredictorName"]:
-            raise TypeError("One or more transformers in this pipeline do not support the .summary() function.")
+            raise TypeError("One or more predictors in this pipeline do not support the .summary() function.")
         self.model_summary = summary_data
 
         # stop the clock

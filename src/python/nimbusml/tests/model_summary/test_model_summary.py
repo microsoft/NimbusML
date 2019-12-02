@@ -119,7 +119,7 @@ class TestModelSummary(unittest.TestCase):
         try:
             pipeline.summary()
         except TypeError as e:
-            self.assertEqual(e.args[0], "One or more transformers in this pipeline do not support the .summary() function.")
+            self.assertEqual(e.args[0], "One or more predictors in this pipeline do not support the .summary() function.")
         else:
             assert False
 
