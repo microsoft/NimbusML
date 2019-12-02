@@ -22,7 +22,8 @@ class FastLinearClassifier(
         DefaultSignatureWithRoles):
     """
 
-    Train an SDCA multi class model
+    A Stochastic Dual Coordinate Ascent (SDCA) optimization trainer for
+    multi class classification.
 
     .. remarks::
         ``FastLinearClassifier`` is a trainer based on the Stochastic Dual
