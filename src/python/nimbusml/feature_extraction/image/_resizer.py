@@ -20,16 +20,16 @@ from ...internal.utils.utils import trace
 class Resizer(core, BaseTransform, TransformerMixin):
     """
 
-    Resizers an image to a specified dimension using a specified
+    Resizes an image to a specified dimension using a specified
     resizing method.
 
     .. remarks::
-        ``Resizer`` resizers an image to the specified height and width
+        ``Resizer`` resizes an image to the specified height and width
         using a specified resizing method. The input variables to this
         transforms must
         be images, typically the result of the ``Loader`` transform.
 
-    :param columns: a dictionary of key-value pairs, where key is the output
+    :param columns: A dictionary of key-value pairs, where key is the output
         column name and value is the input column name.
 
         * Multiple key-value pairs are allowed.

@@ -20,7 +20,7 @@ from ...internal.utils.utils import trace
 class Loader(core, BaseTransform, TransformerMixin):
     """
 
-    Loaders image data.
+    Loads image data.
 
     .. remarks::
         ``Loader`` loads images from paths.
