@@ -63,7 +63,6 @@
 
     .. seealso::
         :py:class:`NGramFeaturizer <nimbusml.feature_extraction.text.NGramFeaturizer>`,
-        :py:class:`DssmFeaturizer <nimbusml.feature_extraction.text.DssmFeaturizer>`,
         :py:class:`Sentiment <nimbusml.feature_extraction.text.Sentiment>`,
         :py:class:`WordEmbedding <nimbusml.feature_extraction.text.WordEmbedding>`.
 

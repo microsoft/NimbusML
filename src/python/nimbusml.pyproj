@@ -959,7 +959,6 @@
     <Content Include="docs\docstrings\CustomStopWordsRemover.txt" />
     <Content Include="docs\docstrings\Dart.txt" />
     <Content Include="docs\docstrings\DnnFeaturizer.txt" />
-    <Content Include="docs\docstrings\DssmFeaturizer.txt" />
     <Content Include="docs\docstrings\EnsembleClassifier.txt" />
     <Content Include="docs\docstrings\EnsembleRegressor.txt" />
     <Content Include="docs\docstrings\ExponentialAverage.txt" />

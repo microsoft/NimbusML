@@ -176,7 +176,6 @@
     "Common.MakeArrayIDataView",
     "Common.MakeArrayIPredictorModel",
     "CountTable.Create",
-    "Dssm.Trigram",
     "EnsembleCreator.CreateAnomalyPipelineEnsemble",
     "EnsembleCreator.CreateBinaryEnsemble",
     "EnsembleCreator.CreateBinaryPipelineEnsemble",
