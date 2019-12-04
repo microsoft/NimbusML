@@ -21,13 +21,17 @@ None.
 
 ## **Enhancements**
 
-- **Update Tests To Execute In Parallel.**
+- **Update To ML.Net Version 1.4.0.**
 
-    [PR#331](https://github.com/microsoft/NimbusML/pull/331)
+    [PR#353](https://github.com/microsoft/NimbusML/pull/353)
 
 - **Update To Latest Version Of DataPrep.**
 
     [PR#379](https://github.com/microsoft/NimbusML/pull/379)
+
+- **Update Tests To Execute In Parallel.**
+
+    [PR#331](https://github.com/microsoft/NimbusML/pull/331)
 
 ## **Documentation and Samples**
 
