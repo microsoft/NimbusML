@@ -244,9 +244,6 @@ DATASETS = {
 }
 
 REQUIRES_EXPERIMENTAL = {
-    'TypeConverter',
-    'MeanVarianceScaler',
-    'MinMaxScaler'
 }
 
 SUPPORTED_ESTIMATORS = {
