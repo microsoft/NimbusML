@@ -20,8 +20,7 @@ from ..internal.utils.utils import trace
 class FromKey(core, BaseTransform, TransformerMixin):
     """
 
-    Text transforms that can be performed on data before training
-    a model.
+    Converts the key types back to their original values.
 
     .. remarks::
         The ``FromKey`` transform converts a column of keys, generated using

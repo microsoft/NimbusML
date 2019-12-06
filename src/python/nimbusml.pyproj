@@ -807,6 +807,7 @@
     <Compile Include="tools\fix_line_widths.py" />
     <Compile Include="tools\loss_processor.py" />
     <Compile Include="tools\manifest_diff_parser.py" />
+    <Compile Include="tools\temp_docs_updater.py" />
     <Compile Include="tools\update_nimbusml_version.py" />
     <Compile Include="nimbusml\tests\test_syntax_onehotvectorizer.py" />
     <Compile Include="nimbusml\tests\utils\test_exports.py" />
@@ -963,7 +964,6 @@
     <Content Include="docs\docstrings\CustomStopWordsRemover.txt" />
     <Content Include="docs\docstrings\Dart.txt" />
     <Content Include="docs\docstrings\DnnFeaturizer.txt" />
-    <Content Include="docs\docstrings\DssmFeaturizer.txt" />
     <Content Include="docs\docstrings\EnsembleClassifier.txt" />
     <Content Include="docs\docstrings\EnsembleRegressor.txt" />
     <Content Include="docs\docstrings\ExponentialAverage.txt" />

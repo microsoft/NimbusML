@@ -18,7 +18,7 @@ from .....utils.utils import trace, try_set
 class Ngram(Component):
     """
 
-    Extracts NGrams from text and convert them to vector using
+    Extracts NGrams from text and converts them to vector using
     dictionary.
 
     .. remarks::

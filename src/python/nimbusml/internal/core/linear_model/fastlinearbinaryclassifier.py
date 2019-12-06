@@ -23,7 +23,7 @@ class FastLinearBinaryClassifier(
     """
 
     A Stochastic Dual Coordinate Ascent (SDCA) optimization trainer
-    for linear binary classification and regression.
+    for linear binary classification.
 
     .. remarks::
         ``FastLinearBinaryClassifier`` is a trainer based on the Stochastic

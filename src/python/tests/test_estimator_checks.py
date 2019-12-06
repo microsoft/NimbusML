@@ -161,7 +161,7 @@ OMITTED_CHECKS = {
 }
 
 OMITTED_CHECKS_TUPLE = (
-    'OneHotHashVectorizer, FromKey, DssmFeaturizer, DnnFeaturizer, '
+    'OneHotHashVectorizer, FromKey, DnnFeaturizer, '
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
