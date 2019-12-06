@@ -13,6 +13,7 @@ import sys
 import tempfile
 import numpy as np
 import pandas as pd
+import pprint
 
 from nimbusml import Pipeline
 from nimbusml.cluster import KMeansPlusPlus
@@ -393,10 +394,17 @@ for entry_point in entry_points:
         unexportable_estimators.add(class_name)
         print('Estimator could NOT be exported to ONNX.')
 
-print('\nThe following estimators were skipped: ', sorted(SKIP))
-print('\nThe following estimators were successfully exported to ONNX: ', sorted(exportable_estimators))
-print('\nThe following estimators were successfully exported to experimental ONNX: ', sorted(exportable_experimental_estimators))
-print('\nThe following estimators could not be exported to ONNX: ', sorted(unexportable_estimators))
+print('\nThe following estimators were skipped: ')
+pprint.pprint(sorted(SKIP))
+
+print('\nThe following estimators were successfully exported to ONNX:')
+pprint.pprint(sorted(exportable_estimators))
+
+print('\nThe following estimators were successfully exported to experimental ONNX: ')
+pprint.pprint(sorted(exportable_experimental_estimators))
+
+print('\nThe following estimators could not be exported to ONNX: ')
+pprint.pprint(sorted(unexportable_estimators))
 
 failed_estimators = SUPPORTED_ESTIMATORS.difference(exportable_estimators) \
                                         .difference(exportable_experimental_estimators)
