@@ -243,18 +243,10 @@ private:
             size = -1;
             missing = -1;
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
-            if (str(s).encode("utf_8").is_none())
-            {
-                size = 0;
-                pch = 0;
-            }
-            else
-            {
 #if _MSC_VER
-                Utf8ToUtf16le(pch, pch, size);
+            Utf8ToUtf16le(pch, pch, size);
 #endif
-                pdata->_vtextdata_cache.push_back((char*)pch);
-            }
+            pdata->_vtextdata_cache.push_back((char*)pch);
         }
         else
         {
