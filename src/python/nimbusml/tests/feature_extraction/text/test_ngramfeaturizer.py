@@ -24,24 +24,30 @@ class TestNGramFeaturizer(unittest.TestCase):
 
     def test_ngramfeaturizer(self):
         np.random.seed(0)
+        print("hello1")
         train_file = get_dataset('wiki_detox_train').as_filepath()
+        print("hello2")
         (train,
          label) = get_X_y(train_file,
                           label_column='Sentiment',
                           sep='\t',
                           encoding="utf-8")
+        print("hello3")
         X_train, X_test, y_train, y_test = train_test_split(
             train['SentimentText'], label)
- 
+        print("hello4")
         # map text reviews to vector space
         texttransform = NGramFeaturizer(
             word_feature_extractor=n_gram(),
             vector_normalizer='None') << 'SentimentText'
-
+        print("hello5")
         pipe = Pipeline([texttransform])
+        print("hello6")
         sentences = X_train[:100].tolist()
+        print("hello7")
         #print("X_train Model Just Fit Column Names Start--------------------------------------------------\n")
         pipe.fit(X_train[:100])
+        print("hello8")
         print("Name,Size of trained model {},{} bytes".format(pipe.model,os.path.getsize(pipe.model)))
         schema = pipe.get_output_columns()
         print("Schema of pipeline - Len of schema: {}".format(len(schema)))
