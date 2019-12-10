@@ -150,7 +150,6 @@ class TestWordEmbedding(unittest.TestCase):
         features = pipeline.fit_transform(data)
         assert features.shape == (248, 802)
 
-    @unittest.skip('System.ArgumentOutOfRangeException')
     def test_word_embedding_example_dict_newname(self):
         path = get_dataset('infert').as_filepath()
         file_schema = 'sep=, col=id:TX:0 col=education:TX:1 col=age:R4:2 ' \
@@ -169,7 +168,7 @@ class TestWordEmbedding(unittest.TestCase):
         ])
 
         features = pipeline.fit_transform(data)
-        assert features.shape == (248, 409)
+        assert features.shape == (248, 805)
 
 
 if __name__ == '__main__':
