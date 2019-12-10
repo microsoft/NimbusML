@@ -66,25 +66,25 @@ learners = [
     #SymSgdBinaryClassifier(),
     OrdinaryLeastSquaresRegressor(),
     PoissonRegressionRegressor(),
-    OneVsRestClassifier(FastLinearBinaryClassifier()),
     GamRegressor(),
     GamBinaryClassifier(),
     PcaAnomalyDetector(),
-    FactorizationMachineBinaryClassifier(),
-    KMeansPlusPlus(n_clusters=2),
-    NaiveBayesClassifier(),
     FastForestBinaryClassifier(number_of_trees=2), 
     FastForestRegressor(number_of_trees=2),
     FastTreesBinaryClassifier(number_of_trees=2),
     FastTreesRegressor(number_of_trees=2),
     FastTreesTweedieRegressor(number_of_trees=2),
     LightGbmRegressor(number_of_iterations=2),
-    LightGbmClassifier(),
     LightGbmBinaryClassifier(number_of_iterations=2)
 ]
 
 learners_not_supported = [
-    #PcaTransformer(), # REVIEW: crashes
+    FactorizationMachineBinaryClassifier(),
+    OneVsRestClassifier(FastLinearBinaryClassifier()),
+    FactorizationMachineBinaryClassifier(),
+    KMeansPlusPlus(n_clusters=2),
+    NaiveBayesClassifier(),
+    LightGbmClassifier()
 ]
 
 
@@ -98,7 +98,6 @@ class TestModelSummary(unittest.TestCase):
             pipeline.fit(train_stream, label_column)
             pipeline.summary()
 
-    @unittest.skip("No unsupported learners")
     def test_model_summary_not_supported(self):
         for learner in learners_not_supported:
             pipeline = Pipeline(
@@ -106,6 +105,23 @@ class TestModelSummary(unittest.TestCase):
             train_stream = FileDataStream(train_file, schema=file_schema)
             pipeline.fit(train_stream, label_column)
             assert_raises(TypeError, pipeline.summary)
+
+    def test_model_summary_not_supported_specific(self):
+        path = get_dataset('infert').as_filepath()
+        data = FileDataStream.read_csv(path, sep=',',
+                               names={0: 'row_num', 5: 'case'})
+        pipeline = Pipeline([
+            OneHotVectorizer(columns={'edu': 'education'}),
+            FactorizationMachineBinaryClassifier(feature=['induced', 'edu', 'parity'],
+                                         label='case')
+        ])
+        pipeline.fit(data)
+        try:
+            pipeline.summary()
+        except TypeError as e:
+            self.assertEqual(e.args[0], "One or more predictors in this pipeline do not support the .summary() function.")
+        else:
+            assert False
 
     def test_summary_called_back_to_back_on_predictor(self):
         """
