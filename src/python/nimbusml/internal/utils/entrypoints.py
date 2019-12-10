@@ -275,6 +275,8 @@ class Graph(EntryPoint):
             output_modelfilename,
             output_predictor_modelfilename=None):
         try:
+            for key in call_parameters:
+                print(key, call_parameters[key])
             ret = px_call(call_parameters)
         except RuntimeError as e:
             if verbose:
