@@ -88,7 +88,7 @@ class TestNGramFeaturizer(unittest.TestCase):
         sum = X_train_transform.iloc[:].sum().sum()
         print("Sum")
         print(sum)
-        assert_equal(sum, 29876, "sum of all features is incorrect!")
+        assert_equal(sum, 29565, "sum of all features is incorrect!")
 
 
 if __name__ == '__main__':
