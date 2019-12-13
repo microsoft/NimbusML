@@ -42,9 +42,9 @@ class TestLightGbmClassifier(unittest.TestCase):
         accuracy = np.mean(y_test.values.ravel() == scores.values)
         assert_greater(
             accuracy,
-            0.58,
+            0.57,
             "accuracy should be greater than %s" %
-            0.58)
+            0.57)
 
 
 if __name__ == '__main__':
