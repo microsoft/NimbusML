@@ -363,6 +363,30 @@ class WikiDetox_Train(DataSet):
         """
         return os.path.join(DATA_DIR, "train-250.wikipedia.sample.tsv")
 
+class TempTestData(DataSet):
+    """
+    TempTestData dataset train.
+    """
+
+    def __init__(self, inst=None):
+        """
+        Constructor
+        """
+        DataSet.__init__(self, inst=inst)
+        if inst is None:
+            # self.load()
+            pass
+
+    @property
+    def name(self):
+        return "temp_test_data"
+
+    def as_filepath(self):
+        """
+        Return file name.
+        """
+        return os.path.join(DATA_DIR, "temp_test_data.tsv")
+
 
 class WikiDetox_Test(DataSet):
     """
@@ -645,6 +669,7 @@ _datasets = dict(
     topics=lambda: Topics(),
     timeseries=lambda: Timeseries(),
     airquality=lambda: DataSetAirQuality(),
+    temp_test_data=lambda: TempTestData(),
     wiki_detox_train=lambda: WikiDetox_Train(),
     wiki_detox_test=lambda: WikiDetox_Test(),
     gen_twittertrain=lambda: Generated_Twitter_Train(),
