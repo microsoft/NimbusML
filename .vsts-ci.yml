@@ -23,8 +23,8 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
-      Py37:
-        _configuration: RlsMacPy3.7
+      Py27:
+        _configuration: RlsMacPy2.7
     buildQueue:
       name: Hosted macOS
 
