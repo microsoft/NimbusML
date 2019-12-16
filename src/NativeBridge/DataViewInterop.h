@@ -243,7 +243,6 @@ private:
             size = -1;
             missing = -1;
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
-            std::cout << pch << std::endl;
 #if _MSC_VER
             Utf8ToUtf16le(pch, pch, size);
 #endif

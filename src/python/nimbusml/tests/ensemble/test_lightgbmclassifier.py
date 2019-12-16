@@ -40,7 +40,6 @@ class TestLightGbmClassifier(unittest.TestCase):
         mymodel = LightGbmClassifier().fit(X_train, y_train, verbose=0)
         scores = mymodel.predict(X_test)
         accuracy = np.mean(y_test.values.ravel() == scores.values)
-        print("accuracy: ", accuracy)
         assert_greater(
             accuracy,
             0.55,
