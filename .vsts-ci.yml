@@ -8,12 +8,6 @@ phases:
     buildMatrix:
       Py37:
         _configuration: RlsWinPy3.7
-      Py36:
-        _configuration: RlsWinPy3.6
-      Py35:
-        _configuration: RlsWinPy3.5
-      Py27:
-        _configuration: RlsWinPy2.7
     buildQueue:
       name: Hosted VS2017
 
@@ -23,6 +17,8 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
+      Py37:
+        _configuration: RlsMacPy3.7
       Py27:
         _configuration: RlsMacPy2.7
     buildQueue:
