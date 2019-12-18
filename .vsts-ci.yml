@@ -7,7 +7,7 @@ phases:
     buildScript: build.cmd
     buildMatrix:
       Py37:
-        _configuration: RlsWinPy3.7
+        _configuration: RlsWinPy2.7
     buildQueue:
       name: Hosted VS2017
 
@@ -31,19 +31,6 @@ phases:
     name: Linux_Ubuntu16
     buildScript: ./build.sh
     testDistro: ubuntu16
-    buildMatrix:
-      Py37:
-        _configuration: RlsLinPy3.7
-      Py36:
-        _configuration: RlsLinPy3.6
-    buildQueue:
-      name: Hosted Ubuntu 1604
-  # Run tests on CentOS7
-- template: /build/ci/phase-template.yml
-  parameters:
-    name: Linux_CentOS7
-    buildScript: ./build.sh
-    testDistro: centos7
     buildMatrix:
       Py27:
         _configuration: RlsLinPy2.7
