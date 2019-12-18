@@ -20,8 +20,7 @@ from ..internal.utils.utils import trace
 class ToKey(core, BaseTransform, TransformerMixin):
     """
 
-    Text transforms that can be performed on data before training
-    a model.
+    Converts input values (words, numbers, etc.) to index in a dictionary.
 
     .. remarks::
         The ``ToKey`` transform converts a column of text to key values

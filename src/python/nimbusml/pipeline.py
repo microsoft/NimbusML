@@ -119,10 +119,10 @@ class Pipeline:
         for more details on how to select these.
 
     :param steps: the list of operator or (name, operator) tuples  that
-    are chained in the appropriate order.
+        are chained in the appropriate order.
 
     :param model: the path to the model file (".zip") if want to load a
-    model directly from file (such as a trained model from ML.NET).
+        model directly from file (such as a trained model from ML.NET).
 
     :param random_state: the integer used as the random seed.
 
@@ -2612,7 +2612,7 @@ class Pipeline:
         if len(self.steps) > 0 and not isinstance(
                 self.last_node, BasePredictor):
             raise ValueError(
-                "Summary is availabe only for predictor types, instead "
+                "Summary is available only for predictor types, instead "
                 "got " +
                 self.last_node.type)
 
@@ -2650,6 +2650,10 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
+        # .summary() not supported if size of summary_data
+        # is less or equal to 1 (if only PredictedName in summary_data)
+        if summary_data.size == 1 and summary_data.columns.values == ["PredictorName"]:
+            raise TypeError("One or more predictors in this pipeline do not support the .summary() function.")
         self.model_summary = summary_data
 
         # stop the clock

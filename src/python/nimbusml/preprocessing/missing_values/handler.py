@@ -54,14 +54,13 @@ class Handler(core, BaseTransform, TransformerMixin):
         For more details see `Columns </nimbusml/concepts/columns>`_.
 
     :param replace_with: The method to use to replace NaN values. The
-    following choices are available.
+        following choices are available.
 
-       * Def: Replace with default value of that type, usually ``0``. If no
-        replace
-       method is specified, this is the default strategy.
-       * Mean: Replace NaN values with the mean of the values in that column.
-       * Min: Replace with minimum value in the column.
-       * Max: Replace with maximum value in the column.
+        * Def: Replace with default value of that type, usually ``0``. If no
+        replace method is specified, this is the default strategy.
+        * Mean: Replace NaN values with the mean of the values in that column.
+        * Min: Replace with minimum value in the column.
+        * Max: Replace with maximum value in the column.
 
     :param impute_by_slot: Whether to impute values by slot.
 

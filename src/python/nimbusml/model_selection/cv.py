@@ -96,7 +96,7 @@ class CV:
         the average of each metric on all models.
 
     :param pipeline: Pipeline object or a list of pipeline steps that's
-    used for cross validation
+        used for cross validation
     '''
 
     fold_column_name = 'Fold'

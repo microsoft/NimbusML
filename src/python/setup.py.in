@@ -115,7 +115,7 @@ setup(
             'nose>=1.3', 'pytest>=4.4.0',
             'graphviz', 'imageio',
         ],
-        'dprep': ['azureml-dataprep>=1.1.12'],
+        'dprep': ['azureml-dataprep>=1.1.33'],
         'utils': ['graphviz', 'imageio'],
     },
 
