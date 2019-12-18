@@ -684,6 +684,7 @@
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmranker.py" />
+    <Compile Include="nimbusml\tests\ensemble\test_votingregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\__init__.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_ngramextractor.py" />
