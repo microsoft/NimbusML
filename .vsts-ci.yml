@@ -6,7 +6,7 @@ phases:
     name: Windows
     buildScript: build.cmd
     buildMatrix:
-      Py37:
+      Py27:
         _configuration: RlsWinPy2.7
     buildQueue:
       name: Hosted VS2017
