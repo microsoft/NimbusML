@@ -25,7 +25,7 @@ class TestNGramFeaturizer(unittest.TestCase):
     def test_ngramfeaturizer(self):
         np.random.seed(0)
         print("hello1")
-        train_file = get_dataset('temp_test_data').as_filepath()
+        train_file = get_dataset('wiki_detox_train').as_filepath()
         print("hello2")
         (train,
          label) = get_X_y(train_file,
