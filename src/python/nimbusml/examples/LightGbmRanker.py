@@ -16,7 +16,6 @@ pipeline = Pipeline([LightGbmRanker(
     feature=['Class', 'dep_day', 'duration'], label='rank', group_id='group')])
 
 # train, predict, and evaluate.
-# TODO: Replace with CV
 metrics, predictions = pipeline \
     .fit(data) \
     .test(data, output_scores=True)
