@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
-import os
+import platform
 import unittest
 
 import numpy as np
