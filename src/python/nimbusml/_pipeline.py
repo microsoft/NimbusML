@@ -1231,7 +1231,7 @@ class Pipeline:
             return the transformed data in CSR (sparse matrix) format.
             If ``as_binary_data_stream`` is also true then that
             parameter takes precedence over ``as_csr`` and the output will
-            be an IDV file.
+            be an IDV file. 
 
         :return: Returns a pandas DataFrame if no other output format
             is specified. See ``as_binary_data_stream`` and ``as_csr``
