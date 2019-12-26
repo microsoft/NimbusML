@@ -1223,6 +1223,19 @@ class Pipeline:
         :param X: {array-like [n_samples, n_features],
             :py:func:`FileDataStream <nimbusml.FileDataStream>` }
         :param y: {array-like [n_samples]}
+        :param as_binary_data_stream: If ``True`` then output an IDV file.
+            See `here <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_
+            for more information.
+        :param params: Additional arguments.
+            If ``as_csr=True`` and ``as_binary_data_stream=False`` then
+            return the transformed data in CSR (sparse matrix) format.
+            If ``as_binary_data_stream`` is also true then that
+            parameter takes precedence over ``as_csr`` and the output will
+            be an IDV file. 
+
+        :return: Returns a pandas DataFrame if no other output format
+            is specified. See ``as_binary_data_stream`` and ``as_csr``
+            for other available output formats.
         """
         self.fit(
             X,
@@ -2447,7 +2460,19 @@ class Pipeline:
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
         :param y: {array-like [n_samples]}
+        :param as_binary_data_stream: If ``True`` then output an IDV file.
+            See `here <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_
+            for more information.
+        :param params: Additional arguments.
+            If ``as_csr=True`` and ``as_binary_data_stream=False`` then
+            return the transformed data in CSR (sparse matrix) format.
+            If ``as_binary_data_stream`` is also true then that
+            parameter takes precedence over ``as_csr`` and the output will
+            be an IDV file.
 
+        :return: Returns a pandas DataFrame if no other output format
+            is specified. See ``as_binary_data_stream`` and ``as_csr``
+            for other available output formats.
         """
         # start the clock!
         start_time = time.time()
