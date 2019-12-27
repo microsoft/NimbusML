@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
-import os
+import platform
 import unittest
 
 import numpy as np
@@ -18,6 +18,10 @@ from sklearn.utils.testing import assert_equal
 
 class TestNGramFeaturizer(unittest.TestCase):
 
+    @unittest.skipIf(platform.system() == "Darwin" and six.PY2,
+    "Disabled due to bug on Mac Python 2.7 build, more info: \
+    https://github.com/microsoft/NimbusML/issues/366, \
+    https://github.com/microsoft/NimbusML/pull/362")
     def test_ngramfeaturizer(self):
         np.random.seed(0)
         train_file = get_dataset('wiki_detox_train').as_filepath()

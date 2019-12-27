@@ -20,7 +20,6 @@ pipeline = Pipeline([LinearSvmBinaryClassifier(
     feature=['age', 'parity', 'spontaneous'], label='case')])
 
 # train, predict, and evaluate
-# TODO: Replace with CV
 metrics, predictions = pipeline.fit(data).test(data, output_scores=True)
 
 # print predictions
