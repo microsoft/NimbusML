@@ -294,6 +294,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.DateTimeSplitter",
+      "NewName": "DateTimeSplitter",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.TensorFlowScorer",
       "NewName": "TensorFlowScorer",
       "Module": "preprocessing",

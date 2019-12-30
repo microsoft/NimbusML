@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.ML.Data;
 using Microsoft.ML.EntryPoints;
+using Microsoft.ML.Featurizers;
 using Microsoft.ML.Model.OnnxConverter;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
@@ -43,7 +44,8 @@ namespace Microsoft.ML.DotNetBridge
             typeof(SymbolicSgdLogisticRegressionBinaryTrainer),
             typeof(OnnxContext),
             typeof(SsaForecastingTransformer),
-            typeof(VariableColumnTransform)
+            typeof(VariableColumnTransform),
+            typeof(DateTimeTransformer)
         };
 
         private static (IEnumerable<string> epListContents, JObject manifest) BuildManifests()

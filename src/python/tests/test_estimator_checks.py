@@ -19,8 +19,8 @@ from nimbusml.ensemble import LightGbmRanker
 from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
+from nimbusml.preprocessing import TensorFlowScorer, DateTimeSplitter
 from nimbusml.linear_model import SgdBinaryClassifier
-from nimbusml.preprocessing import TensorFlowScorer
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
@@ -56,6 +56,12 @@ OMITTED_CHECKS = {
     # I8 should not have NA values
     'CountSelector':
         'check_estimators_dtypes',
+    # DateTimeSplitter does not work with floating point types.
+    'DateTimeSplitter':
+        'check_transformer_general, check_pipeline_consistency'
+        'check_estimators_pickle, check_estimators_dtypes'
+        'check_dict_unchanged, check_dtype_object, check_fit_score_takes_y'
+        'check_transformer_data_not_an_array',
     # by design returns smaller number of rows
     'SkipFilter': 'check_transformer_general, '
                   'check_transformer_data_not_an_array',
@@ -196,6 +202,7 @@ NOBINARY_CHECKS = [
     'check_classifiers_train']
 
 INSTANCES = {
+    'DateTimeSplitter': DateTimeSplitter(prefix='dt', columns=['F0']),
     'EnsembleClassifier': EnsembleClassifier(num_models=3),
     'EnsembleRegressor': EnsembleRegressor(num_models=3),
     'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
