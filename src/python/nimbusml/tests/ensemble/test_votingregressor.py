@@ -12,6 +12,7 @@ from nimbusml import Pipeline
 from nimbusml.ensemble import LightGbmRegressor, VotingRegressor
 from nimbusml.linear_model import (OrdinaryLeastSquaresRegressor,
                                    OnlineGradientDescentRegressor)
+from nimbusml.preprocessing.filter import RangeFilter
 
 
 train_data = {'c1': [2, 3, 4, 5],
@@ -89,8 +90,40 @@ class TestVotingRegressor(unittest.TestCase):
         self.assertEqual(result1.loc[1], result4.loc[1, 'Score'])
 
     def test_ensemble_supports_user_defined_transforms(self):
-        # TODO: fill this in
-        pass
+        test2_df = test_df.copy(deep=True)
+        test2_df = test2_df.append(pd.DataFrame({'c1': [9, 11], 'c2': [1, 1]}))
+
+        r1 = OrdinaryLeastSquaresRegressor(**olsrArgs)
+        r1.fit(train_df)
+        result1 = r1.predict(test2_df)
+
+        r2 = OnlineGradientDescentRegressor(**ogdArgs)
+        r2.fit(train_df)
+        result2 = r2.predict(test2_df)
+
+        r3 = LightGbmRegressor(**lgbmArgs)
+        r3.fit(train_df)
+        result3 = r3.predict(test2_df)
+
+        r1 = OrdinaryLeastSquaresRegressor(**olsrArgs)
+        r2 = OnlineGradientDescentRegressor(**ogdArgs)
+        r3 = LightGbmRegressor(**lgbmArgs)
+
+        pipeline = Pipeline([
+            RangeFilter(min=0, max=10, columns='c1'),
+            VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
+        ])
+        pipeline.fit(train_df)
+        result4 = pipeline.predict(test2_df)
+
+        self.assertEqual(len(result4), 3)
+
+        average1 = (result1[0] + result2[0] + result3[0]) / 3
+        average2 = (result1[1] + result2[1] + result3[1]) / 3
+        average3 = (result1[2] + result2[2] + result3[2]) / 3
+        self.assertAlmostEqual(average1, result4.loc[0, 'Score'], places=5)
+        self.assertAlmostEqual(average2, result4.loc[1, 'Score'], places=5)
+        self.assertAlmostEqual(average3, result4.loc[2, 'Score'], places=5)
 
     def test_ensemble_supports_output_predictor_model(self):
         # TODO: fill this in
