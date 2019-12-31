@@ -249,10 +249,32 @@ REQUIRES_EXPERIMENTAL = {
 
 SUPPORTED_ESTIMATORS = {
     'ColumnConcatenator',
-    'OneHotVectorizer',
+    'ColumnDuplicator',
+    'CountSelector',
+    'EnsembleClassifier',
+    'EnsembleRegressor',
+    'FastForestRegressor',
+    'FastLinearRegressor',
+    'FastTreesRegressor',
+    'FastTreesTweedieRegressor',
+    'GamRegressor',
+    'Indicator',
+    'KMeansPlusPlus',
+    'LightGbmBinaryClassifier',
+    'LightGbmClassifier',
+    'LightGbmRegressor',
+    'LpScaler',
     'MeanVarianceScaler',
     'MinMaxScaler',
-    'TypeConverter'
+    'NaiveBayesClassifier',
+    'OneHotVectorizer',
+    'OnlineGradientDescentRegressor',
+    'OrdinaryLeastSquaresRegressor',
+    'PcaAnomalyDetector',
+    'PoissonRegressionRegressor',
+    'PrefixColumnConcatenator',
+    'TypeConverter',
+    'WordTokenizer'
 }
 
 
