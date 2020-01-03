@@ -27,7 +27,6 @@ phases:
         _configuration: RlsMacPy3.7
     buildQueue:
       name: Hosted macOS
-    testOptions: --includeExtendedTests
 
 # Build all configurations for Linux
   # Run tests on Ubuntu16
