@@ -27,7 +27,7 @@ phases:
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
     # Manual defining of the libomp URL is needed to avoid error at runtime.
-    - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb gettext && brew link gettext --force && brew install mono-libgdiplus --ignore-dependencies
+    - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb gettext && brew link gettext --force && brew unlink python@2 && brew install mono-libgdiplus
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
