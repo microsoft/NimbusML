@@ -26,7 +26,7 @@ phases:
     - script: $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
-    - script: brew update && brew install libomp gettext && brew link gettext --force && brew link --overwrite python && brew install mono-libgdiplus 
+    - script: brew update && brew install libomp gettext && brew link gettext --force && brew link --overwrite python && brew install mono-libgdiplus --ignore-dependencies
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
