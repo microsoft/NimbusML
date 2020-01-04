@@ -120,15 +120,21 @@ Example:
 Output Data Types of Transforms
 -------------------------------
 
-The return type of all of the transforms is a ``pandas.DataFrame``, when they
-are used inside a `sklearn.pipeline.Pipeline
-<https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_
-or when they are used individually.
+When used inside a `sklearn.pipeline.Pipeline
+<https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_,
+the return type of all of the transforms is a ``pandas.DataFrame``.
 
-However, when used inside a :py:class:`nimbusml.Pipeline`, the outputs are often stored in
+When used individually or inside a :py:class:`nimbusml.Pipeline`
+that contains only transforms, the default output is a ``pandas.DataFrame``. To instead output an
+`IDataView <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_,
+pass ``as_binary_data_stream=True`` to either ``transform()`` or ``fit_transform()``.
+To output a sparse CSR matrix, pass ``as_csr=True``.
+See :py:class:`nimbusml.Pipeline` for more information.
+
+Note, when used inside a :py:class:`nimbusml.Pipeline`, the outputs are often stored in
 a more optimized :ref:`VectorDataViewType`, which minimizes data conversion to
 dataframes. When several transforms are combined inside an :py:class:`nimbusml.Pipeline`,
 the intermediate transforms will store the data in the optimized format and only
-the last transform will return a ``pandas.DataFrame``.
+the last transform will return a ``pandas.DataFrame`` (or IDataView/CSR; see above).
 
 
