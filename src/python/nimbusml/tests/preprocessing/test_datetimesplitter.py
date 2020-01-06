@@ -6,6 +6,7 @@
 import unittest
 
 import pandas
+from nimbusml import Pipeline
 from nimbusml.preprocessing import DateTimeSplitter
 from nimbusml.preprocessing.schema import ColumnSelector
 from sklearn.utils.testing import assert_equal
