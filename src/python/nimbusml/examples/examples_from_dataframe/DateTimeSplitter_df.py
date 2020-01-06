@@ -11,10 +11,10 @@ df = pandas.DataFrame(data=dict(
 ))
 
 cols_to_drop = [
-    'Hour12', 'DayOfWeek', 'DayOfQuarter',
-    'DayOfYear', 'WeekOfMonth', 'QuarterOfYear',
-    'HalfOfYear', 'WeekIso', 'YearIso', 'MonthLabel',
-    'AmPmLabel', 'DayOfWeekLabel', 'IsPaidTimeOff'
+    'dtHour12', 'dtDayOfWeek', 'dtDayOfQuarter',
+    'dtDayOfYear', 'dtWeekOfMonth', 'dtQuarterOfYear',
+    'dtHalfOfYear', 'dtWeekIso', 'dtYearIso', 'dtMonthLabel',
+    'dtAmPmLabel', 'dtDayOfWeekLabel', 'dtIsPaidTimeOff'
 ]
 
 dts = DateTimeSplitter(prefix='dt', country='Canada') << 'tokens1'
