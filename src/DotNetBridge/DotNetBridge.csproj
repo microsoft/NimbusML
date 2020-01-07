@@ -32,17 +32,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.ML" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.16.0" />
-    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.Vision" Version="1.4.0" />
-    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.16.0" />
-    <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.4.0" />
+    <PackageReference Include="Microsoft.ML" Version="1.5.0-preview" /> 
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.17.0-preview" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.Vision" Version="1.5.0-preview" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.17.0-preview" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.5.0-preview" />
     <PackageReference Include="Microsoft.DataPrep" Version="0.0.3.2-preview" />
     <PackageReference Include="TensorFlow.NET" Version="0.11.8.1" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="1.14.0" />
