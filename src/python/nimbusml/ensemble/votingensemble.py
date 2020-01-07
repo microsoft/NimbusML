@@ -23,7 +23,7 @@ from ..internal.entrypoints.models_regressionensemble import \
 class VotingEnsemble(BasePredictor,
                      DefaultSignature):
     """
-    Base class for voting based ensembles
+    Base class for voting based ensembles 
     """
     @trace
     def __init__(self,
