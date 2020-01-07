@@ -44,22 +44,16 @@ from .internal.entrypoints.transforms_datasetscorerex import \
     transforms_datasetscorerex
 from .internal.entrypoints.transforms_datasettransformscorer import \
     transforms_datasettransformscorer
-from .internal.entrypoints.transforms_featurecombiner import \
-    transforms_featurecombiner
 from .internal.entrypoints.transforms_featurecontributioncalculationtransformer import \
     transforms_featurecontributioncalculationtransformer
 from .internal.entrypoints.transforms_labelcolumnkeybooleanconverter \
     import \
     transforms_labelcolumnkeybooleanconverter
-from .internal.entrypoints.transforms_labeltofloatconverter import \
-    transforms_labeltofloatconverter
 from .internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
     import \
     transforms_manyheterogeneousmodelcombiner
 from .internal.entrypoints.transforms_modelcombiner import \
     transforms_modelcombiner
-from .internal.entrypoints.transforms_optionalcolumncreator import \
-    transforms_optionalcolumncreator
 from .internal.entrypoints.transforms_permutationfeatureimportance import \
     transforms_permutationfeatureimportance
 from .internal.entrypoints \
@@ -74,7 +68,6 @@ from .internal.utils.data_schema import DataSchema
 from .internal.utils.data_stream import DataStream, ViewDataStream, \
     FileDataStream, BinaryDataStream
 from .internal.utils.entrypoints import Graph, DataOutputFormat
-from .internal.utils.schema_helper import _extract_label_column
 from .internal.utils.utils import trace, unlist
 
 
@@ -617,177 +610,6 @@ class Pipeline:
         return graph_nodes, feature_columns, inputs, transform_nodes, \
             columns_out
 
-    def _get_graph_nodes_for_learner(
-            self,
-            learner,
-            num_transforms,
-            columns_out,
-            label_column,
-            weight_column,
-            output_data,
-            output_model,
-            predictor_model,
-            y,
-            strategy_iosklearn):
-        graph_nodes = OrderedDict()
-
-        if hasattr(
-                learner,
-                'feature_column_name') and learner.feature_column_name is \
-                not None:
-            if isinstance(learner.feature_column_name, list):
-                learner_features = learner.feature_column_name
-                learner.feature_column_name = 'Features'
-            else:
-                learner_features = [learner.feature_column_name]
-        elif strategy_iosklearn in ("previous", "accumulate"):
-            if hasattr(
-                    learner,
-                    'feature') and learner.feature is not None:
-                if isinstance(learner.feature, list):
-                    learner_features = learner.feature
-                else:
-                    learner_features = [learner.feature]
-                learner.feature_column_name = 'Features'
-            elif isinstance(columns_out, list):
-                learner_features = columns_out
-                learner.feature_column_name = 'Features'
-            elif columns_out is None:
-                learner_features = ['Features']
-                learner.feature_column_name = 'Features'
-            else:
-                learner_features = [columns_out]
-                learner.feature_column_name = 'Features'
-        else:
-            raise NotImplementedError(
-                "Strategy '{0}' to handle unspecified inputs is not "
-                "implemented".format(strategy_iosklearn))
-
-        if label_column is not None or learner._use_role(Role.Label):
-            if getattr(learner, 'label_column_name_', None):
-                label_column = learner.label_column_name_
-            elif getattr(learner, 'label_column_name', None):
-                label_column = learner.label_column_name
-            elif label_column:
-                learner.label_column_name = label_column
-            elif y is None:
-                if label_column is None:
-                    label_column = Role.Label
-                learner.label_column_name = label_column
-            else:
-                label_column = _extract_label_column(
-                    learner, DataSchema.read_schema(y))
-                if label_column is None:
-                    label_column = Role.Label
-                learner.label_column_name = label_column
-        else:
-            learner.label_column_name = None
-            label_column = None
-
-        if weight_column is not None or learner._use_role(Role.Weight):
-            if getattr(learner, 'example_weight_column_name', None):
-                weight_column = learner.example_weight_column_name
-            elif weight_column:
-                learner.example_weight_column_name = weight_column
-        else:
-            learner.example_weight_column_name = None
-            weight_column = None
-
-        if (hasattr(learner, 'row_group_column_name_')
-                and learner.row_group_column_name_ is not None):
-            group_id_column = learner.row_group_column_name_
-        elif (hasattr(learner, 'row_group_column_name') and
-              learner.row_group_column_name is not None):
-            group_id_column = learner.row_group_column_name
-        else:
-            group_id_column = None
-
-        implicit_transforms = self._get_implicit_transforms(
-            learner=learner,
-            features=learner_features,
-            label=label_column,
-            weight=weight_column,
-            num_transforms=num_transforms,
-            output_data=output_data,
-            output_model=output_model)
-        graph_nodes['implicit_nodes'] = implicit_transforms
-
-        learner._check_roles()
-
-        # todo: ideally all the nodes have the same name for params
-        # so we dont have to distinguish if its learner or
-        # transformer. We will supply input_data, output_data and
-        # output_model vars. Its up to node to use supplied vars.
-        learner_node = learner._get_node(
-            feature_column_name=learner_features,
-            training_data=output_data,
-            predictor_model=predictor_model,
-            label_column_name=label_column,
-            example_weight_column_name=weight_column,
-            row_group_column_name=group_id_column)
-        graph_nodes['learner_node'] = [learner_node]
-        return graph_nodes, learner_features
-
-    def _get_multi_learner_graph_nodes(
-            self,
-            learner,
-            get_nodes_func,
-            transform_nodes,
-            output_model):
-        combiner_nodes = []
-        predictor_nodes = []
-        predictor_models = []
-        learner_features = None
-        implicit_transforms = []
-
-        if not hasattr(learner, '_predictors') or \
-                len(learner._predictors) == 0:
-            raise RuntimeError('No predictors specified.')
-
-        for index, predictor in enumerate(learner._predictors):
-            learner_graph_nodes, learner_features = \
-                get_nodes_func(predictor, '_p' + str(index))
-
-            if not implicit_transforms:
-                implicit_transforms = learner_graph_nodes['implicit_nodes']
-
-            elif learner_graph_nodes['implicit_nodes'] != implicit_transforms:
-                raise RuntimeError('Predictors do not have matching'
-                                   'implicit transforms.')
-
-            predictor_node = learner_graph_nodes['learner_node'][0]
-            predictor_node._implicit = True
-            predictor_nodes.append(predictor_node)
-
-            transform_models = [ep.outputs["Model"] for ep in transform_nodes]
-            transform_models.extend([ep.outputs["Model"] for ep in implicit_transforms])
-
-            predictor_model = "$predictor_model_combined" + str(index)
-            predictor_models.append(predictor_model)
-
-            combine_model_node = transforms_manyheterogeneousmodelcombiner(
-                transform_models=transform_models,
-                predictor_model=predictor_node.outputs['PredictorModel'],
-                model=predictor_model)
-            combine_model_node._implicit = True
-            combiner_nodes.append(combine_model_node)
-
-        learner_node = learner._get_node(
-            models=predictor_models,
-            predictor_model=output_model)
-
-        implicit_nodes = []
-        implicit_nodes.extend(implicit_transforms)
-        implicit_nodes.extend(predictor_nodes)
-        implicit_nodes.extend(combiner_nodes)
-
-        graph_nodes = OrderedDict([
-            ('implicit_nodes', implicit_nodes),
-            ('learner_node', [learner_node])
-        ])
-
-        return graph_nodes, learner_features
-
     def _fit_graph(self, X, y, verbose, **params):
         # start the clock!
         start_time = time.time()
@@ -834,22 +656,12 @@ class Pipeline:
         if last_node.type != 'transform':
             learner_exists = True
 
-            get_graph_nodes_for_learner = lambda learner, suffix='': \
-                self._get_graph_nodes_for_learner(
-                    learner, len(transform_nodes), columns_out,
+            learner_graph_nodes, learner_features = \
+                last_node._get_graph_nodes(
+                    transform_nodes, columns_out,
                     label_column, weight_column, output_data,
-                    output_model, predictor_model + suffix, y,
+                    output_model, predictor_model, y,
                     strategy_iosklearn=strategy_iosklearn)
-
-            if last_node.has_implicit_predictors:
-                learner_graph_nodes, learner_features = \
-                    self._get_multi_learner_graph_nodes(
-                        last_node, get_graph_nodes_for_learner,
-                        transform_nodes, output_model)
-
-            else:
-                learner_graph_nodes, learner_features = \
-                    get_graph_nodes_for_learner(last_node)
 
             graph_nodes.update(learner_graph_nodes)
 
@@ -868,7 +680,9 @@ class Pipeline:
                 transform_models.append(node.outputs["Model"])
         # no need to combine if there is only 1 model
         if learner_exists and len(transform_models) > 0:
-            if not last_node.has_implicit_predictors:
+            # imported here to avoid circular reference
+            from .ensemble.votingensemble import VotingEnsemble
+            if not isinstance(last_node, VotingEnsemble):
                 combine_model_node = transforms_manyheterogeneousmodelcombiner(
                     transform_models=transform_models,
                     predictor_model=predictor_model,
@@ -1466,74 +1280,6 @@ class Pipeline:
             columns_out_prev = columns_out
 
         return (nodes, columns_out)
-
-    @trace
-    def _get_implicit_transforms(
-            self,
-            learner,
-            features,
-            label,
-            num_transforms,
-            output_data,
-            output_model,
-            weight=None):
-        if learner.type == 'regressor':
-            optional_node = transforms_optionalcolumncreator(
-                column=[label],
-                data="$input_data" if num_transforms == 0 else
-                output_data + str(num_transforms),
-                output_data="$optional_data",
-                model=output_model + str(num_transforms + 1))
-            optional_node._implicit = True
-            label_node = transforms_labeltofloatconverter(
-                data="$optional_data",
-                label_column=label,
-                output_data="$label_data",
-                model=output_model + str(num_transforms + 2))
-            label_node._implicit = True
-            feature_node = transforms_featurecombiner(
-                data="$label_data",
-                features=features,
-                output_data=output_data,
-                model=output_model + str(num_transforms + 3))
-            feature_node._implicit = True
-            implicit_nodes = [optional_node, label_node, feature_node]
-        elif learner.type in ('classifier', 'ranker'):
-            optional_node = transforms_optionalcolumncreator(
-                column=[label],
-                data="$input_data" if num_transforms == 0 else
-                output_data + str(num_transforms),
-                output_data="$optional_data",
-                model=output_model + str(num_transforms + 1))
-            optional_node._implicit = True
-            label_node = transforms_labelcolumnkeybooleanconverter(
-                data="$optional_data",
-                label_column=label,
-                output_data="$label_data",
-                text_key_values=False,
-                model=output_model + str(num_transforms + 2))
-            label_node._implicit = True
-            feature_node = transforms_featurecombiner(
-                data="$label_data",
-                features=features,
-                output_data=output_data,
-                model=output_model + str(num_transforms + 3))
-            feature_node._implicit = True
-            implicit_nodes = [optional_node, label_node, feature_node]
-        elif learner.type in {'recommender', 'sequence'}:
-            raise NotImplementedError("Type '{0}' is not implemented yet.".
-                                      format(learner.type))
-        else:
-            feature_node = transforms_featurecombiner(
-                data="$input_data" if num_transforms == 0 else
-                output_data + str(num_transforms),
-                features=features,
-                output_data=output_data,
-                model=output_model + str(num_transforms + 1))
-            feature_node._implicit = True
-            implicit_nodes = [feature_node]
-
-        return implicit_nodes
 
     @trace
     def _fix_ranking_metrics_schema(self, out_metrics):

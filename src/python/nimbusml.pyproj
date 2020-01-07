@@ -46,7 +46,7 @@
     <Compile Include="nimbusml\ensemble\booster\gbdt.py" />
     <Compile Include="nimbusml\ensemble\booster\goss.py" />
     <Compile Include="nimbusml\ensemble\booster\__init__.py" />
-    <Compile Include="nimbusml\ensemble\votingregressor.py" />
+    <Compile Include="nimbusml\ensemble\votingensemble.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\allfeatureselector.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\randomfeatureselector.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\__init__.py" />

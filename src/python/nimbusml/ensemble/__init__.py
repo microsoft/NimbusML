@@ -11,7 +11,7 @@ from .lightgbmbinaryclassifier import LightGbmBinaryClassifier
 from .lightgbmclassifier import LightGbmClassifier
 from .lightgbmranker import LightGbmRanker
 from .lightgbmregressor import LightGbmRegressor
-from .votingregressor import VotingRegressor
+from .votingensemble import VotingRegressor
 
 __all__ = [
     'EnsembleClassifier',
