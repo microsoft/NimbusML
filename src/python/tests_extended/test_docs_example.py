@@ -85,10 +85,7 @@ def get_examples():
 
     examples = []
     for folder, name in folder_files:
-        if name in [
-            '__init__.py',
-            # Bug todo: CustomStopWordsRemover fails on ML.NET side
-            'NGramFeaturizer2.py']:
+        if name in ['__init__.py',]:
             continue
         # skip for all linux tests, mac is ok
         if os.name == "posix" and platform.linux_distribution()[0] != '':
