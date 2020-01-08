@@ -35,15 +35,6 @@ class TestCsrMatrixOutput(unittest.TestCase):
 
         self.assertTrue(result.equals(expected_result))
 
-        import os
-        filename = 'csr_test_executed'
-        if not os.path.exists(filename):
-            with open(filename, 'a'):
-                os.utime(filename, None)
-
-            self.fail('Forced failure to test restart functionality on Mac/Linux')
-
-
     def test_fit_transform_produces_expected_result(self):
         train_data = {'c1': [1, 0, 0, 4],
                       'c2': [2, 3, 0, 5],
