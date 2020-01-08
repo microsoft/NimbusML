@@ -10,7 +10,8 @@ import pandas as pd
 
 from nimbusml import Pipeline
 from nimbusml.ensemble import LightGbmRegressor, VotingRegressor
-from nimbusml.linear_model import (OrdinaryLeastSquaresRegressor,
+from nimbusml.linear_model import (LogisticRegressionClassifier,
+                                   OrdinaryLeastSquaresRegressor,
                                    OnlineGradientDescentRegressor)
 from nimbusml.preprocessing.filter import RangeFilter
 
@@ -124,6 +125,17 @@ class TestVotingRegressor(unittest.TestCase):
         self.assertAlmostEqual(average1, result4.loc[0, 'Score'], places=5)
         self.assertAlmostEqual(average2, result4.loc[1, 'Score'], places=5)
         self.assertAlmostEqual(average3, result4.loc[2, 'Score'], places=5)
+
+    def test_ensemble_rejects_estimators_with_incorrect_type(self):
+        r1 = OrdinaryLeastSquaresRegressor(**olsrArgs)
+        r2 = OnlineGradientDescentRegressor(**ogdArgs)
+        r3 = LogisticRegressionClassifier()
+        try:
+            vr = VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
+        except Exception as e:
+            print(e)
+        else:
+            self.fail('VotingRegressor should only work with regressors.')
 
     def test_ensemble_supports_output_predictor_model(self):
         # TODO: fill this in

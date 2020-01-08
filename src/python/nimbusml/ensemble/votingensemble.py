@@ -44,6 +44,8 @@ class VotingEnsemble(BasePredictor,
             raise ValueError("Estimators must be of type list.")
         elif any([not isinstance(e, BasePredictor) for e in estimators]):
             raise ValueError("Estimators must be predictors.")
+        elif any([e.type != type for e in estimators]):
+            raise ValueError("Estimators must be of type: " + type)
         else:
             self.estimators = estimators
 
