@@ -33,7 +33,7 @@ namespace Microsoft.ML.DotNetBridge
             for (int i = 0; i < input.Data.Schema.Count; i++)
                 colNames.Add(input.Data.Schema[i].Name);
 
-            // Iterate throuh input options, find matching source columns, create new input options
+            // Iterate through input options, find matching source columns, create new input options
             var inputOptions = new ColumnConcatenatingTransformer.Options() { Data = input.Data };
             var columns = new List<ColumnConcatenatingTransformer.Column>(input.Columns.Length);
             foreach (var col in input.Columns)
