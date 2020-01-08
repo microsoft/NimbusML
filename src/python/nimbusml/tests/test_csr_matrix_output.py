@@ -35,6 +35,8 @@ class TestCsrMatrixOutput(unittest.TestCase):
 
         self.assertTrue(result.equals(expected_result))
 
+        self.fail('Forced failure to test pytest restart.')
+
     def test_fit_transform_produces_expected_result(self):
         train_data = {'c1': [1, 0, 0, 4],
                       'c2': [2, 3, 0, 5],
