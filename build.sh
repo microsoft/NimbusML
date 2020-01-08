@@ -308,7 +308,7 @@ then
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
     "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
-        "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}"
+        "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
 
     if [ ${__runExtendedTests} = true ]
     then
