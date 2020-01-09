@@ -336,6 +336,7 @@
     <Compile Include="nimbusml\internal\entrypoints\models_crossvalidator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_crossvalidatordatasetsplitter.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_datasettransformer.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_datasettransformerex.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_ensemblesummary.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_fixedplattcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_multiclasspipelineensemble.py" />
@@ -699,6 +700,7 @@
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\schema\test_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
+    <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer_with_predictor_model.py" />
     <Compile Include="nimbusml\tests\preprocessing\text\test_wordtokenizer.py" />
     <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
     <Compile Include="nimbusml\tests\test_variable_column.py" />

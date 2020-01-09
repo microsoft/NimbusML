@@ -1686,6 +1686,40 @@
       ]
     },
     {
+      "Name": "Models.DatasetTransformerEx",
+      "Desc": "Applies a TransformModel to a dataset.",
+      "FriendlyName": "Apply Transform Model Output",
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "Predictor model",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ]
+    },
+    {
       "Name": "Models.EnsembleSummary",
       "Desc": "Summarize a pipeline ensemble predictor.",
       "FriendlyName": null,
