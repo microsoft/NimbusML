@@ -101,7 +101,7 @@ class VotingEnsemble(BasePredictor,
             predictor_nodes.append(predictor_node)
 
             if index == 0:
-                self._fit_info_proxy = self, predictor_node
+                self._fit_info_proxy = predictor, predictor_node
 
             transform_models = [ep.outputs["Model"] for ep in transform_nodes]
             transform_models.extend([ep.outputs["Model"] for ep in implicit_transforms])

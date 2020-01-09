@@ -153,12 +153,11 @@ class TestVotingRegressor(unittest.TestCase):
                                workclass=['X', 'X', 'Y', 'Y', 'Y'],
                                yy=[1.1, 2.2, 1.24, 3.4, 3.4]))
 
-        r1 = OrdinaryLeastSquaresRegressor(normalize="Yes") \
-                << {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
-        r2 = OnlineGradientDescentRegressor(normalize="Yes") \
-                << {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
-        r3 = LightGbmRegressor(normalize="Yes") \
-                << {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
+        col_info = {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
+
+        r1 = OrdinaryLeastSquaresRegressor(normalize="Yes") << col_info
+        r2 = OnlineGradientDescentRegressor(normalize="Yes") << col_info
+        r3 = LightGbmRegressor(normalize="Yes") << col_info
 
         pipeline = Pipeline([
             MeanVarianceScaler() << {'new_y': 'yy'},
