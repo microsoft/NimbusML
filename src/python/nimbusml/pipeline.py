@@ -34,6 +34,8 @@ from .internal.entrypoints.models_clusterevaluator import \
     models_clusterevaluator
 from .internal.entrypoints.models_datasettransformer import \
     models_datasettransformer
+from .internal.entrypoints.models_datasettransformerex import \
+    models_datasettransformerex
 from .internal.entrypoints.models_rankingevaluator import \
     models_rankingevaluator
 from .internal.entrypoints.models_regressionevaluator import \
