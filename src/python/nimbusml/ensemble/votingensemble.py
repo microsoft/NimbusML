@@ -100,6 +100,9 @@ class VotingEnsemble(BasePredictor,
             predictor_node._implicit = True
             predictor_nodes.append(predictor_node)
 
+            if index == 0:
+                self._fit_info_proxy = self, predictor_node
+
             transform_models = [ep.outputs["Model"] for ep in transform_nodes]
             transform_models.extend([ep.outputs["Model"] for ep in implicit_transforms])
 
@@ -128,6 +131,9 @@ class VotingEnsemble(BasePredictor,
         ])
 
         return graph_nodes, learner_features
+
+    def _get_fit_info_proxy(self):
+        return self._fit_info_proxy
 
 
 class VotingRegressor(VotingEnsemble,

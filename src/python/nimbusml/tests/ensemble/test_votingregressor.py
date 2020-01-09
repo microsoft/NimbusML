@@ -8,12 +8,15 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from nimbusml import Pipeline
+from nimbusml import Pipeline, Role
 from nimbusml.ensemble import LightGbmRegressor, VotingRegressor
+from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import (LogisticRegressionClassifier,
                                    OrdinaryLeastSquaresRegressor,
                                    OnlineGradientDescentRegressor)
 from nimbusml.preprocessing.filter import RangeFilter
+from nimbusml.preprocessing.normalization import MeanVarianceScaler
+from nimbusml.preprocessing.schema import ColumnDropper
 
 
 train_data = {'c1': [2, 3, 4, 5],
@@ -146,8 +149,34 @@ class TestVotingRegressor(unittest.TestCase):
         pass
 
     def test_ensemble_supports_get_fit_info(self):
-        # TODO: fill this in
-        pass
+        df = pd.DataFrame(dict(education=['A', 'B', 'A', 'B', 'A'],
+                               workclass=['X', 'X', 'Y', 'Y', 'Y'],
+                               yy=[1.1, 2.2, 1.24, 3.4, 3.4]))
+
+        r1 = OrdinaryLeastSquaresRegressor(normalize="Yes") \
+                << {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
+        r2 = OnlineGradientDescentRegressor(normalize="Yes") \
+                << {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
+        r3 = LightGbmRegressor(normalize="Yes") \
+                << {'Feature': ['workclass', 'education'], Role.Label: 'new_y'}
+
+        pipeline = Pipeline([
+            MeanVarianceScaler() << {'new_y': 'yy'},
+            OneHotVectorizer() << ['workclass', 'education'],
+            ColumnDropper() << 'yy',
+            VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
+        ])
+
+        info = pipeline.get_fit_info(df)
+
+        last_info_node = info[0][-1]
+        self.assertEqual(last_info_node['inputs'],
+                         ['Feature:education,workclass', 'Label:new_y'])
+        self.assertEqual(last_info_node['name'], 'VotingRegressor')
+        self.assertTrue(isinstance(last_info_node['operator'], VotingRegressor))
+        self.assertEqual(last_info_node['outputs'], ['Score'])
+        self.assertEqual(last_info_node['schema_after'], ['Score'])
+        self.assertEqual(last_info_node['type'], 'regressor')
 
 
 if __name__ == '__main__':

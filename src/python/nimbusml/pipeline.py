@@ -927,6 +927,15 @@ class Pipeline:
                         inputs=schi,
                         outputs=sch))
             else:
+                node_before_proxy = None
+                if hasattr(node, '_get_fit_info_proxy'):
+                    node_before_proxy = node
+                    node, entrypoint = node._get_fit_info_proxy()
+                    # Find the node by name because the node may be different
+                    # then the original because of the clone() call above.
+                    node = [n for n in new_nodes \
+                            if n.__class__.__name__ == node.__class__.__name__][0]
+
                 inp, out = process_input_output(
                     node.__class__.__name__, entrypoint, current_schema)
                 if node.type == 'transform':
@@ -967,6 +976,9 @@ class Pipeline:
                             "0}'".format(
                                 node.type))
                     out = list(current_schema)
+
+                if node_before_proxy:
+                    node = node_before_proxy
 
                 info.append(
                     dict(
