@@ -2501,9 +2501,9 @@ class Pipeline:
             all_nodes = [importtext_node]
             inputs = dict([('file', ''), ('transform_model', self.model)])
 
-        apply_node = models_datasettransformer(
+        apply_node = models_datasettransformerex(
             data="$data",
-            transform_model="$transform_model",
+            predictor_model="$transform_model",
             output_data="$output_data")
 
         all_nodes.extend([apply_node])
