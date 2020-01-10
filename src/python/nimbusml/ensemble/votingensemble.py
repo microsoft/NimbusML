@@ -12,6 +12,7 @@ from collections import OrderedDict
 
 from sklearn.base import RegressorMixin
 from ..base_predictor import BasePredictor
+from ..internal.utils.data_roles import DataRoles
 from ..internal.utils.utils import trace
 from ..internal.core.base_pipeline_item import DefaultSignature
 from ..internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
@@ -134,6 +135,12 @@ class VotingEnsemble(BasePredictor,
 
     def _get_fit_info_proxy(self):
         return self._fit_info_proxy
+
+    def _move_role_info(self):
+        DataRoles.move_role_info(self)
+
+        for estimator in self.estimators:
+            estimator._move_role_info()
 
 
 class VotingRegressor(VotingEnsemble,

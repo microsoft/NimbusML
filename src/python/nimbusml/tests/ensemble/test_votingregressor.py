@@ -177,6 +177,26 @@ class TestVotingRegressor(unittest.TestCase):
         self.assertEqual(last_info_node['schema_after'], ['Score'])
         self.assertEqual(last_info_node['type'], 'regressor')
 
+    def test_data_role_info_has_been_removed_from_estimators(self):
+        r1 = OrdinaryLeastSquaresRegressor(**olsrArgs)
+        r2 = OnlineGradientDescentRegressor(**ogdArgs)
+        r3 = LightGbmRegressor(**lgbmArgs)
+        vr = VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
+
+        pipeline = Pipeline([vr])
+        pipeline.fit(train_df)
+
+        self.assertTrue(not hasattr(vr, 'feature_column_name'))
+
+        self.assertTrue(not hasattr(vr.estimators[0], 'feature_column_name'))
+        self.assertTrue(hasattr(vr.estimators[0], 'feature_column_name_'))
+
+        self.assertTrue(not hasattr(vr.estimators[1], 'feature_column_name'))
+        self.assertTrue(hasattr(vr.estimators[1], 'feature_column_name_'))
+
+        self.assertTrue(not hasattr(vr.estimators[2], 'feature_column_name'))
+        self.assertTrue(hasattr(vr.estimators[2], 'feature_column_name_'))
+
 
 if __name__ == '__main__':
     unittest.main()

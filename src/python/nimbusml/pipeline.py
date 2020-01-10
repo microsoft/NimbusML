@@ -1051,14 +1051,8 @@ class Pipeline:
         params.pop('max_slots', max_slots)
 
         def move_information_about_roles_once_used():
-            last_node = self.last_node
-            for role in DataRoles._allowed:
-                name = Role.to_attribute(role)
-                for obj in [self, last_node]:
-                    if hasattr(obj, name):
-                        name2 = Role.to_attribute(role)
-                        setattr(obj, name2 + "_", getattr(obj, name))
-                        del obj.__dict__[name]
+            DataRoles.move_role_info(self)
+            self.last_node._move_role_info()
 
         # run the graph
         # REVIEW: we should have the possibility to keep the model in
