@@ -307,27 +307,22 @@ class CV:
 
         return clean_results
 
-    def _process_split_start(self, split_start):
-        nodes = self._pipeline.nodes
-        pipeline_len = len(nodes)
+    def _process_split_start(self, split_start, num_transform_nodes):
         if isinstance(split_start, str):
             if split_start == 'before_transforms':
                 split_index = 0
             elif split_start == 'after_transforms':
-                split_index = pipeline_len - 1
+                split_index = num_transform_nodes
             else:
                 raise ValueError(
                     'String value for split_start should be either '
                     '"before_transforms" or "after_transforms"')
 
         if isinstance(split_start, six.integer_types):
-            try:
-                nodes[split_start]
-            except IndexError:
+            if split_start > num_transform_nodes:
                 raise ValueError(
                     'Pipeline doesn\'t contain a step for split_start={'
-                    '}'.format(
-                        split_start))
+                    '}'.format(split_start))
 
             split_index = split_start
 
@@ -335,7 +330,10 @@ class CV:
         # Convert split_index to positive number, so that it can index into
         # list of transfroms without the learner.
         if split_index < 0:
-            split_index = split_index + pipeline_len
+            split_index = split_index + num_transform_nodes
+
+            if split_index < 0:
+                raise ValueError('Invalid split index.')
 
         return split_index
 
@@ -426,6 +424,7 @@ class CV:
         self._results = None
         self._raw_results = None
         verbose = 1
+        dry_run = params.pop('dry_run', False)
 
         # _fit_graph() seems to have side-effects on the pipeline object
         # Use a clone, so that we can reuse CV object for multiple calls to
@@ -468,9 +467,10 @@ class CV:
                         'groups in .fit() function.')
 
 
-        split_index = self._process_split_start(split_start)
         graph_sections = cv_aux_info.graph_sections
         transforms = graph_sections.get('transform_nodes', [])
+
+        split_index = self._process_split_start(split_start, len(transforms))
         pre_split_transforms = transforms[:split_index]
         post_split_transforms = transforms[split_index:]
         implicit_nodes = graph_sections['implicit_nodes']
@@ -562,11 +562,16 @@ class CV:
                 telemetry_info=telemetry_info,
                 is_cv=True,
                 output_types=self.output_types,
+                dry_run=dry_run,
                 **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
 
-        self._raw_results = graph_run_results
-        self._results = self._cleanup_results(graph_run_results, cv)
+        if dry_run:
+            self._results = graph_run_results
+        else:
+            self._raw_results = graph_run_results
+            self._results = self._cleanup_results(graph_run_results, cv)
+
         return self._results
