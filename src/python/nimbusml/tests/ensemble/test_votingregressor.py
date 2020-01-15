@@ -147,57 +147,96 @@ class TestVotingRegressor(unittest.TestCase):
         # TODO: fill this in
         pass
 
-    def test_ensemble_supports_cv(self):
+    def test_ensemble_supports_cv_with_user_defined_transforms(self):
         path = get_dataset("airquality").as_filepath()
         schema = DataSchema.read_schema(path)
         data = FileDataStream(path, schema)
 
-        pipeline_steps = [
-            Indicator() << {
-                'Ozone_ind': 'Ozone',
-                'Solar_R_ind': 'Solar_R'},
-            Handler(
-                replace_with='Mean') << {
-                'Solar_R': 'Solar_R',
-                'Ozone': 'Ozone'},
-            LightGbmRegressor(
-                feature=['Ozone',
-                         'Solar_R',
-                         'Ozone_ind',
-                         'Solar_R_ind',
-                         'Temp'],
-                label='Wind')]
+        ind_args = {'Ozone_ind': 'Ozone', 'Solar_R_ind': 'Solar_R'}
+        handler_args = {'Solar_R': 'Solar_R', 'Ozone': 'Ozone'}
+        lgbm_args = {
+            'feature': ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+            'label': 'Wind',
+            'normalize': 'Yes'
+        }
+        ols_args = {
+            'feature': ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+            'label': 'Wind',
+            'normalize': 'Yes'
+        }
+        ogd_args = {
+            'feature': ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+            'label': 'Wind',
+            'shuffle': False,
+            'normalize': 'Yes'
+        }
 
-        cv_results = CV(pipeline_steps).fit(data, split_start='after_transforms')
+        for split_start in ['before_transforms', 'after_transforms']:
+            pipeline_steps = [
+                Indicator() << ind_args,
+                Handler(replace_with='Mean') << handler_args,
+                LightGbmRegressor(**lgbm_args)
+            ]
+
+            cv_results = CV(pipeline_steps).fit(data, split_start=split_start)
+            l2_avg_lgbm = cv_results['metrics_summary'].loc['Average', 'L2(avg)']
+
+            r1 = OrdinaryLeastSquaresRegressor(**ols_args)
+            r2 = OnlineGradientDescentRegressor(**ogd_args)
+            r3 = LightGbmRegressor(**lgbm_args)
+
+            data = FileDataStream(path, schema)
+            pipeline_steps = [
+                Indicator() << ind_args,
+                Handler(replace_with='Mean') << handler_args,
+                VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
+            ]
+
+            cv_results = CV(pipeline_steps).fit(data, split_start=split_start)
+            l2_avg_ensemble = cv_results['metrics_summary'].loc['Average', 'L2(avg)']
+
+            self.assertTrue(l2_avg_ensemble < l2_avg_lgbm)
+
+    def test_ensemble_supports_cv_without_user_defined_transforms(self):
+        path = get_dataset("airquality").as_filepath()
+        schema = DataSchema.read_schema(path)
+        data = FileDataStream(path, schema)
+
+        ind_args = {'Ozone_ind': 'Ozone', 'Solar_R_ind': 'Solar_R'}
+        handler_args = {'Solar_R': 'Solar_R', 'Ozone': 'Ozone'}
+        lgbm_args = {
+            'feature': ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+            'label': 'Wind',
+            'normalize': 'Yes'
+        }
+        ols_args = {
+            'feature': ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+            'label': 'Wind',
+            'normalize': 'Yes'
+        }
+        ogd_args = {
+            'feature': ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+            'label': 'Wind',
+            'shuffle': False,
+            'normalize': 'Yes'
+        }
+
+        pipeline = Pipeline([
+            Indicator() << ind_args,
+            Handler(replace_with='Mean') << handler_args
+        ])
+        transformed_data = pipeline.fit_transform(data, as_binary_data_stream=True)
+
+        pipeline_steps = [LightGbmRegressor(**lgbm_args)]
+        cv_results = CV(pipeline_steps).fit(transformed_data)
         l2_avg_lgbm = cv_results['metrics_summary'].loc['Average', 'L2(avg)']
 
-        r1 = OrdinaryLeastSquaresRegressor(
-                feature = ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
-                label = 'Wind',
-                normalize = "Yes")
-        r2 = OnlineGradientDescentRegressor(
-                feature = ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
-                label = 'Wind',
-                shuffle = False,
-                normalize = "Yes")
-        r3 = LightGbmRegressor(
-                feature = ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
-                label = 'Wind',
-                normalize = 'Yes')
+        r1 = OrdinaryLeastSquaresRegressor(**ols_args)
+        r2 = OnlineGradientDescentRegressor(**ogd_args)
+        r3 = LightGbmRegressor(**lgbm_args)
 
-        data = FileDataStream(path, schema)
-        pipeline_steps = [
-            Indicator() << {
-                'Ozone_ind': 'Ozone',
-                'Solar_R_ind': 'Solar_R'},
-            Handler(
-                replace_with='Mean') << {
-                'Solar_R': 'Solar_R',
-                'Ozone': 'Ozone'},
-            VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
-        ]
-
-        cv_results = CV(pipeline_steps).fit(data, split_start='after_transforms')
+        pipeline_steps = [VotingRegressor(estimators=[r1, r2, r3], combiner='Average')]
+        cv_results = CV(pipeline_steps).fit(transformed_data)
         l2_avg_ensemble = cv_results['metrics_summary'].loc['Average', 'L2(avg)']
 
         self.assertTrue(l2_avg_ensemble < l2_avg_lgbm)
