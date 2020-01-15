@@ -733,7 +733,7 @@ class Pipeline:
             elif params.pop('as_csr', False):
                 data_output_format = DataOutputFormat.CSR
 
-        # CV ignores the graph return value so skip its creation
+        # CV ignores the graph return value so skip its creation 
         # in this case to avoid premature graph validation errors.
         graph = None if is_cv else \
                 Graph(inputs,
