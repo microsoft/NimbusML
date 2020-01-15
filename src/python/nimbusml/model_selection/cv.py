@@ -71,6 +71,11 @@ class _PipelineSteps(list):
         return models
 
     @property
+    def all_transform_output_models(self):
+        models, _, _ = self._get_values('outputs', ['Model'])
+        return models
+
+    @property
     def last_output_model(self):
         return _PipelineSteps.get_last(self.all_output_models)
 
@@ -437,7 +442,7 @@ class CV:
         # that CV requires out of Pipeline. So a lot of return values are
         # unused.
         _, X, y, weights, _, _, _, _, cv_aux_info, \
-            _ = self._pipeline._fit_graph(X, y, verbose, is_cv=True, **params)
+            _ = self._pipeline._fit_graph(X, y, verbose, **params)
         assert (cv_aux_info.predictor_model == '$predictor_model')
         learner_roles = pipeline._get_last_node_roles(X, y)
         group_id = learner_roles.get('GroupId')
@@ -511,6 +516,15 @@ class CV:
             learner_node.output_variables.add(learner_model_new_name)
             cv_subgraph.add(learner_node)
 
+            new_models = cv_subgraph.all_transform_output_models
+
+            # TODO: refactor this.
+            for node in implicit_nodes:
+                if 'ManyHeterogeneousModelCombiner' in node.name:
+                    prev_models = set(node.inputs['TransformModels'])
+                    node.input_variables -= prev_models
+                    node.input_variables |= set(new_models)
+                    node.inputs['TransformModels'] = new_models
         else:
             training_data = cv_subgraph.last_output_data
             learner_node.inputs['TrainingData'] = training_data

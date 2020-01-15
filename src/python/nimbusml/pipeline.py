@@ -625,7 +625,6 @@ class Pipeline:
             'output_binary_data_stream', False)
         params.pop('parallel', None)
         do_output_predictor_model = params.pop('output_predictor_model', None)
-        is_cv = params.pop('is_cv', False)
 
         X, y, columns_renamed, feature_columns, label_column, schema, \
             weights, weight_column = self._preprocess_X_y(X, y, weights)
@@ -661,7 +660,7 @@ class Pipeline:
                 last_node._get_graph_nodes(
                     transform_nodes, columns_out,
                     label_column, weight_column, output_data,
-                    output_model, predictor_model, y, is_cv,
+                    output_model, predictor_model, y,
                     strategy_iosklearn=strategy_iosklearn)
 
             graph_nodes.update(learner_graph_nodes)
@@ -733,13 +732,11 @@ class Pipeline:
             elif params.pop('as_csr', False):
                 data_output_format = DataOutputFormat.CSR
 
-        # CV ignores the graph return value so skip its creation 
-        # in this case to avoid premature graph validation errors.
-        graph = None if is_cv else \
-                Graph(inputs,
-                      outputs,
-                      data_output_format,
-                      *(graph_nodes))
+        graph = Graph(
+            inputs,
+            outputs,
+            data_output_format,
+            *(graph_nodes))
 
         # Checks that every parameter in params was used.
         if len(params) > 0:
