@@ -69,6 +69,7 @@ class VotingEnsemble(BasePredictor,
             output_model,
             predictor_model,
             y,
+            is_cv,
             strategy_iosklearn):
         combiner_nodes = []
         predictor_nodes = []
@@ -88,6 +89,7 @@ class VotingEnsemble(BasePredictor,
                         output_model,
                         predictor_model + suffix,
                         y,
+                        is_cv,
                         strategy_iosklearn)
 
             if not implicit_transforms:
@@ -104,7 +106,9 @@ class VotingEnsemble(BasePredictor,
             if index == 0:
                 self._fit_info_proxy = predictor, predictor_node
 
-            transform_models = [ep.outputs["Model"] for ep in transform_nodes]
+            transform_models = []
+            if not is_cv:
+                transform_models.extend([ep.outputs["Model"] for ep in transform_nodes])
             transform_models.extend([ep.outputs["Model"] for ep in implicit_transforms])
 
             predictor_model_var_name = "$predictor_model_combined" + str(index)

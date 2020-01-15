@@ -255,6 +255,7 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
             output_model,
             predictor_model,
             y,
+            is_cv,
             strategy_iosklearn):
         graph_nodes = OrderedDict()
         num_transforms = len(transform_nodes)

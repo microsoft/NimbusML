@@ -10,6 +10,7 @@ import six
 from pandas import DataFrame
 
 from .. import Pipeline, FileDataStream
+from ..ensemble.votingensemble import VotingEnsemble
 from ..internal.entrypoints.models_crossvalidator import \
     models_crossvalidator
 from ..internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
@@ -436,7 +437,7 @@ class CV:
         # that CV requires out of Pipeline. So a lot of return values are
         # unused.
         _, X, y, weights, _, _, _, _, cv_aux_info, \
-            _ = self._pipeline._fit_graph(X, y, verbose, **params)
+            _ = self._pipeline._fit_graph(X, y, verbose, is_cv=True, **params)
         assert (cv_aux_info.predictor_model == '$predictor_model')
         learner_roles = pipeline._get_last_node_roles(X, y)
         group_id = learner_roles.get('GroupId')
@@ -502,21 +503,30 @@ class CV:
             implicit_nodes)
 
         # Add learner node
-        training_data = cv_subgraph.last_output_data
-        learner_node.inputs['TrainingData'] = training_data
-        learner_node.input_variables = {training_data}
-        cv_subgraph.add(learner_node)
-
-        if len(cv_subgraph.all_output_models) > 1:
-            learner_model_new_name = cv_aux_info.output_model + '_learner'
+        if isinstance(pipeline.last_node, VotingEnsemble):
+            learner_model_new_name = cv_aux_info.predictor_model
+            learner_model_prev_name = learner_node.outputs['PredictorModel']
             learner_node.outputs['PredictorModel'] = learner_model_new_name
-            learner_node.output_variables = {learner_model_new_name}
+            learner_node.output_variables.discard(learner_model_prev_name)
+            learner_node.output_variables.add(learner_model_new_name)
+            cv_subgraph.add(learner_node)
 
-            combine_model_node = transforms_manyheterogeneousmodelcombiner(
-                transform_models=cv_subgraph.all_output_models[:-1],
-                predictor_model=cv_subgraph.all_output_models[-1],
-                model=cv_aux_info.predictor_model)
-            cv_subgraph.add(combine_model_node)
+        else:
+            training_data = cv_subgraph.last_output_data
+            learner_node.inputs['TrainingData'] = training_data
+            learner_node.input_variables = {training_data}
+            cv_subgraph.add(learner_node)
+
+            if len(cv_subgraph.all_output_models) > 1:
+                learner_model_new_name = cv_aux_info.output_model + '_learner'
+                learner_node.outputs['PredictorModel'] = learner_model_new_name
+                learner_node.output_variables = {learner_model_new_name}
+
+                combine_model_node = transforms_manyheterogeneousmodelcombiner(
+                    transform_models=cv_subgraph.all_output_models[:-1],
+                    predictor_model=cv_subgraph.all_output_models[-1],
+                    model=cv_aux_info.predictor_model)
+                cv_subgraph.add(combine_model_node)
 
         # Update the first data input of CV subgraph steps
         input_node, input_name = cv_subgraph.first_input_data

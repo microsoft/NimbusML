@@ -8,13 +8,16 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from nimbusml import Pipeline, Role
+from nimbusml import DataSchema, FileDataStream, Pipeline, Role
+from nimbusml.datasets import get_dataset
 from nimbusml.ensemble import LightGbmRegressor, VotingRegressor
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import (LogisticRegressionClassifier,
                                    OrdinaryLeastSquaresRegressor,
                                    OnlineGradientDescentRegressor)
+from nimbusml.model_selection import CV
 from nimbusml.preprocessing.filter import RangeFilter
+from nimbusml.preprocessing.missing_values import Indicator, Handler
 from nimbusml.preprocessing.normalization import MeanVarianceScaler
 from nimbusml.preprocessing.schema import ColumnDropper
 
@@ -145,8 +148,59 @@ class TestVotingRegressor(unittest.TestCase):
         pass
 
     def test_ensemble_supports_cv(self):
-        # TODO: fill this in
-        pass
+        path = get_dataset("airquality").as_filepath()
+        schema = DataSchema.read_schema(path)
+        data = FileDataStream(path, schema)
+
+        pipeline_steps = [
+            Indicator() << {
+                'Ozone_ind': 'Ozone',
+                'Solar_R_ind': 'Solar_R'},
+            Handler(
+                replace_with='Mean') << {
+                'Solar_R': 'Solar_R',
+                'Ozone': 'Ozone'},
+            LightGbmRegressor(
+                feature=['Ozone',
+                         'Solar_R',
+                         'Ozone_ind',
+                         'Solar_R_ind',
+                         'Temp'],
+                label='Wind')]
+
+        cv_results = CV(pipeline_steps).fit(data, split_start='after_transforms')
+        l2_avg_lgbm = cv_results['metrics_summary'].loc['Average', 'L2(avg)']
+
+        r1 = OrdinaryLeastSquaresRegressor(
+                feature = ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+                label = 'Wind',
+                normalize = "Yes")
+        r2 = OnlineGradientDescentRegressor(
+                feature = ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+                label = 'Wind',
+                shuffle = False,
+                normalize = "Yes")
+        r3 = LightGbmRegressor(
+                feature = ['Ozone', 'Solar_R', 'Ozone_ind', 'Solar_R_ind', 'Temp'],
+                label = 'Wind',
+                normalize = 'Yes')
+
+        data = FileDataStream(path, schema)
+        pipeline_steps = [
+            Indicator() << {
+                'Ozone_ind': 'Ozone',
+                'Solar_R_ind': 'Solar_R'},
+            Handler(
+                replace_with='Mean') << {
+                'Solar_R': 'Solar_R',
+                'Ozone': 'Ozone'},
+            VotingRegressor(estimators=[r1, r2, r3], combiner='Average')
+        ]
+
+        cv_results = CV(pipeline_steps).fit(data, split_start='after_transforms')
+        l2_avg_ensemble = cv_results['metrics_summary'].loc['Average', 'L2(avg)']
+
+        self.assertTrue(l2_avg_ensemble < l2_avg_lgbm)
 
     def test_ensemble_supports_get_fit_info(self):
         df = pd.DataFrame(dict(education=['A', 'B', 'A', 'B', 'A'],
