@@ -23,7 +23,7 @@ from nimbusml.preprocessing.schema import ColumnDropper
 
 
 train_data = {'c1': [2, 3, 4, 5],
-              'c2': [20, 30.8, 39.2, 51]}
+              'c2': [20, 30.8, 39.2, 81]}
 train_df = pd.DataFrame(train_data).astype({'c1': np.float32,
                                             'c2': np.float32})
 
@@ -143,9 +143,46 @@ class TestVotingRegressor(unittest.TestCase):
         else:
             self.fail('VotingRegressor should only work with regressors.')
 
+    @unittest.skip('Not implemented yet.')
     def test_ensemble_supports_output_predictor_model(self):
-        # TODO: fill this in
-        pass
+        test2_df = test_df.copy(deep=True)
+        test2_df = test2_df.append(pd.DataFrame({'c1': [9, 11], 'c2': [1, 1]}),
+                                   ignore_index=True)
+        test2_df = test2_df.astype({'c1': np.float32, 'c2': np.float32})
+
+        # Create a ground truth pipeline
+        r1 = OrdinaryLeastSquaresRegressor(**olsrArgs)
+        r2 = OnlineGradientDescentRegressor(**ogdArgs)
+        combined_pipeline = Pipeline([RangeFilter(min=0.0, max=4.5) << 'c1',
+                                      VotingRegressor(estimators=[r1, r2], combiner='Average')])
+        combined_pipeline.fit(train_df)
+        result_1 = combined_pipeline.predict(test2_df)
+
+        # Create a duplicate pipeline but also request a predictor model
+        r1 = OrdinaryLeastSquaresRegressor(**olsrArgs)
+        r2 = OnlineGradientDescentRegressor(**ogdArgs)
+        combined_pipeline = Pipeline([RangeFilter(min=0.0, max=4.5) << 'c1',
+                                      VotingRegressor(estimators=[r1, r2], combiner='Average')])
+        combined_pipeline.fit(train_df, output_predictor_model=True)
+        result_2 = combined_pipeline.predict(test2_df)
+
+        # Create a predictor model only pipeline
+        predictor_pipeline = Pipeline()
+        predictor_pipeline.load_model(combined_pipeline.predictor_model)
+        result_3 = predictor_pipeline.predict(test2_df)
+
+        # Verify the first rows are equal
+        self.assertEqual(result_1.loc[0, 'Score'], result_2.loc[0, 'Score'])
+        self.assertEqual(result_2.loc[0, 'Score'], result_3.loc[0, 'Score'])
+
+        # Verify the second rows are equal
+        self.assertEqual(result_1.loc[1, 'Score'], result_2.loc[1, 'Score'])
+        self.assertEqual(result_2.loc[1, 'Score'], result_3.loc[1, 'Score'])
+
+        # Verify the number of rows
+        self.assertEqual(len(result_1), 2)
+        self.assertEqual(len(result_2), 2)
+        self.assertEqual(len(result_3), 4)
 
     def test_ensemble_supports_cv_with_user_defined_transforms(self):
         path = get_dataset("airquality").as_filepath()
