@@ -93,8 +93,11 @@ class TestVotingRegressor(unittest.TestCase):
         pipeline.fit(train_df)
         result4 = pipeline.predict(test_df)
 
-        self.assertEqual(result2.loc[0], result4.loc[0, 'Score'])
-        self.assertEqual(result1.loc[1], result4.loc[1, 'Score'])
+        median1 = sorted([result1.loc[0], result2.loc[0], result3.loc[0]])[1]
+        median2 = sorted([result1.loc[1], result2.loc[1], result3.loc[1]])[1]
+
+        self.assertEqual(median1, result4.loc[0, 'Score'])
+        self.assertEqual(median2, result4.loc[1, 'Score'])
 
     def test_ensemble_supports_user_defined_transforms(self):
         test2_df = test_df.copy(deep=True)
