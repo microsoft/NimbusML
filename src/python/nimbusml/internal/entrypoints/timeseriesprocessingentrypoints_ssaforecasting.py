@@ -43,7 +43,7 @@ def timeseriesprocessingentrypoints_ssaforecasting(
         building the trajectory matrix (parameter L). (inputs).
     :param series_length: The length of series that is kept in buffer
         for modeling (parameter N). (inputs).
-    :param train_size: The length of series from the begining used
+    :param train_size: The length of series from the beginning used
         for training. (inputs).
     :param horizon: The number of values to forecast. (inputs).
     :param confidence_level: The confidence level in [0, 1) for

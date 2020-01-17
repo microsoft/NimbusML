@@ -36,7 +36,7 @@ def trainers_generalizedadditivemodelbinaryclassifier(
     **Description**
         Trains a gradient boosted stump per feature, on all features
         simultaneously, to fit target values using least-squares. It
-        mantains no interactions between features.
+        maintains no interactions between features.
 
     :param number_of_iterations: Total number of iterations over all
         features (inputs).

@@ -38,7 +38,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
     :param series_length: The length of series that is kept in buffer for
         modeling (parameter N).
 
-    :param train_size: The length of series from the begining used for
+    :param train_size: The length of series from the beginning used for
         training.
 
     :param horizon: The number of values to forecast.

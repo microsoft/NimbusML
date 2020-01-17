@@ -21,7 +21,7 @@ def transforms_missingvaluehandler(
     **Description**
         Handle missing values by replacing them with either the default value
         or the mean/min/max value (for non-text columns only). An
-        indicator column can optionally be concatenated, if theinput
+        indicator column can optionally be concatenated, if the input
         column type is numeric.
 
     :param column: New column definition(s) (optional form:
