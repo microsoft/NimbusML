@@ -105,7 +105,6 @@
     <Compile Include="nimbusml\examples\ColumnSelector.py" />
     <Compile Include="nimbusml\examples\CountSelector.py" />
     <Compile Include="nimbusml\examples\CV.py" />
-    <Compile Include="nimbusml\examples\DateTimeSplitter.py" />
     <Compile Include="nimbusml\examples\EnsembleClassifier.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\AveragedPerceptronBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Binner_df.py" />
@@ -116,7 +115,6 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\DateTimeSplitter_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\ColumnDuplicator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Concat_Drop_Select_Columns_df.py" />
-    <Compile Include="nimbusml\examples\examples_from_dataframe\DateTimeSplitter_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\EnsembleClassifier_iris_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\EnsembleRegressor_airquality_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FactorizationMachineBinaryClassifier_infert_df.py" />
@@ -724,7 +722,6 @@
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_robustscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
-    <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
     <Compile Include="nimbusml\tests\preprocessing\schema\test_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_tokeyimputer.py" />
