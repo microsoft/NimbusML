@@ -105,6 +105,7 @@
     <Compile Include="nimbusml\examples\ColumnSelector.py" />
     <Compile Include="nimbusml\examples\CountSelector.py" />
     <Compile Include="nimbusml\examples\CV.py" />
+    <Compile Include="nimbusml\examples\DateTimeSplitter.py" />
     <Compile Include="nimbusml\examples\EnsembleClassifier.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\AveragedPerceptronBinaryClassifier_infert_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Binner_df.py" />
@@ -115,6 +116,7 @@
     <Compile Include="nimbusml\examples\examples_from_dataframe\DateTimeSplitter_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\ColumnDuplicator_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\Concat_Drop_Select_Columns_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\DateTimeSplitter_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\EnsembleClassifier_iris_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\EnsembleRegressor_airquality_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\FactorizationMachineBinaryClassifier_infert_df.py" />
@@ -718,6 +720,7 @@
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_transform_method.py" />
+    <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_robustscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
@@ -831,6 +834,7 @@
     <Compile Include="tools\fix_line_widths.py" />
     <Compile Include="tools\loss_processor.py" />
     <Compile Include="tools\manifest_diff_parser.py" />
+    <Compile Include="tools\temp_docs_updater.py" />
     <Compile Include="tools\update_nimbusml_version.py" />
     <Compile Include="nimbusml\tests\test_syntax_onehotvectorizer.py" />
     <Compile Include="nimbusml\tests\utils\test_exports.py" />
@@ -987,7 +991,6 @@
     <Content Include="docs\docstrings\CustomStopWordsRemover.txt" />
     <Content Include="docs\docstrings\Dart.txt" />
     <Content Include="docs\docstrings\DnnFeaturizer.txt" />
-    <Content Include="docs\docstrings\DssmFeaturizer.txt" />
     <Content Include="docs\docstrings\EnsembleClassifier.txt" />
     <Content Include="docs\docstrings\EnsembleRegressor.txt" />
     <Content Include="docs\docstrings\ExponentialAverage.txt" />

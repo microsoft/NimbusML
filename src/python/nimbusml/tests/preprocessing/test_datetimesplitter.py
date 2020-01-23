@@ -6,7 +6,9 @@
 import unittest
 
 import pandas
+from nimbusml import Pipeline
 from nimbusml.preprocessing import DateTimeSplitter
+from nimbusml.preprocessing.schema import ColumnSelector
 from sklearn.utils.testing import assert_equal
 
 
@@ -25,16 +27,15 @@ class TestDateTimeSplitter(unittest.TestCase):
         ))
 
         cols_to_drop = [
-            'Hour12', 'DayOfWeek', 'DayOfQuarter',
-            'DayOfYear', 'WeekOfMonth', 'QuarterOfYear',
-            'HalfOfYear', 'WeekIso', 'YearIso', 'MonthLabel',
-            'AmPmLabel', 'DayOfWeekLabel', 'IsPaidTimeOff'
+            'dtHour12', 'dtDayOfWeek', 'dtDayOfQuarter',
+            'dtDayOfYear', 'dtWeekOfMonth', 'dtQuarterOfYear',
+            'dtHalfOfYear', 'dtWeekIso', 'dtYearIso', 'dtMonthLabel',
+            'dtAmPmLabel', 'dtDayOfWeekLabel', 'dtIsPaidTimeOff'
         ]
 
-        dts = DateTimeSplitter(prefix='dt',
-                               country='Canada',
-                               columns_to_drop=cols_to_drop) << 'tokens1'
-        y = dts.fit_transform(df)
+        dts = DateTimeSplitter(prefix='dt', country='Canada') << 'tokens1'
+        pipeline = Pipeline([dts, ColumnSelector(drop_columns=cols_to_drop)])
+        y = pipeline.fit_transform(df)
 
         self.assertEqual(y.loc[3, 'dtHolidayName'], 'Christmas Day')
 

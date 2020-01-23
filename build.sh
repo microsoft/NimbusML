@@ -284,7 +284,7 @@ then
         exit 1
     fi
     # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-    "${PythonExe}" -m pip install nose "pytest>=4.4.0" graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    "${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
     if [ ${PythonVersion} = 2.7 ]
     then
         "${PythonExe}" -m pip install --upgrade pyzmq
@@ -294,7 +294,7 @@ then
             "${PythonExe}" -m pip install --upgrade pytest-remotedata
         fi
 
-        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.12"
+        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
@@ -311,8 +311,7 @@ then
     TestsPath2=${__currentScriptDir}/src/python/tests
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath1}"
-    "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath2}"
+    "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}"
 
     if [ ${__runExtendedTests} = true ]
     then
@@ -329,7 +328,7 @@ then
                 yum install glibc-devel -y
             }
         fi
-        "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
+        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
 fi
 

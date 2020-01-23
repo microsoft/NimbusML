@@ -23,8 +23,6 @@ class DateTimeSplitter(BasePipelineItem, DefaultSignature):
 
     :param prefix: Output column prefix.
 
-    :param columns_to_drop: Columns to drop after the DateTime Expansion.
-
     :param country: Country to get holidays for. Defaults to none if not
         passed.
 
@@ -36,14 +34,12 @@ class DateTimeSplitter(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             prefix,
-            columns_to_drop=None,
             country='None',
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
         self.prefix = prefix
-        self.columns_to_drop = columns_to_drop
         self.country = country
 
     @property
@@ -55,7 +51,6 @@ class DateTimeSplitter(BasePipelineItem, DefaultSignature):
         algo_args = dict(
             source=self.source,
             prefix=self.prefix,
-            columns_to_drop=self.columns_to_drop,
             country=self.country)
 
         all_args.update(algo_args)

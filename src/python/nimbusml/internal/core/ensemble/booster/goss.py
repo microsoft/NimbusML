@@ -23,9 +23,9 @@ class Goss(Component):
     .. remarks::
         Gradient-based One-Side Sampling (GOSS) employs an adaptive sampling
         named gradient-based
-    sampling. For datasets with large sample size, GOSS has considerable
+        sampling. For datasets with large sample size, GOSS has considerable
         advantage in terms of
-    statistical and computational efficiency.
+        statistical and computational efficiency.
 
 
 

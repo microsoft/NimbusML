@@ -1,7 +1,9 @@
 ###############################################################################
 # DateTimeSplitter
 import pandas
+from nimbusml import Pipeline
 from nimbusml.preprocessing import DateTimeSplitter
+from nimbusml.preprocessing.schema import ColumnSelector
 
 df = pandas.DataFrame(data=dict(
     tokens1=[1, 2, 3, 157161600],
@@ -9,16 +11,16 @@ df = pandas.DataFrame(data=dict(
 ))
 
 cols_to_drop = [
-    'Hour12', 'DayOfWeek', 'DayOfQuarter',
-    'DayOfYear', 'WeekOfMonth', 'QuarterOfYear',
-    'HalfOfYear', 'WeekIso', 'YearIso', 'MonthLabel',
-    'AmPmLabel', 'DayOfWeekLabel', 'IsPaidTimeOff'
+    'dtHour12', 'dtDayOfWeek', 'dtDayOfQuarter',
+    'dtDayOfYear', 'dtWeekOfMonth', 'dtQuarterOfYear',
+    'dtHalfOfYear', 'dtWeekIso', 'dtYearIso', 'dtMonthLabel',
+    'dtAmPmLabel', 'dtDayOfWeekLabel', 'dtIsPaidTimeOff'
 ]
 
-cd = DateTimeSplitter(prefix='dt',
-                      country='Canada',
-                      columns_to_drop=cols_to_drop) << 'tokens1'
-y = cd.fit_transform(df)
+dts = DateTimeSplitter(prefix='dt', country='Canada') << 'tokens1'
+
+pipeline = Pipeline([dts, ColumnSelector(drop_columns=cols_to_drop)])
+y = pipeline.fit_transform(df)
 
 # view the three columns
 pandas.set_option('display.max_columns', None)
