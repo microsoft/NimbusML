@@ -181,8 +181,6 @@ if "%AzureBuild%" == "True" (
     echo ##vso[task.prependpath]%_dotnetRoot%
 )
 
-set LOCAL_NUGET_PACKAGES_DIR=.\local-nuget-packages
-
 :: Build managed code
 echo ""
 echo "#################################"
@@ -391,7 +389,7 @@ if "%InstallPythonPackages%" == "True" (
     echo "#################################"
     echo "Installing python packages ... "
     echo "#################################"
-    call "%PythonExe%" -m pip install --upgrade  "pip==19.3.1"
+    call "%PythonExe%" -m pip install --upgrade "pip==19.3.1"
     call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
     if %PythonVersion% == 2.7 (
