@@ -175,8 +175,6 @@ then
     echo "Installing dotnet SDK ... "
     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 2.1.701 -InstallDir ./cli
 
-    export LOCAL_NUGET_PACKAGES_DIR=./local-nuget-packages
-
     # Build managed code
     echo "Building managed code ... "
     _dotnet="${__currentScriptDir}/cli/dotnet"

@@ -62,7 +62,10 @@ OMITTED_CHECKS = {
         'check_transformer_general, check_pipeline_consistency'
         'check_estimators_pickle, check_estimators_dtypes'
         'check_dict_unchanged, check_dtype_object, check_fit_score_takes_y'
-        'check_transformer_data_not_an_array',
+        'check_transformer_data_not_an_array, check_fit1d_1feature,'
+        'check_fit2d_1feature, check_fit2d_predict1d, check_estimators_overwrite_params,'
+        'check_estimator_sparse_data, check_fit2d_1sample, check_dont_overwrite_parameters,'
+        'check_estimators_fit_returns_self',
     # by design returns smaller number of rows
     'SkipFilter': 'check_transformer_general, '
                   'check_transformer_data_not_an_array',
@@ -166,7 +169,8 @@ OMITTED_CHECKS = {
         'check_estimators_nan_inf',
     # RobustScaler does not support vectorized types
     'RobustScaler': 'check_estimator_sparse_data',
-    'ToKeyImputer': 'check_estimator_sparse_data',
+    'ToKeyImputer':
+        'check_estimator_sparse_data, check_estimators_dtypes',
     # Most of these skipped tests are failing because the checks
     # require numerical types. ToString returns object types.
     # TypeError: ufunc 'isfinite' not supported for the input types

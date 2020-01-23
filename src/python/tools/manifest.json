@@ -22153,7 +22153,7 @@
       "Name": "Transforms.RobustScaler",
       "Desc": "Removes the median and scales the data according to the quantile range.",
       "FriendlyName": "RobustScalerTransformer",
-      "ShortName": "RobustScalerTransformer",
+      "ShortName": "RobScalT",
       "Inputs": [
         {
           "Name": "Column",
@@ -23287,7 +23287,7 @@
       "Name": "Transforms.TimeSeriesImputer",
       "Desc": "Fills in missing row and values",
       "FriendlyName": "TimeSeriesImputer",
-      "ShortName": "TimeSeriesImputer",
+      "ShortName": "tsi",
       "Inputs": [
         {
           "Name": "TimeSeriesColumn",
@@ -23363,8 +23363,7 @@
             "Values": [
               "ForwardFill",
               "BackFill",
-              "Median",
-              "Interpolate"
+              "Median"
             ]
           },
           "Desc": "Mode for imputing, defaults to ForwardFill if not provided",
@@ -23412,7 +23411,7 @@
       "Name": "Transforms.ToString",
       "Desc": "Turns the given column into a column of its string representation",
       "FriendlyName": "ToString Transform",
-      "ShortName": "ToStringTransform",
+      "ShortName": "tostr",
       "Inputs": [
         {
           "Name": "Column",

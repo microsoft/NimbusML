@@ -303,7 +303,6 @@ namespace Microsoft.ML.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
-            env.ComponentCatalog.RegisterAssembly(typeof(CategoryImputerTransformer).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(DotNetBridgeEntrypoints).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(DateTimeTransformer).Assembly);
 
