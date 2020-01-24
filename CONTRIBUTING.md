@@ -1,6 +1,6 @@
 # Welcome!
 
-If you are here, it means you are interested in helping us out. A hearty welcome and thank you! While this is an experimental project, we will make our best effort to respond to feedback and issues. If you would like to join the effort, here are ways you can contribute to the NimbusML project:
+If you are here, it means you are interested in helping us out. A hearty welcome and thank you! Here are ways you can contribute to the NimbusML project:
 
 * Offer PRs to fix bugs or implement new features.
 * Give us feedback and bug reports regarding the software or the documentation.
