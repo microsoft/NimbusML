@@ -1,0 +1,43 @@
+name: 'Merge Branches'
+description: 'Automatically merge from one branch to another.'
+branding:
+  icon: 'git-merge'
+  color: 'orange'
+inputs:
+  source_branch:
+    description: 'Name of the source branch'
+    required: false
+    default: 'master'
+  target_branch:
+    description: 'Name of the target branch'
+    required: false
+    default: 'nightly'
+  allow_ff:
+    description: 'Allow fast forward merge'
+    required: false
+    default: false
+  ff_only:
+    description: 'Refuse to perform a non fast forward merge (requires allow_ff=true)'
+    required: false
+    default: false
+  allow_forks:
+    description: 'Allow action to run on forks'
+    required: false
+    default: false
+  user_name:
+    description: 'User name for git commits'
+    required: false
+    default: 'GitHub Merge Branches Action'
+  user_email:
+    description: 'User email for git commits'
+    required: false
+    default: 'actions@github.com'
+  push_token:
+    description: 'Environment variable containing the token to use for push'
+    required: false
+    default: 'GITHUB_TOKEN'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.myInput }}
