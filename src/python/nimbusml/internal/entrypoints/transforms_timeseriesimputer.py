@@ -83,8 +83,7 @@ def transforms_timeseriesimputer(
             values=[
                 'ForwardFill',
                 'BackFill',
-                'Median',
-                'Interpolate'])
+                'Median'])
     if supress_type_errors is not None:
         inputs['SupressTypeErrors'] = try_set(
             obj=supress_type_errors,

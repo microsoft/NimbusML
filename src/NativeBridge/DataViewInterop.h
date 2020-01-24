@@ -16,7 +16,7 @@ typedef MANAGED_CALLBACK_PTR(bool, GETLABELS)(DataSourceBlock *source, int col, 
 
 // REVIEW: boost_python is not updated at the same speed as swig or pybind11.
 // Both have a larger audience now, see about pybind11 https://github.com/davisking/dlib/issues/293
-// It handles csr_matrix: http://pybind11-rtdtest.readthedocs.io/en/stable/advanced.html#transparent-conversion-of-dense-and-sparse-eigen-data-types.
+// It handles csr_matrix: https://pybind11-rtdtest.readthedocs.io/en/stable/advanced.html#transparent-conversion-of-dense-and-sparse-eigen-data-types.
 using namespace boost::python;
 
 // The data source wrapper used for managed interop. Some of the fields of this are visible to managed code.
@@ -240,6 +240,7 @@ private:
 
         if (bp::extract<const char*>(str(s).encode("utf_8")).check())
         {
+            size = -1;
             missing = -1;
             pch = bp::extract<const char*>(str(s).encode("utf_8"));
 #if _MSC_VER

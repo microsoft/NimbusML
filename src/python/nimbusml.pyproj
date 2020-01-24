@@ -93,8 +93,10 @@
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RobustScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
-    <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
     <Compile Include="nimbusml\examples\RobustScaler.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\NGramExtractor_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
+    <Compile Include="nimbusml\examples\NGramExtractor.py" />
     <Compile Include="nimbusml\examples\WordTokenizer.py" />
     <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
@@ -249,6 +251,7 @@
     <Compile Include="nimbusml\feature_extraction\text\extractor\ngramhash.py" />
     <Compile Include="nimbusml\feature_extraction\text\extractor\__init__.py" />
     <Compile Include="nimbusml\feature_extraction\text\lightlda.py" />
+    <Compile Include="nimbusml\feature_extraction\text\ngramextractor.py" />
     <Compile Include="nimbusml\feature_extraction\text\stopwords\customstopwordsremover.py" />
     <Compile Include="nimbusml\feature_extraction\text\stopwords\predefinedstopwordsremover.py" />
     <Compile Include="nimbusml\feature_extraction\text\stopwords\__init__.py" />
@@ -296,6 +299,7 @@
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\ngramhash.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\extractor\__init__.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\lightlda.py" />
+    <Compile Include="nimbusml\internal\core\feature_extraction\text\ngramextractor.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\customstopwordsremover.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\predefinedstopwordsremover.py" />
     <Compile Include="nimbusml\internal\core\feature_extraction\text\stopwords\__init__.py" />
@@ -352,7 +356,6 @@
     <Compile Include="nimbusml\internal\entrypoints\models_multioutputregressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_naivecalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_oneversusall.py" />
-    <Compile Include="nimbusml\internal\entrypoints\models_onnxconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_ovamodelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
@@ -451,7 +454,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_modelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_ngramtranslator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_robustscaler.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumn.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_nooperation.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_optionalcolumncreator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_pcacalculator.py" />
@@ -474,6 +476,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_traintestdatasetsplitter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_treeleaffeaturizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_twoheterogeneousmodelcombiner.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_variablecolumntransform.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_vectortoimage.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_wordembeddings.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_wordtokenizer.py" />
@@ -530,8 +533,6 @@
     <Compile Include="nimbusml\internal\entrypoints\_ngramextractor_ngramhash.py" />
     <Compile Include="nimbusml\internal\entrypoints\_parallellightgbm_single.py" />
     <Compile Include="nimbusml\internal\entrypoints\_paralleltraining_single.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_partitionedpathparser_parquetpathparser.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_partitionedpathparser_simplepathparser.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_poissonloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_squaredloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_tweedieloss.py" />
@@ -706,6 +707,7 @@
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmranker.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\__init__.py" />
+    <Compile Include="nimbusml\tests\feature_extraction\text\test_ngramextractor.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_sentiment.py" />
     <Compile Include="nimbusml\tests\idv\__init__.py" />
     <Compile Include="nimbusml\tests\linear_model\test_linearsvmbinaryclassifier.py" />
@@ -716,10 +718,10 @@
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_combining.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_subclassing.py" />
     <Compile Include="nimbusml\tests\pipeline\test_pipeline_transform_method.py" />
+    <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_lpscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_robustscaler.py" />
     <Compile Include="nimbusml\tests\preprocessing\normalization\test_meanvariancescaler.py" />
-    <Compile Include="nimbusml\tests\preprocessing\test_datetimesplitter.py" />
     <Compile Include="nimbusml\tests\preprocessing\schema\test_prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_datasettransformer.py" />
     <Compile Include="nimbusml\tests\preprocessing\test_tokeyimputer.py" />
@@ -819,14 +821,17 @@
     <Compile Include="tests_extended\test_docs_notebooks.py" />
     <Compile Include="tests\test_pyproj.py" />
     <Compile Include="tests_extended\test_docs_example.py" />
+    <Compile Include="tools\change_to_https.py" />
     <Compile Include="tools\codegen_checker.py" />
     <Compile Include="tools\code_fixer.py" />
     <Compile Include="tools\compiler_utils.py" />
     <Compile Include="tools\doc_builder.py" />
     <Compile Include="tools\entrypoint_compiler.py" />
+    <Compile Include="tools\find_http_urls.py" />
     <Compile Include="tools\fix_line_widths.py" />
     <Compile Include="tools\loss_processor.py" />
     <Compile Include="tools\manifest_diff_parser.py" />
+    <Compile Include="tools\temp_docs_updater.py" />
     <Compile Include="tools\update_nimbusml_version.py" />
     <Compile Include="nimbusml\tests\test_syntax_onehotvectorizer.py" />
     <Compile Include="nimbusml\tests\utils\test_exports.py" />
@@ -983,7 +988,6 @@
     <Content Include="docs\docstrings\CustomStopWordsRemover.txt" />
     <Content Include="docs\docstrings\Dart.txt" />
     <Content Include="docs\docstrings\DnnFeaturizer.txt" />
-    <Content Include="docs\docstrings\DssmFeaturizer.txt" />
     <Content Include="docs\docstrings\EnsembleClassifier.txt" />
     <Content Include="docs\docstrings\EnsembleRegressor.txt" />
     <Content Include="docs\docstrings\ExponentialAverage.txt" />

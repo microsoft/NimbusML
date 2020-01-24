@@ -30,7 +30,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
         input time-series where each component in the spectrum corresponds to a
         trend, seasonal or noise component in the time-series. For details of the
         Singular Spectrum Analysis (SSA), refer to `this document
-        <http://arxiv.org/pdf/1206.6910.pdf>`_.
+        <https://arxiv.org/pdf/1206.6910.pdf>`_.
 
     :param window_size: The length of the window on the series for building the
         trajectory matrix (parameter L).
@@ -38,7 +38,7 @@ class SsaForecaster(BasePipelineItem, DefaultSignature):
     :param series_length: The length of series that is kept in buffer for
         modeling (parameter N).
 
-    :param train_size: The length of series from the begining used for
+    :param train_size: The length of series from the beginning used for
         training.
 
     :param horizon: The number of values to forecast.

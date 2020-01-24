@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 """
-Datasets used in MicrosoftML unittests.
+Datasets used in MicrosoftML unittests. 
 """
 import copy
 import os
@@ -14,6 +14,8 @@ from sklearn.datasets import load_iris
 from sklearn.preprocessing import LabelEncoder
 
 __all__ = ["get_dataset", "available_datasets"]
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
 class DataSet:
@@ -175,11 +177,7 @@ class DataSetInfert(DataSet):
             # isCase ~ age + parity + education + spontaneous + induced
             # education age parity induced case spontaneous stratum
             # pooled.stratum
-            this = os.path.join(
-                os.path.dirname(__file__),
-                "data",
-                "gplv2",
-                "infert.csv")
+            this = os.path.join(DATA_DIR, "gplv2", "infert.csv")
             self.__dict__['_data'] = pandas.read_csv(this)
             self.__dict__['case'] = self._data["case"]
             self._finalize()
@@ -229,11 +227,7 @@ class DataSetInfert(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "gplv2",
-            "infert.csv")
+        return os.path.join(DATA_DIR, "gplv2", "infert.csv")
 
 
 class DataSetAirQuality(DataSet):
@@ -262,11 +256,7 @@ class DataSetAirQuality(DataSet):
             # isCase ~ age + parity + education + spontaneous + induced
             # education age parity induced case spontaneous stratum
             # pooled.stratum
-            this = os.path.join(
-                os.path.dirname(__file__),
-                "data",
-                "gplv2",
-                "airquality.csv")
+            this = os.path.join(DATA_DIR, "gplv2", "airquality.csv")
             self.__dict__['_data'] = pandas.read_csv(this)
             self._finalize()
 
@@ -294,11 +284,7 @@ class DataSetAirQuality(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "gplv2",
-            "airquality.csv")
+        return os.path.join(DATA_DIR, "gplv2", "airquality.csv")
 
 
 class Topics(DataSet):
@@ -324,8 +310,7 @@ class Topics(DataSet):
         """
         Return file name.
         """
-        return os.path.join(os.path.dirname(__file__), "data",
-                            "topics.csv")
+        return os.path.join(DATA_DIR, "topics.csv")
 
 
 class Timeseries(DataSet):
@@ -351,10 +336,7 @@ class Timeseries(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "timeseries.csv")
+        return os.path.join(DATA_DIR, "timeseries.csv")
 
 
 class WikiDetox_Train(DataSet):
@@ -379,10 +361,7 @@ class WikiDetox_Train(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "train-250.wikipedia.sample.tsv")
+        return os.path.join(DATA_DIR, "train-250.wikipedia.sample.tsv")
 
 
 class WikiDetox_Test(DataSet):
@@ -407,10 +386,7 @@ class WikiDetox_Test(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "test.wikipedia.sample.tsv")
+        return os.path.join(DATA_DIR, "test.wikipedia.sample.tsv")
 
 
 class FS_Train(DataSet):
@@ -435,10 +411,7 @@ class FS_Train(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "train_fs.csv")
+        return os.path.join(DATA_DIR, "train_fs.csv")
 
 
 class FS_Test(DataSet):
@@ -463,10 +436,7 @@ class FS_Test(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "test_fs.csv")
+        return os.path.join(DATA_DIR, "test_fs.csv")
 
 
 class MSLTR_Train(DataSet):
@@ -492,10 +462,7 @@ class MSLTR_Train(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "train-msltr.sample.csv")
+        return os.path.join(DATA_DIR, "train-msltr.sample.csv")
 
 
 class MSLTR_Test(DataSet):
@@ -521,10 +488,7 @@ class MSLTR_Test(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "test-msltr.sample.csv")
+        return os.path.join(DATA_DIR, "test-msltr.sample.csv")
 
 
 class Uci_Train(DataSet):
@@ -548,10 +512,7 @@ class Uci_Train(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "train-500.uciadult.sample.csv")
+        return os.path.join(DATA_DIR, "train-500.uciadult.sample.csv")
 
 
 class Uci_Test(DataSet):
@@ -575,10 +536,7 @@ class Uci_Test(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "test-100.uciadult.sample.csv")
+        return os.path.join(DATA_DIR, "test-100.uciadult.sample.csv")
 
 
 class Generated_Twitter_Train(DataSet):
@@ -603,10 +561,7 @@ class Generated_Twitter_Train(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "train-twitter.gen-sample.tsv")
+        return os.path.join(DATA_DIR, "train-twitter.gen-sample.tsv")
 
 
 class Generated_Twitter_Test(DataSet):
@@ -631,10 +586,7 @@ class Generated_Twitter_Test(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "test-twitter.gen-sample.tsv")
+        return os.path.join(DATA_DIR, "test-twitter.gen-sample.tsv")
 
 
 class Generated_Ticket_Train(DataSet):
@@ -659,10 +611,7 @@ class Generated_Ticket_Train(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "train-ticketchoice.csv")
+        return os.path.join(DATA_DIR, "train-ticketchoice.csv")
 
 
 class Generated_Ticket_Test(DataSet):
@@ -687,10 +636,7 @@ class Generated_Ticket_Test(DataSet):
         """
         Return file name.
         """
-        return os.path.join(
-            os.path.dirname(__file__),
-            "data",
-            "test-ticketchoice.csv")
+        return os.path.join(DATA_DIR, "test-ticketchoice.csv")
 
 
 _datasets = dict(

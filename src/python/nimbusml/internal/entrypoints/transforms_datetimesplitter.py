@@ -14,7 +14,6 @@ def transforms_datetimesplitter(
         prefix,
         output_data=None,
         model=None,
-        columns_to_drop=None,
         country='None',
         **params):
     """
@@ -24,8 +23,6 @@ def transforms_datetimesplitter(
     :param source: Input column (inputs).
     :param data: Input dataset (inputs).
     :param prefix: Output column prefix (inputs).
-    :param columns_to_drop: Columns to drop after the DateTime
-        Expansion (inputs).
     :param country: Country to get holidays for. Defaults to none if
         not passed (inputs).
     :param output_data: Transformed dataset (outputs).
@@ -52,12 +49,6 @@ def transforms_datetimesplitter(
             obj=prefix,
             none_acceptable=False,
             is_of_type=str)
-    if columns_to_drop is not None:
-        inputs['ColumnsToDrop'] = try_set(
-            obj=columns_to_drop,
-            none_acceptable=True,
-            is_of_type=list,
-            is_column=True)
     if country is not None:
         inputs['Country'] = try_set(
             obj=country,

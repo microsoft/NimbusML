@@ -119,10 +119,10 @@ class Pipeline:
         for more details on how to select these.
 
     :param steps: the list of operator or (name, operator) tuples  that
-    are chained in the appropriate order.
+        are chained in the appropriate order.
 
     :param model: the path to the model file (".zip") if want to load a
-    model directly from file (such as a trained model from ML.NET).
+        model directly from file (such as a trained model from ML.NET).
 
     :param random_state: the integer used as the random seed.
 
@@ -1223,6 +1223,19 @@ class Pipeline:
         :param X: {array-like [n_samples, n_features],
             :py:func:`FileDataStream <nimbusml.FileDataStream>` }
         :param y: {array-like [n_samples]}
+        :param as_binary_data_stream: If ``True`` then output an IDV file.
+            See `here <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_
+            for more information.
+        :param params: Additional arguments.
+            If ``as_csr=True`` and ``as_binary_data_stream=False`` then
+            return the transformed data in CSR (sparse matrix) format.
+            If ``as_binary_data_stream`` is also true then that
+            parameter takes precedence over ``as_csr`` and the output will
+            be an IDV file.
+
+        :return: Returns a pandas DataFrame if no other output format
+            is specified. See ``as_binary_data_stream`` and ``as_csr``
+            for other available output formats.
         """
         self.fit(
             X,
@@ -1529,10 +1542,14 @@ class Pipeline:
                  models_anomalydetectionevaluator(**params)])
 
         elif type_ == 'ranking':
-            svd = "$scoredVectorData"
             column = [OrderedDict(Source=group_id, Name=group_id)]
-            algo_args = dict(data=svd, output_data=svd, column=column)
+            algo_args = dict(
+                data="$scoredVectorData",
+                output_data="$scoredVectorData2",
+                column=column)
             key_node = transforms_texttokeyconverter(**algo_args)
+
+            params['data'] = "$scoredVectorData2"
             evaluate_node = models_rankingevaluator(
                 group_id_column=group_id, **params)
             all_nodes.extend([
@@ -1834,7 +1851,7 @@ class Pipeline:
 
         inputs = dict([('transform_model', self.model)])
         schema_node = models_schema(
-            transform_model="$transform_model",
+            model="$transform_model",
             schema="$output_data")
         all_nodes = [schema_node]
 
@@ -2443,7 +2460,19 @@ class Pipeline:
         :param X: {array-like [n_samples, n_features],
             :py:class:`nimbusml.FileDataStream` }
         :param y: {array-like [n_samples]}
+        :param as_binary_data_stream: If ``True`` then output an IDV file.
+            See `here <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_
+            for more information.
+        :param params: Additional arguments.
+            If ``as_csr=True`` and ``as_binary_data_stream=False`` then
+            return the transformed data in CSR (sparse matrix) format.
+            If ``as_binary_data_stream`` is also true then that
+            parameter takes precedence over ``as_csr`` and the output will
+            be an IDV file.
 
+        :return: Returns a pandas DataFrame if no other output format
+            is specified. See ``as_binary_data_stream`` and ``as_csr``
+            for other available output formats.
         """
         # start the clock!
         start_time = time.time()
@@ -2539,7 +2568,7 @@ class Pipeline:
         if len(self.steps) > 0 and not isinstance(
                 self.last_node, BasePredictor):
             raise ValueError(
-                "Summary is availabe only for predictor types, instead "
+                "Summary is available only for predictor types, instead "
                 "got " +
                 self.last_node.type)
 
@@ -2577,6 +2606,10 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
+        # .summary() not supported if size of summary_data
+        # is less or equal to 1 (if only PredictedName in summary_data)
+        if summary_data.size == 1 and summary_data.columns.values == ["PredictorName"]:
+            raise TypeError("One or more predictors in this pipeline do not support the .summary() function.")
         self.model_summary = summary_data
 
         # stop the clock

@@ -45,7 +45,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on
     # single-sourcing the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.5.1',
+    version='1.6.1',
 
     description='NimbusML',
     long_description=long_description,
@@ -115,7 +115,7 @@ setup(
             'nose>=1.3', 'pytest>=4.4.0',
             'graphviz', 'imageio',
         ],
-        'dprep': ['azureml-dataprep>=1.1.12'],
+        'dprep': ['azureml-dataprep>=1.1.33'],
         'utils': ['graphviz', 'imageio'],
     },
 
@@ -148,7 +148,7 @@ setup(
 
     # Although 'package_data' is the preferred approach, in some case
     # you may need to place data files outside of your packages. See:
-    # http://docs.python.org/3.4/distutils/setupscript.html#installing
+    # https://docs.python.org/3.4/distutils/setupscript.html#installing
     # -additional-files # noqa
     # In this case, 'data_file' will be installed into
     # '<sys.prefix>/my_data'
