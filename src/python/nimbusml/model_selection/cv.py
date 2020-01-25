@@ -10,6 +10,7 @@ import six
 from pandas import DataFrame
 
 from .. import Pipeline, FileDataStream
+from ..ensemble.votingensemble import VotingEnsemble
 from ..internal.entrypoints.models_crossvalidator import \
     models_crossvalidator
 from ..internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
@@ -67,6 +68,11 @@ class _PipelineSteps(list):
     def all_output_models(self):
         models, _, _ = self._get_values(
             'outputs', ['Model', 'PredictorModel', 'OutputModel'])
+        return models
+
+    @property
+    def all_transform_output_models(self):
+        models, _, _ = self._get_values('outputs', ['Model'])
         return models
 
     @property
@@ -502,21 +508,58 @@ class CV:
             implicit_nodes)
 
         # Add learner node
-        training_data = cv_subgraph.last_output_data
-        learner_node.inputs['TrainingData'] = training_data
-        learner_node.input_variables = {training_data}
-        cv_subgraph.add(learner_node)
+        if isinstance(pipeline.last_node, VotingEnsemble):
+            # The CV split for ensembling works the same way as the
+            # non-ensemble split since all the extra nodes are marked
+            # as 'implicit' nodes. The only extra changes required are
+            # the ones described below.
 
-        if len(cv_subgraph.all_output_models) > 1:
-            learner_model_new_name = cv_aux_info.output_model + '_learner'
+            # The VotingEnsemble node uses "$output_model" for its
+            # PredictorModel output. Rename this output to match
+            # what the rest of the CV pipeline expects. A similar
+            # modification is done for the non-ensemble pipeline below.
+            learner_model_new_name = cv_aux_info.predictor_model
+            learner_model_prev_name = learner_node.outputs['PredictorModel']
             learner_node.outputs['PredictorModel'] = learner_model_new_name
-            learner_node.output_variables = {learner_model_new_name}
+            learner_node.output_variables.discard(learner_model_prev_name)
+            learner_node.output_variables.add(learner_model_new_name)
 
-            combine_model_node = transforms_manyheterogeneousmodelcombiner(
-                transform_models=cv_subgraph.all_output_models[:-1],
-                predictor_model=cv_subgraph.all_output_models[-1],
-                model=cv_aux_info.predictor_model)
-            cv_subgraph.add(combine_model_node)
+            # Add the ensemble node to the cv subgraph.
+            cv_subgraph.add(learner_node)
+
+            new_models = cv_subgraph.all_transform_output_models
+
+            # The ManyHeterogeneousModelCombiner implicit nodes which
+            # are part of an ensemble pipeline will by default contain
+            # the TransformModels from all the transforms in the entire
+            # pipeline. For a CV pipeline, they should only contain the
+            # TransformModels from the transforms which are part of the
+            # cv subgraph. Update the TransformModels of these nodes to
+            # only contain the TransformModels from the transforms which
+            # are part of the cv subgraph.
+            # TODO: refactor this.
+            for node in implicit_nodes:
+                if 'ManyHeterogeneousModelCombiner' in node.name:
+                    prev_models = set(node.inputs['TransformModels'])
+                    node.input_variables -= prev_models
+                    node.input_variables |= set(new_models)
+                    node.inputs['TransformModels'] = new_models
+        else:
+            training_data = cv_subgraph.last_output_data
+            learner_node.inputs['TrainingData'] = training_data
+            learner_node.input_variables = {training_data}
+            cv_subgraph.add(learner_node)
+
+            if len(cv_subgraph.all_output_models) > 1:
+                learner_model_new_name = cv_aux_info.output_model + '_learner'
+                learner_node.outputs['PredictorModel'] = learner_model_new_name
+                learner_node.output_variables = {learner_model_new_name}
+
+                combine_model_node = transforms_manyheterogeneousmodelcombiner(
+                    transform_models=cv_subgraph.all_output_models[:-1],
+                    predictor_model=cv_subgraph.all_output_models[-1],
+                    model=cv_aux_info.predictor_model)
+                cv_subgraph.add(combine_model_node)
 
         # Update the first data input of CV subgraph steps
         input_node, input_name = cv_subgraph.first_input_data
