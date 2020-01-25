@@ -509,15 +509,34 @@ class CV:
 
         # Add learner node
         if isinstance(pipeline.last_node, VotingEnsemble):
+            # The CV split for ensembling works the same way as the
+            # non-ensemble split since all the extra nodes are marked
+            # as 'implicit' nodes. The only extra changes required are
+            # the ones described below.
+
+            # The VotingEnsemble node uses "$output_model" for its
+            # PredictorModel output. Rename this output to match
+            # what the rest of the CV pipeline expects. A similar
+            # modification is done for the non-ensemble pipeline below.
             learner_model_new_name = cv_aux_info.predictor_model
             learner_model_prev_name = learner_node.outputs['PredictorModel']
             learner_node.outputs['PredictorModel'] = learner_model_new_name
             learner_node.output_variables.discard(learner_model_prev_name)
             learner_node.output_variables.add(learner_model_new_name)
+
+            # Add the ensemble node to the cv subgraph.
             cv_subgraph.add(learner_node)
 
             new_models = cv_subgraph.all_transform_output_models
 
+            # The ManyHeterogeneousModelCombiner implicit nodes which
+            # are part of an ensemble pipeline will by default contain
+            # the TransformModels from all the transforms in the entire
+            # pipeline. For a CV pipeline, they should only contain the
+            # TransformModels from the transforms which are part of the
+            # cv subgraph. Update the TransformModels of these nodes to
+            # only contain the TransformModels from the transforms which
+            # are part of the cv subgraph.
             # TODO: refactor this.
             for node in implicit_nodes:
                 if 'ManyHeterogeneousModelCombiner' in node.name:

@@ -148,10 +148,32 @@ class VotingRegressor(VotingEnsemble,
                       RegressorMixin):
     """
     **Description**
-        Combine regression models into an ensemble
+        Combine regression models into an ensemble. This class is
+        modeled after the `VotingRegressor <https://scikit-learn.org/stable/modules/ensemble.html#voting-regressor>`_
+        in scikit-learn.
+
+        Note, in the majority of cases, the ``normalize``
+        parameter must be explicitly specifed and must be
+        the same value for all the estimators which are part
+        of the ensemble.
+
+        Here is an example::
+
+            r1 = OnlineGradientDescentRegressor(normalize="Yes")
+            r2 = OrdinaryLeastSquaresRegressor(normalize="Yes")
+            vr = VotingRegressor(estimators=[r1, r2], combiner='Average')
+            vr.fit(X_train, y_train)
+            result = vr.predict(X_test)
 
     :param estimators: The predictors to combine into an ensemble.
     :param model_combiner: The combiner used to combine the scores.
+        Can be either 'Median' or 'Average'.
+
+    .. index:: models, ensemble, regression
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/VotingRegressor.py
+              :language: python
     """
     @trace
     def __init__(self,
