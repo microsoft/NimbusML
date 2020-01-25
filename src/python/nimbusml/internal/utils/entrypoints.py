@@ -116,6 +116,10 @@ class EntryPoint:
             indent=EntryPoint.indent,
             sort_keys=EntryPoint.sort_keys)
 
+    def __eq__(self, other):
+        return isinstance(other, EntryPoint) and \
+               (self.to_dict() == other.to_dict())
+
     def to_dict(self):
         """
         convert to dictionary
