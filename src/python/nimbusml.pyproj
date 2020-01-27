@@ -94,6 +94,7 @@
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RobustScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\VotingRegressor.py" />
     <Compile Include="nimbusml\examples\RobustScaler.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\NGramExtractor_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
