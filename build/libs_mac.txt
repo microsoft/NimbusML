@@ -2,6 +2,7 @@ Google.Protobuf.dll
 Newtonsoft.Json.dll
 libCpuMathNative.dylib
 libFastTreeNative.dylib
+libFeaturizers.dylib
 libLdaNative.dylib
 libMklImports.dylib
 libMklProxyNative.dylib
@@ -10,7 +11,6 @@ lib_lightgbm.dylib
 libtensorflow.dylib
 libonnxruntime.dylib
 libtensorflow_framework.1.dylib
-Featurizers.dll
 System.Drawing.Common.dll
 TensorFlow.NET.dll
 NumSharp.Core.dll
