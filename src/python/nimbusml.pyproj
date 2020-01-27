@@ -46,6 +46,7 @@
     <Compile Include="nimbusml\ensemble\booster\gbdt.py" />
     <Compile Include="nimbusml\ensemble\booster\goss.py" />
     <Compile Include="nimbusml\ensemble\booster\__init__.py" />
+    <Compile Include="nimbusml\ensemble\votingensemble.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\allfeatureselector.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\randomfeatureselector.py" />
     <Compile Include="nimbusml\ensemble\feature_selector\__init__.py" />
@@ -93,10 +94,12 @@
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RobustScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\VotingRegressor.py" />
     <Compile Include="nimbusml\examples\RobustScaler.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\NGramExtractor_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\PrefixColumnConcatenator_df.py" />
     <Compile Include="nimbusml\examples\NGramExtractor.py" />
+    <Compile Include="nimbusml\examples\VotingRegressor.py" />
     <Compile Include="nimbusml\examples\WordTokenizer.py" />
     <Compile Include="nimbusml\examples\PrefixColumnConcatenator.py" />
     <Compile Include="nimbusml\examples\ColumnDropper.py" />
@@ -705,6 +708,7 @@
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmbinaryclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmclassifier.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmranker.py" />
+    <Compile Include="nimbusml\tests\ensemble\test_votingregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\test_lightgbmregressor.py" />
     <Compile Include="nimbusml\tests\ensemble\__init__.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_ngramextractor.py" />
