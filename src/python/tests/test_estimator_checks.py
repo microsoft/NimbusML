@@ -280,7 +280,7 @@ skip_epoints = set([
     # skip SymSgdBinaryClassifier for now, because of crashes.
     'SymSgdBinaryClassifier',
     'DatasetTransformer',
-    'OnnxRunner'
+    'OnnxRunner',
     'TimeSeriesImputer'
 ])
 
