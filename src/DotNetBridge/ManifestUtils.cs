@@ -43,6 +43,7 @@ namespace Microsoft.ML.DotNetBridge
             typeof(ImageLoadingTransformer),
             typeof(SymbolicSgdLogisticRegressionBinaryTrainer),
             typeof(OnnxContext),
+            typeof(OnnxExportExtensions),
             typeof(SsaForecastingTransformer),
             typeof(VariableColumnTransform),
             typeof(DateTimeTransformer)

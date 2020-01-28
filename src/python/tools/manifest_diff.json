@@ -348,6 +348,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Models.OnnxTransformer",
+      "NewName": "OnnxRunner",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.FieldAwareFactorizationMachineBinaryClassifier",
       "NewName": "FactorizationMachineBinaryClassifier",
       "Module": "decomposition",

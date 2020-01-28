@@ -2195,6 +2195,203 @@
       ]
     },
     {
+      "Name": "Models.OnnxConverter",
+      "Desc": "Converts the model to ONNX format.",
+      "FriendlyName": "ONNX Converter.",
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "DataFile",
+          "Type": "String",
+          "Desc": "The data file",
+          "Aliases": [
+            "data"
+          ],
+          "Required": false,
+          "SortOrder": 0.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Onnx",
+          "Type": "String",
+          "Desc": "The path to write the output ONNX to.",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Json",
+          "Type": "String",
+          "Desc": "The path to write the output JSON to.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Desc": "The 'name' property in the output ONNX. By default this will be the ONNX extension-less name.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Domain",
+          "Type": "String",
+          "Desc": "The 'domain' property in the output ONNX.",
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "InputsToDrop",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Array of input column names to drop",
+          "Required": false,
+          "SortOrder": 6.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "OutputsToDrop",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Array of output column names to drop",
+          "Required": false,
+          "SortOrder": 8.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Model that needs to be converted to ONNX format.",
+          "Required": false,
+          "SortOrder": 10.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "OnnxVersion",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "Stable",
+              "Experimental"
+            ]
+          },
+          "Desc": "The targeted ONNX version. It can be either \"Stable\" or \"Experimental\". If \"Experimental\" is used, produced model can contain components that is not officially supported in ONNX standard.",
+          "Required": false,
+          "SortOrder": 11.0,
+          "IsNullable": false,
+          "Default": "Stable"
+        },
+        {
+          "Name": "PredictiveModel",
+          "Type": "PredictorModel",
+          "Desc": "Predictor model that needs to be converted to ONNX format.",
+          "Required": false,
+          "SortOrder": 12.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": []
+    },
+    {
+      "Name": "Models.OnnxTransformer",
+      "Desc": "Applies an ONNX model to a dataset.",
+      "FriendlyName": "Onnx Transformer",
+      "ShortName": "onnx-xf",
+      "Inputs": [
+        {
+          "Name": "ModelFile",
+          "Type": "String",
+          "Desc": "Path to the onnx model file.",
+          "Aliases": [
+            "model"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "InputColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Name of the input column.",
+          "Required": false,
+          "SortOrder": 1.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "OutputColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Name of the output column.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "GpuDeviceId",
+          "Type": "Int",
+          "Desc": "GPU device id to run on (e.g. 0,1,..). Null for CPU. Requires CUDA 9.1.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "FallbackToCpu",
+          "Type": "Bool",
+          "Desc": "If true, resumes execution on CPU upon GPU error. If false, will raise the GPU execption.",
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "ONNX transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ]
+    },
+    {
       "Name": "Models.OvaModelCombiner",
       "Desc": "Combines a sequence of PredictorModels into a single model",
       "FriendlyName": null,

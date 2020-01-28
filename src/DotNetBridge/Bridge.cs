@@ -298,7 +298,7 @@ namespace Microsoft.ML.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
             env.ComponentCatalog.RegisterAssembly(typeof(DataViewReference).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(ImageLoadingTransformer).Assembly);
-            //env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);

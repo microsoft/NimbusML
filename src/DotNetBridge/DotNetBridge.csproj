@@ -38,6 +38,7 @@
     <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.5.0-preview*" />
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.5.0-preview*" />
     <PackageReference Include="Microsoft.ML.LightGBM" Version="1.5.0-preview*" />
+    <PackageReference Include="Microsoft.ML.OnnxConverter" Version="0.17.0-preview*" />
     <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.5.0-preview*" />
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.5.0-preview*" />
     <PackageReference Include="Microsoft.ML.Vision" Version="1.5.0-preview*" />

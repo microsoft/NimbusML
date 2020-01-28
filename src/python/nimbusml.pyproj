@@ -322,6 +322,7 @@
     <Compile Include="nimbusml\internal\core\preprocessing\filter\skipfilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\filter\takefilter.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\lpscaler.py" />
+    <Compile Include="nimbusml\internal\core\preprocessing\onnxrunner.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\normalization\robustscaler.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\schema\columnduplicator.py" />
@@ -359,6 +360,8 @@
     <Compile Include="nimbusml\internal\entrypoints\models_multioutputregressionevaluator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_naivecalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_oneversusall.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_onnxconverter.py" />
+    <Compile Include="nimbusml\internal\entrypoints\models_onnxtransformer.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_ovamodelcombiner.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_pavcalibrator.py" />
     <Compile Include="nimbusml\internal\entrypoints\models_plattcalibrator.py" />
@@ -672,6 +675,7 @@
     <Compile Include="nimbusml\preprocessing\normalization\minmaxscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\robustscaler.py" />
     <Compile Include="nimbusml\preprocessing\normalization\__init__.py" />
+    <Compile Include="nimbusml\preprocessing\onnxrunner.py" />
     <Compile Include="nimbusml\preprocessing\schema\prefixcolumnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columnconcatenator.py" />
     <Compile Include="nimbusml\preprocessing\schema\columndropper.py" />
@@ -747,6 +751,7 @@
     <Compile Include="nimbusml\timeseries\ssaspikedetector.py" />
     <Compile Include="nimbusml\timeseries\timeseriesimputer.py" />
     <Compile Include="nimbusml\timeseries\__init__.py" />
+    <Compile Include="tests_extended\test_export_to_onnx.py" />
     <Compile Include="tests\test_estimator_checks.py" />
     <Compile Include="nimbusml\tests\feature_extraction\text\test_lightlda.py" />
     <Compile Include="nimbusml\tests\idv\test_idv.py" />

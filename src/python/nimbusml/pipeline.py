@@ -39,6 +39,7 @@ from .internal.entrypoints.models_rankingevaluator import \
 from .internal.entrypoints.models_regressionevaluator import \
     models_regressionevaluator
 from .internal.entrypoints.models_summarizer import models_summarizer
+from .internal.entrypoints.models_onnxconverter import models_onnxconverter
 from .internal.entrypoints.models_schema import models_schema
 from .internal.entrypoints.transforms_datasetscorerex import \
     transforms_datasetscorerex
@@ -2518,6 +2519,96 @@ class Pipeline:
 
         else:
             raise ValueError('Pipeline version not supported.')
+
+    @trace
+    def export_to_onnx(self,
+                       dst,
+                       domain,
+                       dst_json=None,
+                       name=None,
+                       data_file=None,
+                       inputs_to_drop=None,
+                       outputs_to_drop=None,
+                       onnx_version="Stable",
+                       verbose=0):
+        """
+        Export the model to the ONNX format.
+
+        :param str dst: The path to write the output ONNX to.
+        :param str domain: A reverse-DNS name to indicate the model
+            namespace or domain, for example, 'org.onnx'.
+        :param str dst_json: The path to write the output ONNX to
+            in JSON format.
+        :param name: The 'graph.name' property in the output ONNX. By default
+            this will be the ONNX extension-less name. (inputs).
+        :param data_file: The data file (inputs).
+        :param inputs_to_drop: Array of input column names to drop
+            (inputs).
+        :param outputs_to_drop: Array of output column names to drop
+            (inputs).
+        :param onnx_version: The targeted ONNX version. It can be either
+            "Stable" or "Experimental". If "Experimental" is used,
+            produced model can contain components that is not officially
+            supported in ONNX standard. (inputs).
+        """
+        if not domain:
+            raise ValueError("domain argument must be specified and not empty.")
+
+        if not self._is_fitted:
+            raise ValueError("Model is not fitted. Train or load a model before "
+                             "export_to_onnx().")
+
+        # start the clock!
+        start_time = time.time()
+
+        onnx_converter_args = {
+            'onnx': dst,
+            'json': dst_json,
+            'domain': domain,
+            'name': name,
+            'data_file': data_file,
+            'inputs_to_drop': inputs_to_drop,
+            'outputs_to_drop': outputs_to_drop,
+            'onnx_version': onnx_version
+        }
+
+        if (len(self.steps) > 0) and (self.last_node.type != "transform"):
+            onnx_converter_args['predictive_model'] = "$model"
+        else:
+            onnx_converter_args['model'] = "$model"
+
+        onnx_converter_node = models_onnxconverter(**onnx_converter_args)
+
+        inputs = dict([('model', self.model)])
+        outputs = dict()
+
+        graph = Graph(
+            inputs,
+            outputs,
+            False,
+            onnx_converter_node)
+
+        class_name = type(self).__name__
+        method_name = inspect.currentframe().f_code.co_name
+        telemetry_info = ".".join([class_name, method_name])
+
+        try:
+            graph.run(
+                X=None,
+                y=None,
+                random_state=self.random_state,
+                model=self.model,
+                verbose=verbose,
+                is_summary=False,
+                no_input_data=True,
+                telemetry_info=telemetry_info)
+        except RuntimeError as e:
+            self._run_time = time.time() - start_time
+            raise e
+
+        # stop the clock
+        self._run_time = time.time() - start_time
+        self._write_csv_time = graph._write_csv_time
 
     @trace
     def score(
