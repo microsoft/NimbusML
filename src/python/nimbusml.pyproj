@@ -92,6 +92,7 @@
     <Compile Include="nimbusml\examples\BootStrapSample.py" />
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
+    <Compile Include="nimbusml\examples\examples_from_dataframe\OnnxRunner_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RobustScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\VotingRegressor.py" />
