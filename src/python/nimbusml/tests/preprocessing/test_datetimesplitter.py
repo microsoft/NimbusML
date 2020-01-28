@@ -13,7 +13,7 @@ from nimbusml.preprocessing.schema import ColumnSelector
 from sklearn.utils.testing import assert_equal
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
 class TestDateTimeSplitter(unittest.TestCase):
 
     def test_check_estimator_DateTimeSplitter(self):

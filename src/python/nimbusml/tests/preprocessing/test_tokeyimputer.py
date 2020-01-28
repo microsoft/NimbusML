@@ -11,7 +11,7 @@ import pandas as pd
 from nimbusml.preprocessing import ToKeyImputer
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
 class TestToKeyImputer(unittest.TestCase):
 
     def test_tokeyimputer(self):

@@ -10,7 +10,7 @@ from nimbusml import Pipeline
 from nimbusml.preprocessing.normalization import RobustScaler
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
 class TestRobustScaler(unittest.TestCase):
 
     def test_with_integer_inputs(self):

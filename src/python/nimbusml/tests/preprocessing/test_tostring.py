@@ -12,7 +12,7 @@ from nimbusml.preprocessing import ToString
 from sklearn.utils.testing import assert_equal
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
 class TestToString(unittest.TestCase):
 
     def test_tostring(self):

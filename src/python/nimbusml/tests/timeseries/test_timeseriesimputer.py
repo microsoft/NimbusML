@@ -11,7 +11,7 @@ import pandas as pd
 from nimbusml.timeseries import TimeSeriesImputer
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
 class TestTimeSeriesImputer(unittest.TestCase):
 
     def test_timeseriesimputer_adds_new_row(self):
