@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import platform
 import unittest
 
 import numpy as np
@@ -11,6 +12,7 @@ from nimbusml.preprocessing import ToString
 from sklearn.utils.testing import assert_equal
 
 
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
 class TestToString(unittest.TestCase):
 
     def test_tostring(self):

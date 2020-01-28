@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import platform
 import unittest
 
 import numpy as np
@@ -10,6 +11,7 @@ import pandas as pd
 from nimbusml.timeseries import TimeSeriesImputer
 
 
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
 class TestTimeSeriesImputer(unittest.TestCase):
 
     def test_timeseriesimputer_adds_new_row(self):
