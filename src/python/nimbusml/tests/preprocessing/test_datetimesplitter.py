@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import platform
 import unittest
 
 import pandas
@@ -12,6 +13,7 @@ from nimbusml.preprocessing.schema import ColumnSelector
 from sklearn.utils.testing import assert_equal
 
 
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
 class TestDateTimeSplitter(unittest.TestCase):
 
     def test_check_estimator_DateTimeSplitter(self):

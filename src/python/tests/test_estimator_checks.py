@@ -7,6 +7,7 @@ run check_estimator tests
 """
 import json
 import os
+import platform
 import unittest
 
 from nimbusml.cluster import KMeansPlusPlus
@@ -281,6 +282,13 @@ skip_epoints = set([
     'DatasetTransformer',
     'TimeSeriesImputer'
 ])
+
+if 'centos' in platform.linux_distribution()[0].lower():
+    skip_epoints |= set([
+        'DateTimeSplitter',
+        'RobustScaler',
+        'ToKeyImputer',
+        'ToString'])
 
 
 def load_json(file_path):

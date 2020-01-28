@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import platform
 import unittest
 
 import numpy as np
@@ -161,6 +162,7 @@ class TestDataWithMissing(unittest.TestCase):
         assert_equal(result.dtypes['f1'], np.object)
         assert_equal(result.dtypes['f2.f2'], np.float32)
 
+    @unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
     def test_category_imputation(self):
         data={'f0': [4, 4, np.nan, 9],
               'f1': [4, 4, np.nan, np.nan]}

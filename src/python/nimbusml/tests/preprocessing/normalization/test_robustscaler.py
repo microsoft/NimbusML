@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
+import platform
 import unittest
 
 import pandas
@@ -9,6 +10,7 @@ from nimbusml import Pipeline
 from nimbusml.preprocessing.normalization import RobustScaler
 
 
+@unittest.skipIf('centos' in platform.linux_distribution()[0].lower())
 class TestRobustScaler(unittest.TestCase):
 
     def test_with_integer_inputs(self):
