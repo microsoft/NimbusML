@@ -401,6 +401,7 @@
     <Compile Include="nimbusml\internal\entrypoints\trainers_lightgbmranker.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_lightgbmregressor.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_linearsvmbinaryclassifier.py" />
+    <Compile Include="nimbusml\internal\entrypoints\trainers_localdeepsvmbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_logisticregressionbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_logisticregressionclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_naivebayesclassifier.py" />
