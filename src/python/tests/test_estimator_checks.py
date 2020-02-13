@@ -200,7 +200,7 @@ OMITTED_CHECKS_TUPLE = (
                        check_estimator_sparse_data, '
     'check_estimators_pickle')
 
-OMITTED_CHECKS_ALWAYS = 'check_estimators_nan_inf'
+OMITTED_CHECKS_ALWAYS = ['check_estimators_nan_inf', 'check_dtype_object']
 
 NOBINARY_CHECKS = [
     'check_estimator_sparse_data',
