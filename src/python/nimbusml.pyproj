@@ -738,6 +738,7 @@
     <Compile Include="nimbusml\tests\preprocessing\test_tostring.py" />
     <Compile Include="nimbusml\tests\preprocessing\text\test_wordtokenizer.py" />
     <Compile Include="nimbusml\tests\test_csr_matrix_output.py" />
+    <Compile Include="nimbusml\tests\test_fit_graph.py" />
     <Compile Include="nimbusml\tests\test_variable_column.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
