@@ -307,6 +307,11 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
                 if label_column is None:
                     label_column = Role.Label
                 self.label_column_name = label_column
+
+            if y is None \
+                and self._use_role(Role.Label) \
+                and label_column in learner_features:
+                learner_features.remove(label_column)
         else:
             self.label_column_name = None
             label_column = None

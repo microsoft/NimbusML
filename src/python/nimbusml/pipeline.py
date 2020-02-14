@@ -1016,6 +1016,8 @@ class Pipeline:
                   :language: python
 
         """
+        dry_run = params.pop('dry_run', False)
+
         if self._is_fitted:
             # We restore the initial steps as they were
             # modified by the previous training.
@@ -1059,7 +1061,7 @@ class Pipeline:
         # REVIEW: we should have the possibility to keep the model in
         # memory and not in a file.
         try:
-            (out_model, out_data, out_metrics, out_predictor_model) = graph.run(
+            graph_output = graph.run(
                 X=X,
                 y=y,
                 random_state=self.random_state,
@@ -1067,6 +1069,7 @@ class Pipeline:
                 verbose=verbose,
                 max_slots=max_slots,
                 telemetry_info=telemetry_info,
+                dry_run=dry_run,
                 **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
@@ -1082,17 +1085,21 @@ class Pipeline:
             delattr(self, "_cache_predictor")
             raise e
 
-        move_information_about_roles_once_used()
-        self.graph_ = graph
-        self.model = out_model
-        if out_predictor_model:
-            self.predictor_model = out_predictor_model
-        self.data = out_data
-        # stop the clock
-        self._run_time = time.time() - start_time
-        self._write_csv_time = graph._write_csv_time
-        delattr(self, "_cache_predictor")
-        return self
+        if dry_run:
+            return graph_output
+        else:
+            out_model, out_data, out_metrics, out_predictor_model = graph_output
+            move_information_about_roles_once_used()
+            self.graph_ = graph
+            self.model = out_model
+            if out_predictor_model:
+                self.predictor_model = out_predictor_model
+            self.data = out_data
+            # stop the clock
+            self._run_time = time.time() - start_time
+            self._write_csv_time = graph._write_csv_time
+            delattr(self, "_cache_predictor")
+            return self
 
     @trace
     def fit_transform(
