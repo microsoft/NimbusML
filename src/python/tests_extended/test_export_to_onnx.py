@@ -108,7 +108,6 @@ SKIP = {
     'DatasetTransformer',
     'LightLda',
     'NGramExtractor', # Crashes
-    'NGramFeaturizer', # Crashes
     'OneVsRestClassifier',
     'OnnxRunner',
     'Sentiment',
@@ -175,7 +174,9 @@ INSTANCES = {
             slots_in_output=2)  # only accept one column
     ]),
     'NaiveBayesClassifier': NaiveBayesClassifier(feature=['Sepal_Width', 'Sepal_Length']),
-    'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=Ngram(),
+    'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=Ngram(), 
+                                       char_feature_extractor=Ngram(), 
+                                       keep_diacritics=True,
                                        columns={ 'features': ['SentimentText']}),
     'OneHotHashVectorizer': OneHotHashVectorizer(columns=['education_str']),
     'OneHotVectorizer': OneHotVectorizer(columns=['education_str']),
@@ -314,6 +315,7 @@ EXPECTED_RESULTS = {
         ['Sepal_Length.0', 'Sepal_Width.0', 'Petal_Length.0', 'Petal_Width.0', 'Setosa.0']
     ))},
     #'MutualInformationSelector',
+    'NGramFeaturizer': {'num_cols': 273, 'cols': 0},
     'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
     'OneHotVectorizer': {'cols': list(zip(
         ['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs'],
@@ -480,6 +482,7 @@ def validate_results(class_name, result_expected, result_onnx):
                                            col_onnx,
                                            check_names=False,
                                            check_exact=False,
+                                           check_dtype=True,
                                            check_less_precise=True)
         except Exception as e:
             print(e)
@@ -572,8 +575,8 @@ runable_estimators = set()
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['EnsembleRegressor']:
-#        continue
+#    if not class_name in ['NGramFeaturizer']:
+#       continue
 
     print('\n===========> %s' % class_name)
 
