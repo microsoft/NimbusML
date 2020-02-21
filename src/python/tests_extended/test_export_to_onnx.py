@@ -210,8 +210,8 @@ INSTANCES = {
             'examples',
             'frozen_saved_model.pb'),
         columns={'c': ['a', 'b']}),
-    'ToKey': ToKey(columns={'edu_1': 'education'}),
-    'TypeConverter': TypeConverter(columns=['age'], result_type='R4'),
+    'ToKey': ToKey(columns={'edu_1': 'education_str', 'parity_1': 'parity'}),
+    'TypeConverter': TypeConverter(columns=['group'], result_type='R4'),
     'WordTokenizer': WordTokenizer(char_array_term_separators=[" "]) << {'wt': 'SentimentText'}
 }
 
@@ -258,7 +258,7 @@ DATASETS = {
     'SgdBinaryClassifier': iris_binary_df,
     'SymSgdBinaryClassifier': iris_binary_df,
     'ToKey': infert_df,
-    'TypeConverter': infert_onehot_df,
+    'TypeConverter': gen_tt_df,
     'WordTokenizer': wiki_detox_df
 }
 
@@ -314,13 +314,20 @@ EXPECTED_RESULTS = {
         ['Sepal_Length.0', 'Sepal_Width.0', 'Petal_Length.0', 'Petal_Width.0', 'Setosa.0']
     ))},
     #'MutualInformationSelector',
-    'NaiveBayesClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
+    'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
     'OneHotVectorizer': {'cols': list(zip(
         ['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs'],
         ['education_str.0', 'education_str.1', 'education_str.2']
     ))},
     'OnlineGradientDescentRegressor': {'cols': [('Score', 'Score.0')]},
     'OrdinaryLeastSquaresRegressor': {'cols': [('Score', 'Score.0')]},
+    'PcaTransformer': {'num_cols': 9, 'cols': 0},
+    'PoissonRegressionRegressor': {'cols': [('Score', 'Score.0')]},
+    'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
+    'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
+    'ToKey': {'cols': [('edu_1', 'edu_1.0'), ('parity_1', 'parity_1.0')]},
+    'TypeConverter': {'cols': [('group', 'group.0')]},
+    'WordTokenizer': {'num_cols': 73, 'cols': 0}
 }
 
 REQUIRES_EXPERIMENTAL = {
@@ -333,8 +340,8 @@ SUPPORTED_ESTIMATORS = {
     'ColumnDuplicator',
     'ColumnSelector',
     'CountSelector',
-    #'EnsembleClassifier',
-    #'EnsembleRegressor',
+    'EnsembleClassifier',
+    'EnsembleRegressor',
     'FastForestBinaryClassifier',
     'FastForestRegressor',
     'FastLinearBinaryClassifier',
@@ -358,13 +365,16 @@ SUPPORTED_ESTIMATORS = {
     'LpScaler',
     'MeanVarianceScaler',
     'MinMaxScaler',
-    #'MutualInformationSelector',
+    'MutualInformationSelector',
     'NaiveBayesClassifier',
     'OneHotVectorizer',
     'OnlineGradientDescentRegressor',
     'OrdinaryLeastSquaresRegressor',
+    'PcaTransformer',
     'PoissonRegressionRegressor',
-    'PrefixColumnConcatenator',
+    'SgdBinaryClassifier',
+    'SymSgdBinaryClassifier',
+    'ToKey',
     'TypeConverter',
     'WordTokenizer'
 }
@@ -450,11 +460,22 @@ def validate_results(class_name, result_expected, result_onnx):
         if len(result_onnx.columns) != num_cols:
             raise RuntimeError("ERROR: The ONNX output does not contain the expected number of columns.")
 
-    for col_pair in EXPECTED_RESULTS[class_name]['cols']:
-        col_expected = result_expected.loc[:, col_pair[0]]
-        col_onnx = result_onnx.loc[:, col_pair[1]]
+    col_pairs = EXPECTED_RESULTS[class_name]['cols']
 
+    if isinstance(col_pairs, int):
+        # If col_pairs is an int then slice the columns
+        # based on the value and use those pairs for comparison
+        col_pairs = list(zip(result_expected.columns[col_pairs:],
+                             result_onnx.columns[col_pairs:]))
+
+        if not col_pairs:
+            raise RuntimeError("ERROR: no columns specified for comparison of results.")
+
+    for col_pair in col_pairs:
         try:
+            col_expected = result_expected.loc[:, col_pair[0]]
+            col_onnx = result_onnx.loc[:, col_pair[1]]
+
             pd.testing.assert_series_equal(col_expected,
                                            col_onnx,
                                            check_names=False,
@@ -500,7 +521,8 @@ def test_export_to_onnx(estimator, class_name):
     if (output and
         (onnx_file_size != 0) and
         (onnx_json_file_size != 0) and
-        (not 'cannot save itself as ONNX' in output.stdout)):
+        (not 'cannot save itself as ONNX' in output.stdout) and
+        (not 'Warning: We do not know how to save the predictor as ONNX' in output.stdout)):
 
         exported = True
 
@@ -550,7 +572,7 @@ runable_estimators = set()
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['PcaTransformer']:
+#    if not class_name in ['EnsembleRegressor']:
 #        continue
 
     print('\n===========> %s' % class_name)
@@ -586,26 +608,37 @@ for entry_point in entry_points:
         runable_estimators.add(class_name)
         print('Exported ONNX model successfully transformed with OnnxRunner.')
 
+print('\n=====================')
+print('SUMMARY')
+print('=====================')
+
 print('\nThe following estimators were skipped: ')
 pprint.pprint(sorted(SKIP))
 
 print('\nThe following estimators were successfully exported to ONNX:')
 pprint.pprint(sorted(exportable_estimators))
 
-print('\nThe following estimators were successfully exported to experimental ONNX: ')
-pprint.pprint(sorted(exportable_experimental_estimators))
+if exportable_experimental_estimators:
+    print('\nThe following estimators were successfully exported to experimental ONNX: ')
+    pprint.pprint(sorted(exportable_experimental_estimators))
 
 print('\nThe following estimators could not be exported to ONNX: ')
 pprint.pprint(sorted(unexportable_estimators))
 
-failed_estimators = SUPPORTED_ESTIMATORS.difference(runable_estimators)
-print("\nThe following tests failed exporting to ONNX:")
-pprint.pprint(sorted(failed_estimators))
+failed_exports = SUPPORTED_ESTIMATORS.difference(exportable_estimators) \
+                                     .difference(exportable_experimental_estimators)
+print("\nThe following estimators failed exporting to ONNX:")
+pprint.pprint(sorted(failed_exports))
+
+failed_e2e_estimators = exportable_estimators.union(exportable_experimental_estimators) \
+                                             .difference(runable_estimators)
+print("\nThe following tests exported to ONNX but failed the end to end test:")
+pprint.pprint(sorted(failed_e2e_estimators))
 
 print('\nThe following estimators successfully completed the end to end test: ')
 pprint.pprint(sorted(runable_estimators))
 print()
 
-if len(failed_estimators) > 0:
+if len(failed_exports) + len(failed_e2e_estimators) > 0:
     raise RuntimeError("ONNX export checks failed")
 
