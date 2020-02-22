@@ -35,7 +35,7 @@ from nimbusml.preprocessing.filter import SkipFilter, TakeFilter, RangeFilter
 from nimbusml.preprocessing.missing_values import Filter, Handler, Indicator
 from nimbusml.preprocessing.normalization import Binner, GlobalContrastRowScaler, LpScaler
 from nimbusml.preprocessing.schema import (ColumnConcatenator, TypeConverter,
-                                           ColumnDuplicator, ColumnSelector)
+                                           ColumnDuplicator, ColumnSelector, PrefixColumnConcatenator)
 from nimbusml.preprocessing.text import CharTokenizer, WordTokenizer
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
@@ -186,6 +186,7 @@ INSTANCES = {
         Loader(columns={'ImgPath': 'Path'}),
         PixelExtractor(columns={'ImgPixels': 'ImgPath'}),
     ]),
+    'PrefixColumnConcatenator': PrefixColumnConcatenator(columns={'Features': 'Sepal_'}),
     'Resizer': Pipeline([
         Loader(columns={'ImgPath': 'Path'}),
         Resizer(image_width=227, image_height=227,
@@ -264,71 +265,76 @@ DATASETS = {
 }
 
 EXPECTED_RESULTS = {
-    'AveragedPerceptronBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
+    'AveragedPerceptronBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'CharTokenizer': {'cols': [('SentimentText_Transform.%03d' % i, 'SentimentText_Transform.%03d' % i)
                       for i in range(0, 422)]},
-    'ColumnDuplicator': {'cols': [('dup', 'dup.0')]},
+    'ColumnConcatenator': {'num_cols': 11, 'cols': 0},
+    'ColumnDuplicator': {'cols': [('dup', 'dup')]},
     'ColumnSelector': {
         'num_cols': 2,
-        'cols': [('Sepal_Width', 'Sepal_Width.0'), ('Sepal_Length', 'Sepal_Length.0')]
+        'cols': [('Sepal_Width', 'Sepal_Width'), ('Sepal_Length', 'Sepal_Length')]
     },
-    #'EnsembleClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    #'EnsembleRegressor': {'cols': [('Score', 'Score.0')]},
-    'FastForestBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'FastForestRegressor': {'cols': [('Score', 'Score.0')]},
-    'FastLinearBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'FastLinearClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'FastLinearRegressor': {'cols': [('Score', 'Score.0')]},
-    'FastTreesBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'FastTreesRegressor': {'cols': [('Score', 'Score.0')]},
-    'FastTreesTweedieRegressor': {'cols': [('Score', 'Score.0')]},
-    'FromKey': {'cols': [('Sepal_Length', 'Sepal_Length.0'), ('Label', 'Label.0')]},
+    #'EnsembleClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    #'EnsembleRegressor': {'cols': [('Score', 'Score')]},
+    'FastForestBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'FastForestRegressor': {'cols': [('Score', 'Score')]},
+    'FastLinearBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'FastLinearClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'FastLinearRegressor': {'cols': [('Score', 'Score')]},
+    'FastTreesBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'FastTreesRegressor': {'cols': [('Score', 'Score')]},
+    'FastTreesTweedieRegressor': {'cols': [('Score', 'Score')]},
+    'FromKey': {'cols': [('Sepal_Length', 'Sepal_Length'), ('Label', 'Label')]},
     'GlobalContrastRowScaler': {'cols': [
-        ('normed_columns.Petal_Length', 'normed_columns.0'),
-        ('normed_columns.Sepal_Width', 'normed_columns.1'),
-        ('normed_columns.Sepal_Length', 'normed_columns.2')
+        ('normed_columns.Petal_Length', 'normed_columns.Petal_Length'),
+        ('normed_columns.Sepal_Width', 'normed_columns.Sepal_Width'),
+        ('normed_columns.Sepal_Length', 'normed_columns.Sepal_Length')
     ]},
     'Handler': {'cols': [
-        ('NewVals.NewVals', 'NewVals.0'),
-        ('NewVals.IsMissing.NewVals', 'NewVals.1')
+        ('NewVals.NewVals', 'NewVals.NewVals'),
+        ('NewVals.IsMissing.NewVals', 'NewVals.IsMissing.NewVals')
     ]},
-    'Indicator': {'cols': [('Has_Nan', 'Has_Nan.0')]},
-    'KMeansPlusPlus':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'LightGbmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'LightGbmClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'LightGbmRanker': {'cols': [('Score', 'Score.0')]},
-    'LightGbmRegressor': {'cols': [('Score', 'Score.0')]},
-    'LinearSvmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'LogisticRegressionBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'LogisticRegressionClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
+    'Indicator': {'cols': [('Has_Nan', 'Has_Nan')]},
+    'KMeansPlusPlus':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'LightGbmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'LightGbmClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'LightGbmRanker': {'cols': [('Score', 'Score')]},
+    'LightGbmRegressor': {'cols': [('Score', 'Score')]},
+    'LinearSvmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'LogisticRegressionBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'LogisticRegressionClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'LpScaler': {'cols': [
-        ('normed_columns.Petal_Length', 'normed_columns.0'),
-        ('normed_columns.Sepal_Width', 'normed_columns.1'),
-        ('normed_columns.Sepal_Length', 'normed_columns.2')
+        ('normed_columns.Petal_Length', 'normed_columns.Petal_Length'),
+        ('normed_columns.Sepal_Width', 'normed_columns.Sepal_Width'),
+        ('normed_columns.Sepal_Length', 'normed_columns.Sepal_Length')
     ]},
     'MeanVarianceScaler': {'cols': list(zip(
         ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa'],
-        ['Sepal_Length.0', 'Sepal_Width.0', 'Petal_Length.0', 'Petal_Width.0', 'Setosa.0']
+        ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa']
     ))},
     'MinMaxScaler': {'cols': list(zip(
         ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa'],
-        ['Sepal_Length.0', 'Sepal_Width.0', 'Petal_Length.0', 'Petal_Width.0', 'Setosa.0']
+        ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa']
     ))},
     #'MutualInformationSelector',
     'NGramFeaturizer': {'num_cols': 273, 'cols': 0},
-    'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
+    'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'OneHotVectorizer': {'cols': list(zip(
         ['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs'],
-        ['education_str.0', 'education_str.1', 'education_str.2']
+        ['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs']
     ))},
-    'OnlineGradientDescentRegressor': {'cols': [('Score', 'Score.0')]},
-    'OrdinaryLeastSquaresRegressor': {'cols': [('Score', 'Score.0')]},
+    'OnlineGradientDescentRegressor': {'cols': [('Score', 'Score')]},
+    'OrdinaryLeastSquaresRegressor': {'cols': [('Score', 'Score')]},
     'PcaTransformer': {'num_cols': 9, 'cols': 0},
-    'PoissonRegressionRegressor': {'cols': [('Score', 'Score.0')]},
-    'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel.0')]},
-    'ToKey': {'cols': [('edu_1', 'edu_1.0'), ('parity_1', 'parity_1.0')]},
-    'TypeConverter': {'cols': [('group', 'group.0')]},
+    'PoissonRegressionRegressor': {'cols': [('Score', 'Score')]},
+    'PrefixColumnConcatenator': {'cols': [
+        ('Features.Sepal_Length', 'Features.Sepal_Length'),
+        ('Features.Sepal_Width', 'Features.Sepal_Width')
+    ]},
+    'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'ToKey': {'cols': [('edu_1', 'edu_1'), ('parity_1', 'parity_1')]},
+    'TypeConverter': {'cols': [('group', 'group')]},
     'WordTokenizer': {'num_cols': 73, 'cols': 0}
 }
 
@@ -575,8 +581,8 @@ runable_estimators = set()
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['NGramFeaturizer']:
-#       continue
+#    if not class_name in ['CharTokenizer']:
+#      continue
 
     print('\n===========> %s' % class_name)
 
