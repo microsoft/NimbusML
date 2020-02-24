@@ -43,6 +43,7 @@ from nimbusml.preprocessing.text import CharTokenizer, WordTokenizer
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
                                  SsaForecaster)
+from data_frame_tool import DataFrameTool as DFT
 
 
 SHOW_ONNX_JSON = False
@@ -559,6 +560,8 @@ def test_export_to_onnx(estimator, class_name):
         try:
             onnxrunner = OnnxRunner(model_file=onnx_path)
             result_onnx = onnxrunner.fit_transform(dataset)
+            df_tool = DFT(onnx_path)
+            result_onnx1 = df_tool.execute(dataset, [])
 
             if SHOW_TRANSFORMED_RESULTS:
                 print_results(result_expected, result_onnx)
@@ -590,8 +593,8 @@ runable_estimators = set()
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['Handler']:
-#        continue
+    if not class_name in ['Handler']:
+        continue
 
     print('\n===========> %s' % class_name)
 
