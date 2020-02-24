@@ -27,7 +27,10 @@ from nimbusml.feature_extraction.image import Loader, Resizer, PixelExtractor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.feature_extraction.text.extractor import Ngram
 from nimbusml.feature_selection import CountSelector, MutualInformationSelector
-from nimbusml.linear_model import FastLinearBinaryClassifier
+from nimbusml.linear_model import (AveragedPerceptronBinaryClassifier,
+                                   FastLinearBinaryClassifier,
+                                   LinearSvmBinaryClassifier)
+from nimbusml.multiclass import OneVsRestClassifier
 from nimbusml.naive_bayes import NaiveBayesClassifier
 from nimbusml.preprocessing import (TensorFlowScorer, FromKey, ToKey,
                                     DateTimeSplitter, OnnxRunner)
@@ -75,6 +78,7 @@ infert_df.columns = [i.replace(': ', '') for i in infert_df.columns]
 infert_df.rename(columns={'case': 'Label'}, inplace=True)
 
 infert_onehot_df = (OneHotVectorizer() << 'education_str').fit_transform(infert_df)
+infert_onehot_df['Label'] = infert_onehot_df['Label'].astype(np.uint32)
 
 #     rank  group   carrier  price  Class  dep_day  nbr_stops  duration
 # 0      2      1        AA    240      3        1          0      12.0
@@ -118,6 +122,8 @@ SKIP = {
 }
 
 INSTANCES = {
+    'AveragedPerceptronBinaryClassifier': AveragedPerceptronBinaryClassifier(
+        feature=['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs']),
     'Binner': Binner(num_bins=3),
     'CharTokenizer': CharTokenizer(columns={'SentimentText_Transform': 'SentimentText'}),
     'ColumnConcatenator': ColumnConcatenator(columns={'Features': [
@@ -174,12 +180,28 @@ INSTANCES = {
             slots_in_output=2)  # only accept one column
     ]),
     'NaiveBayesClassifier': NaiveBayesClassifier(feature=['Sepal_Width', 'Sepal_Length']),
-    'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=Ngram(), 
+    'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=Ngram(),
                                        char_feature_extractor=Ngram(), 
                                        keep_diacritics=True,
                                        columns={ 'features': ['SentimentText']}),
     'OneHotHashVectorizer': OneHotHashVectorizer(columns=['education_str']),
     'OneHotVectorizer': OneHotVectorizer(columns=['education_str']),
+    'OneVsRestClassifier(AveragedPerceptronBinaryClassifier)': \
+        OneVsRestClassifier(AveragedPerceptronBinaryClassifier(),
+                            use_probabilities=True,
+                            feature=['age',
+                                     'education_str.0-5yrs',
+                                     'education_str.6-11yrs',
+                                     'education_str.12+ yrs'],
+                            label='induced'),
+    'OneVsRestClassifier(LinearSvmBinaryClassifier)': \
+        OneVsRestClassifier(LinearSvmBinaryClassifier(),
+                            use_probabilities=True,
+                            feature=['age',
+                                     'education_str.0-5yrs',
+                                     'education_str.6-11yrs',
+                                     'education_str.12+ yrs'],
+                            label='induced'),
     'PcaAnomalyDetector': PcaAnomalyDetector(rank=3),
     'PcaTransformer':  PcaTransformer(rank=2),
     'PixelExtractor': Pipeline([
@@ -238,6 +260,7 @@ DATASETS = {
     'GlobalContrastRowScaler': iris_df.astype(np.float32),
     'Handler': iris_with_nan_df,
     'Indicator': iris_with_nan_df,
+    'LightGbmBinaryClassifier': iris_binary_df,
     'LightGbmRanker': gen_tt_df,
     'LinearSvmBinaryClassifier': iris_binary_df,
     'Loader': image_paths_df,
@@ -251,6 +274,8 @@ DATASETS = {
     'OneHotHashVectorizer': infert_df,
     'OneHotVectorizer': infert_df,
     'OnlineGradientDescentRegressor': iris_regression_df,
+    'OneVsRestClassifier(AveragedPerceptronBinaryClassifier)': infert_onehot_df,
+    'OneVsRestClassifier(LinearSvmBinaryClassifier)': infert_onehot_df,
     'OrdinaryLeastSquaresRegressor': iris_regression_df,
     'PcaAnomalyDetector': iris_no_label_df,
     'PcaTransformer': iris_regression_df,
@@ -266,10 +291,9 @@ DATASETS = {
 
 EXPECTED_RESULTS = {
     'AveragedPerceptronBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'CharTokenizer': {'cols': [('SentimentText_Transform.%03d' % i, 'SentimentText_Transform.%03d' % i)
-                      for i in range(0, 422)]},
+    'CharTokenizer': {'num_cols': 424, 'cols': 0},
     'ColumnConcatenator': {'num_cols': 11, 'cols': 0},
-    'ColumnDuplicator': {'cols': [('dup', 'dup')]},
+    'ColumnDuplicator': {'num_cols': 7, 'cols': 0},
     'ColumnSelector': {
         'num_cols': 2,
         'cols': [('Sepal_Width', 'Sepal_Width'), ('Sepal_Length', 'Sepal_Length')]
@@ -284,17 +308,10 @@ EXPECTED_RESULTS = {
     'FastTreesBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'FastTreesRegressor': {'cols': [('Score', 'Score')]},
     'FastTreesTweedieRegressor': {'cols': [('Score', 'Score')]},
-    'FromKey': {'cols': [('Sepal_Length', 'Sepal_Length'), ('Label', 'Label')]},
-    'GlobalContrastRowScaler': {'cols': [
-        ('normed_columns.Petal_Length', 'normed_columns.Petal_Length'),
-        ('normed_columns.Sepal_Width', 'normed_columns.Sepal_Width'),
-        ('normed_columns.Sepal_Length', 'normed_columns.Sepal_Length')
-    ]},
-    'Handler': {'cols': [
-        ('NewVals.NewVals', 'NewVals.NewVals'),
-        ('NewVals.IsMissing.NewVals', 'NewVals.IsMissing.NewVals')
-    ]},
-    'Indicator': {'cols': [('Has_Nan', 'Has_Nan')]},
+    'FromKey': {'num_cols': 6, 'cols': 0},
+    'GlobalContrastRowScaler': {'num_cols': 12, 'cols': 0},
+    'Handler': {'num_cols': 8, 'cols': 0},
+    'Indicator': {'num_cols': 7, 'cols': 0},
     'KMeansPlusPlus':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'LightGbmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'LightGbmClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
@@ -303,38 +320,26 @@ EXPECTED_RESULTS = {
     'LinearSvmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'LogisticRegressionBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'LogisticRegressionClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'LpScaler': {'cols': [
-        ('normed_columns.Petal_Length', 'normed_columns.Petal_Length'),
-        ('normed_columns.Sepal_Width', 'normed_columns.Sepal_Width'),
-        ('normed_columns.Sepal_Length', 'normed_columns.Sepal_Length')
-    ]},
-    'MeanVarianceScaler': {'cols': list(zip(
-        ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa'],
-        ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa']
-    ))},
-    'MinMaxScaler': {'cols': list(zip(
-        ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa'],
-        ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width', 'Setosa']
-    ))},
-    #'MutualInformationSelector',
+    'LpScaler': {'num_cols': 10, 'cols': 0},
+    'MeanVarianceScaler': {'num_cols': 5, 'cols': 0},
+    'MinMaxScaler': {'num_cols': 5, 'cols': 0},
+    'MutualInformationSelector': {'num_cols': 8, 'cols': 0},
     'NGramFeaturizer': {'num_cols': 273, 'cols': 0},
     'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'OneHotVectorizer': {'cols': list(zip(
-        ['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs'],
-        ['education_str.0-5yrs', 'education_str.6-11yrs', 'education_str.12+ yrs']
-    ))},
+    'OneHotVectorizer': {'num_cols': 12, 'cols': 0},
+    'OneVsRestClassifier(AveragedPerceptronBinaryClassifier)': \
+        {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'OneVsRestClassifier(LinearSvmBinaryClassifier)': \
+        {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'OnlineGradientDescentRegressor': {'cols': [('Score', 'Score')]},
     'OrdinaryLeastSquaresRegressor': {'cols': [('Score', 'Score')]},
     'PcaTransformer': {'num_cols': 9, 'cols': 0},
     'PoissonRegressionRegressor': {'cols': [('Score', 'Score')]},
-    'PrefixColumnConcatenator': {'cols': [
-        ('Features.Sepal_Length', 'Features.Sepal_Length'),
-        ('Features.Sepal_Width', 'Features.Sepal_Width')
-    ]},
+    'PrefixColumnConcatenator': {'num_cols': 8, 'cols': 0},
     'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'ToKey': {'cols': [('edu_1', 'edu_1'), ('parity_1', 'parity_1')]},
-    'TypeConverter': {'cols': [('group', 'group')]},
+    'ToKey': {'num_cols': 12, 'cols': 0},
+    'TypeConverter': {'num_cols': 8, 'cols': 0},
     'WordTokenizer': {'num_cols': 73, 'cols': 0}
 }
 
@@ -571,6 +576,10 @@ def test_export_to_onnx(estimator, class_name):
 
 manifest_diff = os.path.join(script_dir, '..', 'tools', 'manifest_diff.json')
 entry_points = load_json(manifest_diff)['EntryPoints']
+entry_points.extend([
+    {'NewName': 'OneVsRestClassifier(AveragedPerceptronBinaryClassifier)'},
+    {'NewName': 'OneVsRestClassifier(LinearSvmBinaryClassifier)'}
+])
 entry_points = sorted(entry_points, key=lambda ep: ep['NewName'])
 
 exportable_estimators = set()
@@ -581,8 +590,8 @@ runable_estimators = set()
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['CharTokenizer']:
-#      continue
+#    if not class_name in ['Handler']:
+#        continue
 
     print('\n===========> %s' % class_name)
 
@@ -590,12 +599,12 @@ for entry_point in entry_points:
         print("skipped")
         continue
 
-    mod = __import__('nimbusml.' + entry_point['Module'],
-                     fromlist=[str(class_name)])
-
     if class_name in INSTANCES:
         estimator = INSTANCES[class_name]
     else:
+        mod = __import__('nimbusml.' + entry_point['Module'],
+                         fromlist=[str(class_name)])
+
         the_class = getattr(mod, class_name)
         estimator = the_class()
 
