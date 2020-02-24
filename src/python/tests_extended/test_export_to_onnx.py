@@ -234,7 +234,7 @@ INSTANCES = {
             'examples',
             'frozen_saved_model.pb'),
         columns={'c': ['a', 'b']}),
-    'ToKey': ToKey(columns={'edu_1': 'education_str', 'parity_1': 'parity'}),
+    'ToKey': ToKey(columns={'edu_1': 'education_str'}),
     'TypeConverter': TypeConverter(columns=['group'], result_type='R4'),
     'WordTokenizer': WordTokenizer(char_array_term_separators=[" "]) << {'wt': 'SentimentText'}
 }
@@ -338,7 +338,7 @@ EXPECTED_RESULTS = {
     'PrefixColumnConcatenator': {'num_cols': 8, 'cols': 0},
     'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
     'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'ToKey': {'num_cols': 12, 'cols': 0},
+    'ToKey': {'num_cols': 11, 'cols': 0},
     'TypeConverter': {'num_cols': 8, 'cols': 0},
     'WordTokenizer': {'num_cols': 73, 'cols': 0}
 }
@@ -488,6 +488,12 @@ def validate_results(class_name, result_expected, result_onnx):
         try:
             col_expected = result_expected.loc[:, col_pair[0]]
             col_onnx = result_onnx.loc[:, col_pair[1]]
+
+            if isinstance(col_expected.dtype, pd.api.types.CategoricalDtype):
+                # ONNX does not export categorical columns so convert categorical
+                # columns received from ML.Net back to the original values before
+                # the comparison.
+                col_expected = col_expected.astype(col_expected.dtype.categories.dtype)
 
             pd.testing.assert_series_equal(col_expected,
                                            col_onnx,
