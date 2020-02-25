@@ -174,22 +174,34 @@ class DataFrameTool():
         """
         input_feed = self._get_input_feeds(df, self._sess);
         if not output_names:
-          output_names = [output.name for output in self._sess._outputs_meta]
-          
+            output_names = [output.name for output in self._sess._outputs_meta]
+
         results = self._sess.run(output_names, input_feed, run_options)
 
         df = pd.DataFrame()
-        for i in range(len(results)):
-           r = results[i].flatten()
-           if output_types and output_names[i] in output_types:
-             dtype = output_types[output_names[i]]
-             if dtype == np.dtype('datetime64'):
-                r = r.astype(np.int64)
-                r = [datetime.utcfromtimestamp(ts) for ts in r]
-             else:
-                r = r.astype(dtype)
-             
-           print(len(r))
-           df[output_names[i]] = r
-        
+        for i, r in enumerate(results):
+            # TODO: remove this. These extra columns
+            # should not be in the output.
+            if output_names[i].startswith('mlnet.') and \
+               output_names[i].endswith('.unusedOutput') and \
+               r.shape == (1,1):
+                continue
+
+            r = np.split(r, r.shape[-1], axis=-1) \
+                if r.shape[-1] > 1 else [r]
+
+            for suffix, col in enumerate(r):
+                col = col.flatten()
+                if output_types and output_names[i] in output_types:
+                    dtype = output_types[output_names[i]]
+                    if dtype == np.dtype('datetime64'):
+                        col = col.astype(np.int64)
+                        col = [datetime.utcfromtimestamp(ts) for ts in col]
+                    else:
+                        col = col.astype(dtype)
+
+                col_name = output_names[i] if len(r) == 1 else \
+                           output_names[i] + '.' + str(suffix)
+                df[col_name] = col
+
         return df

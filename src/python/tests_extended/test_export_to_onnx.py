@@ -43,6 +43,7 @@ from nimbusml.preprocessing.text import CharTokenizer, WordTokenizer
 from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
                                  SsaForecaster)
+from data_frame_tool import DataFrameTool as DFT
 
 from data_frame_tool import DataFrameTool as DFT
 
@@ -235,7 +236,7 @@ INSTANCES = {
             'examples',
             'frozen_saved_model.pb'),
         columns={'c': ['a', 'b']}),
-    'ToKey': ToKey(columns={'edu_1': 'education_str', 'parity_1': 'parity'}),
+    'ToKey': ToKey(columns={'edu_1': 'education_str'}),
     'TypeConverter': TypeConverter(columns=['group'], result_type='R4'),
     'WordTokenizer': WordTokenizer(char_array_term_separators=[" "]) << {'wt': 'SentimentText'}
 }
@@ -291,55 +292,56 @@ DATASETS = {
 }
 
 EXPECTED_RESULTS = {
-    'AveragedPerceptronBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'AveragedPerceptronBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
     'CharTokenizer': {'num_cols': 424, 'cols': 0},
     'ColumnConcatenator': {'num_cols': 11, 'cols': 0},
     'ColumnDuplicator': {'num_cols': 7, 'cols': 0},
     'ColumnSelector': {
         'num_cols': 2,
-        'cols': [('Sepal_Width', 'Sepal_Width'), ('Sepal_Length', 'Sepal_Length')]
+        'cols': [('Sepal_Width', 'Sepal_Width', 'Sepal_Width.output'),
+                 ('Sepal_Length', 'Sepal_Length', 'Sepal_Length.output')]
     },
     #'EnsembleClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
     #'EnsembleRegressor': {'cols': [('Score', 'Score')]},
-    'FastForestBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'FastForestRegressor': {'cols': [('Score', 'Score')]},
-    'FastLinearBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'FastLinearClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'FastLinearRegressor': {'cols': [('Score', 'Score')]},
-    'FastTreesBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'FastTreesRegressor': {'cols': [('Score', 'Score')]},
-    'FastTreesTweedieRegressor': {'cols': [('Score', 'Score')]},
+    'FastForestBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'FastForestRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
+    'FastLinearBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'FastLinearClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'FastLinearRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
+    'FastTreesBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'FastTreesRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
+    'FastTreesTweedieRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
     'FromKey': {'num_cols': 6, 'cols': 0},
     'GlobalContrastRowScaler': {'num_cols': 12, 'cols': 0},
     'Handler': {'num_cols': 8, 'cols': 0},
     'Indicator': {'num_cols': 7, 'cols': 0},
-    'KMeansPlusPlus':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'LightGbmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'LightGbmClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'LightGbmRanker': {'cols': [('Score', 'Score')]},
-    'LightGbmRegressor': {'cols': [('Score', 'Score')]},
-    'LinearSvmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'LogisticRegressionBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'LogisticRegressionClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'KMeansPlusPlus':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'LightGbmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'LightGbmClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'LightGbmRanker': {'cols': [('Score', 'Score', 'Score.output')]},
+    'LightGbmRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
+    'LinearSvmBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'LogisticRegressionBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'LogisticRegressionClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
     'LpScaler': {'num_cols': 10, 'cols': 0},
     'MeanVarianceScaler': {'num_cols': 5, 'cols': 0},
     'MinMaxScaler': {'num_cols': 5, 'cols': 0},
     'MutualInformationSelector': {'num_cols': 8, 'cols': 0},
     'NGramFeaturizer': {'num_cols': 273, 'cols': 0},
-    'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
+    'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
     'OneHotVectorizer': {'num_cols': 12, 'cols': 0},
     'OneVsRestClassifier(AveragedPerceptronBinaryClassifier)': \
-        {'cols': [('PredictedLabel', 'PredictedLabel')]},
+        {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
     'OneVsRestClassifier(LinearSvmBinaryClassifier)': \
-        {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'OnlineGradientDescentRegressor': {'cols': [('Score', 'Score')]},
-    'OrdinaryLeastSquaresRegressor': {'cols': [('Score', 'Score')]},
+        {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'OnlineGradientDescentRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
+    'OrdinaryLeastSquaresRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
     'PcaTransformer': {'num_cols': 9, 'cols': 0},
-    'PoissonRegressionRegressor': {'cols': [('Score', 'Score')]},
+    'PoissonRegressionRegressor': {'cols': [('Score', 'Score', 'Score.output')]},
     'PrefixColumnConcatenator': {'num_cols': 8, 'cols': 0},
-    'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
-    'ToKey': {'num_cols': 12, 'cols': 0},
+    'SgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'SymSgdBinaryClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
+    'ToKey': {'num_cols': 11, 'cols': 0},
     'TypeConverter': {'num_cols': 8, 'cols': 0},
     'WordTokenizer': {'num_cols': 73, 'cols': 0}
 }
@@ -465,7 +467,7 @@ def print_results(result_expected, result_onnx, result_onnx_ort):
     if not isinstance(result_onnx_ort, pd.Series):
         print('Columns', result_onnx_ort.columns)
 
-def validate_results(class_name, result_expected, result_onnx):
+def validate_results(class_name, result_expected, result_onnx, result_ort):
     if not class_name in EXPECTED_RESULTS:
         raise RuntimeError("ERROR: ONNX model executed but no results specified for comparison.")
 
@@ -478,34 +480,43 @@ def validate_results(class_name, result_expected, result_onnx):
         if len(result_onnx.columns) != num_cols:
             raise RuntimeError("ERROR: The ONNX output does not contain the expected number of columns.")
 
-    col_pairs = EXPECTED_RESULTS[class_name]['cols']
+        if len(result_ort.columns) != num_cols:
+            raise RuntimeError("ERROR: The ORT output does not contain the expected number of columns.")
 
-    if isinstance(col_pairs, int):
+    col_tuples = EXPECTED_RESULTS[class_name]['cols']
+
+    if isinstance(col_tuples, int):
         # If col_pairs is an int then slice the columns
         # based on the value and use those pairs for comparison
-        col_pairs = list(zip(result_expected.columns[col_pairs:],
-                             result_onnx.columns[col_pairs:]))
+        col_tuples = list(zip(result_expected.columns[col_tuples:],
+                              result_onnx.columns[col_tuples:],
+                              result_ort.columns[col_tuples:]))
 
-        if not col_pairs:
+        if not col_tuples:
             raise RuntimeError("ERROR: no columns specified for comparison of results.")
 
-    for col_pair in col_pairs:
+    for col_tuple in col_tuples:
         try:
-            col_expected = result_expected.loc[:, col_pair[0]]
-            col_onnx = result_onnx.loc[:, col_pair[1]]
+            col_expected = result_expected.loc[:, col_tuple[0]]
+            col_onnx = result_onnx.loc[:, col_tuple[1]]
+            col_ort = result_ort.loc[:, col_tuple[2]]
 
             if isinstance(col_expected.dtype, pd.api.types.CategoricalDtype):
                 # ONNX does not export categorical columns so convert categorical
                 # columns received from ML.Net back to the original values before
                 # the comparison.
                 col_expected = col_expected.astype(col_expected.dtype.categories.dtype)
-                
-            pd.testing.assert_series_equal(col_expected,
-                                           col_onnx,
-                                           check_names=False,
-                                           check_exact=False,
-                                           check_dtype=True,
-                                           check_less_precise=True)
+
+            check_kwargs = {
+                'check_names': False,
+                'check_exact': False,
+                'check_dtype': True,
+                'check_less_precise': True
+            }
+
+            pd.testing.assert_series_equal(col_expected, col_onnx, **check_kwargs)
+            pd.testing.assert_series_equal(col_expected, col_ort, **check_kwargs)
+
         except Exception as e:
             print(e)
             raise RuntimeError("ERROR: OnnxRunner result does not match expected result.")
@@ -573,12 +584,16 @@ def test_export_to_onnx(estimator, class_name):
             df_tool = DFT(onnx_path)
             result_ort = df_tool.execute(dataset, [])
 
+            df_tool = DFT(onnx_path)
+            result_ort = df_tool.execute(dataset, [])
+
             if SHOW_TRANSFORMED_RESULTS:
                 print_results(result_expected, result_onnx, result_ort)
 
             export_valid = validate_results(class_name,
                                             result_expected,
-                                            result_onnx)
+                                            result_onnx,
+                                            result_ort)
         except Exception as e:
             print(e)
 
