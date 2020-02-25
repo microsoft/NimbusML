@@ -45,7 +45,6 @@ from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaForecaster)
 from data_frame_tool import DataFrameTool as DFT
 
-from data_frame_tool import DataFrameTool as DFT
 
 SHOW_ONNX_JSON = False
 SHOW_TRANSFORMED_RESULTS = True
