@@ -44,6 +44,7 @@ from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaSpikeDetector, SsaChangePointDetector,
                                  SsaForecaster)
 
+from data_frame_tool import DataFrameTool as DFT
 
 SHOW_ONNX_JSON = False
 SHOW_TRANSFORMED_RESULTS = True
@@ -448,7 +449,7 @@ def load_json(file_path):
         return json.loads(content_without_comments)
 
 
-def print_results(result_expected, result_onnx):
+def print_results(result_expected, result_onnx, result_onnx_ort):
     print("\nML.Net Output (Expected Result):")
     print(result_expected)
     if not isinstance(result_expected, pd.Series):
@@ -459,6 +460,10 @@ def print_results(result_expected, result_onnx):
     if not isinstance(result_onnx, pd.Series):
         print('Columns', result_onnx.columns)
 
+    print("\nORT Result:")
+    print(result_onnx_ort)
+    if not isinstance(result_onnx_ort, pd.Series):
+        print('Columns', result_onnx_ort.columns)
 
 def validate_results(class_name, result_expected, result_onnx):
     if not class_name in EXPECTED_RESULTS:
@@ -489,6 +494,12 @@ def validate_results(class_name, result_expected, result_onnx):
             col_expected = result_expected.loc[:, col_pair[0]]
             col_onnx = result_onnx.loc[:, col_pair[1]]
 
+            if isinstance(col_expected.dtype, pd.api.types.CategoricalDtype):
+                # ONNX does not export categorical columns so convert categorical
+                # columns received from ML.Net back to the original values before
+                # the comparison.
+                col_expected = col_expected.astype(col_expected.dtype.categories.dtype)
+                
             pd.testing.assert_series_equal(col_expected,
                                            col_onnx,
                                            check_names=False,
@@ -559,9 +570,11 @@ def test_export_to_onnx(estimator, class_name):
         try:
             onnxrunner = OnnxRunner(model_file=onnx_path)
             result_onnx = onnxrunner.fit_transform(dataset)
+            df_tool = DFT(onnx_path)
+            result_ort = df_tool.execute(dataset, [])
 
             if SHOW_TRANSFORMED_RESULTS:
-                print_results(result_expected, result_onnx)
+                print_results(result_expected, result_onnx, result_ort)
 
             export_valid = validate_results(class_name,
                                             result_expected,
