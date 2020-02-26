@@ -1631,8 +1631,9 @@ class Pipeline:
 
         outputs = dict(output_data="")
 
-        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
-                             else DataOutputFormat.DF,
+        data_output_format = DataOutputFormat.DF
+        if as_binary_data_stream:
+            data_output_format = DataOutputFormat.IDV
 
         graph = Graph(
             inputs,
@@ -1821,8 +1822,9 @@ class Pipeline:
 
         outputs = dict(output_data="")
 
-        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
-                             else DataOutputFormat.DF,
+        data_output_format = DataOutputFormat.DF
+        if as_binary_data_stream:
+            data_output_format = DataOutputFormat.IDV
 
         graph = Graph(
             inputs,
@@ -1983,8 +1985,9 @@ class Pipeline:
         else:
             outputs = dict(output_data="")
 
-        data_output_format = DataOutputFormat.IDV if as_binary_data_stream \
-                             else DataOutputFormat.DF,
+        data_output_format = DataOutputFormat.DF
+        if as_binary_data_stream:
+            data_output_format = DataOutputFormat.IDV
 
         graph = Graph(
             inputs,
@@ -2009,8 +2012,9 @@ class Pipeline:
             self._run_time = time.time() - start_time
             raise e
 
-        if is_transformer_chain:
-            out_data['PredictedLabel'] = out_data['PredictedLabel']*1
+        if data_output_format == DataOutputFormat.DF and \
+           is_transformer_chain and 'PredictedLabel' in out_data.columns:
+                out_data['PredictedLabel'] = out_data['PredictedLabel']*1
 
 
         if y is not None:
