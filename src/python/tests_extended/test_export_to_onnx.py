@@ -45,8 +45,6 @@ from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
                                  SsaForecaster)
 from data_frame_tool import DataFrameTool as DFT
 
-from data_frame_tool import DataFrameTool as DFT
-
 SHOW_ONNX_JSON = False
 SHOW_TRANSFORMED_RESULTS = True
 SHOW_FULL_PANDAS_OUTPUT = False
@@ -584,9 +582,6 @@ def test_export_to_onnx(estimator, class_name):
             df_tool = DFT(onnx_path)
             result_ort = df_tool.execute(dataset, [])
 
-            df_tool = DFT(onnx_path)
-            result_ort = df_tool.execute(dataset, [])
-
             if SHOW_TRANSFORMED_RESULTS:
                 print_results(result_expected, result_onnx, result_ort)
 
@@ -618,7 +613,7 @@ runable_estimators = set()
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['Handler']:
+#    if not class_name in ['FastLinearClassifier']:
 #        continue
 
     print('\n===========> %s' % class_name)
