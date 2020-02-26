@@ -190,7 +190,7 @@ class DataFrameTool():
                 continue
 
             r = np.split(r, r.shape[-1], axis=-1) \
-                if r.shape[-1] > 1 else [r]
+                if (r.shape[-1] > 1 and r.shape[0] > 1) else [r]
 
             for suffix, col in enumerate(r):
                 col = col.flatten()
