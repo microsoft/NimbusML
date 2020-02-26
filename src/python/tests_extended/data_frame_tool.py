@@ -112,7 +112,7 @@ class DataFrameTool():
                 if (df[input_meta.name].dtype) == 'datetime64[ns]':
                     input_array = np.array([dt.timestamp() for dt in df[input_meta.name]]).astype(np.int64)
                 elif (str(df[input_meta.name].dtype)) == 'category':
-                    input_array = np.array([dt + 1 for dt in df[input_meta.name]]).astype(np.uint32) # in ONNX models trained in ML.NET "categorical columns" are 1 based, not 0 based                    
+                    input_array = np.array([key + 1 for key in df[input_meta.name].array.codes]).astype(np.uint32)  # in ONNX models trained in ML.NET input coming from "categorical columns" is 1 based indices, whereas Categorical columns save indices that are 0 based, and that need to be retrieved from .array.codes                    
                 else:
                     # With strings we must cast first to np.object then then reshape
                     # so we do it for everything
@@ -190,7 +190,7 @@ class DataFrameTool():
                 continue
 
             r = np.split(r, r.shape[-1], axis=-1) \
-                if r.shape[-1] > 1 else [r]
+                if (r.shape[-1] > 1 and r.shape[0] > 1) else [r]
 
             for suffix, col in enumerate(r):
                 col = col.flatten()

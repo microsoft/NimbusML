@@ -1,12 +1,15 @@
 import os
+import time
 import tempfile
 import nimbusml.linear_model as nml_linear
 from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.preprocessing.missing_values import Handler
 from nimbusml import FileDataStream
 from nimbusml.preprocessing import DatasetTransformer
+from nimbusml.preprocessing.schema import ColumnSelector
 from nimbusml import Pipeline
 from nimbusml.preprocessing import OnnxRunner
+from data_frame_tool import DataFrameTool as DFT
 
 def get_tmp_file(suffix=None):
     fd, file_name = tempfile.mkstemp(suffix=suffix)
@@ -38,26 +41,35 @@ try:
     print('export done')
 
     # Perform the transform using the standard ML.Net backend
-    result_standard = pipe_training.transform(X_test_dprep)
+    start = time.time()
+    result_standard = pipe_training.predict(X_test_dprep)
+    end = time.time()
     print(result_standard)
-    print('done transform using standard backend')
-    #          c1        c2
-    # 0  0.025025  0.000998
-    # 1  0.305305  0.000998
+    print('%ss done transform using standard backend' % round(end - start, 3))
 
     # Perform the transform using the ONNX backend.
     # Note, the extra columns and column name differences
     # is a known issue with the ML.Net backend.
-    onnxrunner = OnnxRunner(model_file=onnx_path)
-    result_onnx = onnxrunner.fit_transform(X_test_dprep)
-    print('done transform using onnx backend')
-    print(result_onnx)
-    #      c1   c2     c12.0     c22.0
-    # 0   2.5  1.0  0.025025  0.000998
-    # 1  30.5  1.0  0.305305  0.000998
+    onnxrunner = Pipeline([OnnxRunner(model_file=onnx_path), 
+                           ColumnSelector(columns=['Score'])])
+    # Performance issue, commenting out for now
+    #start = time.time()
+    #result_onnx = onnxrunner.fit_transform(X_test_dprep, as_binary_data_stream=True)
+    #end = time.time()
+    #print(result_onnx.head(5))
+    #print('%ss done transform using onnx backend' % round(end - start, 3))
+
+    df_tool = DFT(onnx_path)
+    dataset = X_test_dprep.to_df()
+    start = time.time()
+    result_ort = df_tool.execute(dataset, [])
+    end = time.time()
+    print(result_ort)
+    print('%ss done transform using ORT backend (excludes df load time)' % round(end - start, 3))
+
 
 except Exception as e:
-    print('tragedy')
+    print('=============== ERROR =================')
     print(e)
 
 print ("done")
