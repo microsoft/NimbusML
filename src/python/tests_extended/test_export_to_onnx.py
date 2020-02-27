@@ -344,9 +344,6 @@ EXPECTED_RESULTS = {
     'WordTokenizer': {'num_cols': 73, 'cols': 0}
 }
 
-REQUIRES_EXPERIMENTAL = {
-}
-
 SUPPORTED_ESTIMATORS = {
     'AveragedPerceptronBinaryClassifier',
     'CharTokenizer',
@@ -538,14 +535,11 @@ def test_export_to_onnx(estimator, class_name):
         dataset = DATASETS.get(class_name, iris_df)
         estimator.fit(dataset)
 
-        onnx_version = 'Experimental' if class_name in REQUIRES_EXPERIMENTAL \
-                       else 'Stable'
-
         with CaptureOutputContext() as output:
             estimator.export_to_onnx(onnx_path,
                                      'com.microsoft.ml',
                                      dst_json=onnx_json_path,
-                                     onnx_version=onnx_version)
+                                     onnx_version='Stable')
     except Exception as e:
         print(e)
 
@@ -606,14 +600,13 @@ entry_points.extend([
 entry_points = sorted(entry_points, key=lambda ep: ep['NewName'])
 
 exportable_estimators = set()
-exportable_experimental_estimators = set()
 unexportable_estimators = set()
 runable_estimators = set()
 
 for entry_point in entry_points:
     class_name = entry_point['NewName']
 
-#    if not class_name in ['FastLinearClassifier']:
+#    if not class_name in ['OneVsRestClassifier(LinearSvmBinaryClassifier)']:
 #        continue
 
     print('\n===========> %s' % class_name)
@@ -634,11 +627,7 @@ for entry_point in entry_points:
     result = test_export_to_onnx(estimator, class_name)
 
     if result['exported']:
-        if class_name in REQUIRES_EXPERIMENTAL:
-            exportable_experimental_estimators.add(class_name)
-        else:
-            exportable_estimators.add(class_name)
-
+        exportable_estimators.add(class_name)
         print('Estimator successfully exported to ONNX.')
 
     else:
@@ -659,20 +648,14 @@ pprint.pprint(sorted(SKIP))
 print('\nThe following estimators were successfully exported to ONNX:')
 pprint.pprint(sorted(exportable_estimators))
 
-if exportable_experimental_estimators:
-    print('\nThe following estimators were successfully exported to experimental ONNX: ')
-    pprint.pprint(sorted(exportable_experimental_estimators))
-
 print('\nThe following estimators could not be exported to ONNX: ')
 pprint.pprint(sorted(unexportable_estimators))
 
-failed_exports = SUPPORTED_ESTIMATORS.difference(exportable_estimators) \
-                                     .difference(exportable_experimental_estimators)
+failed_exports = SUPPORTED_ESTIMATORS.difference(exportable_estimators)
 print("\nThe following estimators failed exporting to ONNX:")
 pprint.pprint(sorted(failed_exports))
 
-failed_e2e_estimators = exportable_estimators.union(exportable_experimental_estimators) \
-                                             .difference(runable_estimators)
+failed_e2e_estimators = exportable_estimators.difference(runable_estimators)
 print("\nThe following tests exported to ONNX but failed the end to end test:")
 pprint.pprint(sorted(failed_e2e_estimators))
 

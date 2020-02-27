@@ -15,7 +15,7 @@ def models_multioutputregressionevaluator(
         per_instance_metrics=None,
         name_column='Name',
         loss_function=None,
-        supress_scores_and_labels=False,
+        suppress_scores_and_labels=False,
         label_column=None,
         weight_column=None,
         score_column=None,
@@ -28,7 +28,7 @@ def models_multioutputregressionevaluator(
     :param data: The data to be used for evaluation. (inputs).
     :param name_column: Name column name. (inputs).
     :param loss_function: Loss function (inputs).
-    :param supress_scores_and_labels: Supress labels and scores in
+    :param suppress_scores_and_labels: Suppress labels and scores in
         per-instance outputs? (inputs).
     :param label_column: Column to use for labels. (inputs).
     :param weight_column: Weight column name. (inputs).
@@ -60,9 +60,9 @@ def models_multioutputregressionevaluator(
             obj=loss_function,
             none_acceptable=True,
             is_of_type=dict)
-    if supress_scores_and_labels is not None:
-        inputs['SupressScoresAndLabels'] = try_set(
-            obj=supress_scores_and_labels,
+    if suppress_scores_and_labels is not None:
+        inputs['SuppressScoresAndLabels'] = try_set(
+            obj=suppress_scores_and_labels,
             none_acceptable=True,
             is_of_type=bool)
     if label_column is not None:

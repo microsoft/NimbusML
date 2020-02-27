@@ -36,9 +36,9 @@ class TimeSeriesImputer(core, BaseTransform, TransformerMixin):
     :param impute_mode: Mode for imputing, defaults to ForwardFill if not
         provided.
 
-    :param supress_type_errors: Supress the errors that would occur if a column
-        and impute mode are imcompatible. If true, will skip the column. If
-        false, will stop and throw an error.
+    :param supress_type_errors: Suppress the errors that would occur if a
+        column and impute mode are incompatible. If true, will skip the column.
+        If false, will stop and throw an error.
 
     :param params: Additional arguments sent to compute engine.
 
