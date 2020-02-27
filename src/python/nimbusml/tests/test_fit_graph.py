@@ -5,6 +5,7 @@
  
 import json
 import unittest
+import six
 
 import numpy as np
 import pandas as pd
@@ -221,8 +222,10 @@ class TestVariableColumn(unittest.TestCase):
         nodes = result['nodes']
 
         self.assertEqual(nodes[0]["Name"], "Transforms.FeatureCombiner")
-        self.assertEqual(nodes[0]["Inputs"]["Features"], ['c1', 'c2', 'c3', 'Label'])
-
+        if six.PY2:
+            self.assertItemsEqual(nodes[0]["Inputs"]["Features"], ['c1', 'c2', 'c3', 'Label'])
+        else:
+            self.assertCountEqual(nodes[0]["Inputs"]["Features"], ['c1', 'c2', 'c3', 'Label'])
         self.assertEqual(nodes[1]["Name"], "Trainers.KMeansPlusPlusClusterer")
         self.assertEqual(nodes[1]["Inputs"]["FeatureColumnName"], "Features")
 
