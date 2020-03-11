@@ -296,6 +296,7 @@ then
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
+    "${PythonExe}" -m pip install --upgrade onnxruntime
 fi
 
 if [ ${__runTests} = true ]
