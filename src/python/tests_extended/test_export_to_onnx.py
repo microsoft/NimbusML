@@ -571,7 +571,7 @@ def test_export_to_onnx(estimator, class_name):
             result_expected = pd.DataFrame(result_expected)
 
         try:
-            onnxrunner = OnnxRunner(model_file=onnx_path, gpu_device_id = None)
+            onnxrunner = OnnxRunner(model_file=onnx_path)
             result_onnx = onnxrunner.fit_transform(dataset)
             df_tool = DFT(onnx_path)
             result_ort = df_tool.execute(dataset, [])
