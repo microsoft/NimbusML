@@ -171,7 +171,7 @@ if /i [%1] == [DbgWinPy2.7]     (
 
 :Build
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
-echo Installing dotnet SDK ... 
+echo Installing dotnet SDK ...
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.701 -InstallDir ./cli"
 
 set _dotnetRoot=%__currentScriptDir%cli
@@ -188,10 +188,10 @@ echo "Building DotNet Bridge ... "
 echo "#################################"
 set _dotnet=%_dotnetRoot%\dotnet.exe
 
-if "%SkipDotNetBridge%" == "False" ( 
+if "%SkipDotNetBridge%" == "False" (
     call "%_dotnet%" build -c %Configuration% -o "%BuildOutputDir%%Configuration%"  --force "%__currentScriptDir%src\DotNetBridge\DotNetBridge.csproj"
 )
-if "%BuildDotNetBridgeOnly%" == "True" ( 
+if "%BuildDotNetBridgeOnly%" == "True" (
     exit /b %ERRORLEVEL%
 )
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
@@ -235,9 +235,9 @@ echo "#################################"
 :: Download & unzip Python
 if not exist "%PythonRoot%\.done" (
     md "%PythonRoot%"
-    echo Downloading python zip ... 
+    echo Downloading python zip ...
     powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%PythonUrl%', '%DependenciesDir%python.zip');}"
-    echo Extracting python zip ... 
+    echo Extracting python zip ...
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
@@ -245,9 +245,9 @@ if not exist "%PythonRoot%\.done" (
 :: Download & unzip Boost
 if not exist "%BoostRoot%\.done" (
     md "%BoostRoot%"
-    echo Downloading boost zip ... 
+    echo Downloading boost zip ...
     powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%BoostUrl%', '%DependenciesDir%boost.zip');}"
-    echo Extracting boost zip ... 
+    echo Extracting boost zip ...
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%boost.zip', '%BoostRoot%'); }"
     echo.>"%BoostRoot%\.done"
     del %DependenciesDir%boost.zip
@@ -336,7 +336,7 @@ if %PythonVersion% == 3.7 (
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2
     cd "%__currentScriptDir%src\python"
-    call "%PythonExe%" tools\entrypoint_compiler.py --check_manual_changes 
+    call "%PythonExe%" tools\entrypoint_compiler.py --check_manual_changes
     if errorlevel 1 (
         echo Codegen check failed. Try running tools/entrypoint_compiler.py --check_manual_changes to find the problem.
         goto :Exit_Error
@@ -367,7 +367,7 @@ if "%DebugBuild%" == "True" (
     copy  "%BuildOutputDir%%Configuration%\pybridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 )
 
-call "%PythonExe%" -m pip install --upgrade "wheel>=0.31.0"
+call "%PythonExe%" -m pip install --upgrade "wheel>=0.31.0" "setuptools>=44.0.0"
 cd "%__currentScriptDir%src\python"
 call "%PythonExe%" setup.py bdist_wheel --python-tag %PythonTag% --plat-name win_amd64
 cd "%__currentScriptDir%"
@@ -400,7 +400,7 @@ if "%InstallPythonPackages%" == "True" (
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
 )
 
-if "%RunTests%" == "False" ( 
+if "%RunTests%" == "False" (
     goto :Exit_Success
 )
 
