@@ -400,6 +400,7 @@ if "%InstallPythonPackages%" == "True" (
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
+    call "%PythonExe%" -m pip install --upgrade onnxruntime
 )
 
 if "%RunTests%" == "False" ( 
