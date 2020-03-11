@@ -896,6 +896,9 @@ class BasePipelineItem():
 
         return self
 
+    def _move_role_info(self):
+        DataRoles.move_role_info(self)
+
     @property
     def _name_or_source(self):
         """

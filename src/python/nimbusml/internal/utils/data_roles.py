@@ -131,6 +131,15 @@ class DataRoles(Role):
         if role not in DataRoles._allowed:
             raise RoleError(role)
 
+    @staticmethod
+    def move_role_info(obj):
+        for role in DataRoles._allowed:
+            name = Role.to_attribute(role)
+            if hasattr(obj, name):
+                name2 = Role.to_attribute(role)
+                setattr(obj, name2 + "_", getattr(obj, name))
+                del obj.__dict__[name]
+
     def __init__(self, roles=None):
         """
         :param roles: roles definition as a dictionary

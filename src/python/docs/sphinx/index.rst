@@ -9,7 +9,7 @@ ML.NET for Python
 Getting Started
 ===============
 
-NimbusML is a Python module that provides experimental Python bindings for [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet). 
+NimbusML is a Python module that provides Python bindings for [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet). 
 It provides battle-tested state-of-the-art ML algorithms, transforms and components,
 aiming to make them useful for all developers, data scientists, and information
 workers and helpful in all products, services and devices. The components are
