@@ -8,18 +8,13 @@ import time
 import tempfile
 import unittest
 import pandas as pd
+from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
-from nimbusml.linear_model import AveragedPerceptronBinaryClassifier
-from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.feature_extraction.text import NGramFeaturizer
-from nimbusml.preprocessing.missing_values import Handler
-from nimbusml import FileDataStream
-from nimbusml.preprocessing import DatasetTransformer
-from nimbusml.preprocessing.schema import ColumnSelector
-from nimbusml import Pipeline
-from nimbusml.preprocessing import OnnxRunner
-from data_frame_tool import DataFrameTool as DFT
+from nimbusml.linear_model import AveragedPerceptronBinaryClassifier
 from nimbusml.multiclass import OneVsRestClassifier
+from nimbusml.preprocessing import DatasetTransformer
+from data_frame_tool import DataFrameTool as DFT
 
 
 def get_tmp_file(suffix=None):
@@ -77,28 +72,17 @@ class TestOnnxRuntime(unittest.TestCase):
                           ('Score.0', 'Score.output.0'),
                           ('Score.1', 'Score.output.1'),
                           ):
-            try:
-                col_expected = result_standard.loc[:, col_tuple[0]]
-                col_ort = result_ort.loc[:, col_tuple[1]]
+            col_expected = result_standard.loc[:, col_tuple[0]]
+            col_ort = result_ort.loc[:, col_tuple[1]]
 
-                if isinstance(col_expected.dtype, pd.api.types.CategoricalDtype):
-                    # ONNX does not export categorical columns so convert categorical
-                    # columns received from ML.Net back to the original values before
-                    # the comparison.
-                    col_expected = col_expected.astype(col_expected.dtype.categories.dtype)
+            check_kwargs = {
+                'check_names': False,
+                'check_exact': False,
+                'check_dtype': True,
+                'check_less_precise': True
+            }
 
-                check_kwargs = {
-                    'check_names': False,
-                    'check_exact': False,
-                    'check_dtype': True,
-                    'check_less_precise': True
-                }
-
-                pd.testing.assert_series_equal(col_expected, col_ort, **check_kwargs)
-
-            except Exception as e:
-                print(e)
-                raise RuntimeError("ERROR: OnnxRunner result does not match expected result.")
+            pd.testing.assert_series_equal(col_expected, col_ort, **check_kwargs)
 
 if __name__ == '__main__':
     unittest.main()
