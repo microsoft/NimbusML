@@ -10,10 +10,12 @@ import io
 import json
 import os
 import sys
+import six
 import tempfile
 import numpy as np
 import pandas as pd
 import pprint
+import unittest
 
 from nimbusml import Pipeline
 from nimbusml.base_predictor import BasePredictor
@@ -46,7 +48,7 @@ from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
 from data_frame_tool import DataFrameTool as DFT
 
 SHOW_ONNX_JSON = False
-SHOW_TRANSFORMED_RESULTS = True
+SHOW_TRANSFORMED_RESULTS = False
 SHOW_FULL_PANDAS_OUTPUT = False
 
 if SHOW_FULL_PANDAS_OUTPUT:
@@ -119,6 +121,42 @@ SKIP = {
     'TimeSeriesImputer',
     'TreeFeaturizer',
     'WordEmbedding',
+    'Binner',
+    'BootstrapSampler',
+    'DateTimeSplitter',
+    'EnsembleClassifier',
+    'EnsembleRegressor',
+    'FactorizationMachineBinaryClassifier',
+    'Filter',
+    'GamBinaryClassifier',
+    'GamRegressor',
+    'IidChangePointDetector',
+    'IidSpikeDetector',
+    'Loader',
+    'LogMeanVarianceScaler',
+    'OneHotHashVectorizer',
+    'PcaAnomalyDetector',
+    'PixelExtractor',
+    'RangeFilter',
+    'Resizer',
+    'RobustScaler',
+    'SkipFilter',
+    'SsaChangePointDetector',
+    'SsaForecaster',
+    'SsaSpikeDetector',
+    'TakeFilter',
+    'ToKeyImputer',
+    'ToString',
+    'EnsembleClassifier',
+    'EnsembleRegressor',
+    'CharTokenizer',
+    'WordTokenizer',
+    'MutualInformationSelector',
+    'NaiveBayesClassifier',
+    'CountSelector',
+    'KMeansPlusPlus',
+    'ToKey',
+    'ColumnSelector'
 }
 
 INSTANCES = {
@@ -554,7 +592,7 @@ def test_export_to_onnx(estimator, class_name):
 
         exported = True
 
-        print('ONNX model path:', onnx_path)
+        # print('ONNX model path:', onnx_path)
 
         if SHOW_ONNX_JSON:
             with open(onnx_json_path) as f:
@@ -591,6 +629,31 @@ def test_export_to_onnx(estimator, class_name):
     return {'exported': exported, 'export_valid': export_valid}
 
 
+@unittest.skipIf(six.PY2, "Disabled as there is no onnxruntime package for Python 2.7")
+class TestOnnxExport(unittest.TestCase):
+
+    # This method is a static method of the class
+    # because there were pytest fixture related
+    # issues when the method was in the global scope.
+    @staticmethod
+    def generate_test_method(class_name, entry_point):
+        def method(self):
+
+            if class_name in INSTANCES:
+                estimator = INSTANCES[class_name]
+            else:
+                mod = __import__('nimbusml.' + entry_point['Module'],
+                                 fromlist=[str(class_name)])
+
+                the_class = getattr(mod, class_name)
+                estimator = the_class()
+
+            result = test_export_to_onnx(estimator, class_name)
+            assert result['exported']
+            assert result['export_valid']
+
+        return method
+
 manifest_diff = os.path.join(script_dir, '..', 'tools', 'manifest_diff.json')
 entry_points = load_json(manifest_diff)['EntryPoints']
 entry_points.extend([
@@ -599,70 +662,14 @@ entry_points.extend([
 ])
 entry_points = sorted(entry_points, key=lambda ep: ep['NewName'])
 
-exportable_estimators = set()
-unexportable_estimators = set()
-runable_estimators = set()
-
 for entry_point in entry_points:
     class_name = entry_point['NewName']
-
-#    if not class_name in ['OneVsRestClassifier(LinearSvmBinaryClassifier)']:
-#        continue
-
-    print('\n===========> %s' % class_name)
-
     if class_name in SKIP:
-        print("skipped")
         continue
 
-    if class_name in INSTANCES:
-        estimator = INSTANCES[class_name]
-    else:
-        mod = __import__('nimbusml.' + entry_point['Module'],
-                         fromlist=[str(class_name)])
+    test_name = 'test_%s' % class_name.replace('(', '_').replace(')', '').lower()
+    method = TestOnnxExport.generate_test_method(class_name, entry_point)
+    setattr(TestOnnxExport, test_name, method)
 
-        the_class = getattr(mod, class_name)
-        estimator = the_class()
-
-    result = test_export_to_onnx(estimator, class_name)
-
-    if result['exported']:
-        exportable_estimators.add(class_name)
-        print('Estimator successfully exported to ONNX.')
-
-    else:
-        unexportable_estimators.add(class_name)
-        print('Estimator could NOT be exported to ONNX.')
-
-    if result['export_valid']:
-        runable_estimators.add(class_name)
-        print('Exported ONNX model successfully transformed with OnnxRunner.')
-
-print('\n=====================')
-print('SUMMARY')
-print('=====================')
-
-print('\nThe following estimators were skipped: ')
-pprint.pprint(sorted(SKIP))
-
-print('\nThe following estimators were successfully exported to ONNX:')
-pprint.pprint(sorted(exportable_estimators))
-
-print('\nThe following estimators could not be exported to ONNX: ')
-pprint.pprint(sorted(unexportable_estimators))
-
-failed_exports = SUPPORTED_ESTIMATORS.difference(exportable_estimators)
-print("\nThe following estimators failed exporting to ONNX:")
-pprint.pprint(sorted(failed_exports))
-
-failed_e2e_estimators = exportable_estimators.difference(runable_estimators)
-print("\nThe following tests exported to ONNX but failed the end to end test:")
-pprint.pprint(sorted(failed_e2e_estimators))
-
-print('\nThe following estimators successfully completed the end to end test: ')
-pprint.pprint(sorted(runable_estimators))
-print()
-
-if len(failed_exports) + len(failed_e2e_estimators) > 0:
-    raise RuntimeError("ONNX export checks failed")
-
+if __name__ == '__main__':
+    unittest.main()
