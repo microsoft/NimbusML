@@ -293,10 +293,10 @@ then
         fi
 
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+		"${PythonExe}" -m pip install --upgrade onnxruntime
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
-    "${PythonExe}" -m pip install --upgrade onnxruntime
 fi
 
 if [ ${__runTests} = true ]
