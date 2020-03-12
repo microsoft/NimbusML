@@ -8,6 +8,7 @@ import time
 import tempfile
 import unittest
 import pandas as pd
+import six
 from nimbusml import Pipeline, FileDataStream
 from nimbusml.datasets import get_dataset
 from nimbusml.feature_extraction.text import NGramFeaturizer
@@ -37,6 +38,7 @@ class TestOnnxRuntime(unittest.TestCase):
         4. Compare results between ML.NET and ORT
     """
 
+    @unittest.skipIf(six.PY2, "Disabled due to bug on Mac Python 2.7 build, more info:")
     def test_automl_usecase(self):
         # train featurization pipeline
         featurization_pipe = Pipeline([NGramFeaturizer(keep_diacritics=True, columns={'Features': ['SentimentText']})])
