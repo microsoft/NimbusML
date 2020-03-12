@@ -2,6 +2,7 @@ Google.Protobuf.dll
 Newtonsoft.Json.dll
 libCpuMathNative.so
 libFastTreeNative.so
+libFeaturizers.so
 libLdaNative.so
 libMklImports.so
 libMklProxyNative.so

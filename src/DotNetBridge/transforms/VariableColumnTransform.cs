@@ -247,6 +247,9 @@ namespace Microsoft.ML.DotNetBridge
                 return _active[column.Index];
             }
 
+            private static readonly FuncInstanceMethodInfo1<Cursor, DataViewRow, Delegate> _makeVarLengthVectorGetterMethodInfo
+                = FuncInstanceMethodInfo1<Cursor, DataViewRow, Delegate>.Create(target => target.MakeVarLengthVectorGetter<int>);
+
             private Delegate MakeVarLengthVectorGetter<T>(DataViewRow input)
             {
                 var srcGetters = new ValueGetter<T>[_bindings.vectorToInputMap.Count];
@@ -304,7 +307,7 @@ namespace Microsoft.ML.DotNetBridge
                 if (column.Index == _bindings.outputColumn)
                 {
                     VectorDataViewType columnType = column.Type as VectorDataViewType;
-                    Delegate getter = Utils.MarshalInvoke(MakeVarLengthVectorGetter<int>, columnType.ItemType.RawType, _cursor);
+                    Delegate getter = Utils.MarshalInvoke(_makeVarLengthVectorGetterMethodInfo, this, columnType.ItemType.RawType, _cursor);
                     return getter as ValueGetter<TValue>;
                 }
                 else

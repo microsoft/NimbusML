@@ -213,6 +213,7 @@ then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
 		ext=*.so
 		if [ "$(uname -s)" = "Darwin" ]
 		then 
@@ -241,6 +242,7 @@ then
 		cat build/${libs_txt} | while read i; do
 			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 		done
+        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
 	
     if [[ $__configuration = Dbg* ]]
@@ -291,6 +293,7 @@ then
         fi
 
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+        "${PythonExe}" -m pip install --upgrade onnxruntime
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"

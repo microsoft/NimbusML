@@ -33,7 +33,7 @@ def trainers_logisticregressionclassifier(
         **params):
     """
     **Description**
-        Maximum entrypy classification is a method in statistics used to
+        Maximum entropy classification is a method in statistics used to
         predict the probabilities of parallel events. The model
         predicts the probabilities of parallel events by fitting data
         to a softmax function.

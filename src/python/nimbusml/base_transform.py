@@ -124,3 +124,20 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
         data = pipeline.transform(
             X, as_binary_data_stream=as_binary_data_stream, **params)
         return data
+
+    @trace
+    def export_to_onnx(self, *args, **kwargs):
+        """
+        Export the model to the ONNX format.
+
+        See :py:meth:`nimbusml.Pipeline.export_to_onnx` for accepted arguments.
+        """
+        if not hasattr(self, 'model_') \
+            or self.model_ is None \
+            or not os.path.isfile(self.model_):
+
+            raise ValueError("Model is not fitted. Train or load a model before "
+                             "export_to_onnx().")
+
+        pipeline = Pipeline([self], model=self.model_)
+        pipeline.export_to_onnx(*args, **kwargs)

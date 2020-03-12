@@ -47,7 +47,7 @@ class TestPipelineSplitModels(unittest.TestCase):
 
         # Create and fit a combined model and spit out predictor model
         combined_pipeline = Pipeline([RangeFilter(min=0.0, max=4.5) << 'c2',
-                            OnlineGradientDescentRegressor(label='c2')],
+                            OnlineGradientDescentRegressor(feature=['c1'], label='c2')],
                            random_state=seed)
         combined_pipeline.fit(df, output_predictor_model=True)
         result_1 = combined_pipeline.predict(df)

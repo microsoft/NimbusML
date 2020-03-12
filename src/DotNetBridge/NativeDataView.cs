@@ -416,7 +416,7 @@ namespace Microsoft.ML.DotNetBridge
                     _waiterPublish = new OrderedWaiter(firstCleared: true);
 
                     _queue = new BlockingCollection<Batch>(QueueSize);
-                    _thdRead = Utils.RunOnBackgroundThread(ThreadProc);
+                    _thdRead = Utils.RunOnBackgroundThreadAsync(ThreadProc);
                 }
 
                 public void Release()

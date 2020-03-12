@@ -13,7 +13,7 @@ def models_fixedplattcalibrator(
         data,
         uncalibrated_predictor_model,
         predictor_model=None,
-        slope=1.0,
+        slope=-1.0,
         offset=0.0,
         max_rows=1000000000,
         **params):
@@ -23,12 +23,12 @@ def models_fixedplattcalibrator(
         model
 
     :param slope: The slope parameter of the calibration function 1 /
-        (1 + exp(-slope * x + offset) (inputs).
+        (1 + exp(slope * x + offset) (inputs).
     :param data: Input dataset (inputs).
     :param uncalibrated_predictor_model: The predictor to calibrate
         (inputs).
     :param offset: The offset parameter of the calibration function 1
-        / (1 + exp(-slope * x + offset) (inputs).
+        / (1 + exp(slope * x + offset) (inputs).
     :param max_rows: The maximum number of examples to train the
         calibrator on (inputs).
     :param predictor_model: The trained model (outputs).

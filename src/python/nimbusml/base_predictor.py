@@ -178,7 +178,6 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
         self.model_summary_ = pipeline.summary()
         return self.model_summary_
 
-    @trace
     def _get_implicit_transforms(
             self,
             features,
@@ -308,6 +307,11 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
                 if label_column is None:
                     label_column = Role.Label
                 self.label_column_name = label_column
+
+            if y is None \
+                and self._use_role(Role.Label) \
+                and label_column in learner_features:
+                learner_features.remove(label_column)
         else:
             self.label_column_name = None
             label_column = None
@@ -354,3 +358,20 @@ class BasePredictor(BaseEstimator, BasePipelineItem):
             row_group_column_name=group_id_column)
         graph_nodes['learner_node'] = [learner_node]
         return graph_nodes, learner_features
+
+    @trace
+    def export_to_onnx(self, *args, **kwargs):
+        """
+        Export the model to the ONNX format.
+
+        See :py:meth:`nimbusml.Pipeline.export_to_onnx` for accepted arguments.
+        """
+        if not hasattr(self, 'model_') \
+            or self.model_ is None \
+            or not os.path.isfile(self.model_):
+
+            raise ValueError("Model is not fitted. Train or load a model before "
+                             "export_to_onnx().")
+
+        pipeline = Pipeline([self], model=self.model_)
+        pipeline.export_to_onnx(*args, **kwargs)
