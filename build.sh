@@ -310,8 +310,8 @@ then
     TestsPath2=${__currentScriptDir}/src/python/tests
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
-    "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
-        "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
+    #"${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
+    #    "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
 
     if [ ${__runExtendedTests} = true ]
     then
@@ -327,6 +327,9 @@ then
             # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
             }
+        else
+            echo "SETTING export DYLD_PRINT_LIBRARIES"
+            export DYLD_PRINT_LIBRARIES="1"
         fi
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
