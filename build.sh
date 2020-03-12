@@ -206,7 +206,7 @@ then
     cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
-	ls "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
+    ls "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
     if [ ${PythonVersion} = 2.7 ]
     then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
@@ -214,37 +214,37 @@ then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
-		ext=*.so
-		if [ "$(uname -s)" = "Darwin" ]
-		then 
+        ext=*.so
+        if [ "$(uname -s)" = "Darwin" ]
+        then 
             ext=*.dylib
-		fi	
-		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		# Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
-		if [ ! "$(uname -s)" = "Darwin" ]
-		then
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		fi
-		# remove dataprep dlls as its not supported in python 2.7
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
+        fi    
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        # Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
+        if [ ! "$(uname -s)" = "Darwin" ]
+        then
+            cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        fi
+        # remove dataprep dlls as its not supported in python 2.7
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
     else
-		libs_txt=libs_linux.txt
-		if [ "$(uname -s)" = "Darwin" ]
-		then 
-		    libs_txt=libs_mac.txt
-		fi
-		cat build/${libs_txt} | while read i; do
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		done
+        libs_txt=libs_linux.txt
+        if [ "$(uname -s)" = "Darwin" ]
+        then 
+            libs_txt=libs_mac.txt
+        fi
+        cat build/${libs_txt} | while read i; do
+            cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        done
         cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
-	
+    
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
@@ -327,6 +327,19 @@ then
             # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
             }
+        else
+            export DYLD_PRINT_OPTS="1"
+            export DYLD_PRINT_ENV="1"
+            export DYLD_PRINT_LIBRARIES="1"
+            export DYLD_PRINT_LIBRARIES_POST_LAUNCH="1"
+            export DYLD_PRINT_APIS="1"
+            export DYLD_PRINT_BINDINGS="1"
+            export DYLD_PRINT_INITIALIZERS="1"
+            export DYLD_PRINT_REBASINGS="1"
+            export DYLD_PRINT_SEGMENTS="1"
+            export DYLD_PRINT_STATISTICS="1"
+            export DYLD_PRINT_DOFS="1"
+            export DYLD_PRINT_RPATHS="1"
         fi
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
