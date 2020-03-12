@@ -25,6 +25,7 @@ phases:
         _configuration: RlsMacPy3.7
     buildQueue:
       name: Hosted macOS
+    testOptions: --includeExtendedTests
 
 # Build all configurations for Linux
   # Run tests on Ubuntu16
@@ -40,6 +41,7 @@ phases:
         _configuration: RlsLinPy3.6
     buildQueue:
       name: Hosted Ubuntu 1604
+    testOptions: --includeExtendedTests
   # Run tests on CentOS7
 - template: /build/ci/phase-template.yml
   parameters:
@@ -51,3 +53,4 @@ phases:
         _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
+    testOptions: --includeExtendedTests
