@@ -323,12 +323,15 @@ then
                 apt-get update 
                 apt-get install libc6-dev -y
                 apt-get install libgdiplus -y
+                # Required for onnxruntime tests
+                apt-get install -y locales
+                locale-gen en_US.UTF-8
             } || { 
             # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
+                # Required for onnxruntime tests
+                localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
             }
-			# Required for onnxruntime tests
-			locale-gen en_US.UTF-8 && update-locale
         else
             export DYLD_PRINT_OPTS="1"
             export DYLD_PRINT_ENV="1"
