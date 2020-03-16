@@ -330,6 +330,7 @@ then
             # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
                 # Required for onnxruntime tests
+                yum install glibc-langpack-en
                 localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
             }
         else
