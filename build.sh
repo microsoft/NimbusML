@@ -245,6 +245,7 @@ then
         cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
     
+    file -I "${__currentScriptDir}/src/python/nimbusml/internal/libs/libonnxruntime.dylib"
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
@@ -327,7 +328,7 @@ then
                 apt-get install -y locales
                 locale-gen en_US.UTF-8
             } || { 
-                yum update
+                yum update --skip-broken
                 # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
                 # Required for onnxruntime tests
