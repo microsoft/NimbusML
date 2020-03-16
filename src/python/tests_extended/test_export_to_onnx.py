@@ -144,6 +144,7 @@ SKIP = {
     'SsaChangePointDetector',
     'SsaForecaster',
     'SsaSpikeDetector',
+    'SymSgdBinaryClassifier',
     'TakeFilter',
     'ToKeyImputer',
     'ToString',
