@@ -327,7 +327,8 @@ then
                 apt-get install -y locales
                 locale-gen en_US.UTF-8
             } || { 
-            # Required for Image.py and Image_df.py to run successfully on CentOS.
+                yum update
+                # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
                 # Required for onnxruntime tests
                 yum install glibc-all-langpacks
