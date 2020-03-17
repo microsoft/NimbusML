@@ -245,7 +245,10 @@ then
         cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
     
-    otool -I "${__currentScriptDir}/src/python/nimbusml/internal/libs/libonnxruntime.dylib"
+    if [ "$(uname -s)" = "Darwin" ]
+    then 
+        otool -l "${__currentScriptDir}/src/python/nimbusml/internal/libs/libonnxruntime.dylib"
+    fi
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
