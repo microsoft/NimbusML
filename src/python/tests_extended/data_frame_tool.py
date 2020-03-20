@@ -180,7 +180,7 @@ class DataFrameTool():
 
         results = self._sess.run(output_names, input_feed, run_options)
 
-        df = pd.DataFrame()
+        df = None
         for i, r in enumerate(results):
             # TODO: remove this. These extra columns
             # should not be in the output.
@@ -189,21 +189,25 @@ class DataFrameTool():
                r.shape == (1,1):
                 continue
 
-            r = np.split(r, r.shape[-1], axis=-1) \
-                if (r.shape[-1] > 1 and r.shape[0] > 1) else [r]
-
-            for suffix, col in enumerate(r):
-                col = col.flatten()
+            r = pd.DataFrame(r)
+            col_names = []
+            for suffix in range(0, len(r.columns)):
                 if output_types and output_names[i] in output_types:
                     dtype = output_types[output_names[i]]
                     if dtype == np.dtype('datetime64'):
-                        col = col.astype(np.int64)
-                        col = [datetime.utcfromtimestamp(ts) for ts in col]
+                        r[suffix]= r[suffix].astype(np.int64)
+                        r[suffix] = [datetime.utcfromtimestamp(ts) for ts in r[suffix]]
                     else:
-                        col = col.astype(dtype)
+                        r[suffix] = r[suffix].astype(dtype)
 
-                col_name = output_names[i] if len(r) == 1 else \
+                col_name = output_names[i] if len(r.columns) == 1 else \
                            output_names[i] + '.' + str(suffix)
-                df[col_name] = col
+                col_names.append(col_name)
+
+            r.columns = col_names
+            if df is None:
+                df = r
+            else:
+                df = df.join(r)
 
         return df
