@@ -10,15 +10,13 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <Target Name="HackOutOnnxSymbols" AfterTargets="ResolvePackageAssets">
+  <Target Name="HackOutOnnxSymbols" BeforeTargets="_CopyResolvedFilesToPublishPreserveNewest">
     <ItemGroup>
-      <RuntimeTargetsCopyLocalItemsToRemove Include="@(RuntimeTargetsCopyLocalItems)" 
-            Condition="'%(RuntimeTargetsCopyLocalItems.Extension)' == '.dll'"/>
-            <!-- Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(RuntimeTargetsCopyLocalItems.Identity)', '.+\libonnxruntime.dylib.dSYM\.+'))/ -->
+      <CopyLocalItemsToRemove Include="@(_ResolvedFileToPublishPreserveNewest)" 
+            Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_ResolvedFileToPublishPreserveNewest.Identity)', '.+libonnxruntime\.dylib\.dSYM.+'))"/>
     </ItemGroup>
-
     <ItemGroup>
-      <RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItemsToRemove)" />
+      <_ResolvedFileToPublishPreserveNewest Remove="@(CopyLocalItemsToRemove)" />
     </ItemGroup>
   </Target> 
   
