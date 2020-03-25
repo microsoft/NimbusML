@@ -173,7 +173,7 @@ if [ ${__buildDotNetBridge} = true ]
 then 
     # Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
     echo "Installing dotnet SDK ... "
-    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 2.1.701 -InstallDir ./cli
+    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 3.1.102 -InstallDir ./cli
 
     # Build managed code
     echo "Building managed code ... "
