@@ -206,7 +206,7 @@ then
     cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
-    ls "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
+    ls -l "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
     if [ ${PythonVersion} = 2.7 ]
     then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
@@ -245,10 +245,6 @@ then
         cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
     
-    if [ "$(uname -s)" = "Darwin" ]
-    then 
-        otool -l "${__currentScriptDir}/src/python/nimbusml/internal/libs/libonnxruntime.dylib"
-    fi
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
@@ -322,9 +318,9 @@ then
         echo "Running extended tests ... " 
         if [ ! "$(uname -s)" = "Darwin" ]
         then 
-            # Required for Image.py and Image_df.py to run successfully on Ubuntu.
             {
                 apt-get update 
+                # Required for Image.py and Image_df.py to run successfully on Ubuntu.
                 apt-get install libc6-dev -y
                 apt-get install libgdiplus -y
                 # Required for onnxruntime tests
@@ -338,19 +334,6 @@ then
                 yum install glibc-all-langpacks
                 localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
             }
-        else
-            export DYLD_PRINT_OPTS="1"
-            export DYLD_PRINT_ENV="1"
-            export DYLD_PRINT_LIBRARIES="1"
-            export DYLD_PRINT_LIBRARIES_POST_LAUNCH="1"
-            export DYLD_PRINT_APIS="1"
-            export DYLD_PRINT_BINDINGS="1"
-            export DYLD_PRINT_INITIALIZERS="1"
-            export DYLD_PRINT_REBASINGS="1"
-            export DYLD_PRINT_SEGMENTS="1"
-            export DYLD_PRINT_STATISTICS="1"
-            export DYLD_PRINT_DOFS="1"
-            export DYLD_PRINT_RPATHS="1"
         fi
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
     fi
