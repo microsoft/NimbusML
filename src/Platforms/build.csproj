@@ -13,9 +13,10 @@
   <Target Name="HackOutOnnxSymbols" AfterTargets="ResolvePackageAssets">
     <ItemGroup>
       <RuntimeTargetsCopyLocalItemsToRemove Include="@(RuntimeTargetsCopyLocalItems)" 
-			  Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(RuntimeTargetsCopyLocalItems.Identity)', '.+\libonnxruntime.dylib.dSYM\.+'))/>
+            Condition="'%(RuntimeTargetsCopyLocalItems.Extension)' == '.dll'/>
+            <!--Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(RuntimeTargetsCopyLocalItems.Identity)', '.+\libonnxruntime.dylib.dSYM\.+'))/-->
     </ItemGroup>
-    </ItemGroup>
+
     <ItemGroup>
       <RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItemsToRemove)" />
     </ItemGroup>
