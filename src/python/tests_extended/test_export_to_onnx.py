@@ -144,6 +144,7 @@ SKIP = {
     'SsaChangePointDetector',
     'SsaForecaster',
     'SsaSpikeDetector',
+    'SymSgdBinaryClassifier',
     'TakeFilter',
     'ToKeyImputer',
     'ToString',
@@ -557,7 +558,7 @@ def validate_results(class_name, result_expected, result_onnx, result_ort):
     return True
 
 
-def test_export_to_onnx(estimator, class_name):
+def export_to_onnx(estimator, class_name):
     """
     Fit and test an estimator and determine
     if it supports exporting to the ONNX format.
@@ -648,7 +649,7 @@ class TestOnnxExport(unittest.TestCase):
                 the_class = getattr(mod, class_name)
                 estimator = the_class()
 
-            result = test_export_to_onnx(estimator, class_name)
+            result = export_to_onnx(estimator, class_name)
             assert result['exported']
             assert result['export_valid']
 
