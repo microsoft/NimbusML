@@ -10,6 +10,16 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
+  <Target Name="HackOutOnnxSymbols" AfterTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <RuntimeTargetsCopyLocalItemsToRemove Include="@(RuntimeTargetsCopyLocalItems)"
+                                            Condition="'%(RuntimeTargetsCopyLocalItems.Identity->Contains('libonnxruntime.dylib.dSYM'))' == 'True'" />
+    </ItemGroup>
+    <ItemGroup>
+      <RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItemsToRemove)" />
+    </ItemGroup>
+  </Target> 
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="1.5.0-preview2" />
     <PackageReference Include="Microsoft.ML.CpuMath" Version="1.5.0-preview2" />
@@ -18,9 +28,7 @@
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.5.0-preview2" />
     <PackageReference Include="Microsoft.ML.LightGBM" Version="1.5.0-preview2" />
     <PackageReference Include="Microsoft.ML.OnnxConverter" Version="0.17.0-preview2" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.2.0" >
-        <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.2.0" />
     <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.5.0-preview2" />
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.5.0-preview2" />
     <PackageReference Include="Microsoft.ML.Vision" Version="1.5.0-preview2" />
