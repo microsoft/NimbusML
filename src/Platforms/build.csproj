@@ -21,20 +21,20 @@
   </Target> 
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.17.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.OnnxConverter" Version="0.17.0-preview2*" />
+    <PackageReference Include="Microsoft.ML" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.17.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.OnnxConverter" Version="0.17.0-preview3*" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.2.0" />
-    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.Vision" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.17.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.5.0-preview2*" />
-    <PackageReference Include="Microsoft.ML.Featurizers" Version="0.17.0-preview2*" />
+    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.Vision" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.17.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.5.0-preview3*" />
+    <PackageReference Include="Microsoft.ML.Featurizers" Version="0.17.0-preview3*" />
     <PackageReference Include="Microsoft.MLFeaturizers" Version="0.3.5" />
     <PackageReference Include="Microsoft.DataPrep" Version="0.0.3.2-preview" />
     <PackageReference Include="TensorFlow.NET" Version="0.11.8.1" />
