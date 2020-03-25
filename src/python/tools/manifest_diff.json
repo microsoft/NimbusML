@@ -294,6 +294,24 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.CategoryImputer",
+      "NewName": "ToKeyImputer",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ToString",
+      "NewName": "ToString",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.DateTimeSplitter",
+      "NewName": "DateTimeSplitter",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.TensorFlowScorer",
       "NewName": "TensorFlowScorer",
       "Module": "preprocessing",
@@ -326,6 +344,12 @@
     {
       "Name": "Models.DatasetTransformer",
       "NewName": "DatasetTransformer",
+      "Module": "preprocessing",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Models.OnnxTransformer",
+      "NewName": "OnnxRunner",
       "Module": "preprocessing",
       "Type": "Transform"
     },
@@ -493,6 +517,12 @@
       "Type": "Transform"
     },
     {
+      "Name": "Transforms.RobustScaler",
+      "NewName": "RobustScaler",
+      "Module": "preprocessing.normalization",
+      "Type": "Transform"
+    },
+    {
       "Name": "Transforms.MissingValuesRowDropper",
       "NewName": "Filter",
       "Module": "preprocessing.missing_values",
@@ -606,6 +636,12 @@
     {
       "Name": "TimeSeriesProcessingEntryPoints.SsaForecasting",
       "NewName": "SsaForecaster",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.TimeSeriesImputer",
+      "NewName": "TimeSeriesImputer",
       "Module": "timeseries",
       "Type": "Transform"
     },

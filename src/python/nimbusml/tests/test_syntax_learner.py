@@ -458,7 +458,7 @@ class TestSyntaxLearner(unittest.TestCase):
             if spl[0] == 'age':
                 ages.append(l2)
         X_xf1.columns = pandas.MultiIndex(
-            levels=levels, labels=labels, names=names)
+            levels=levels, codes=labels, names=names)
         print(X_xf1.head(n=2).T)
 
         col_ages = [('age', a) for a in ages]

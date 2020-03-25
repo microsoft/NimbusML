@@ -213,8 +213,11 @@ namespace Microsoft.ML.DotNetBridge
                     }
                     else
                     {
-                        for (int i = 0; i < nSlots; i++)
-                            AddUniqueName(name + "." + i, ref nameIndices, ref nameUtf8Bytes);
+                        if (nSlots == 1)
+                            AddUniqueName(name, ref nameIndices, ref nameUtf8Bytes);
+                        else 
+                            for (int i = 0; i < nSlots; i++)
+                                AddUniqueName(name + "." + i, ref nameIndices, ref nameUtf8Bytes);
                     }
                 }
                 else

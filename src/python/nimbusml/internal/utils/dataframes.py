@@ -63,7 +63,7 @@ def resolve_dataframe(dataframe):
                         ret[name_i] = serie.values
                         if infered_dtype == 'floating' or \
                                 infered_dtype == 'mixed-integer-float':
-                            s = serie.itemsize
+                            s = serie.dtype.itemsize
                             if s == 8:
                                 ret[str(i)] = serie.values.astype(
                                     np.float64, copy=False)
@@ -77,7 +77,7 @@ def resolve_dataframe(dataframe):
                                     [_global_dtype_to_char_dict[
                                          np.dtype(np.float32)]])
                         elif infered_dtype == 'integer':
-                            s = serie.itemsize
+                            s = serie.dtype.itemsize
                             if s == 8:
                                 ret[str(i)] = serie.values.astype(
                                     np.int64, copy=False)

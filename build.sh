@@ -173,7 +173,7 @@ if [ ${__buildDotNetBridge} = true ]
 then 
     # Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
     echo "Installing dotnet SDK ... "
-    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 2.1.701 -InstallDir ./cli
+    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Version 3.1.102 -InstallDir ./cli
 
     # Build managed code
     echo "Building managed code ... "
@@ -206,43 +206,45 @@ then
     cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
-	# ls "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
+    # ls -l "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
     if [ ${PythonVersion} = 2.7 ]
     then
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
         cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		ext=*.so
-		if [ "$(uname -s)" = "Darwin" ]
-		then 
+        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
+        ext=*.so
+        if [ "$(uname -s)" = "Darwin" ]
+        then 
             ext=*.dylib
-		fi	
-		cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		# Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
-		if [ ! "$(uname -s)" = "Darwin" ]
-		then
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		fi
-		# remove dataprep dlls as its not supported in python 2.7
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
-		rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
+        fi    
+        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        # Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
+        if [ ! "$(uname -s)" = "Darwin" ]
+        then
+            cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        fi
+        # remove dataprep dlls as its not supported in python 2.7
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
+        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
     else
-		libs_txt=libs_linux.txt
-		if [ "$(uname -s)" = "Darwin" ]
-		then 
-		    libs_txt=libs_mac.txt
-		fi
-		cat build/${libs_txt} | while read i; do
-			cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-		done
+        libs_txt=libs_linux.txt
+        if [ "$(uname -s)" = "Darwin" ]
+        then 
+            libs_txt=libs_mac.txt
+        fi
+        cat build/${libs_txt} | while read i; do
+            cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        done
+        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
-	
+    
     if [[ $__configuration = Dbg* ]]
     then
         cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
@@ -291,6 +293,7 @@ then
         fi
 
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+        "${PythonExe}" -m pip install --upgrade onnxruntime
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
@@ -315,14 +318,21 @@ then
         echo "Running extended tests ... " 
         if [ ! "$(uname -s)" = "Darwin" ]
         then 
-            # Required for Image.py and Image_df.py to run successfully on Ubuntu.
             {
                 apt-get update 
+                # Required for Image.py and Image_df.py to run successfully on Ubuntu.
                 apt-get install libc6-dev -y
                 apt-get install libgdiplus -y
+                # Required for onnxruntime tests
+                apt-get install -y locales
+                locale-gen en_US.UTF-8
             } || { 
-            # Required for Image.py and Image_df.py to run successfully on CentOS.
+                yum update --skip-broken
+                # Required for Image.py and Image_df.py to run successfully on CentOS.
                 yum install glibc-devel -y
+                # Required for onnxruntime tests
+                yum install glibc-all-langpacks
+                localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
             }
         fi
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath3}"
