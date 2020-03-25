@@ -12,8 +12,9 @@
 
   <Target Name="HackOutOnnxSymbols" AfterTargets="ResolvePackageAssets">
     <ItemGroup>
-      <RuntimeTargetsCopyLocalItemsToRemove Include="@(RuntimeTargetsCopyLocalItems)"
-                                            Condition="'%(RuntimeTargetsCopyLocalItems.Identity->Contains('libonnxruntime.dylib.dSYM'))' == 'True'" />
+      <RuntimeTargetsCopyLocalItemsToRemove Include="@(RuntimeTargetsCopyLocalItems)" 
+              Condition="'%(RuntimeTargetsCopyLocalItems.Identity)'.Contains('libonnxruntime.dylib.dSYM')' == 'True'" />
+    </ItemGroup>
     </ItemGroup>
     <ItemGroup>
       <RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItemsToRemove)" />
