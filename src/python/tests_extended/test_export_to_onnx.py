@@ -361,8 +361,22 @@ EXPECTED_RESULTS = {
     'LogisticRegressionBinaryClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
     'LogisticRegressionClassifier':  {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
     'LpScaler': {'num_cols': 10, 'cols': 0},
-    'MeanVarianceScaler': {'num_cols': 5, 'cols': 0},
-    'MinMaxScaler': {'num_cols': 5, 'cols': 0},
+    'MeanVarianceScaler': {
+        'num_cols': 5,
+        'cols': [('Petal_Length', 'Petal_Length', 'Petal_Length.output'),
+                 ('Petal_Width', 'Petal_Width', 'Petal_Width.output'),
+                 ('Sepal_Length', 'Sepal_Length', 'Sepal_Length.output'),
+                 ('Sepal_Width', 'Sepal_Width', 'Sepal_Width.output'),
+                 ('Setosa', 'Setosa', 'Setosa.output')]
+    },
+    'MinMaxScaler': {
+        'num_cols': 5,
+        'cols': [('Petal_Length', 'Petal_Length', 'Petal_Length.output'),
+                 ('Petal_Width', 'Petal_Width', 'Petal_Width.output'),
+                 ('Sepal_Length', 'Sepal_Length', 'Sepal_Length.output'),
+                 ('Sepal_Width', 'Sepal_Width', 'Sepal_Width.output'),
+                 ('Setosa', 'Setosa', 'Setosa.output')]
+    },
     'MutualInformationSelector': {'num_cols': 8, 'cols': 0},
     'NGramFeaturizer': {'num_cols': 273, 'cols': 0},
     'NaiveBayesClassifier': {'cols': [('PredictedLabel', 'PredictedLabel', 'PredictedLabel.output')]},
