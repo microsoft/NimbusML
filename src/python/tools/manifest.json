@@ -17085,6 +17085,118 @@
       ]
     },
     {
+      "Name": "Transforms.AnalyticalRollingWindow",
+      "Desc": "Performs an analaytical calculation over a rolling timeseries window",
+      "FriendlyName": "AnalyticalRollingWindowTransformer",
+      "ShortName": "AnalyticalRollingWindowTransformer",
+      "Inputs": [
+        {
+          "Name": "GrainColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "List of grain columns",
+          "Aliases": [
+            "grains"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "TargetColumn",
+          "Type": "String",
+          "Desc": "Target column",
+          "Aliases": [
+            "target"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Horizon",
+          "Type": "UInt",
+          "Desc": "Maximum horizon value",
+          "Aliases": [
+            "hor"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "MaxWindowSize",
+          "Type": "UInt",
+          "Desc": "Maximum window size",
+          "Aliases": [
+            "maxsize"
+          ],
+          "Required": true,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "MinWindowSize",
+          "Type": "UInt",
+          "Desc": "Minimum window size",
+          "Aliases": [
+            "minsize"
+          ],
+          "Required": true,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "WindowCalculation",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "Mean"
+            ]
+          },
+          "Desc": "What window calculation to use",
+          "Aliases": [
+            "calc"
+          ],
+          "Required": true,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": "0"
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "Transforms.ApproximateBootstrapSampler",
       "Desc": "Approximate bootstrap sampling.",
       "FriendlyName": "Bootstrap Sample Transform",
@@ -18595,7 +18707,7 @@
       ]
     },
     {
-      "Name": "Transforms.DatasetScorerEx",
+         "Name": "Transforms.DatasetScorerEx",
       "Desc": "Score a dataset with a predictor model",
       "FriendlyName": null,
       "ShortName": null,
@@ -18640,7 +18752,7 @@
       ]
     },
     {
-      "Name": "Transforms.DatasetTransformScorer",
+   "Name": "Transforms.DatasetTransformScorer",
       "Desc": "Score a dataset with a transform model",
       "FriendlyName": null,
       "ShortName": null,
@@ -19216,6 +19328,54 @@
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": 256
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.ForecastingPivot",
+      "Desc": "Pivots the input colums and drops any rows with N/A",
+      "FriendlyName": "ForecastingPivot",
+      "ShortName": "fpivot",
+      "Inputs": [
+        {
+          "Name": "ColumnsToPivot",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "List of columns to pivot",
+          "Aliases": [
+            "cols"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
         }
       ],
       "Outputs": [
@@ -20444,6 +20604,91 @@
           "Desc": "The label column",
           "Required": true,
           "SortOrder": 2.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.LagLeadOperator",
+      "Desc": "uses the offset list to create lags and leads",
+      "FriendlyName": "LagLeadOperatorTransformer",
+      "ShortName": "LagLeadOperatorTransformer",
+      "Inputs": [
+        {
+          "Name": "GrainColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "List of grain columns",
+          "Aliases": [
+            "grains"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "TargetColumn",
+          "Type": "String",
+          "Desc": "Target column",
+          "Aliases": [
+            "target"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Horizon",
+          "Type": "UInt",
+          "Desc": "Maximum horizon value",
+          "Aliases": [
+            "hor"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "offsets",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "Int"
+          },
+          "Desc": "Lag and Lead offset to use. A negative number is a lag, positive is a lead",
+          "Aliases": [
+            "off"
+          ],
+          "Required": true,
+          "SortOrder": 3.0,
           "IsNullable": false
         }
       ],
@@ -23258,6 +23503,217 @@
           "SortOrder": 2.0,
           "IsNullable": false,
           "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.ShortDrop",
+      "Desc": "Drops rows if there aren't enough values per grain.",
+      "FriendlyName": "ShortDrop",
+      "ShortName": "sgd",
+      "Inputs": [
+        {
+          "Name": "GrainColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "List of grain columns",
+          "Aliases": [
+            "grains"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Horizon",
+          "Type": "UInt",
+          "Desc": "Maximum horizon value",
+          "Aliases": [
+            "hor"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "MaxWindowSize",
+          "Type": "UInt",
+          "Desc": "Maximum window size",
+          "Aliases": [
+            "maxsize"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "CrossValidations",
+          "Type": "UInt",
+          "Desc": "Number of cross validations being performed.",
+          "Aliases": [
+            "crossv"
+          ],
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "offsets",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "Int"
+          },
+          "Desc": "Lag and Lead offset to use. A negative number is a lag, positive is a lead",
+          "Aliases": [
+            "off"
+          ],
+          "Required": true,
+          "SortOrder": 3.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.SimpleRollingWindow",
+      "Desc": "Performs simple rolling window calculations.",
+      "FriendlyName": "SimpleRollingWindowTransformer",
+      "ShortName": "SimpleRollingWindowTransformer",
+      "Inputs": [
+        {
+          "Name": "GrainColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "List of grain columns",
+          "Aliases": [
+            "grains"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "TargetColumn",
+          "Type": "String",
+          "Desc": "Target column",
+          "Aliases": [
+            "target"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Horizon",
+          "Type": "UInt",
+          "Desc": "Maximum horizon value",
+          "Aliases": [
+            "hor"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "MaxWindowSize",
+          "Type": "UInt",
+          "Desc": "Maximum window size",
+          "Aliases": [
+            "maxsize"
+          ],
+          "Required": true,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "MinWindowSize",
+          "Type": "UInt",
+          "Desc": "Minimum window size",
+          "Aliases": [
+            "minsize"
+          ],
+          "Required": true,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "WindowCalculation",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "Min",
+              "Max"
+            ]
+          },
+          "Desc": "What window calculation to use",
+          "Aliases": [
+            "calc"
+          ],
+          "Required": true,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": "0"
         }
       ],
       "Outputs": [
@@ -30123,6 +30579,140 @@
           "Desc": "Single node machine learning process.",
           "FriendlyName": "Single",
           "Settings": []
+        }
+      ]
+    },
+    {
+      "Kind": "PartitionedPathParser",
+      "Components": [
+        {
+          "Name": "ParquetPathParser",
+          "Desc": "Extract name/value pairs from Parquet formatted directory names. Example path: Year=2018/Month=12/data1.parquet",
+          "FriendlyName": "Parquet Partitioned Path Parser",
+          "Aliases": [
+            "ParqPP"
+          ],
+          "Settings": []
+        },
+        {
+          "Name": "SimplePathParser",
+          "Desc": "A simple parser that extracts directory names as column values. Column names are defined as arguments.",
+          "FriendlyName": "Simple Partitioned Path Parser",
+          "Aliases": [
+            "SmplPP"
+          ],
+          "Settings": [
+            {
+              "Name": "Columns",
+              "Type": {
+                "Kind": "Array",
+                "ItemType": {
+                  "Kind": "Struct",
+                  "Fields": [
+                    {
+                      "Name": "Name",
+                      "Type": "String",
+                      "Desc": "Name of the column.",
+                      "Required": true,
+                      "SortOrder": 150.0,
+                      "IsNullable": false
+                    },
+                    {
+                      "Name": "Type",
+                      "Type": {
+                        "Kind": "Enum",
+                        "Values": [
+                          "I1",
+                          "U1",
+                          "I2",
+                          "U2",
+                          "I4",
+                          "U4",
+                          "I8",
+                          "U8",
+                          "R4",
+                          "Num",
+                          "R8",
+                          "TX",
+                          "Text",
+                          "TXT",
+                          "BL",
+                          "Bool",
+                          "TimeSpan",
+                          "TS",
+                          "DT",
+                          "DateTime",
+                          "DZ",
+                          "DateTimeZone",
+                          "UG",
+                          "U16"
+                        ]
+                      },
+                      "Desc": "Data type of the column.",
+                      "Required": false,
+                      "SortOrder": 150.0,
+                      "IsNullable": true,
+                      "Default": null
+                    },
+                    {
+                      "Name": "Source",
+                      "Type": "Int",
+                      "Desc": "Index of the directory representing this column.",
+                      "Required": true,
+                      "SortOrder": 150.0,
+                      "IsNullable": false,
+                      "Default": 0
+                    }
+                  ]
+                }
+              },
+              "Desc": "Column definitions used to override the Partitioned Path Parser. Expected with the format name:type:numeric-source, for example, col=MyFeature:R4:1",
+              "Aliases": [
+                "col"
+              ],
+              "Required": false,
+              "SortOrder": 1.0,
+              "IsNullable": false,
+              "Default": null
+            },
+            {
+              "Name": "Type",
+              "Type": {
+                "Kind": "Enum",
+                "Values": [
+                  "I1",
+                  "U1",
+                  "I2",
+                  "U2",
+                  "I4",
+                  "U4",
+                  "I8",
+                  "U8",
+                  "R4",
+                  "Num",
+                  "R8",
+                  "TX",
+                  "Text",
+                  "TXT",
+                  "BL",
+                  "Bool",
+                  "TimeSpan",
+                  "TS",
+                  "DT",
+                  "DateTime",
+                  "DZ",
+                  "DateTimeZone",
+                  "UG",
+                  "U16"
+                ]
+              },
+              "Desc": "Data type of each column.",
+              "Required": false,
+              "SortOrder": 150.0,
+              "IsNullable": false,
+              "Default": "TX"
+            }
+          ]
         }
       ]
     },
