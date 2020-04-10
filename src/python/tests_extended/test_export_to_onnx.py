@@ -157,7 +157,6 @@ SKIP = {
     'CountSelector',
     'KMeansPlusPlus',
     'ToKey',
-    'ColumnSelector'
 }
 
 INSTANCES = {
@@ -171,7 +170,21 @@ INSTANCES = {
         'Petal_Length',
         'Petal_Width',
         'Setosa']}),
-    'ColumnSelector': ColumnSelector(columns=['Sepal_Width', 'Sepal_Length']),
+    # As discussed, the onnx model exported from ColumnSelector won't be able to drop columns from the input of the pipeline
+    # when ran with OnnxRunner. It will only be able to drop columns created inside the pipeline.
+    # So in this test "Sepal_Length2" will be dropped, but we couldn't test
+    # dropping any of the input columns, so we actually select them.
+    'ColumnSelector': Pipeline([
+        ColumnDuplicator(columns={'Sepal_Length2': 'Sepal_Length'}),
+        ColumnSelector(columns=[
+            'Sepal_Length',
+            'Sepal_Width',
+            'Petal_Length',
+            'Petal_Width',
+            'Setosa',
+            'Label'
+            ]),
+        ]),
     'ColumnDuplicator': ColumnDuplicator(columns={'dup': 'Sepal_Width'}),
     'CountSelector': CountSelector(count=5, columns=['Sepal_Width']),
     'DateTimeSplitter': DateTimeSplitter(prefix='dt'),
@@ -334,9 +347,14 @@ EXPECTED_RESULTS = {
     'ColumnConcatenator': {'num_cols': 11, 'cols': 0},
     'ColumnDuplicator': {'num_cols': 7, 'cols': 0},
     'ColumnSelector': {
-        'num_cols': 2,
-        'cols': [('Sepal_Width', 'Sepal_Width', 'Sepal_Width.output'),
-                 ('Sepal_Length', 'Sepal_Length', 'Sepal_Length.output')]
+        'num_cols': 6,
+        'cols': [('Sepal_Length', 'Sepal_Length', 'Sepal_Length.output'),
+                 ('Sepal_Width', 'Sepal_Width', 'Sepal_Width.output'),
+                 ('Petal_Length', 'Petal_Length', 'Petal_Length.output'),
+                 ('Petal_Width', 'Petal_Width', 'Petal_Width.output'),
+                 ('Setosa', 'Setosa', 'Setosa.output'),
+                 ('Label', 'Label', 'Label.output')
+                 ]
     },
     #'EnsembleClassifier': {'cols': [('PredictedLabel', 'PredictedLabel')]},
     #'EnsembleRegressor': {'cols': [('Score', 'Score')]},
