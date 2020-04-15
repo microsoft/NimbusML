@@ -372,7 +372,8 @@ namespace Microsoft.ML.DotNetBridge
                     var ex = e;
                     while (ex.InnerException != null)
                         ex = ex.InnerException;
-                    ch.Error("*** {1}: '{0}'", ex.Message, ex.GetType());
+                    // Add StackTrace
+                    ch.Error("*** {0}: '{1}' StackTrace: {2}", ex.GetType(), ex.Message, ex.StackTrace);
                     return -1;
                 }
                 finally
