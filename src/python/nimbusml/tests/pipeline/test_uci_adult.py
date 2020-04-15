@@ -36,7 +36,7 @@ label_column = 'label'
 def check_accuracy(test_file, label_column, predictions, threshold, sep=','):
     (test, label) = get_X_y(test_file, label_column, sep=sep)
     accuracy = np.mean(label[label_column].values ==
-                       predictions.ix[:, 'PredictedLabel'].values)
+                       predictions['PredictedLabel'].values)
     assert_greater(
         accuracy,
         threshold,

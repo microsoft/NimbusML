@@ -33,7 +33,7 @@ namespace Microsoft.ML.DotNetBridge
             for (int i = 0; i < input.Data.Schema.Count; i++)
                 colNames.Add(input.Data.Schema[i].Name);
 
-            // Iterate throuh input options, find matching source columns, create new input options
+            // Iterate through input options, find matching source columns, create new input options
             var inputOptions = new ColumnConcatenatingTransformer.Options() { Data = input.Data };
             var columns = new List<ColumnConcatenatingTransformer.Column>(input.Columns.Length);
             foreach (var col in input.Columns)
@@ -177,6 +177,60 @@ namespace Microsoft.ML.DotNetBridge
                     ScoringTransform = new TransformModelImpl(host, scoredPipe, inputData)
                 };
 
+        }
+
+        public sealed class OnnxTransformInput : TransformInputBase
+        {
+            [Argument(ArgumentType.Required, HelpText = "Path to the onnx model file.", ShortName = "model", SortOrder = 0)]
+            public string ModelFile;
+
+            [Argument(ArgumentType.Multiple, HelpText = "Name of the input column.", SortOrder = 1)]
+            public string[] InputColumns;
+
+            [Argument(ArgumentType.Multiple, HelpText = "Name of the output column.", SortOrder = 2)]
+            public string[] OutputColumns;
+
+            [Argument(ArgumentType.AtMostOnce, HelpText = "GPU device id to run on (e.g. 0,1,..). Null for CPU. Requires CUDA 9.1.", SortOrder = 3)]
+            public int? GpuDeviceId = null;
+
+            [Argument(ArgumentType.AtMostOnce, HelpText = "If true, resumes execution on CPU upon GPU error. If false, will raise the GPU execption.", SortOrder = 4)]
+            public bool FallbackToCpu = false;
+        }
+
+        public sealed class OnnxTransformOutput
+        {
+            [TlcModule.Output(Desc = "ONNX transformed dataset", SortOrder = 1)]
+            public IDataView OutputData;
+
+            [TlcModule.Output(Desc = "Transform model", SortOrder = 2)]
+            public TransformModel Model;
+        }
+
+        [TlcModule.EntryPoint(Name = "Models.OnnxTransformer",
+                              Desc = "Applies an ONNX model to a dataset.",
+                              UserName = "Onnx Transformer",
+                              ShortName = "onnx-xf")]
+        public static OnnxTransformOutput ApplyOnnxModel(IHostEnvironment env, OnnxTransformInput input)
+        {
+            var host = EntryPointUtils.CheckArgsAndCreateHost(env, "OnnxTransform", input);
+
+            var inputColumns = input.InputColumns ?? (Array.Empty<string>());
+            var outputColumns = input.OutputColumns ?? (Array.Empty<string>());
+
+            var transformsCatalog = new TransformsCatalog(host);
+            var onnxScoringEstimator = OnnxCatalog.ApplyOnnxModel(transformsCatalog,
+                                                                  outputColumns,
+                                                                  inputColumns,
+                                                                  input.ModelFile,
+                                                                  input.GpuDeviceId,
+                                                                  input.FallbackToCpu);
+
+            var view = onnxScoringEstimator.Fit(input.Data).Transform(input.Data);
+            return new OnnxTransformOutput()
+            {
+                Model = new TransformModelImpl(host, view, input.Data),
+                OutputData = view
+            };
         }
     }
 }

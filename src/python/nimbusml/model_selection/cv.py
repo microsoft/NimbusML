@@ -10,6 +10,7 @@ import six
 from pandas import DataFrame
 
 from .. import Pipeline, FileDataStream
+from ..ensemble.votingensemble import VotingEnsemble
 from ..internal.entrypoints.models_crossvalidator import \
     models_crossvalidator
 from ..internal.entrypoints.transforms_manyheterogeneousmodelcombiner \
@@ -67,6 +68,11 @@ class _PipelineSteps(list):
     def all_output_models(self):
         models, _, _ = self._get_values(
             'outputs', ['Model', 'PredictorModel', 'OutputModel'])
+        return models
+
+    @property
+    def all_transform_output_models(self):
+        models, _, _ = self._get_values('outputs', ['Model'])
         return models
 
     @property
@@ -307,27 +313,22 @@ class CV:
 
         return clean_results
 
-    def _process_split_start(self, split_start):
-        nodes = self._pipeline.nodes
-        pipeline_len = len(nodes)
+    def _process_split_start(self, split_start, num_transform_nodes):
         if isinstance(split_start, str):
             if split_start == 'before_transforms':
                 split_index = 0
             elif split_start == 'after_transforms':
-                split_index = pipeline_len - 1
+                split_index = num_transform_nodes
             else:
                 raise ValueError(
                     'String value for split_start should be either '
                     '"before_transforms" or "after_transforms"')
 
         if isinstance(split_start, six.integer_types):
-            try:
-                nodes[split_start]
-            except IndexError:
+            if split_start > num_transform_nodes:
                 raise ValueError(
                     'Pipeline doesn\'t contain a step for split_start={'
-                    '}'.format(
-                        split_start))
+                    '}'.format(split_start))
 
             split_index = split_start
 
@@ -335,7 +336,10 @@ class CV:
         # Convert split_index to positive number, so that it can index into
         # list of transfroms without the learner.
         if split_index < 0:
-            split_index = split_index + pipeline_len
+            split_index = split_index + num_transform_nodes
+
+            if split_index < 0:
+                raise ValueError('Invalid split index.')
 
         return split_index
 
@@ -426,6 +430,7 @@ class CV:
         self._results = None
         self._raw_results = None
         verbose = 1
+        dry_run = params.pop('dry_run', False)
 
         # _fit_graph() seems to have side-effects on the pipeline object
         # Use a clone, so that we can reuse CV object for multiple calls to
@@ -468,9 +473,10 @@ class CV:
                         'groups in .fit() function.')
 
 
-        split_index = self._process_split_start(split_start)
         graph_sections = cv_aux_info.graph_sections
         transforms = graph_sections.get('transform_nodes', [])
+
+        split_index = self._process_split_start(split_start, len(transforms))
         pre_split_transforms = transforms[:split_index]
         post_split_transforms = transforms[split_index:]
         implicit_nodes = graph_sections['implicit_nodes']
@@ -502,21 +508,58 @@ class CV:
             implicit_nodes)
 
         # Add learner node
-        training_data = cv_subgraph.last_output_data
-        learner_node.inputs['TrainingData'] = training_data
-        learner_node.input_variables = {training_data}
-        cv_subgraph.add(learner_node)
+        if isinstance(pipeline.last_node, VotingEnsemble):
+            # The CV split for ensembling works the same way as the
+            # non-ensemble split since all the extra nodes are marked
+            # as 'implicit' nodes. The only extra changes required are
+            # the ones described below.
 
-        if len(cv_subgraph.all_output_models) > 1:
-            learner_model_new_name = cv_aux_info.output_model + '_learner'
+            # The VotingEnsemble node uses "$output_model" for its
+            # PredictorModel output. Rename this output to match
+            # what the rest of the CV pipeline expects. A similar
+            # modification is done for the non-ensemble pipeline below.
+            learner_model_new_name = cv_aux_info.predictor_model
+            learner_model_prev_name = learner_node.outputs['PredictorModel']
             learner_node.outputs['PredictorModel'] = learner_model_new_name
-            learner_node.output_variables = {learner_model_new_name}
+            learner_node.output_variables.discard(learner_model_prev_name)
+            learner_node.output_variables.add(learner_model_new_name)
 
-            combine_model_node = transforms_manyheterogeneousmodelcombiner(
-                transform_models=cv_subgraph.all_output_models[:-1],
-                predictor_model=cv_subgraph.all_output_models[-1],
-                model=cv_aux_info.predictor_model)
-            cv_subgraph.add(combine_model_node)
+            # Add the ensemble node to the cv subgraph.
+            cv_subgraph.add(learner_node)
+
+            new_models = cv_subgraph.all_transform_output_models
+
+            # The ManyHeterogeneousModelCombiner implicit nodes which
+            # are part of an ensemble pipeline will by default contain
+            # the TransformModels from all the transforms in the entire
+            # pipeline. For a CV pipeline, they should only contain the
+            # TransformModels from the transforms which are part of the
+            # cv subgraph. Update the TransformModels of these nodes to
+            # only contain the TransformModels from the transforms which
+            # are part of the cv subgraph.
+            # TODO: refactor this.
+            for node in implicit_nodes:
+                if 'ManyHeterogeneousModelCombiner' in node.name:
+                    prev_models = set(node.inputs['TransformModels'])
+                    node.input_variables -= prev_models
+                    node.input_variables |= set(new_models)
+                    node.inputs['TransformModels'] = new_models
+        else:
+            training_data = cv_subgraph.last_output_data
+            learner_node.inputs['TrainingData'] = training_data
+            learner_node.input_variables = {training_data}
+            cv_subgraph.add(learner_node)
+
+            if len(cv_subgraph.all_output_models) > 1:
+                learner_model_new_name = cv_aux_info.output_model + '_learner'
+                learner_node.outputs['PredictorModel'] = learner_model_new_name
+                learner_node.output_variables = {learner_model_new_name}
+
+                combine_model_node = transforms_manyheterogeneousmodelcombiner(
+                    transform_models=cv_subgraph.all_output_models[:-1],
+                    predictor_model=cv_subgraph.all_output_models[-1],
+                    model=cv_aux_info.predictor_model)
+                cv_subgraph.add(combine_model_node)
 
         # Update the first data input of CV subgraph steps
         input_node, input_name = cv_subgraph.first_input_data
@@ -562,11 +605,16 @@ class CV:
                 telemetry_info=telemetry_info,
                 is_cv=True,
                 output_types=self.output_types,
+                dry_run=dry_run,
                 **params)
         except RuntimeError as e:
             self._run_time = time.time() - start_time
             raise e
 
-        self._raw_results = graph_run_results
-        self._results = self._cleanup_results(graph_run_results, cv)
+        if dry_run:
+            self._results = graph_run_results
+        else:
+            self._raw_results = graph_run_results
+            self._results = self._cleanup_results(graph_run_results, cv)
+
         return self._results

@@ -7,8 +7,10 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.EntryPoints;
+using Microsoft.ML.Featurizers;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.Ensemble;
@@ -296,11 +298,12 @@ namespace Microsoft.ML.DotNetBridge
             //env.ComponentCatalog.RegisterAssembly(typeof(AutoInference).Assembly); // ML.PipelineInference
             env.ComponentCatalog.RegisterAssembly(typeof(DataViewReference).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(ImageLoadingTransformer).Assembly);
-            //env.ComponentCatalog.RegisterAssembly(typeof(SaveOnnxCommand).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(OnnxExportExtensions).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(TimeSeriesProcessingEntryPoints).Assembly);
             //env.ComponentCatalog.RegisterAssembly(typeof(ParquetLoader).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(SsaChangePointDetector).Assembly);
             env.ComponentCatalog.RegisterAssembly(typeof(DotNetBridgeEntrypoints).Assembly);
+            env.ComponentCatalog.RegisterAssembly(typeof(DateTimeTransformer).Assembly);
 
             using (var ch = host.Start("Executing"))
             {
