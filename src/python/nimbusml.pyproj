@@ -753,6 +753,10 @@
     <Compile Include="nimbusml\tests\test_fit_graph.py" />
     <Compile Include="nimbusml\tests\test_variable_column.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidchangepointdetector.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_forecastingpivot.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_lagleadoperator.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_shortdrop.py" />
+    <Compile Include="nimbusml\tests\timeseries\test_rollingwindow.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssaforecaster.py" />
     <Compile Include="nimbusml\tests\timeseries\test_ssachangepointdetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_timeseriesimputer.py" />
