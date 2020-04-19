@@ -12,25 +12,17 @@ from ..utils.utils import try_set, unlist
 def transforms_shortdrop(
         grain_columns,
         data,
-        offsets,
         output_data=None,
         model=None,
-        horizon=0,
-        max_window_size=0,
-        cross_validations=0,
+        min_rows=0,
         **params):
     """
     **Description**
         Drops rows if there aren't enough values per grain.
 
     :param grain_columns: List of grain columns (inputs).
-    :param horizon: Maximum horizon value (inputs).
+    :param min_rows: Minimum number of values required (inputs).
     :param data: Input dataset (inputs).
-    :param max_window_size: Maximum window size (inputs).
-    :param cross_validations: Number of cross validations being
-        performed. (inputs).
-    :param offsets: Lag and Lead offset to use. A negative number is
-        a lag, positive is a lead (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
     """
@@ -45,9 +37,9 @@ def transforms_shortdrop(
             none_acceptable=False,
             is_of_type=list,
             is_column=True)
-    if horizon is not None:
-        inputs['Horizon'] = try_set(
-            obj=horizon,
+    if min_rows is not None:
+        inputs['MinRows'] = try_set(
+            obj=min_rows,
             none_acceptable=False,
             is_of_type=numbers.Real)
     if data is not None:
@@ -55,21 +47,6 @@ def transforms_shortdrop(
             obj=data,
             none_acceptable=False,
             is_of_type=str)
-    if max_window_size is not None:
-        inputs['MaxWindowSize'] = try_set(
-            obj=max_window_size,
-            none_acceptable=False,
-            is_of_type=numbers.Real)
-    if cross_validations is not None:
-        inputs['CrossValidations'] = try_set(
-            obj=cross_validations,
-            none_acceptable=True,
-            is_of_type=numbers.Real)
-    if offsets is not None:
-        inputs['offsets'] = try_set(
-            obj=offsets,
-            none_acceptable=False,
-            is_of_type=list)
     if output_data is not None:
         outputs['OutputData'] = try_set(
             obj=output_data,

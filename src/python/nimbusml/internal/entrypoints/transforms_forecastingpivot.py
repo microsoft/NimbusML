@@ -13,12 +13,15 @@ def transforms_forecastingpivot(
         data,
         output_data=None,
         model=None,
+        horizon_column_name='Horizon',
         **params):
     """
     **Description**
         Pivots the input colums and drops any rows with N/A
 
     :param columns_to_pivot: List of columns to pivot (inputs).
+    :param horizon_column_name: Name of the horizon column generated.
+        (inputs).
     :param data: Input dataset (inputs).
     :param output_data: Transformed dataset (outputs).
     :param model: Transform model (outputs).
@@ -33,6 +36,12 @@ def transforms_forecastingpivot(
             obj=columns_to_pivot,
             none_acceptable=False,
             is_of_type=list,
+            is_column=True)
+    if horizon_column_name is not None:
+        inputs['HorizonColumnName'] = try_set(
+            obj=horizon_column_name,
+            none_acceptable=True,
+            is_of_type=str,
             is_column=True)
     if data is not None:
         inputs['Data'] = try_set(

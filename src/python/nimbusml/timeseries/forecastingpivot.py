@@ -27,6 +27,8 @@ class ForecastingPivot(core, BaseTransform, TransformerMixin):
 
     :param columns_to_pivot: List of columns to pivot.
 
+    :param horizon_column_name: Name of the horizon column generated.
+
     :param params: Additional arguments sent to compute engine.
 
     """
@@ -35,6 +37,7 @@ class ForecastingPivot(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             columns_to_pivot,
+            horizon_column_name='Horizon',
             columns=None,
             **params):
 
@@ -44,6 +47,7 @@ class ForecastingPivot(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             columns_to_pivot=columns_to_pivot,
+            horizon_column_name=horizon_column_name,
             **params)
         self._columns = columns
 

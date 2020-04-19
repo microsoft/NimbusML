@@ -26,14 +26,7 @@ class ShortDrop(core, BaseTransform, TransformerMixin):
 
     :param grain_columns: List of grain columns.
 
-    :param horizon: Maximum horizon value.
-
-    :param max_window_size: Maximum window size.
-
-    :param cross_validations: Number of cross validations being performed.
-
-    :param offsets: Lag and Lead offset to use. A negative number is a lag,
-        positive is a lead.
+    :param min_rows: Minimum number of values required.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -43,10 +36,7 @@ class ShortDrop(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             grain_columns,
-            offsets,
-            horizon=0,
-            max_window_size=0,
-            cross_validations=0,
+            min_rows=0,
             columns=None,
             **params):
 
@@ -56,10 +46,7 @@ class ShortDrop(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             grain_columns=grain_columns,
-            offsets=offsets,
-            horizon=horizon,
-            max_window_size=max_window_size,
-            cross_validations=cross_validations,
+            min_rows=min_rows,
             **params)
         self._columns = columns
 

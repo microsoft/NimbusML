@@ -20,13 +20,11 @@ from ..internal.utils.utils import trace
 class LagLeadOperator(core, BaseTransform, TransformerMixin):
     """
     **Description**
-        uses the offset list to create lags and leads
+        Uses the offset list with the horizon to create lags and leads
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
     :param grain_columns: List of grain columns.
-
-    :param target_column: Target column.
 
     :param horizon: Maximum horizon value.
 
@@ -41,7 +39,6 @@ class LagLeadOperator(core, BaseTransform, TransformerMixin):
     def __init__(
             self,
             grain_columns,
-            target_column,
             offsets,
             horizon=0,
             columns=None,
@@ -53,7 +50,6 @@ class LagLeadOperator(core, BaseTransform, TransformerMixin):
         core.__init__(
             self,
             grain_columns=grain_columns,
-            target_column=target_column,
             offsets=offsets,
             horizon=horizon,
             **params)

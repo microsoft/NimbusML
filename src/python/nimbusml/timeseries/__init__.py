@@ -4,6 +4,10 @@ from .ssaspikedetector import SsaSpikeDetector
 from .ssachangepointdetector import SsaChangePointDetector
 from .ssaforecaster import SsaForecaster
 from .timeseriesimputer import TimeSeriesImputer
+from .rollingwindow import RollingWindow
+from .shortdrop import ShortDrop
+from .lagleadoperator import LagLeadOperator
+from .forecastingpivot import ForecastingPivot
 
 __all__ = [
     'IidSpikeDetector',
@@ -11,5 +15,9 @@ __all__ = [
     'SsaSpikeDetector',
     'SsaChangePointDetector',
     'SsaForecaster',
-    'TimeSeriesImputer'
+    'TimeSeriesImputer',
+    'RollingWindow',
+    'ShortDrop',
+    'LagLeadOperator',
+    'ForecastingPivot',
 ]

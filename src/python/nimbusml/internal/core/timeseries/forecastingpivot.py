@@ -23,6 +23,8 @@ class ForecastingPivot(BasePipelineItem, DefaultSignature):
 
     :param columns_to_pivot: List of columns to pivot.
 
+    :param horizon_column_name: Name of the horizon column generated.
+
     :param params: Additional arguments sent to compute engine.
 
     """
@@ -31,11 +33,13 @@ class ForecastingPivot(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             columns_to_pivot,
+            horizon_column_name='Horizon',
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
         self.columns_to_pivot = columns_to_pivot
+        self.horizon_column_name = horizon_column_name
 
     @property
     def _entrypoint(self):
@@ -44,7 +48,8 @@ class ForecastingPivot(BasePipelineItem, DefaultSignature):
     @trace
     def _get_node(self, **all_args):
         algo_args = dict(
-            columns_to_pivot=self.columns_to_pivot)
+            columns_to_pivot=self.columns_to_pivot,
+            horizon_column_name=self.horizon_column_name)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

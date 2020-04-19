@@ -227,14 +227,8 @@
   ],
   "EntryPoints": [
     {
-      "Name": "Transforms.SimpleRollingWindow",
-      "NewName": "SimpleRollingWindow",
-      "Module": "timeseries",
-      "Type": "Transform"
-    },
-    {
-      "Name": "Transforms.AnalyticalRollingWindow",
-      "NewName": "AnalyticalRollingWindow",
+      "Name": "Transforms.RollingWindow",
+      "NewName": "RollingWindow",
       "Module": "timeseries",
       "Type": "Transform"
     },

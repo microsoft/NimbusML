@@ -11,7 +11,7 @@ from ..utils.utils import try_set, unlist
 
 def transforms_lagleadoperator(
         grain_columns,
-        target_column,
+        column,
         data,
         offsets,
         output_data=None,
@@ -20,10 +20,11 @@ def transforms_lagleadoperator(
         **params):
     """
     **Description**
-        uses the offset list to create lags and leads
+        Uses the offset list with the horizon to create lags and leads
 
     :param grain_columns: List of grain columns (inputs).
-    :param target_column: Target column (inputs).
+    :param column: New column definition (optional form: name:src)
+        (inputs).
     :param data: Input dataset (inputs).
     :param horizon: Maximum horizon value (inputs).
     :param offsets: Lag and Lead offset to use. A negative number is
@@ -42,11 +43,11 @@ def transforms_lagleadoperator(
             none_acceptable=False,
             is_of_type=list,
             is_column=True)
-    if target_column is not None:
-        inputs['TargetColumn'] = try_set(
-            obj=target_column,
+    if column is not None:
+        inputs['Column'] = try_set(
+            obj=column,
             none_acceptable=False,
-            is_of_type=str,
+            is_of_type=list,
             is_column=True)
     if data is not None:
         inputs['Data'] = try_set(
@@ -59,7 +60,7 @@ def transforms_lagleadoperator(
             none_acceptable=False,
             is_of_type=numbers.Real)
     if offsets is not None:
-        inputs['offsets'] = try_set(
+        inputs['Offsets'] = try_set(
             obj=offsets,
             none_acceptable=False,
             is_of_type=list)

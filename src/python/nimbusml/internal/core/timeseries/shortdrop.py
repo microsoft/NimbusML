@@ -22,14 +22,7 @@ class ShortDrop(BasePipelineItem, DefaultSignature):
 
     :param grain_columns: List of grain columns.
 
-    :param horizon: Maximum horizon value.
-
-    :param max_window_size: Maximum window size.
-
-    :param cross_validations: Number of cross validations being performed.
-
-    :param offsets: Lag and Lead offset to use. A negative number is a lag,
-        positive is a lead.
+    :param min_rows: Minimum number of values required.
 
     :param params: Additional arguments sent to compute engine.
 
@@ -39,19 +32,13 @@ class ShortDrop(BasePipelineItem, DefaultSignature):
     def __init__(
             self,
             grain_columns,
-            offsets,
-            horizon=0,
-            max_window_size=0,
-            cross_validations=0,
+            min_rows=0,
             **params):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
         self.grain_columns = grain_columns
-        self.offsets = offsets
-        self.horizon = horizon
-        self.max_window_size = max_window_size
-        self.cross_validations = cross_validations
+        self.min_rows = min_rows
 
     @property
     def _entrypoint(self):
@@ -61,10 +48,7 @@ class ShortDrop(BasePipelineItem, DefaultSignature):
     def _get_node(self, **all_args):
         algo_args = dict(
             grain_columns=self.grain_columns,
-            offsets=self.offsets,
-            horizon=self.horizon,
-            max_window_size=self.max_window_size,
-            cross_validations=self.cross_validations)
+            min_rows=self.min_rows)
 
         all_args.update(algo_args)
         return self._entrypoint(**all_args)

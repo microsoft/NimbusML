@@ -92,6 +92,10 @@
     <Compile Include="nimbusml\examples\BootStrapSample.py" />
     <Compile Include="nimbusml\examples\CharTokenizer.py" />
     <Compile Include="nimbusml\examples\ColumnConcatenator.py" />
+    <Compile Include="nimbusml\examples\LagLeadOperator.py" />
+    <Compile Include="nimbusml\examples\ForecastingPivot.py" />
+    <Compile Include="nimbusml\examples\ShortDrop.py" />
+    <Compile Include="nimbusml\examples\RollingWindow.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\OnnxRunner_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\RobustScaler_df.py" />
     <Compile Include="nimbusml\examples\examples_from_dataframe\TimeSeriesImputer_df.py" />
@@ -332,13 +336,12 @@
     <Compile Include="nimbusml\internal\core\preprocessing\tokeyimputer.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\tostring.py" />
     <Compile Include="nimbusml\internal\core\preprocessing\text\wordtokenizer.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\analyticalrollingwindow.py" />
     <Compile Include="nimbusml\internal\core\timeseries\forecastingpivot.py" />
     <Compile Include="nimbusml\internal\core\timeseries\iidchangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\iidspikedetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\lagleadoperator.py" />
+    <Compile Include="nimbusml\internal\core\timeseries\rollingwindow.py" />
     <Compile Include="nimbusml\internal\core\timeseries\shortdrop.py" />
-    <Compile Include="nimbusml\internal\core\timeseries\simplerollingwindow.py" />
     <Compile Include="nimbusml\internal\core\timeseries\ssachangepointdetector.py" />
     <Compile Include="nimbusml\internal\core\timeseries\ssaforecaster.py" />
     <Compile Include="nimbusml\internal\core\timeseries\ssaspikedetector.py" />
@@ -419,7 +422,6 @@
     <Compile Include="nimbusml\internal\entrypoints\trainers_stochasticdualcoordinateascentregressor.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_stochasticgradientdescentbinaryclassifier.py" />
     <Compile Include="nimbusml\internal\entrypoints\trainers_symsgdbinaryclassifier.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_analyticalrollingwindow.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_approximatebootstrapsampler.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_binarypredictionscorecolumnsrenamer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_binnormalizer.py" />
@@ -476,6 +478,7 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_permutationfeatureimportance.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_predictedlabelcolumnoriginalvalueconverter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_randomnumbergenerator.py" />
+    <Compile Include="nimbusml\internal\entrypoints\transforms_rollingwindow.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_rowrangefilter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_rowskipandtakefilter.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_rowskipfilter.py" />
@@ -485,7 +488,6 @@
     <Compile Include="nimbusml\internal\entrypoints\transforms_segregator.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_sentimentanalyzer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_shortdrop.py" />
-    <Compile Include="nimbusml\internal\entrypoints\transforms_simplerollingwindow.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_tensorflowscorer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_textfeaturizer.py" />
     <Compile Include="nimbusml\internal\entrypoints\transforms_texttokeyconverter.py" />
@@ -551,8 +553,6 @@
     <Compile Include="nimbusml\internal\entrypoints\_ngramextractor_ngramhash.py" />
     <Compile Include="nimbusml\internal\entrypoints\_parallellightgbm_single.py" />
     <Compile Include="nimbusml\internal\entrypoints\_paralleltraining_single.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_partitionedpathparser_parquetpathparser.py" />
-    <Compile Include="nimbusml\internal\entrypoints\_partitionedpathparser_simplepathparser.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_poissonloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_squaredloss.py" />
     <Compile Include="nimbusml\internal\entrypoints\_regressionlossfunction_tweedieloss.py" />
@@ -759,13 +759,12 @@
     <Compile Include="nimbusml\tests\timeseries\test_ssaspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\test_iidspikedetector.py" />
     <Compile Include="nimbusml\tests\timeseries\__init__.py" />
-    <Compile Include="nimbusml\timeseries\analyticalrollingwindow.py" />
     <Compile Include="nimbusml\timeseries\forecastingpivot.py" />
     <Compile Include="nimbusml\timeseries\iidchangepointdetector.py" />
     <Compile Include="nimbusml\timeseries\iidspikedetector.py" />
     <Compile Include="nimbusml\timeseries\lagleadoperator.py" />
+    <Compile Include="nimbusml\timeseries\rollingwindow.py" />
     <Compile Include="nimbusml\timeseries\shortdrop.py" />
-    <Compile Include="nimbusml\timeseries\simplerollingwindow.py" />
     <Compile Include="nimbusml\timeseries\ssachangepointdetector.py" />
     <Compile Include="nimbusml\timeseries\ssaforecaster.py" />
     <Compile Include="nimbusml\timeseries\ssaspikedetector.py" />
