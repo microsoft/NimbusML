@@ -105,6 +105,9 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
     :param handle_missing_value: Enable special handling of missing value or
         not.
 
+    :param use_zero_as_missing_value: Enable usage of zero (0) as missing
+        value.
+
     :param minimum_example_count_per_group: Minimum number of instances per
         categorical group.
 
@@ -160,6 +163,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             batch_size=1048576,
             use_categorical_split=None,
             handle_missing_value=True,
+            use_zero_as_missing_value=False,
             minimum_example_count_per_group=100,
             maximum_categorical_split_point_count=32,
             categorical_smoothing=10.0,
@@ -214,6 +218,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             batch_size=batch_size,
             use_categorical_split=use_categorical_split,
             handle_missing_value=handle_missing_value,
+            use_zero_as_missing_value=use_zero_as_missing_value,
             minimum_example_count_per_group=minimum_example_count_per_group,
             maximum_categorical_split_point_count=maximum_categorical_split_point_count,
             categorical_smoothing=categorical_smoothing,

@@ -4,6 +4,7 @@ from .logmeanvariancescaler import LogMeanVarianceScaler
 from .lpscaler import LpScaler
 from .meanvariancescaler import MeanVarianceScaler
 from .minmaxscaler import MinMaxScaler
+from .robustscaler import RobustScaler
 
 __all__ = [
     'Binner',
@@ -11,5 +12,6 @@ __all__ = [
     'LogMeanVarianceScaler',
     'LpScaler',
     'MeanVarianceScaler',
-    'MinMaxScaler'
+    'MinMaxScaler',
+    'RobustScaler'
 ]

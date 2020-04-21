@@ -35,7 +35,19 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
         :param X: array-like with shape=[n_samples, n_features] or else
         :py:class:`nimbusml.FileDataStream`
         :param y: array-like with shape=[n_samples]
-        :return: pandas.DataFrame
+        :param as_binary_data_stream: If ``True`` then output an IDV file.
+            See `here <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_
+            for more information.
+        :param params: Additional arguments.
+            If ``as_csr=True`` and ``as_binary_data_stream=False`` then
+            return the transformed data in CSR (sparse matrix) format.
+            If ``as_binary_data_stream`` is also true then that
+            parameter takes precedence over ``as_csr`` and the output will
+            be an IDV file.
+
+        :return: Returns a pandas DataFrame if no other output format
+            is specified. See ``as_binary_data_stream`` and ``as_csr``
+            for other available output formats.
         """
         pipeline = Pipeline([self])
         try:
@@ -88,8 +100,20 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
         Applies transform to data.
 
         :param X: array-like with shape=[n_samples, n_features] or else
-        :py:class:`nimbusml.FileDataStream`
-        :return: pandas.DataFrame
+            :py:class:`nimbusml.FileDataStream`
+        :param as_binary_data_stream: If ``True`` then output an IDV file.
+            See `here <https://github.com/dotnet/machinelearning/blob/master/docs/code/IDataViewImplementation.md>`_
+            for more information.
+        :param params: Additional arguments.
+            If ``as_csr=True`` and ``as_binary_data_stream=False`` then
+            return the transformed data in CSR (sparse matrix) format.
+            If ``as_binary_data_stream`` is also true then that
+            parameter takes precedence over ``as_csr`` and the output will
+            be an IDV file.
+
+        :return: Returns a pandas DataFrame if no other output format
+            is specified. See ``as_binary_data_stream`` and ``as_csr``
+            for other available output formats.
         """
         # Check that the input is of the same shape as the one passed
         # during
@@ -100,3 +124,20 @@ class BaseTransform(BaseEstimator, BasePipelineItem):
         data = pipeline.transform(
             X, as_binary_data_stream=as_binary_data_stream, **params)
         return data
+
+    @trace
+    def export_to_onnx(self, *args, **kwargs):
+        """
+        Export the model to the ONNX format.
+
+        See :py:meth:`nimbusml.Pipeline.export_to_onnx` for accepted arguments.
+        """
+        if not hasattr(self, 'model_') \
+            or self.model_ is None \
+            or not os.path.isfile(self.model_):
+
+            raise ValueError("Model is not fitted. Train or load a model before "
+                             "export_to_onnx().")
+
+        pipeline = Pipeline([self], model=self.model_)
+        pipeline.export_to_onnx(*args, **kwargs)

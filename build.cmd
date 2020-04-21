@@ -172,7 +172,7 @@ if /i [%1] == [DbgWinPy2.7]     (
 :Build
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
 echo Installing dotnet SDK ... 
-powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 2.1.701 -InstallDir ./cli"
+powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Version 3.1.102 -InstallDir ./cli"
 
 set _dotnetRoot=%__currentScriptDir%cli
 
@@ -350,6 +350,7 @@ copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\py
 
 if %PythonVersion% == 2.7 (
     copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
 	:: remove dataprep dlls as its not supported in python 2.7
 	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
 	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
@@ -360,6 +361,7 @@ if %PythonVersion% == 2.7 (
 	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
 ) else (
     for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
 )
 
 if "%DebugBuild%" == "True" (
@@ -387,13 +389,14 @@ if "%InstallPythonPackages%" == "True" (
     echo "#################################"
     echo "Installing python packages ... "
     echo "#################################"
-    call "%PythonExe%" -m pip install --upgrade pip
+    call "%PythonExe%" -m pip install --upgrade "pip==19.3.1"
     call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
     if %PythonVersion% == 2.7 (
         call "%PythonExe%" -m pip install --upgrade pyzmq
     ) else (
         call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+        call "%PythonExe%" -m pip install --upgrade onnxruntime
     )
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"

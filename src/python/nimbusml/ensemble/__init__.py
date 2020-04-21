@@ -11,6 +11,7 @@ from .lightgbmbinaryclassifier import LightGbmBinaryClassifier
 from .lightgbmclassifier import LightGbmClassifier
 from .lightgbmranker import LightGbmRanker
 from .lightgbmregressor import LightGbmRegressor
+from .votingensemble import VotingRegressor
 
 __all__ = [
     'EnsembleClassifier',
@@ -25,5 +26,6 @@ __all__ = [
     'LightGbmBinaryClassifier',
     'LightGbmClassifier',
     'LightGbmRanker',
-    'LightGbmRegressor'
+    'LightGbmRegressor',
+    'VotingRegressor'
 ]

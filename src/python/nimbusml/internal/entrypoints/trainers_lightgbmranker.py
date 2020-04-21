@@ -34,6 +34,7 @@ def trainers_lightgbmranker(
         batch_size=1048576,
         use_categorical_split=None,
         handle_missing_value=True,
+        use_zero_as_missing_value=False,
         minimum_example_count_per_group=100,
         maximum_categorical_split_point_count=32,
         categorical_smoothing=10.0,
@@ -83,6 +84,8 @@ def trainers_lightgbmranker(
         (inputs).
     :param handle_missing_value: Enable special handling of missing
         value or not. (inputs).
+    :param use_zero_as_missing_value: Enable usage of zero (0) as
+        missing value. (inputs).
     :param minimum_example_count_per_group: Minimum number of
         instances per categorical group. (inputs).
     :param maximum_categorical_split_point_count: Max number of
@@ -230,6 +233,11 @@ def trainers_lightgbmranker(
     if handle_missing_value is not None:
         inputs['HandleMissingValue'] = try_set(
             obj=handle_missing_value,
+            none_acceptable=True,
+            is_of_type=bool)
+    if use_zero_as_missing_value is not None:
+        inputs['UseZeroAsMissingValue'] = try_set(
+            obj=use_zero_as_missing_value,
             none_acceptable=True,
             is_of_type=bool)
     if minimum_example_count_per_group is not None:

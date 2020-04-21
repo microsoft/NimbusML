@@ -116,6 +116,10 @@ class EntryPoint:
             indent=EntryPoint.indent,
             sort_keys=EntryPoint.sort_keys)
 
+    def __eq__(self, other):
+        return isinstance(other, EntryPoint) and \
+               (self.to_dict() == other.to_dict())
+
     def to_dict(self):
         """
         convert to dictionary
@@ -327,8 +331,8 @@ class Graph(EntryPoint):
         return pieces[0].replace("sep=", "").strip()
 
     def run(self, X, y=None, max_slots=-1, random_state=None, verbose=1, **params):
-        if params.get("dryrun") is not None:
-            return 'graph = %s' % (str(self))
+        if params.get("dry_run", False):
+            return str(self)
 
         output_modelfilename = None
         output_predictor_modelfilename = None

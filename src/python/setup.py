@@ -45,7 +45,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on
     # single-sourcing the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.6.1',
+    version='1.7.0',
 
     description='NimbusML',
     long_description=long_description,
@@ -114,6 +114,7 @@ setup(
         'tests': [
             'nose>=1.3', 'pytest>=4.4.0',
             'graphviz', 'imageio',
+            'onnxruntime',
         ],
         'dprep': ['azureml-dataprep>=1.1.33'],
         'utils': ['graphviz', 'imageio'],
@@ -134,6 +135,7 @@ setup(
         'nbconvert>=4.2.0',
         'nose>=1.3',
         'pytest>=4.4.0',
+        'onnxruntime',
     ],
 
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.8.*',

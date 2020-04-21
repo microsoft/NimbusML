@@ -1560,7 +1560,6 @@ class Argument:
         self.default = argument.get('Default', Missing())
         self.required = argument.get('Required', Missing())
         self.aliases = argument.get('Aliases', Missing())
-        self.pass_as = argument.get('PassAs', None)
 
         self.name_converted = convert_name(self.name)
         self.new_name_converted = convert_name(
@@ -1615,7 +1614,7 @@ class NumericScalarArg(Argument):
                    "is_of_type=numbers.Real"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         if not isinstance(self.range, Missing):
@@ -1646,7 +1645,7 @@ class BooleanScalarArg(NumericScalarArg):
                    "none_acceptable={none_acceptable}, is_of_type=bool"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1693,7 +1692,7 @@ class StringScalarArg(Argument):
             template += ", is_column=True"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1717,7 +1716,7 @@ class EnumArg(StringScalarArg):  # kind = 'Enum', values = []
                    "none_acceptable={none_acceptable}, is_of_type=str"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         value_check = ", values={0}".format(str(self.type['Values']))
@@ -1748,7 +1747,7 @@ class ArrayArg(Argument):
                    "none_acceptable={none_acceptable}, is_of_type=list"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1790,7 +1789,7 @@ class StringArrayArg(ArrayArg):
             template += ', is_column=True'
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1818,7 +1817,7 @@ class StructArrayArg(ArrayArg):  # kind = Array, itemType = dict
             template += ', is_column=True'
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1846,7 +1845,7 @@ class DictionaryArg(NumericScalarArg):
                        "none_acceptable={none_acceptable}, is_of_type=dict"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         return body + ")"
@@ -1882,7 +1881,7 @@ class StructScalarArg(DictionaryArg):
             template += ", is_column=True"
         body = template.format(
             inout=self.inout,
-            name=self.pass_as or self.name,
+            name=self.name,
             name_converted=self.name_converted,
             none_acceptable=not self.required)
         field_check = ", field_names={0}".format(
@@ -2041,6 +2040,7 @@ if __name__ == '__main__':
     script_args = arg_parser.parse_args()
     pkg_path = os.path.join(my_dir, r'..\nimbusml')
 
+   
     if script_args.check_manual_changes:
         verbose = False
         if script_args.folder == 'temp':

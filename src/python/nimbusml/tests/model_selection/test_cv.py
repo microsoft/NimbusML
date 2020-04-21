@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import json
 import unittest
 
 import numpy as np
@@ -11,13 +12,14 @@ import pandas as pd
 from nimbusml import Pipeline, FileDataStream, Role, DataSchema
 from nimbusml.cluster import KMeansPlusPlus
 from nimbusml.datasets import get_dataset
-from nimbusml.ensemble import FastForestRegressor, LightGbmRanker
+from nimbusml.ensemble import FastForestRegressor, LightGbmRanker, LightGbmRegressor
 from nimbusml.feature_extraction.categorical import OneHotVectorizer, \
     OneHotHashVectorizer
 from nimbusml.linear_model import FastLinearClassifier, \
     LogisticRegressionBinaryClassifier, LogisticRegressionClassifier
 from nimbusml.model_selection import CV
 from nimbusml.preprocessing import ToKey
+from nimbusml.preprocessing.missing_values import Indicator, Handler
 from nimbusml.preprocessing.schema import ColumnConcatenator, ColumnDropper
 from nimbusml.tests.test_utils import split_features_and_label
 from sklearn.utils.testing import assert_equal, assert_true, \
@@ -123,6 +125,9 @@ def check_cv(
     cv = CV(pipeline)
     if split_start == 'try_all':
         len_pipeline = len(pipeline.nodes)
+        if pipeline.last_node.type != 'transform':
+            len_pipeline = len_pipeline - 1
+
         values_to_test = ['after_transforms', 'before_transforms']
         values_to_test.extend(list(range(len_pipeline)))
         values_to_test.extend(list(range(-len_pipeline, 0)))
@@ -248,6 +253,38 @@ class TestCvRegressor(unittest.TestCase):
             with self.assertRaises(ValueError, msg=msg):
                 self.check_cv_with_defaults(
                     split_start=split_start, graph_id=str(split_start))
+
+    def test_split_start_with_transforms_with_presteps(self):
+        path = get_dataset("airquality").as_filepath()
+        schema = DataSchema.read_schema(path)
+        data = FileDataStream(path, schema)
+
+        pipeline_steps = [
+            Indicator() << {'Ozone_ind': 'Ozone', 'Solar_R_ind': 'Solar_R'},
+            Handler(replace_with='Mean') << {
+                'Solar_R': 'Solar_R',
+                'Ozone': 'Ozone'},
+            LightGbmRegressor(
+                feature=['Ozone',
+                         'Solar_R',
+                         'Ozone_ind',
+                         'Solar_R_ind',
+                         'Temp'],
+                label='Wind')]
+
+        results = CV(pipeline_steps).fit(data,
+                                         split_start='after_transforms',
+                                         dry_run=True)
+        results = json.loads(results)
+
+        node_names = [ep['Name'] for ep in results['nodes']]
+        cv_node = [ep for ep in results['nodes']
+                   if 'Models.CrossValidator' in ep['Name']][0]
+        cv_sub_node_names = [ep['Name'] for ep in cv_node['Inputs']['Nodes']]
+
+        self.assertTrue('Transforms.MissingValueHandler' in node_names)
+        self.assertTrue('Transforms.MissingValueHandler' not in cv_sub_node_names)
+        self.assertTrue('Transforms.ModelCombiner' in node_names)
 
 
 class TestCvBinary(unittest.TestCase):
@@ -562,3 +599,7 @@ class TestCvClusterer(unittest.TestCase):
             y=[0, 1, 2, 10, 11, 12, -10, -11, -12],
             z=[0, 1, 2, 10, 11, 12, -10, -11, -12]))
         check_cv([KMeansPlusPlus(n_clusters=3)], X)
+
+
+if __name__ == '__main__':
+    unittest.main()
