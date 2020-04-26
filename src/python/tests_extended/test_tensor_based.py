@@ -236,8 +236,6 @@ class TestAutoMLTransforms(unittest.TestCase):
         np.testing.assert_array_equal(f1_output, result[4])
         np.testing.assert_array_equal(f2_output, result[5])
 
-
-
     def test_tostring_other_types_wo_dft(self):
         training_data = pd.DataFrame(data=dict(
             f0=[True, False],
@@ -257,7 +255,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         result = sess.run(None, {"f0": inferencing_f0, "f1": inferencing_f1})
         
         f0_output = np.array([['True'], ['False']]).reshape(2, 1)
-        f1_output = np.array([['123.450000'], ['135453984983490.546875']]).reshape(2, 1)
+        f1_output = np.array([['123.450000'], ['135453984983490.546875']]).reshape(2, 1) #This value is changing due to precision and not being able to represent the input exactly.
         np.testing.assert_array_equal(f0_output, result[2])
         np.testing.assert_array_equal(f1_output, result[3])
 
@@ -268,7 +266,6 @@ class TestAutoMLTransforms(unittest.TestCase):
             grain=[1970, 1970, 1970, 1970, 1970],
             c=[10, 11, 12, 13, 14]
         )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.int32})
-
 
         xf = TimeSeriesImputer(time_series_column='ts',
                                 filter_columns=['c'],
@@ -301,7 +298,6 @@ class TestAutoMLTransforms(unittest.TestCase):
             c=[10, 11, 12, 13, 14]
         )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.int32})
 
-
         xf = TimeSeriesImputer(time_series_column='ts',
                                 filter_columns=['c'],
                                 grain_columns=['grain'],
@@ -333,7 +329,6 @@ class TestAutoMLTransforms(unittest.TestCase):
             c=[10, 11, 12, 13, 14]
         )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.double})
 
-
         xf = TimeSeriesImputer(time_series_column='ts',
                                 filter_columns=['c'],
                                 grain_columns=['grain'],
@@ -364,7 +359,6 @@ class TestAutoMLTransforms(unittest.TestCase):
             grain=[1970, 1971, 1970, 1971],
             c=[10, 11, 12, 13]
         )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.int32})
-
 
         xf = TimeSeriesImputer(time_series_column='ts',
                                 filter_columns=['c'],
@@ -425,7 +419,6 @@ class TestAutoMLTransforms(unittest.TestCase):
         np.testing.assert_array_equal(expected_grain, result[1])
         np.testing.assert_array_equal(expected_c, result[2])
         np.testing.assert_array_equal(expected_isrowimputed, result[3])
-
 
     def test_timeseriesimputer_onegrain_onegap_two_filtercolumn(self):
 
@@ -690,8 +683,6 @@ class TestAutoMLTransforms(unittest.TestCase):
         np.testing.assert_array_equal(colA_expected, result[0])
         np.testing.assert_array_equal(grainA_expected, result[1])
 
-
-
     def test_integration_rollwin_pivot(self):
 
         training_data = pd.DataFrame(data=dict(
@@ -724,8 +715,6 @@ class TestAutoMLTransforms(unittest.TestCase):
         np.testing.assert_array_equal(expected_grainA, result[1])
         np.testing.assert_array_equal(expected_output, result[3])
         
-
-
     def test_integration_laglead_pivot(self):
 
         training_data = pd.DataFrame(data=dict(
@@ -758,7 +747,6 @@ class TestAutoMLTransforms(unittest.TestCase):
         np.testing.assert_array_equal(expected_grainA, result[1])
         np.testing.assert_array_equal(expected_output_lag2, result[3])
         np.testing.assert_array_equal(expected_output_lag1, result[4])
-
 
     def test_pivot_one_matrix(self):
             
@@ -794,7 +782,6 @@ class TestAutoMLTransforms(unittest.TestCase):
         np.testing.assert_array_equal(result[3], expectedLag1)
         np.testing.assert_array_equal(result[4], expectedLead1)
         np.testing.assert_array_equal(result[5], expectedLag2)
-    
     
     def test_pivot_two_matrix(self):
             

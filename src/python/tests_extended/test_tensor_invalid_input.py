@@ -21,6 +21,7 @@ from nimbusml.preprocessing import (TensorFlowScorer, FromKey, ToKey,
                                     DateTimeSplitter, OnnxRunner)
 import onnxruntime as rt
 from data_frame_tool import DataFrameTool as DFT
+
 TEST_CASES_FOR_INVALID_INPUT = {
     'DateTimeSplitter_Bad_Input_Data',
     'DateTimeSplitter_Bad_Input_Type',
@@ -40,6 +41,7 @@ TEST_CASES_FOR_INVALID_INPUT = {
     'ShortDrop_Bad_Input_Shape',
     'ShortDrop_Drop_All'
 }
+
 INSTANCES_FOR_INVALID_INPUT = {
     'DateTimeSplitter_Bad_Input_Data': Pipeline([
         DateTimeSplitter(prefix='dt') << 'tokens1',
@@ -118,8 +120,8 @@ INSTANCES_FOR_INVALID_INPUT = {
     'ShortDrop_Drop_All': ShortDrop(columns={'colA1': 'colA'},
                                            grain_columns=['grainA'],
                                            min_rows=15)
-
 }
+
 TRAINING_DATASETS_FOR_INVALID_INPUT = {
     'DateTimeSplitter_Bad_Input_Data': pd.DataFrame(data=dict(
                                            tokens1=[1, 2, 3, 157161600]
@@ -190,6 +192,7 @@ TRAINING_DATASETS_FOR_INVALID_INPUT = {
                                      grainA=["one", "one", "one", "two"]
                                  ))
 }
+
 INFERENCE_DATASETS_FOR_INVALID_INPUT = {
     'DateTimeSplitter_Bad_Input_Data': {"tokens1": np.array([1, 2, 3, -3]).reshape(4,1)},
     'DateTimeSplitter_Bad_Input_Type': {"tokens1": np.array([1, 2, 3, "3"]).reshape(4,1)},
@@ -226,6 +229,7 @@ INFERENCE_DATASETS_FOR_INVALID_INPUT = {
     'ShortDrop_Drop_All': {"grainA": np.array(["one", "one", "one", "two"]).reshape(4,1),
                                   "colA": np.array([[1.0, 2.0, 3.0, 4.0],[1.0, 2.0, 3.0, 4.0]]).reshape(4,2)}
 }
+
 def get_file_size(file_path):
     file_size = 0
     try:
@@ -234,13 +238,11 @@ def get_file_size(file_path):
         pass
     return file_size
 
-
 def get_tmp_file(suffix=None):
     fd, file_name = tempfile.mkstemp(suffix=suffix)
     fl = os.fdopen(fd, 'w')
     fl.close()
     return file_name
-
 
 class CaptureOutputContext():
     """
@@ -315,11 +317,9 @@ def validate_bad_input(self, estimator, test_case):
     return {'exported': exported, 'throw_expected_error': throw_expected_error}
 
 class TestOnnxExport(unittest.TestCase):
-
     # This method is a static method of the class
     # because there were pytest fixture related
     # issues when the method was in the global scope.
-
     @staticmethod
     def generate_test_method_for_bad(test_case):
         def method(self):
@@ -361,7 +361,6 @@ class TestOnnxExport(unittest.TestCase):
             colA1 = np.array([1, 4, "6", float("NaN"), 2, 5, float("NaN"), float("NaN"), 3, float("NaN"), float("NaN"), 7]).reshape(1,3,4)
             pred = sess.run(None, {"grainA":grainA,"colA":colA, "colA1":colA1 })
             
-
     def test_pivot_bad_shape(self):
             
         df = pd.DataFrame(data=dict(

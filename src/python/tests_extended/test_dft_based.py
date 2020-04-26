@@ -123,6 +123,7 @@ INSTANCES = {
         ForecastingPivot(columns_to_pivot=['colA1'])
     ]),
 }
+
 DATASETS = {
     'DateTimeSplitter_Simple': pd.DataFrame(data=dict(
                                 tokens1=[1, 2, 3, 157161600]
@@ -206,13 +207,11 @@ def get_file_size(file_path):
         pass
     return file_size
 
-
 def get_tmp_file(suffix=None):
     fd, file_name = tempfile.mkstemp(suffix=suffix)
     fl = os.fdopen(fd, 'w')
     fl.close()
     return file_name
-
 
 class CaptureOutputContext():
     """
@@ -329,8 +328,6 @@ class TestOnnxExport(unittest.TestCase):
             assert result['export_valid']
 
         return method
-
-
 
 for test_case in TEST_CASES:
     test_name = 'test_%s' % test_case.replace('(', '_').replace(')', '').lower()
