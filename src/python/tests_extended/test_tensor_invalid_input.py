@@ -37,7 +37,8 @@ TEST_CASES_FOR_INVALID_INPUT = {
     'LagLead_Bad_Input_Type',
     'LagLead_Bad_Input_Shape',
     'ShortDrop_Bad_Input_Type',
-    'ShortDrop_Bad_Input_Shape'
+    'ShortDrop_Bad_Input_Shape',
+    'ShortDrop_Drop_All'
 }
 INSTANCES_FOR_INVALID_INPUT = {
     'DateTimeSplitter_Bad_Input_Data': Pipeline([
@@ -113,7 +114,10 @@ INSTANCES_FOR_INVALID_INPUT = {
                                            min_rows=2),
     'ShortDrop_Bad_Input_Shape': ShortDrop(columns={'colA1': 'colA'},
                                            grain_columns=['grainA'],
-                                           min_rows=2)
+                                           min_rows=2),
+    'ShortDrop_Drop_All': ShortDrop(columns={'colA1': 'colA'},
+                                           grain_columns=['grainA'],
+                                           min_rows=15)
 
 }
 TRAINING_DATASETS_FOR_INVALID_INPUT = {
@@ -180,6 +184,10 @@ TRAINING_DATASETS_FOR_INVALID_INPUT = {
     'ShortDrop_Bad_Input_Shape': pd.DataFrame(data=dict(
                                      colA=[1.0, 2.0, 3.0, 4.0],
                                      grainA=["one", "one", "one", "two"]
+                                 )),
+    'ShortDrop_Drop_All': pd.DataFrame(data=dict(
+                                     colA=[1.0, 2.0, 3.0, 4.0],
+                                     grainA=["one", "one", "one", "two"]
                                  ))
 }
 INFERENCE_DATASETS_FOR_INVALID_INPUT = {
@@ -214,6 +222,8 @@ INFERENCE_DATASETS_FOR_INVALID_INPUT = {
     'ShortDrop_Bad_Input_Type': {"grainA": np.array(["one", "one", "one", "two"]).reshape(4,1),
                                  "colA": np.array([1, 2, 3, "4"]).reshape(4,1)},
     'ShortDrop_Bad_Input_Shape': {"grainA": np.array(["one", "one", "one", "two"]).reshape(4,1),
+                                  "colA": np.array([[1.0, 2.0, 3.0, 4.0],[1.0, 2.0, 3.0, 4.0]]).reshape(4,2)},
+    'ShortDrop_Drop_All': {"grainA": np.array(["one", "one", "one", "two"]).reshape(4,1),
                                   "colA": np.array([[1.0, 2.0, 3.0, 4.0],[1.0, 2.0, 3.0, 4.0]]).reshape(4,2)}
 }
 def get_file_size(file_path):

@@ -33,6 +33,9 @@ TEST_CASES = {
     'ToString_Numbers',
     'ToString_Other_Types',
     'TimeSeriesImputer_1grain_2gap',
+    'TimeSeriesImputer_1grain_2gap_backfill',
+    'TimeSeriesImputer_1grain_2gap_medianfill',
+    'TimeSeriesImputer_1grain_2gap',
     'TimeSeriesImputer_1grain_1gap_2filtercolumn',
     'TimeSeriesImputer_2grain_nogap',
     'ShortGrainDropper',
@@ -73,6 +76,16 @@ INSTANCES = {
                                                        filter_columns=['c'],
                                                        grain_columns=['grain'],
                                                        impute_mode='ForwardFill',
+                                                       filter_mode='Include'),      
+    'TimeSeriesImputer_1grain_2gap_backfill': TimeSeriesImputer(time_series_column='ts',
+                                                       filter_columns=['c'],
+                                                       grain_columns=['grain'],
+                                                       impute_mode='BackFill',
+                                                       filter_mode='Include'),
+    'TimeSeriesImputer_1grain_2gap_medianfill': TimeSeriesImputer(time_series_column='ts',
+                                                       filter_columns=['c'],
+                                                       grain_columns=['grain'],
+                                                       impute_mode='Median',
                                                        filter_mode='Include'),
     'TimeSeriesImputer_1grain_1gap_2filtercolumn': TimeSeriesImputer(time_series_column='ts',
                                                         grain_columns=['grain'],
@@ -87,19 +100,26 @@ INSTANCES = {
     'ShortGrainDropper': ShortDrop(columns={'colA1': 'colA'},
                                    grain_columns=['grainA'],
                                    min_rows=2),
+    # For RollingWindow with horizon as 2, max_window_size as 2 and we are calculating Mean, assume time frequency is 1 day
+    # output for each row would be [[mean of (2DaysBeforeYesterday and DayBeforeYesterday), mean of (DayBeforeYesterday and Yesterday)]]
+    # forecasting pivot will spread this 2d vector out and drop rows that have NaNs in it
     'RollingWin_Pivot_Integration': Pipeline([
+        RollingWindow(columns={'colA1': 'colA'},
+                           grain_column=['grainA'], 
+                           window_calculation='Mean',
+                           max_window_size=2,
+                           horizon=2),
+        ForecastingPivot(columns_to_pivot=['colA1'])
+    ]),
+    # For LagLeadOperator with horizon as 2 and offsets as [-2, -1], assume time frequency is 1 day
+    # output for each row would be [[2DaysBeforeYesterday, DayBeforeYesterday],
+    #                               [DayBeforeYesterday, Yesterday]]
+    # forecasting pivot will spread this 2d vector out and drop rows that have NaNs in it
+    'Laglead_Pivot_Integration': Pipeline([
         LagLeadOperator(columns={'colA1': 'colA'},
                         grain_columns=['grainA'], 
                         offsets=[-2, -1],
                         horizon=2),
-        ForecastingPivot(columns_to_pivot=['colA1'])
-    ]),
-    'Laglead_Pivot_Integration': Pipeline([
-        RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
-                           window_calculation='Mean',
-                           max_window_size=1,
-                           horizon=1),
         ForecastingPivot(columns_to_pivot=['colA1'])
     ]),
 }
@@ -143,6 +163,16 @@ DATASETS = {
                                         grain=[1970, 1970, 1970, 1970, 1970],
                                         c=[10, 11, 12, 13, 14]
                                     )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.int32}),
+    'TimeSeriesImputer_1grain_2gap_backfill': pd.DataFrame(data=dict(
+                                                  ts=[1, 2, 3, 5, 7],
+                                                  grain=[1970, 1970, 1970, 1970, 1970],
+                                                  c=[10, 11, 12, 13, 14]
+                                              )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.int32}),
+    'TimeSeriesImputer_1grain_2gap_medianfill': pd.DataFrame(data=dict(
+                                                    ts=[1, 2, 3, 5, 7],
+                                                    grain=[1970, 1970, 1970, 1970, 1970],
+                                                    c=[10, 11, 12, 13, 14]
+                                                )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.double}),
     'TimeSeriesImputer_1grain_1gap_2filtercolumn': pd.DataFrame(data=dict(
                                         ts=[1, 2, 3, 5],
                                         grain=[1970, 1970, 1970, 1970],
