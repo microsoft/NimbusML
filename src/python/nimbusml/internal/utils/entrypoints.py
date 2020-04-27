@@ -270,14 +270,6 @@ class Graph(EntryPoint):
             '"nodes"',
             '"Nodes"')
 
-    def _parse_bridge_runtime_exception(self, exception_message):
-        r = exception_message.split("StackTrace: ", 1)
-        msg = r[0]
-        callstack = None
-        if len(r) > 1:
-            callstack = r[1]
-        return msg, callstack
-
     def _try_call_bridge(
             self,
             px_call,
@@ -289,7 +281,6 @@ class Graph(EntryPoint):
         try:
             ret = px_call(call_parameters)
         except RuntimeError as e:
-            msg, callstack = self._parse_bridge_runtime_exception(str(e))
             if verbose:
                 vars = '?'
                 if "data" in call_parameters:
@@ -307,14 +298,16 @@ class Graph(EntryPoint):
                         vars = "type={0} keys={1}".format(
                             type(od), ','.join(od))
                 if isinstance(verbose, six.integer_types) and verbose >= 2:
-                    raise BridgeRuntimeError(msg, callstack=callstack, graph=str(self), vars=vars,
-                                            concatenated=concatenated, 
-                                            model=output_modelfilename)
-                else:
-                    raise BridgeRuntimeError(msg=msg, callstack=callstack,
+                    raise BridgeRuntimeError(
+                        "{0}.\n--GRAPH--\n{1}\n--DATA--\n{2}"
+                        "\n--\nconcatenated={3}".format(
+                            str(e), str(self), vars, concatenated),
                         model=output_modelfilename)
+                else:
+                    raise BridgeRuntimeError(
+                        str(e), model=output_modelfilename)
             else:
-                raise BridgeRuntimeError(msg=msg, callstack=callstack)
+                raise e
         return ret
 
     def _get_separator(self):
