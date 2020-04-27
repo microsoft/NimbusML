@@ -25,6 +25,8 @@ from data_frame_tool import DataFrameTool as DFT
 TEST_CASES = {
     'DateTimeSplitter_Simple',
     'DateTimeSplitter_Complex',
+    'DateTimeSplitter_Canada_1day_before_christmas',
+    'DateTimeSplitter_Czech_non_english_holiday',
     'ToKey_SimpleFloat',
     'ToKey_SimpleDouble',
     'ToKey_SimpleString',
@@ -62,6 +64,8 @@ INSTANCES = {
                                     'dtAmPmLabel', 'dtDayOfWeekLabel', 'dtIsPaidTimeOff','dtHolidayName'
         ])
     ]),
+    'DateTimeSplitter_Canada_1day_before_christmas' : DateTimeSplitter(prefix='dt', country='Canada') << 'tokens1',
+    'DateTimeSplitter_Czech_non_english_holiday' : DateTimeSplitter(prefix='dt', country='Czech') << 'tokens1',
     'ToKey_SimpleFloat': ToKeyImputer(),
     'ToKey_SimpleDouble': ToKeyImputer(),
     'ToKey_SimpleString': ToKeyImputer(),
@@ -130,6 +134,12 @@ DATASETS = {
                                )),
     'DateTimeSplitter_Complex': pd.DataFrame(data=dict(
                                 tokens1=[217081624, 1751241600, 217081625, 32445842582]
+                               )),
+    'DateTimeSplitter_Canada_1day_before_christmas': pd.DataFrame(data=dict(
+                                tokens1=[157161599]
+                               )),
+    'DateTimeSplitter_Czech_non_english_holiday': pd.DataFrame(data=dict(
+                                tokens1=[3911760000, 3834432000, 3985200000]
                                )),
     'ToKey_SimpleFloat': pd.DataFrame(data=dict(
                                     target=[1.0, 1.0, 1.0, 2.0]
