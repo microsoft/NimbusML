@@ -399,7 +399,5 @@ for test_case_invalid_input in TEST_CASES_FOR_INVALID_INPUT:
     method = TestOnnxExport.generate_test_method_for_bad(test_case_invalid_input)
     setattr(TestOnnxExport, test_name, method)
     
-TestOnnxExport.test_pivot_bad_input_type
-TestOnnxExport.test_pivot_bad_shape
 if __name__ == '__main__':
     unittest.main()

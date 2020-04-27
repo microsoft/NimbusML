@@ -255,7 +255,8 @@ class TestAutoMLTransforms(unittest.TestCase):
         result = sess.run(None, {"f0": inferencing_f0, "f1": inferencing_f1})
         
         f0_output = np.array([['True'], ['False']]).reshape(2, 1)
-        f1_output = np.array([['123.450000'], ['135453984983490.546875']]).reshape(2, 1) #This value is changing due to precision and not being able to represent the input exactly.
+        #This value, 135453984983490.5473, is changing due to precision and not being able to represent the input exactly.
+        f1_output = np.array([['123.450000'], ['135453984983490.546875']]).reshape(2, 1)
         np.testing.assert_array_equal(f0_output, result[2])
         np.testing.assert_array_equal(f1_output, result[3])
 
@@ -628,7 +629,10 @@ class TestAutoMLTransforms(unittest.TestCase):
         # Run your inference session with your model and your data
         result = sess.run(None, {"grainA": inferencing_grainA, "colA": inferencing_colA})        
         
-        expected = np.array([[[1.0, 2.0], [2.0, 3.0]], [[2.0, 3.0], [3.0, 4.0]], [[3.0, 4.0], [4.0, float("NaN")]], [[4.0, float("NaN")], [float("NaN"), float("NaN")]]]).astype(np.single).reshape(4, 2, 2)
+        expected = np.array([[[1.0, 2.0], [2.0, 3.0]], 
+                             [[2.0, 3.0], [3.0, 4.0]], 
+                             [[3.0, 4.0], [4.0, float("NaN")]], 
+                             [[4.0, float("NaN")], [float("NaN"), float("NaN")]]]).astype(np.single).reshape(4, 2, 2)
         
         np.testing.assert_array_equal(expected, result[2])
     
@@ -812,8 +816,10 @@ class TestAutoMLTransforms(unittest.TestCase):
         inferencing_colB = np.array([1,2]).astype(np.double).reshape(2,1)
         inferencing_grainA = np.array(["one", "one"]).reshape(2,1)
         inferencing_grainB = np.array(["one", "one"]).reshape(2,1)
-        inferencing_colA1 = np.array([1, 6, 3, 9, 2, 4, 5, 8, float("NaN"), float("NaN"), 7, 10, 1, 6, 9, 3, 2, 4, 8, 5, float("NaN"), float("NaN"), 10, 7]).astype(np.double).reshape(2,3,4)
-        inferencing_colB1 = np.array([1, float("NaN"), 5, 6, 2, float("NaN"), 3, 4, 1, float("NaN"), 6, 5, 2, float("NaN"), 4, 3]).astype(np.double).reshape(2,2,4)
+        inferencing_colA1 = np.array([1, 6, 3, 9, 2, 4, 5, 8, float("NaN"), float("NaN"), 7, 10, 
+                                      1, 6, 9, 3, 2, 4, 8, 5, float("NaN"), float("NaN"), 10, 7]).astype(np.double).reshape(2,3,4)
+        inferencing_colB1 = np.array([1, float("NaN"), 5, 6, 2, float("NaN"), 3, 4, 
+                                      1, float("NaN"), 6, 5, 2, float("NaN"), 4, 3]).astype(np.double).reshape(2,2,4)
         
         result = sess.run(None, {"colA": inferencing_colA, "colB": inferencing_colB, "grainA": inferencing_grainA, 
                                  "grainB": inferencing_grainB, "colA1": inferencing_colA1, "colB1": inferencing_colB1})
