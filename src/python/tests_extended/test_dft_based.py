@@ -43,6 +43,8 @@ TEST_CASES = {
     'ShortGrainDropper',
     'RollingWin_Pivot_Integration',
     'Laglead_Pivot_Integration',
+    'Big_Test1',
+    'Big_Test2'
 }
 
 INSTANCES = {
@@ -126,6 +128,34 @@ INSTANCES = {
                         horizon=2),
         ForecastingPivot(columns_to_pivot=['colA1'])
     ]),
+    'Big_Test1': Pipeline([
+        TimeSeriesImputer(time_series_column='ts',
+                                filter_columns=['c', 'grain'],
+                                grain_columns=['grain'],
+                                impute_mode='ForwardFill',
+                                filter_mode='Include'),
+        DateTimeSplitter(prefix='dt') << 'ts',
+        LagLeadOperator(columns={'c1': 'c'},
+                           grain_columns=['dtMonthLabel'], 
+                           offsets=[-2, -1],
+                           horizon=1),
+        ForecastingPivot(columns_to_pivot=['c1']),
+        ColumnSelector(drop_columns=['dtHolidayName'])
+    ]),
+    'Big_Test2': Pipeline([
+        TimeSeriesImputer(time_series_column='ts',
+                                filter_columns=['c', 'grain'],
+                                grain_columns=['grain'],
+                                impute_mode='ForwardFill',
+                                filter_mode='Include'),
+        DateTimeSplitter(prefix='dt', country = 'Canada') << 'ts',
+        RollingWindow(columns={'c1': 'c'},
+                           grain_column=['grain'], 
+                           window_calculation='Mean',
+                           max_window_size=2,
+                           horizon=2),
+        ForecastingPivot(columns_to_pivot=['c1'])
+    ])
 }
 
 DATASETS = {
@@ -206,7 +236,17 @@ DATASETS = {
     'Laglead_Pivot_Integration': pd.DataFrame(data=dict(
                                     colA=[1.0, 2.0, 3.0, 4.0],
                                     grainA=["one", "one", "one", "one"]
-                                ))
+                                )),
+    'Big_Test1': pd.DataFrame(data=dict(
+            ts=[217081624, 217081625, 217081627, 217081629],
+            grain=[1970, 1970, 1970, 1970],
+            c=[10, 11, 12, 13]
+        )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.double}),
+    'Big_Test2': pd.DataFrame(data=dict(
+            ts=[0, 86400, 172800],
+            grain=[1970, 1970, 1970],
+            c=[10, 11, 12]
+        )).astype({'ts': np.int64, 'grain': np.int32, 'c': np.double})
 }
 
 def get_file_size(file_path):
