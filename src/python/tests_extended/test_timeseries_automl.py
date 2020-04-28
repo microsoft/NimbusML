@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 from nimbusml import Pipeline
 from nimbusml.preprocessing import ToString, ToKeyImputer, DateTimeSplitter
+from nimbusml.preprocessing.schema import ColumnSelector
 from nimbusml.timeseries import TimeSeriesImputer, LagLeadOperator, RollingWindow, ForecastingPivot, ShortDrop
 from data_frame_tool import DataFrameTool as DFT
 
