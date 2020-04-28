@@ -776,6 +776,9 @@
     <Compile Include="nimbusml\timeseries\__init__.py" />
     <Compile Include="tests_extended\data_frame_tool.py" />
     <Compile Include="tests_extended\test_automl_scenario.py" />
+    <Compile Include="tests_extended\test_dft_based.py" />
+    <Compile Include="tests_extended\test_tensor_based.py" />
+    <Compile Include="tests_extended\test_tensor_invalid_input.py" />
     <Compile Include="tests_extended\test_timeseries_automl.py" />
     <Compile Include="tests_extended\test_export_to_onnx.py" />
     <Compile Include="tests\test_estimator_checks.py" />
