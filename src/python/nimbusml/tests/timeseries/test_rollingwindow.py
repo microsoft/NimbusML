@@ -32,10 +32,10 @@ class TestRollingWindow(unittest.TestCase):
                            horizon=2)
         result = rw.fit_transform(df)
 
-        self.assertTrue(math.isnan(result.loc[0, 'ts_r']))
-        self.assertEqual(result.loc[1, 'ts_r'], 1)
-        self.assertEqual(result.loc[2, 'ts_r'], 3)
-        self.assertEqual(result.loc[3, 'ts_r'], 5)
+        self.assertTrue(math.isnan(result.loc[0, 'ts_r.1']))
+        self.assertEqual(result.loc[1, 'ts_r.1'], 1)
+        self.assertEqual(result.loc[2, 'ts_r.1'], 3)
+        self.assertEqual(result.loc[3, 'ts_r.1'], 5)
 
     def test_simple_rolling_window2(self):
 
