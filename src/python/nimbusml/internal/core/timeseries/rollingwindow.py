@@ -20,7 +20,7 @@ class RollingWindow(BasePipelineItem, DefaultSignature):
     **Description**
         Performs a calculation over a rolling timeseries window
 
-    :param grain_column: List of grain columns.
+    :param grain_columns: List of grain columns.
 
     :param horizon: Maximum horizon value.
 
@@ -37,7 +37,7 @@ class RollingWindow(BasePipelineItem, DefaultSignature):
     @trace
     def __init__(
             self,
-            grain_column,
+            grain_columns,
             horizon=0,
             max_window_size=0,
             min_window_size=1,
@@ -46,7 +46,7 @@ class RollingWindow(BasePipelineItem, DefaultSignature):
         BasePipelineItem.__init__(
             self, type='transform', **params)
 
-        self.grain_column = grain_column
+        self.grain_columns = grain_columns
         self.horizon = horizon
         self.max_window_size = max_window_size
         self.min_window_size = min_window_size
@@ -98,7 +98,7 @@ class RollingWindow(BasePipelineItem, DefaultSignature):
                 o in zip(
                     input_columns,
                     output_columns)] if input_columns else None,
-            grain_column=self.grain_column,
+            grain_columns=self.grain_columns,
             horizon=self.horizon,
             max_window_size=self.max_window_size,
             min_window_size=self.min_window_size,

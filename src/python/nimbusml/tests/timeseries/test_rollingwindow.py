@@ -26,7 +26,7 @@ class TestRollingWindow(unittest.TestCase):
         ))
 
         rw = RollingWindow(columns={'ts_r': 'ts'},
-                           grain_column=['grain'], 
+                           grain_columns=['grain'], 
                            window_calculation='Mean',
                            max_window_size=1,
                            horizon=2)
@@ -45,7 +45,7 @@ class TestRollingWindow(unittest.TestCase):
         ))
 
         rw = RollingWindow(columns={'ts_r': 'ts'},
-                           grain_column=['grain'], 
+                           grain_columns=['grain'], 
                            window_calculation='Mean',
                            max_window_size=2,
                            horizon=2)

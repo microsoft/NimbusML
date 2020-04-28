@@ -12,7 +12,7 @@ data = FileDataStream.read_csv(path, sep=',', numeric_dtype=np.double)
 
 # transform usage
 xf = RollingWindow(columns={'age_1': 'age'},
-                   grain_column=['education'], 
+                   grain_columns=['education'], 
                    window_calculation='Mean',
                    max_window_size=1,
                    horizon=1)

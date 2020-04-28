@@ -24,7 +24,7 @@ class RollingWindow(core, BaseTransform, TransformerMixin):
 
     :param columns: see `Columns </nimbusml/concepts/columns>`_.
 
-    :param grain_column: List of grain columns.
+    :param grain_columns: List of grain columns.
 
     :param horizon: Maximum horizon value.
 
@@ -41,7 +41,7 @@ class RollingWindow(core, BaseTransform, TransformerMixin):
     @trace
     def __init__(
             self,
-            grain_column,
+            grain_columns,
             horizon=0,
             max_window_size=0,
             min_window_size=1,
@@ -54,7 +54,7 @@ class RollingWindow(core, BaseTransform, TransformerMixin):
         BaseTransform.__init__(self, **params)
         core.__init__(
             self,
-            grain_column=grain_column,
+            grain_columns=grain_columns,
             horizon=horizon,
             max_window_size=max_window_size,
             min_window_size=min_window_size,

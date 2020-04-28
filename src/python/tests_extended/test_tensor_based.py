@@ -464,7 +464,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         ))
 
         xf = RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Mean',
                            max_window_size=2,
                            horizon=2)
@@ -489,7 +489,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         ))
 
         xf = RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Max',
                            max_window_size=1,
                            horizon=1)
@@ -514,7 +514,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         ))
 
         xf = RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Min',
                            max_window_size=1,
                            horizon=1)
@@ -539,7 +539,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         ))
 
         xf = RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Mean',
                            max_window_size=1,
                            horizon=1)
@@ -564,7 +564,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         ))
 
         xf = RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Mean',
                            max_window_size=1,
                            horizon=1)
@@ -695,7 +695,7 @@ class TestAutoMLTransforms(unittest.TestCase):
         ))
 
         xf0 = RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Mean',
                            max_window_size=2,
                            horizon=2)

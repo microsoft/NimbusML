@@ -10,7 +10,7 @@ from ..utils.utils import try_set, unlist
 
 
 def transforms_rollingwindow(
-        grain_column,
+        grain_columns,
         column,
         data,
         output_data=None,
@@ -24,7 +24,7 @@ def transforms_rollingwindow(
     **Description**
         Performs a calculation over a rolling timeseries window
 
-    :param grain_column: List of grain columns (inputs).
+    :param grain_columns: List of grain columns (inputs).
     :param column: New column definition (optional form: name:src)
         (inputs).
     :param data: Input dataset (inputs).
@@ -41,9 +41,9 @@ def transforms_rollingwindow(
     inputs = {}
     outputs = {}
 
-    if grain_column is not None:
-        inputs['GrainColumn'] = try_set(
-            obj=grain_column,
+    if grain_columns is not None:
+        inputs['GrainColumns'] = try_set(
+            obj=grain_columns,
             none_acceptable=False,
             is_of_type=list,
             is_column=True)

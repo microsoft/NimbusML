@@ -23023,7 +23023,7 @@
       "ShortName": "RollingWindow",
       "Inputs": [
         {
-          "Name": "GrainColumn",
+          "Name": "GrainColumns",
           "Type": {
             "Kind": "Array",
             "ItemType": "String"

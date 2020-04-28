@@ -111,7 +111,7 @@ INSTANCES = {
     # forecasting pivot will spread this 2d vector out and drop rows that have NaNs in it
     'RollingWin_Pivot_Integration': Pipeline([
         RollingWindow(columns={'colA1': 'colA'},
-                           grain_column=['grainA'], 
+                           grain_columns=['grainA'], 
                            window_calculation='Mean',
                            max_window_size=2,
                            horizon=2),
@@ -150,7 +150,7 @@ INSTANCES = {
                                 filter_mode='Include'),
         DateTimeSplitter(prefix='dt', country = 'Canada') << 'ts',
         RollingWindow(columns={'c1': 'c'},
-                           grain_column=['grain'], 
+                           grain_columns=['grain'], 
                            window_calculation='Mean',
                            max_window_size=2,
                            horizon=2),
