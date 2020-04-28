@@ -201,6 +201,12 @@ OMITTED_CHECKS_TUPLE = (
     'check_estimators_pickle')
 
 OMITTED_CHECKS_ALWAYS = 'check_estimators_nan_inf'
+OMITTED_CHECKS_CLASS_ALWAYS = [ 
+    'RobustScaler',
+    'LagLeadOperator',
+    'ForecastingPivot',
+    'RollingWindow',
+    'ShortDrop']
 
 NOBINARY_CHECKS = [
     'check_estimator_sparse_data',
@@ -344,6 +350,8 @@ class TestEstimatorChecks(unittest.TestCase):
                      hasattr(estimator, 'decision_function')):
                     continue
 
+                if class_name in OMITTED_CHECKS_CLASS_ALWAYS:
+                    continue
                 if check.__name__ in OMITTED_CHECKS_ALWAYS:
                     continue
                 if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
