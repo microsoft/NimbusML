@@ -250,6 +250,10 @@ then
         mv  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     fi
   
+    # Clean out space for building wheel
+	rm -rf "${BuildOutputDir}"
+    rm -rf "${BoostRoot}"
+    
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 
