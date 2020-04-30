@@ -396,9 +396,9 @@ class TestOnnxExport(unittest.TestCase):
 for test_case_invalid_input in TEST_CASES_FOR_INVALID_INPUT:
     test_name = 'test_%s' % test_case_invalid_input.replace('(', '_').replace(')', '').lower()
     
-    # The following test for negative timepoints. On Linux and Windows it throws as expected.
-    # On Mac negative timepoints are a valid input.
-    if test_name in 'test_datetimesplitter_bad_input_data' and platform.system() == "Darwin":
+    # The following test for negative timepoints. On Windows it throws as expected.
+    # On Mac and Linux negative timepoints are a valid input.
+    if test_name in 'test_datetimesplitter_bad_input_data' and (platform.system() == "Darwin" or platform.system() == "Linux"):
         continue
    
     method = TestOnnxExport.generate_test_method_for_bad(test_case_invalid_input)

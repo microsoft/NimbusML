@@ -76,7 +76,7 @@ class TestAutoMLTransforms(unittest.TestCase):
             
     def test_datetimesplitter_complex(self):
         training_data = pd.DataFrame(data=dict(
-            tokens1=[217081624, 1751241600, 217081625, 32445842582]
+            tokens1=[217081624, 1751241600, 217081625]
         ))
 
         cols_to_drop = [
@@ -91,17 +91,17 @@ class TestAutoMLTransforms(unittest.TestCase):
         
         sess = set_up_onnx_model(xf, training_data)
 
-        inferencing_data = np.array([217081624, 1751241600, 217081625, 32445842582]).astype(np.int64).reshape(4,1)
+        inferencing_data = np.array([217081624, 1751241600, 217081625]).astype(np.int64).reshape(4,1)
         result = sess.run(None, {"tokens1": inferencing_data})
         
-        expected_years = np.array([1976, 2025, 1976, 2998]).reshape(4, 1)
-        expected_month = np.array([11, 6, 11, 3]).reshape(4, 1)
-        expected_day = np.array([17, 30, 17, 2]).reshape(4, 1)
-        expected_hour = np.array([12, 0, 12, 14]).reshape(4, 1)
-        expected_minute = np.array([27, 0, 27, 3]).reshape(4, 1)
-        expected_second = np.array([4, 0, 5, 2]).reshape(4, 1)
-        expected_ampm = np.array([1, 0, 1, 1]).reshape(4, 1)
-        expected_holidayname = np.array(["", "", "", ""]).reshape(4, 1)
+        expected_years = np.array([1976, 2025, 1976]).reshape(4, 1)
+        expected_month = np.array([11, 6, 11]).reshape(4, 1)
+        expected_day = np.array([17, 30, 17]).reshape(4, 1)
+        expected_hour = np.array([12, 0, 12]).reshape(4, 1)
+        expected_minute = np.array([27, 0, 27]).reshape(4, 1)
+        expected_second = np.array([4, 0, 5]).reshape(4, 1)
+        expected_ampm = np.array([1, 0, 1]).reshape(4, 1)
+        expected_holidayname = np.array(["", "", ""]).reshape(4, 1)
         
         np.testing.assert_array_equal(result[1],expected_years)
         np.testing.assert_array_equal(result[2],expected_month)
