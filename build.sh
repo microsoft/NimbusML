@@ -253,6 +253,7 @@ then
     # Clean out space for building wheel
 	rm -rf "${BuildOutputDir}"
     rm -rf "${BoostRoot}"
+	rm -rf "${__currentScriptDir}/cli"
     
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
