@@ -154,19 +154,20 @@ then
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
-# Download & unzip Boost
-if [ ! -e "${BoostRoot}/.done" ]
-then
-    mkdir -p "${BoostRoot}"
-    echo "Downloading and extracting Boost archive ... "
-    curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
-    touch "${BoostRoot}/.done"
-fi
 
 if [ ${__buildNativeBridge} = true ]
 then 
     echo "Building Native Bridge ... "
+    # Download & unzip Boost
+    if [ ! -e "${BoostRoot}/.done" ]
+    then
+        mkdir -p "${BoostRoot}"
+        echo "Downloading and extracting Boost archive ... "
+        curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
+        touch "${BoostRoot}/.done"
+    fi
     bash "${__currentScriptDir}/src/NativeBridge/build.sh" --configuration $__configuration --pythonver "${PythonVersion}" --pythonpath "${PythonRoot}" --boostpath "${BoostRoot}" 
+    rm -rf "${BoostRoot}"
 fi
 
 if [ ${__buildDotNetBridge} = true ]
@@ -251,9 +252,8 @@ then
     fi
   
     # Clean out space for building wheel
-	rm -rf "${BuildOutputDir}"
-    rm -rf "${BoostRoot}"
-	rm -rf "${__currentScriptDir}/cli"
+    rm -rf "${BuildOutputDir}"
+    rm -rf "${__currentScriptDir}/cli"
     
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
@@ -282,6 +282,7 @@ then
     echo "#################################"
 
     # Make more space, remove not needed folders
+    echo "Deleting ${build} ${dist} ${libs} ... "
     rm -rf "${build}"
     rm -rf "${dist}"
     rm -rf "${libs}"
