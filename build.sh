@@ -163,7 +163,9 @@ then
         touch "${BoostRoot}/.done"
     fi
     bash "${__currentScriptDir}/src/NativeBridge/build.sh" --configuration $__configuration --pythonver "${PythonVersion}" --pythonpath "${PythonRoot}" --boostpath "${BoostRoot}" 
+    echo "Deleting ${BoostRoot} ${__currentScriptDir}/src/NativeBridge/x64"
     rm -rf "${BoostRoot}"
+	rm -rf "${__currentScriptDir}/src/NativeBridge/x64"
 fi
 
 if [ ${__buildDotNetBridge} = true ]
