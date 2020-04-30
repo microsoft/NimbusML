@@ -7,6 +7,14 @@ ProductVersion=$(<version.txt)
 __currentScriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 BuildOutputDir=${__currentScriptDir}/x64/
 DependenciesDir=${__currentScriptDir}/dependencies
+PythonRoot=${DependenciesDir}/Python${PythonVersion}
+BoostRoot=${DependenciesDir}/Boost${PythonVersion}
+# Platform name for python wheel based on OS
+PlatName=manylinux1_x86_64
+if [ "$(uname -s)" = "Darwin" ]
+then 
+	PlatName=macosx_10_11_x86_64
+fi
 mkdir -p "${DependenciesDir}"
 
 usage()
@@ -129,32 +137,6 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-PythonRoot=${DependenciesDir}/Python${PythonVersion}
-BoostRoot=${DependenciesDir}/Boost${PythonVersion}
-# Platform name for python wheel based on OS
-PlatName=manylinux1_x86_64
-if [ "$(uname -s)" = "Darwin" ]
-then 
-    PlatName=macosx_10_11_x86_64
-fi
-
-echo ""
-echo "#################################"
-echo "Downloading Dependencies "
-echo "#################################"
-# Download & unzip Python
-if [ ! -e "${PythonRoot}/.done" ]
-then
-    mkdir -p "${PythonRoot}"
-    echo "Downloading and extracting Python archive ... "
-    curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-    # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-    mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-    touch "${PythonRoot}/.done"
-fi
-PythonExe="${PythonRoot}/bin/python"
-echo "Python executable: ${PythonExe}"
-
 if [ ${__buildNativeBridge} = true ]
 then 
     echo "Building Native Bridge ... "
@@ -252,9 +234,24 @@ then
     fi
   
     # Clean out space for building wheel
+    echo "Deleting ${BuildOutputDir} ${__currentScriptDir}/cli"
     rm -rf "${BuildOutputDir}"
     rm -rf "${__currentScriptDir}/cli"
-    
+
+    echo "Downloading Python Dependencies "
+    # Download & unzip Python
+    if [ ! -e "${PythonRoot}/.done" ]
+    then
+        mkdir -p "${PythonRoot}"
+        echo "Downloading and extracting Python archive ... "
+        curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
+        # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
+        mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
+        touch "${PythonRoot}/.done"
+    fi
+    PythonExe="${PythonRoot}/bin/python"
+    echo "Python executable: ${PythonExe}"
+
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 
@@ -272,6 +269,10 @@ then
     mkdir -p "${__currentScriptDir}/target"
     mv "${__currentScriptDir}/src/python/dist/${WheelFile}" "${__currentScriptDir}/target/"
     echo Python package successfully created: ${__currentScriptDir}/target/${WheelFile}
+    echo "Deleting ${build} ${dist} ${libs} ... "
+    rm -rf "${build}"
+    rm -rf "${dist}"
+    rm -rf "${libs}"
 fi
 
 if [ ${__installPythonPackages} = true ]
@@ -280,12 +281,6 @@ then
     echo "#################################"
     echo "Installing Python packages ... "
     echo "#################################"
-
-    # Make more space, remove not needed folders
-    echo "Deleting ${build} ${dist} ${libs} ... "
-    rm -rf "${build}"
-    rm -rf "${dist}"
-    rm -rf "${libs}"
 
     Wheel=${__currentScriptDir}/target/nimbusml-${ProductVersion}-${PythonTag}-none-${PlatName}.whl
     if [ ! -f ${Wheel} ]
