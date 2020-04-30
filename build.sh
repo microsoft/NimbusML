@@ -137,6 +137,20 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
+echo "Downloading Python Dependencies "
+# Download & unzip Python
+if [ ! -e "${PythonRoot}/.done" ]
+then
+	mkdir -p "${PythonRoot}"
+	echo "Downloading and extracting Python archive ... "
+	curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
+	# Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
+	mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
+	touch "${PythonRoot}/.done"
+fi
+PythonExe="${PythonRoot}/bin/python"
+echo "Python executable: ${PythonExe}"
+
 if [ ${__buildNativeBridge} = true ]
 then 
     echo "Building Native Bridge ... "
@@ -237,20 +251,6 @@ then
     echo "Deleting ${BuildOutputDir} ${__currentScriptDir}/cli"
     rm -rf "${BuildOutputDir}"
     rm -rf "${__currentScriptDir}/cli"
-
-    echo "Downloading Python Dependencies "
-    # Download & unzip Python
-    if [ ! -e "${PythonRoot}/.done" ]
-    then
-        mkdir -p "${PythonRoot}"
-        echo "Downloading and extracting Python archive ... "
-        curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-        # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-        mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-        touch "${PythonRoot}/.done"
-    fi
-    PythonExe="${PythonRoot}/bin/python"
-    echo "Python executable: ${PythonExe}"
 
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
