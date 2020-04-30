@@ -280,6 +280,12 @@ then
     echo "#################################"
     echo "Installing Python packages ... "
     echo "#################################"
+
+    # Make more space, remove not needed folders
+    rm -rf "${build}"
+    rm -rf "${dist}"
+    rm -rf "${libs}"
+
     Wheel=${__currentScriptDir}/target/nimbusml-${ProductVersion}-${PythonTag}-none-${PlatName}.whl
     if [ ! -f ${Wheel} ]
     then
