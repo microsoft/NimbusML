@@ -184,23 +184,26 @@ if "%AzureBuild%" == "True" (
 :: Build managed code
 echo ""
 echo "#################################"
-echo "Building DotNet Bridge ... "
+echo "Building Managed code ... "
 echo "#################################"
 set _dotnet=%_dotnetRoot%\dotnet.exe
 
+if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
+if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
+if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
+
 if "%SkipDotNetBridge%" == "False" ( 
     call "%_dotnet%" build -c %Configuration% -o "%BuildOutputDir%%Configuration%"  --force "%__currentScriptDir%src\DotNetBridge\DotNetBridge.csproj"
+) else (
+    set VerifyManifest=False
+    set UpdateManifest=False
+    set BuildManifestGenerator=False
 )
 if "%BuildDotNetBridgeOnly%" == "True" ( 
     exit /b %ERRORLEVEL%
 )
 call "%_dotnet%" build -c %Configuration% --force "%__currentScriptDir%src\Platforms\build.csproj"
 call "%_dotnet%" publish "%__currentScriptDir%src\Platforms\build.csproj" --force --self-contained -r win-x64 -c %Configuration%
-
-
-if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
-if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
-if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
 
 if "%BuildManifestGenerator%" == "True" (
     echo ""
@@ -255,7 +258,7 @@ if not exist "%BoostRoot%\.done" (
 
 echo ""
 echo "#################################"
-echo "Building Native Bridge ... "
+echo "Building Native code ... "
 echo "#################################"
 :: Setting native code build environment
 echo Setting native build environment ...
@@ -331,7 +334,7 @@ if exist %libs% rd %libs% /S /Q
 md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
-if %PythonVersion% == 3.7 (
+if "%VerifyManifest%" == "True" (
     :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2

@@ -7,6 +7,14 @@ ProductVersion=$(<version.txt)
 __currentScriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 BuildOutputDir=${__currentScriptDir}/x64/
 DependenciesDir=${__currentScriptDir}/dependencies
+PythonRoot=${DependenciesDir}/Python${PythonVersion}
+BoostRoot=${DependenciesDir}/Boost${PythonVersion}
+# Platform name for python wheel based on OS
+PlatName=manylinux1_x86_64
+if [ "$(uname -s)" = "Darwin" ]
+then 
+	PlatName=macosx_10_11_x86_64
+fi
 mkdir -p "${DependenciesDir}"
 
 usage()
@@ -129,44 +137,35 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
-PythonRoot=${DependenciesDir}/Python${PythonVersion}
-BoostRoot=${DependenciesDir}/Boost${PythonVersion}
-# Platform name for python wheel based on OS
-PlatName=manylinux1_x86_64
-if [ "$(uname -s)" = "Darwin" ]
-then 
-    PlatName=macosx_10_11_x86_64
-fi
-
-echo ""
-echo "#################################"
-echo "Downloading Dependencies "
-echo "#################################"
+echo "Downloading Python Dependencies "
 # Download & unzip Python
 if [ ! -e "${PythonRoot}/.done" ]
 then
-    mkdir -p "${PythonRoot}"
-    echo "Downloading and extracting Python archive ... "
-    curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-    # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-    mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-    touch "${PythonRoot}/.done"
+	mkdir -p "${PythonRoot}"
+	echo "Downloading and extracting Python archive ... "
+	curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
+	# Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
+	mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
+	touch "${PythonRoot}/.done"
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
-# Download & unzip Boost
-if [ ! -e "${BoostRoot}/.done" ]
-then
-    mkdir -p "${BoostRoot}"
-    echo "Downloading and extracting Boost archive ... "
-    curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
-    touch "${BoostRoot}/.done"
-fi
 
 if [ ${__buildNativeBridge} = true ]
 then 
     echo "Building Native Bridge ... "
+    # Download & unzip Boost
+    if [ ! -e "${BoostRoot}/.done" ]
+    then
+        mkdir -p "${BoostRoot}"
+        echo "Downloading and extracting Boost archive ... "
+        curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
+        touch "${BoostRoot}/.done"
+    fi
     bash "${__currentScriptDir}/src/NativeBridge/build.sh" --configuration $__configuration --pythonver "${PythonVersion}" --pythonpath "${PythonRoot}" --boostpath "${BoostRoot}" 
+    echo "Deleting ${BoostRoot} ${__currentScriptDir}/src/NativeBridge/x64"
+    rm -rf "${BoostRoot}"
+	rm -rf "${__currentScriptDir}/src/NativeBridge/x64"
 fi
 
 if [ ${__buildDotNetBridge} = true ]
@@ -203,27 +202,27 @@ then
     touch "${__currentScriptDir}/src/python/nimbusml/internal/libs/__init__.py"
 
     echo "Placing binaries in libs dir for wheel packaging ... "
-    cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-    cp  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    mv  "${BuildOutputDir}/${__configuration}"/DotNetBridge.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    mv  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
     # ls -l "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
     if [ ${PythonVersion} = 2.7 ]
     then
-        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
-        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
         ext=*.so
         if [ "$(uname -s)" = "Darwin" ]
         then 
             ext=*.dylib
         fi    
-        cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         # Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
         if [ ! "$(uname -s)" = "Darwin" ]
         then
-            cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+            mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         fi
         # remove dataprep dlls as its not supported in python 2.7
         rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
@@ -240,16 +239,21 @@ then
             libs_txt=libs_mac.txt
         fi
         cat build/${libs_txt} | while read i; do
-            cp  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+            mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
         done
-        cp  -r "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     fi
     
     if [[ $__configuration = Dbg* ]]
     then
-        cp  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+        mv  "${BuildOutputDir}/${__configuration}"/DotNetBridge.pdb "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
     fi
   
+    # Clean out space for building wheel
+    echo "Deleting ${BuildOutputDir} ${__currentScriptDir}/cli"
+    rm -rf "${BuildOutputDir}"
+    rm -rf "${__currentScriptDir}/cli"
+
     "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
     cd "${__currentScriptDir}/src/python"
 
@@ -267,6 +271,10 @@ then
     mkdir -p "${__currentScriptDir}/target"
     mv "${__currentScriptDir}/src/python/dist/${WheelFile}" "${__currentScriptDir}/target/"
     echo Python package successfully created: ${__currentScriptDir}/target/${WheelFile}
+    echo "Deleting ${build} ${dist} ${libs} ... "
+    rm -rf "${build}"
+    rm -rf "${dist}"
+    rm -rf "${libs}"
 fi
 
 if [ ${__installPythonPackages} = true ]
