@@ -227,6 +227,30 @@
   ],
   "EntryPoints": [
     {
+      "Name": "Transforms.RollingWindow",
+      "NewName": "RollingWindow",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.LagLeadOperator",
+      "NewName": "LagLeadOperator",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ShortDrop",
+      "NewName": "ShortDrop",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
+      "Name": "Transforms.ForecastingPivot",
+      "NewName": "ForecastingPivot",
+      "Module": "timeseries",
+      "Type": "Transform"
+    },
+    {
       "Name": "Trainers.AveragedPerceptronBinaryClassifier",
       "NewName": "AveragedPerceptronBinaryClassifier",
       "Module": "linear_model",

@@ -399,7 +399,7 @@ if "%InstallPythonPackages%" == "True" (
         call "%PythonExe%" -m pip install --upgrade pyzmq
     ) else (
         call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.33"
-        call "%PythonExe%" -m pip install --upgrade onnxruntime
+        call "%PythonExe%" -m pip install --upgrade --extra-index-url https://test.pypi.org/simple/ ort-nightly-featurizer
     )
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"

@@ -201,6 +201,12 @@ OMITTED_CHECKS_TUPLE = (
     'check_estimators_pickle')
 
 OMITTED_CHECKS_ALWAYS = 'check_estimators_nan_inf'
+OMITTED_CHECKS_CLASS_ALWAYS = [ 
+    'RobustScaler',
+    'LagLeadOperator',
+    'ForecastingPivot',
+    'RollingWindow',
+    'ShortDrop']
 
 NOBINARY_CHECKS = [
     'check_estimator_sparse_data',
@@ -323,8 +329,10 @@ class TestEstimatorChecks(unittest.TestCase):
             failed_checks = set()
             passed_checks = set()
             class_name = epoint[1]
-            print("\n======== now Estimator is %s =========== " % class_name)
+            if class_name in OMITTED_CHECKS_CLASS_ALWAYS:
+                return
 
+            print("\n======== now Estimator is %s =========== " % class_name)
             mod = __import__('nimbusml.' + epoint[0], fromlist=[str(class_name)])
             the_class = getattr(mod, class_name)
             if class_name in INSTANCES:
