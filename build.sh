@@ -301,7 +301,7 @@ then
         fi
 
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
-        "${PythonExe}" -m pip install --upgrade onnxruntime
+        "${PythonExe}" -m pip install --upgrade --extra-index-url https://test.pypi.org/simple/ ort-nightly==1.3.0.dev202005123
     fi
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
