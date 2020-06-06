@@ -21,16 +21,6 @@ add_definitions(
 -DENABLE_DS_VIA_SQLSAT
 )
 
-if (${PYTHON_VER} STREQUAL "2.7")
-    add_definitions(-DBOOST_PYTHON)
-endif()
-if (${PYTHON_VER} STREQUAL "3.5")
-    add_definitions(-DBOOST_PYTHON)
-endif()
-if (${PYTHON_VER} STREQUAL "3.6")
-    add_definitions(-DBOOST_PYTHON)
-endif()
-
 set(CXX_STANDARD_FLAGS -std=c++14 -fpermissive -m64 -funit-at-a-time)
 set(CXX_PARAM_FLAGS --param inline-unit-growth=450
                     --param large-function-growth=1200
@@ -88,16 +78,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     endif()
 endif()
 
-# Define lib dependencies to be used as target link libraries
-if (${PYTHON_VER} STREQUAL "2.7")
-    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python.a ${BOOST_DIR}/lib/libboost_numpy.a)
-    set(PYBRIDGE_LIB_DEPS ${BOOST_LIBS} ${LIB_PYTHON})
-elseif (${PYTHON_VER} STREQUAL "3.7")
-    set(PYBRIDGE_LIB_DEPS ${LIB_PYTHON})
-else()
-    set(BOOST_LIBS ${BOOST_DIR}/lib/libboost_python3.a ${BOOST_DIR}/lib/libboost_numpy3.a)
-    set(PYBRIDGE_LIB_DEPS ${BOOST_LIBS} ${LIB_PYTHON})
-endif()
+set(PYBRIDGE_LIB_DEPS ${LIB_PYTHON})
 
 set_target_properties(PyBridge PROPERTIES PREFIX "")
 set_target_properties(PyBridge PROPERTIES OUTPUT_NAME "pybridge")
