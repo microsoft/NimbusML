@@ -1731,14 +1731,14 @@
         {
           "Name": "Slope",
           "Type": "Float",
-          "Desc": "The slope parameter of the calibration function 1 / (1 + exp(-slope * x + offset)",
+          "Desc": "The slope parameter of the calibration function 1 / (1 + exp(slope * x + offset)",
           "Aliases": [
             "slope"
           ],
           "Required": false,
           "SortOrder": 1.0,
           "IsNullable": false,
-          "Default": 1.0
+          "Default": -1.0
         },
         {
           "Name": "Data",
@@ -1762,7 +1762,7 @@
         {
           "Name": "Offset",
           "Type": "Float",
-          "Desc": "The offset parameter of the calibration function 1 / (1 + exp(-slope * x + offset)",
+          "Desc": "The offset parameter of the calibration function 1 / (1 + exp(slope * x + offset)",
           "Aliases": [
             "offset"
           ],
@@ -1903,9 +1903,9 @@
           }
         },
         {
-          "Name": "SupressScoresAndLabels",
+          "Name": "SuppressScoresAndLabels",
           "Type": "Bool",
-          "Desc": "Supress labels and scores in per-instance outputs?",
+          "Desc": "Suppress labels and scores in per-instance outputs?",
           "Aliases": [
             "noScores"
           ],
@@ -2275,9 +2275,10 @@
           "Name": "Model",
           "Type": "TransformModel",
           "Desc": "Model that needs to be converted to ONNX format.",
-          "Required": true,
+          "Required": false,
           "SortOrder": 10.0,
-          "IsNullable": false
+          "IsNullable": false,
+          "Default": null
         },
         {
           "Name": "OnnxVersion",
@@ -2293,9 +2294,102 @@
           "SortOrder": 11.0,
           "IsNullable": false,
           "Default": "Stable"
+        },
+        {
+          "Name": "PredictiveModel",
+          "Type": "PredictorModel",
+          "Desc": "Predictor model that needs to be converted to ONNX format.",
+          "Required": false,
+          "SortOrder": 12.0,
+          "IsNullable": false,
+          "Default": null
         }
       ],
       "Outputs": []
+    },
+    {
+      "Name": "Models.OnnxTransformer",
+      "Desc": "Applies an ONNX model to a dataset.",
+      "FriendlyName": "Onnx Transformer",
+      "ShortName": "onnx-xf",
+      "Inputs": [
+        {
+          "Name": "ModelFile",
+          "Type": "String",
+          "Desc": "Path to the onnx model file.",
+          "Aliases": [
+            "model"
+          ],
+          "Required": true,
+          "SortOrder": 0.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "InputColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Name of the input column.",
+          "Required": false,
+          "SortOrder": 1.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "OutputColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Name of the output column.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "GpuDeviceId",
+          "Type": "Int",
+          "Desc": "GPU device id to run on (e.g. 0,1,..). Null for CPU. Requires CUDA 9.1.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "FallbackToCpu",
+          "Type": "Bool",
+          "Desc": "If true, resumes execution on CPU upon GPU error. If false, will raise the GPU execption.",
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "ONNX transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ]
     },
     {
       "Name": "Models.OvaModelCombiner",
@@ -3049,6 +3143,29 @@
       "OutputKind": [
         "IRegressionOutput",
         "ITrainerOutput"
+      ]
+    },
+    {
+      "Name": "Models.Schema",
+      "Desc": "Retrieve output model schema",
+      "FriendlyName": null,
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "The transform model.",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "Schema",
+          "Type": "DataView",
+          "Desc": "The model schema"
+        }
       ]
     },
     {
@@ -3986,6 +4103,244 @@
           "SortOrder": 105.0,
           "IsNullable": false,
           "Default": 0.1
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "TimeSeriesProcessingEntryPoints.SsaForecasting",
+      "Desc": "This transform forecasts using Singular Spectrum Analysis (SSA).",
+      "FriendlyName": "SSA Forecasting",
+      "ShortName": "ssafcst",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "Type": "String",
+          "Desc": "The name of the source column.",
+          "Aliases": [
+            "src"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Desc": "The name of the new column.",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "WindowSize",
+          "Type": "Int",
+          "Desc": "The length of the window on the series for building the trajectory matrix (parameter L).",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "SeriesLength",
+          "Type": "Int",
+          "Desc": "The length of series that is kept in buffer for modeling (parameter N).",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "TrainSize",
+          "Type": "Int",
+          "Desc": "The length of series from the beginning used for training.",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "Horizon",
+          "Type": "Int",
+          "Desc": "The number of values to forecast.",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0
+        },
+        {
+          "Name": "ConfidenceLevel",
+          "Type": "Float",
+          "Desc": "The confidence level in [0, 1) for forecasting.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": 0.95
+        },
+        {
+          "Name": "VariableHorizon",
+          "Type": "Bool",
+          "Desc": "Set this to true horizon will change at prediction time.",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
+          "Name": "ConfidenceLowerBoundColumn",
+          "Type": "String",
+          "Desc": "The name of the confidence interval lower bound column.",
+          "Aliases": [
+            "cnfminname"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "ConfidenceUpperBoundColumn",
+          "Type": "String",
+          "Desc": "The name of the confidence interval upper bound column.",
+          "Aliases": [
+            "cnfmaxnname"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "RankSelectionMethod",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "Fixed",
+              "Exact",
+              "Fast"
+            ]
+          },
+          "Desc": "The rank selection method.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": "Exact"
+        },
+        {
+          "Name": "Rank",
+          "Type": "Int",
+          "Desc": "The desired rank of the subspace used for SSA projection (parameter r). This parameter should be in the range in [1, windowSize]. If set to null, the rank is automatically determined based on prediction error minimization.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "MaxRank",
+          "Type": "Int",
+          "Desc": "The maximum rank considered during the rank selection process. If not provided (i.e. set to null), it is set to windowSize - 1.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "ShouldStabilize",
+          "Type": "Bool",
+          "Desc": "The flag determining whether the model should be stabilized.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": true
+        },
+        {
+          "Name": "ShouldMaintainInfo",
+          "Type": "Bool",
+          "Desc": "The flag determining whether the meta information for the model needs to be maintained.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
+          "Name": "MaxGrowth",
+          "Type": {
+            "Kind": "Struct",
+            "Fields": [
+              {
+                "Name": "TimeSpan",
+                "Type": "Int",
+                "Desc": "Time span of growth ratio. Must be strictly positive.",
+                "Required": false,
+                "SortOrder": 1.0,
+                "IsNullable": false,
+                "Default": 0
+              },
+              {
+                "Name": "Growth",
+                "Type": "Float",
+                "Desc": "Growth. Must be non-negative.",
+                "Required": false,
+                "SortOrder": 2.0,
+                "IsNullable": false,
+                "Default": 0.0
+              }
+            ]
+          },
+          "Desc": "The maximum growth on the exponential trend.",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "DiscountFactor",
+          "Type": "Float",
+          "Desc": "The discount factor in [0,1] used for online updates.",
+          "Aliases": [
+            "disc"
+          ],
+          "Required": false,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": 1.0
+        },
+        {
+          "Name": "IsAdaptive",
+          "Type": "Bool",
+          "Desc": "The flag determing whether the model is adaptive",
+          "Aliases": [
+            "adp"
+          ],
+          "Required": false,
+          "SortOrder": 6.0,
+          "IsNullable": false,
+          "Default": false
         }
       ],
       "Outputs": [
@@ -10260,7 +10615,7 @@
     },
     {
       "Name": "Trainers.GeneralizedAdditiveModelBinaryClassifier",
-      "Desc": "Trains a gradient boosted stump per feature, on all features simultaneously, to fit target values using least-squares. It mantains no interactions between features.",
+      "Desc": "Trains a gradient boosted stump per feature, on all features simultaneously, to fit target values using least-squares. It maintains no interactions between features.",
       "FriendlyName": "Generalized Additive Model for Binary Classification",
       "ShortName": "gam",
       "Inputs": [
@@ -10560,7 +10915,7 @@
     },
     {
       "Name": "Trainers.GeneralizedAdditiveModelRegressor",
-      "Desc": "Trains a gradient boosted stump per feature, on all features simultaneously, to fit target values using least-squares. It mantains no interactions between features.",
+      "Desc": "Trains a gradient boosted stump per feature, on all features simultaneously, to fit target values using least-squares. It maintains no interactions between features.",
       "FriendlyName": "Generalized Additive Model for Regression",
       "ShortName": "gamr",
       "Inputs": [
@@ -11388,10 +11743,32 @@
           "Name": "HandleMissingValue",
           "Type": "Bool",
           "Desc": "Enable special handling of missing value or not.",
+          "Aliases": [
+            "hmv"
+          ],
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": true,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              true,
+              false
+            ]
+          }
+        },
+        {
+          "Name": "UseZeroAsMissingValue",
+          "Type": "Bool",
+          "Desc": "Enable usage of zero (0) as missing value.",
+          "Aliases": [
+            "uzam"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false,
           "SweepRange": {
             "RangeType": "Discrete",
             "Values": [
@@ -11737,6 +12114,18 @@
           "Default": "Auto"
         },
         {
+          "Name": "UnbalancedSets",
+          "Type": "Bool",
+          "Desc": "Use for multi-class classification when training data is not balanced",
+          "Aliases": [
+            "us"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
           "Name": "UseSoftmax",
           "Type": "Bool",
           "Desc": "Use softmax loss for the multi classification.",
@@ -11873,10 +12262,32 @@
           "Name": "HandleMissingValue",
           "Type": "Bool",
           "Desc": "Enable special handling of missing value or not.",
+          "Aliases": [
+            "hmv"
+          ],
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": true,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              true,
+              false
+            ]
+          }
+        },
+        {
+          "Name": "UseZeroAsMissingValue",
+          "Type": "Bool",
+          "Desc": "Enable usage of zero (0) as missing value.",
+          "Aliases": [
+            "uzam"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false,
           "SweepRange": {
             "RangeType": "Discrete",
             "Values": [
@@ -12370,10 +12781,32 @@
           "Name": "HandleMissingValue",
           "Type": "Bool",
           "Desc": "Enable special handling of missing value or not.",
+          "Aliases": [
+            "hmv"
+          ],
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": true,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              true,
+              false
+            ]
+          }
+        },
+        {
+          "Name": "UseZeroAsMissingValue",
+          "Type": "Bool",
+          "Desc": "Enable usage of zero (0) as missing value.",
+          "Aliases": [
+            "uzam"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false,
           "SweepRange": {
             "RangeType": "Discrete",
             "Values": [
@@ -12828,10 +13261,32 @@
           "Name": "HandleMissingValue",
           "Type": "Bool",
           "Desc": "Enable special handling of missing value or not.",
+          "Aliases": [
+            "hmv"
+          ],
           "Required": false,
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": true,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              true,
+              false
+            ]
+          }
+        },
+        {
+          "Name": "UseZeroAsMissingValue",
+          "Type": "Bool",
+          "Desc": "Enable usage of zero (0) as missing value.",
+          "Aliases": [
+            "uzam"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false,
           "SweepRange": {
             "RangeType": "Discrete",
             "Values": [
@@ -13247,6 +13702,288 @@
       ]
     },
     {
+      "Name": "Trainers.LocalDeepSvmBinaryClassifier",
+      "Desc": "LD-SVM learns a binary, non-linear SVM classifier with a kernel that is specifically designed to reduce prediction time. LD-SVM learns decision boundaries that are locally linear.",
+      "FriendlyName": "Local Deep SVM (LDSVM)",
+      "ShortName": "LDSVM",
+      "Inputs": [
+        {
+          "Name": "TrainingData",
+          "Type": "DataView",
+          "Desc": "The data to be used for training",
+          "Aliases": [
+            "data"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "FeatureColumnName",
+          "Type": "String",
+          "Desc": "Column to use for features",
+          "Aliases": [
+            "feat"
+          ],
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": "Features"
+        },
+        {
+          "Name": "LabelColumnName",
+          "Type": "String",
+          "Desc": "Column to use for labels",
+          "Aliases": [
+            "lab"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": "Label"
+        },
+        {
+          "Name": "ExampleWeightColumnName",
+          "Type": "String",
+          "Desc": "Column to use for example weight",
+          "Aliases": [
+            "weight"
+          ],
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "NormalizeFeatures",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "No",
+              "Warn",
+              "Auto",
+              "Yes"
+            ]
+          },
+          "Desc": "Normalize option for the feature column",
+          "Aliases": [
+            "norm"
+          ],
+          "Required": false,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": "Auto"
+        },
+        {
+          "Name": "Caching",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "Auto",
+              "Memory",
+              "None"
+            ]
+          },
+          "Desc": "Whether trainer should cache input training data",
+          "Aliases": [
+            "cache"
+          ],
+          "Required": false,
+          "SortOrder": 6.0,
+          "IsNullable": false,
+          "Default": "Auto"
+        },
+        {
+          "Name": "TreeDepth",
+          "Type": "Int",
+          "Desc": "Depth of Local Deep SVM tree",
+          "Aliases": [
+            "depth"
+          ],
+          "Required": false,
+          "SortOrder": 50.0,
+          "IsNullable": false,
+          "Default": 3,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              1,
+              3,
+              5,
+              7
+            ]
+          }
+        },
+        {
+          "Name": "LambdaW",
+          "Type": "Float",
+          "Desc": "Regularizer for classifier parameter W",
+          "Aliases": [
+            "lw"
+          ],
+          "Required": false,
+          "SortOrder": 50.0,
+          "IsNullable": false,
+          "Default": 0.1,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              0.1,
+              0.01,
+              0.001
+            ]
+          }
+        },
+        {
+          "Name": "LambdaTheta",
+          "Type": "Float",
+          "Desc": "Regularizer for kernel parameter Theta",
+          "Aliases": [
+            "lt"
+          ],
+          "Required": false,
+          "SortOrder": 50.0,
+          "IsNullable": false,
+          "Default": 0.01,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              0.1,
+              0.01,
+              0.001
+            ]
+          }
+        },
+        {
+          "Name": "LambdaThetaprime",
+          "Type": "Float",
+          "Desc": "Regularizer for kernel parameter Thetaprime",
+          "Aliases": [
+            "lp"
+          ],
+          "Required": false,
+          "SortOrder": 50.0,
+          "IsNullable": false,
+          "Default": 0.01,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              0.1,
+              0.01,
+              0.001
+            ]
+          }
+        },
+        {
+          "Name": "Sigma",
+          "Type": "Float",
+          "Desc": "Parameter for sigmoid sharpness",
+          "Aliases": [
+            "s"
+          ],
+          "Required": false,
+          "SortOrder": 50.0,
+          "IsNullable": false,
+          "Default": 1.0,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              1.0,
+              0.1,
+              0.01
+            ]
+          }
+        },
+        {
+          "Name": "NumberOfIterations",
+          "Type": "Int",
+          "Desc": "Number of iterations",
+          "Aliases": [
+            "iter",
+            "NumIterations"
+          ],
+          "Required": false,
+          "SortOrder": 50.0,
+          "IsNullable": false,
+          "Default": 15000,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              10000,
+              15000
+            ]
+          }
+        },
+        {
+          "Name": "UseBias",
+          "Type": "Bool",
+          "Desc": "No bias",
+          "Aliases": [
+            "bias"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": true,
+          "SweepRange": {
+            "RangeType": "Discrete",
+            "Values": [
+              false,
+              true
+            ]
+          }
+        },
+        {
+          "Name": "Calibrator",
+          "Type": {
+            "Kind": "Component",
+            "ComponentKind": "CalibratorTrainer"
+          },
+          "Desc": "The calibrator kind to apply to the predictor. Specify null for no calibration",
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": {
+            "Name": "PlattCalibrator"
+          }
+        },
+        {
+          "Name": "MaxCalibrationExamples",
+          "Type": "Int",
+          "Desc": "The maximum number of examples to use when training the calibrator",
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": 1000000
+        },
+        {
+          "Name": "Cache",
+          "Type": "Bool",
+          "Desc": "Whether to cache the data before the first iteration",
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": true
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "The trained model"
+        }
+      ],
+      "InputKind": [
+        "ITrainerInputWithWeight",
+        "ITrainerInputWithLabel",
+        "ITrainerInput"
+      ],
+      "OutputKind": [
+        "IBinaryClassificationOutput",
+        "ITrainerOutput"
+      ]
+    },
+    {
       "Name": "Trainers.LogisticRegressionBinaryClassifier",
       "Desc": "Logistic Regression is a method in statistics used to predict the probability of occurrence of an event and can be used as a classification algorithm. The algorithm predicts the probability of occurrence of an event by fitting data to a logistical function.",
       "FriendlyName": "Logistic Regression",
@@ -13569,7 +14306,7 @@
     },
     {
       "Name": "Trainers.LogisticRegressionClassifier",
-      "Desc": "Maximum entrypy classification is a method in statistics used to predict the probabilities of parallel events. The model predicts the probabilities of parallel events by fitting data to a softmax function.",
+      "Desc": "Maximum entropy classification is a method in statistics used to predict the probabilities of parallel events. The model predicts the probabilities of parallel events by fitting data to a softmax function.",
       "FriendlyName": "Multi-class Logistic Regression",
       "ShortName": "mlr",
       "Inputs": [
@@ -17042,6 +17779,82 @@
       ]
     },
     {
+      "Name": "Transforms.CategoryImputer",
+      "Desc": "Fills in missing values in a column based on the most frequent value",
+      "FriendlyName": "CategoryImputer",
+      "ShortName": "CategoryImputer",
+      "Inputs": [
+        {
+          "Name": "Column",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
+          },
+          "Desc": "New column definition (optional form: name:src)",
+          "Aliases": [
+            "col"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "Transforms.CharacterTokenizer",
       "Desc": "Character-oriented tokenizer where text is considered a sequence of characters.",
       "FriendlyName": "Character Tokenizer Transform",
@@ -17782,6 +18595,51 @@
       ]
     },
     {
+      "Name": "Transforms.DatasetScorerEx",
+      "Desc": "Score a dataset with a predictor model",
+      "FriendlyName": null,
+      "ShortName": null,
+      "Inputs": [
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "The dataset to be scored",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "The predictor model to apply to data",
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Suffix",
+          "Type": "String",
+          "Desc": "Suffix to append to the score columns",
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "ScoredData",
+          "Type": "DataView",
+          "Desc": "The scored dataset"
+        },
+        {
+          "Name": "ScoringTransform",
+          "Type": "TransformModel",
+          "Desc": "The scoring transform"
+        }
+      ]
+    },
+    {
       "Name": "Transforms.DatasetTransformScorer",
       "Desc": "Score a dataset with a transform model",
       "FriendlyName": null,
@@ -17815,6 +18673,117 @@
           "Type": "TransformModel",
           "Desc": "The scoring transform"
         }
+      ]
+    },
+    {
+      "Name": "Transforms.DateTimeSplitter",
+      "Desc": "Splits a date time value into each individual component",
+      "FriendlyName": "DateTime Transform",
+      "ShortName": "DateTimeTransform",
+      "Inputs": [
+        {
+          "Name": "Source",
+          "Type": "String",
+          "Desc": "Input column",
+          "Aliases": [
+            "src"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Prefix",
+          "Type": "String",
+          "Desc": "Output column prefix",
+          "Aliases": [
+            "pre"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Country",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "None",
+              "Argentina",
+              "Australia",
+              "Austria",
+              "Belarus",
+              "Belgium",
+              "Brazil",
+              "Canada",
+              "Colombia",
+              "Croatia",
+              "Czech",
+              "Denmark",
+              "England",
+              "Finland",
+              "France",
+              "Germany",
+              "Hungary",
+              "India",
+              "Ireland",
+              "IsleofMan",
+              "Italy",
+              "Japan",
+              "Mexico",
+              "Netherlands",
+              "NewZealand",
+              "NorthernIreland",
+              "Norway",
+              "Poland",
+              "Portugal",
+              "Scotland",
+              "Slovenia",
+              "SouthAfrica",
+              "Spain",
+              "Sweden",
+              "Switzerland",
+              "Ukraine",
+              "UnitedKingdom",
+              "UnitedStates",
+              "Wales"
+            ]
+          },
+          "Desc": "Country to get holidays for. Defaults to none if not passed",
+          "Aliases": [
+            "ctry"
+          ],
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": "None"
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
       ]
     },
     {
@@ -18226,7 +19195,6 @@
         },
         {
           "Name": "LabelColumnName",
-          "PassAs": "LabelColumn",
           "Type": "String",
           "Desc": "Column to use for labels",
           "Aliases": [
@@ -20423,7 +21391,7 @@
     },
     {
       "Name": "Transforms.MissingValueHandler",
-      "Desc": "Handle missing values by replacing them with either the default value or the mean/min/max value (for non-text columns only). An indicator column can optionally be concatenated, if theinput column type is numeric.",
+      "Desc": "Handle missing values by replacing them with either the default value or the mean/min/max value (for non-text columns only). An indicator column can optionally be concatenated, if the input column type is numeric.",
       "FriendlyName": "NA Handle Transform",
       "ShortName": "NAHandle",
       "Inputs": [
@@ -21452,6 +22420,79 @@
       ]
     },
     {
+      "Name": "Transforms.PermutationFeatureImportance",
+      "Desc": "Permutation Feature Importance (PFI)",
+      "FriendlyName": "PFI",
+      "ShortName": "PFI",
+      "Inputs": [
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "PredictorModel",
+          "Type": "PredictorModel",
+          "Desc": "The path to the model file",
+          "Aliases": [
+            "path"
+          ],
+          "Required": true,
+          "SortOrder": 150.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "UseFeatureWeightFilter",
+          "Type": "Bool",
+          "Desc": "Use feature weights to pre-filter features",
+          "Aliases": [
+            "usefw"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": false
+        },
+        {
+          "Name": "NumberOfExamplesToUse",
+          "Type": "Int",
+          "Desc": "Limit the number of examples to evaluate on",
+          "Aliases": [
+            "numexamples"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": true,
+          "Default": null
+        },
+        {
+          "Name": "PermutationCount",
+          "Type": "Int",
+          "Desc": "The number of permutations to perform",
+          "Aliases": [
+            "permutations"
+          ],
+          "Required": false,
+          "SortOrder": 150.0,
+          "IsNullable": false,
+          "Default": 1
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "Metrics",
+          "Type": "DataView",
+          "Desc": "The PFI metrics"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ]
+    },
+    {
       "Name": "Transforms.PredictedLabelColumnOriginalValueConverter",
       "Desc": "Transforms a predicted label column to its original values, unless it is of type bool.",
       "FriendlyName": "Convert Predicted Label",
@@ -21471,6 +22512,82 @@
           "Desc": "The predicted label column",
           "Required": true,
           "SortOrder": 2.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.PrefixColumnConcatenator",
+      "Desc": "Concatenates one or more columns of the same item type.",
+      "FriendlyName": "Concat Transform",
+      "ShortName": "Concat",
+      "Inputs": [
+        {
+          "Name": "Column",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
+          },
+          "Desc": "New column definition(s) (optional form: name:src)",
+          "Aliases": [
+            "col"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
           "IsNullable": false
         }
       ],
@@ -21578,6 +22695,130 @@
           "SortOrder": 150.0,
           "IsNullable": false,
           "Default": 42
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.RobustScaler",
+      "Desc": "Removes the median and scales the data according to the quantile range.",
+      "FriendlyName": "RobustScalerTransformer",
+      "ShortName": "RobScalT",
+      "Inputs": [
+        {
+          "Name": "Column",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
+          },
+          "Desc": "New column definition (optional form: name:src)",
+          "Aliases": [
+            "col"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Center",
+          "Type": "Bool",
+          "Desc": "If True, center the data before scaling.",
+          "Aliases": [
+            "ctr"
+          ],
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": true
+        },
+        {
+          "Name": "Scale",
+          "Type": "Bool",
+          "Desc": "If True, scale the data to interquartile range.",
+          "Aliases": [
+            "sc"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": true
+        },
+        {
+          "Name": "QuantileMin",
+          "Type": "Float",
+          "Desc": "Min for the quantile range used to calculate scale.",
+          "Aliases": [
+            "min"
+          ],
+          "Required": false,
+          "SortOrder": 4.0,
+          "IsNullable": false,
+          "Default": 25.0
+        },
+        {
+          "Name": "QuantileMax",
+          "Type": "Float",
+          "Desc": "Max for the quantile range used to calculate scale.",
+          "Aliases": [
+            "max"
+          ],
+          "Required": false,
+          "SortOrder": 5.0,
+          "IsNullable": false,
+          "Default": 75.0
         }
       ],
       "Outputs": [
@@ -22089,66 +23330,6 @@
           "IsNullable": false
         },
         {
-          "Name": "LabelColumn",
-          "Type": "String",
-          "Desc": "Training labels.",
-          "Aliases": [
-            "label"
-          ],
-          "Required": false,
-          "SortOrder": 4.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "TensorFlowLabel",
-          "Type": "String",
-          "Desc": "TensorFlow label node.",
-          "Aliases": [
-            "TFLabel"
-          ],
-          "Required": false,
-          "SortOrder": 5.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "OptimizationOperation",
-          "Type": "String",
-          "Desc": "The name of the optimization operation in the TensorFlow graph.",
-          "Aliases": [
-            "OptimizationOp"
-          ],
-          "Required": false,
-          "SortOrder": 6.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "LossOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph to compute training loss (Optional)",
-          "Aliases": [
-            "LossOp"
-          ],
-          "Required": false,
-          "SortOrder": 7.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "MetricOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph to compute performance metric during training (Optional)",
-          "Aliases": [
-            "MetricOp"
-          ],
-          "Required": false,
-          "SortOrder": 8.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
           "Name": "BatchSize",
           "Type": "Int",
           "Desc": "Number of samples to use for mini-batch training.",
@@ -22156,60 +23337,6 @@
           "SortOrder": 9.0,
           "IsNullable": false,
           "Default": 64
-        },
-        {
-          "Name": "Epoch",
-          "Type": "Int",
-          "Desc": "Number of training iterations.",
-          "Required": false,
-          "SortOrder": 10.0,
-          "IsNullable": false,
-          "Default": 5
-        },
-        {
-          "Name": "LearningRateOperation",
-          "Type": "String",
-          "Desc": "The name of the operation in the TensorFlow graph which sets optimizer learning rate (Optional).",
-          "Required": false,
-          "SortOrder": 11.0,
-          "IsNullable": false,
-          "Default": null
-        },
-        {
-          "Name": "LearningRate",
-          "Type": "Float",
-          "Desc": "Learning rate to use during optimization.",
-          "Required": false,
-          "SortOrder": 12.0,
-          "IsNullable": false,
-          "Default": 0.01
-        },
-        {
-          "Name": "SaveLocationOperation",
-          "Type": "String",
-          "Desc": "Name of the input in TensorFlow graph that specifiy the location for saving/restoring models from disk.",
-          "Required": false,
-          "SortOrder": 13.0,
-          "IsNullable": false,
-          "Default": "save/Const"
-        },
-        {
-          "Name": "SaveOperation",
-          "Type": "String",
-          "Desc": "Name of the input in TensorFlow graph that specifiy the location for saving/restoring models from disk.",
-          "Required": false,
-          "SortOrder": 14.0,
-          "IsNullable": false,
-          "Default": "save/control_dependency"
-        },
-        {
-          "Name": "ReTrain",
-          "Type": "Bool",
-          "Desc": "Retrain TensorFlow model.",
-          "Required": false,
-          "SortOrder": 15.0,
-          "IsNullable": false,
-          "Default": false
         },
         {
           "Name": "AddBatchDimensionInputs",
@@ -22724,6 +23851,206 @@
       ]
     },
     {
+      "Name": "Transforms.TimeSeriesImputer",
+      "Desc": "Fills in missing row and values",
+      "FriendlyName": "TimeSeriesImputer",
+      "ShortName": "tsi",
+      "Inputs": [
+        {
+          "Name": "TimeSeriesColumn",
+          "Type": "String",
+          "Desc": "Column representing the time",
+          "Aliases": [
+            "time"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "GrainColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "List of grain columns",
+          "Aliases": [
+            "grains"
+          ],
+          "Required": true,
+          "SortOrder": 2.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "FilterColumns",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Columns to filter",
+          "Aliases": [
+            "filters"
+          ],
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "FilterMode",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "NoFilter",
+              "Include",
+              "Exclude"
+            ]
+          },
+          "Desc": "Filter mode. Either include or exclude",
+          "Aliases": [
+            "fmode"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": "Exclude"
+        },
+        {
+          "Name": "ImputeMode",
+          "Type": {
+            "Kind": "Enum",
+            "Values": [
+              "ForwardFill",
+              "BackFill",
+              "Median"
+            ]
+          },
+          "Desc": "Mode for imputing, defaults to ForwardFill if not provided",
+          "Aliases": [
+            "mode"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": "ForwardFill"
+        },
+        {
+          "Name": "SupressTypeErrors",
+          "Type": "Bool",
+          "Desc": "Suppress the errors that would occur if a column and impute mode are incompatible. If true, will skip the column. If false, will stop and throw an error.",
+          "Aliases": [
+            "error"
+          ],
+          "Required": false,
+          "SortOrder": 3.0,
+          "IsNullable": false,
+          "Default": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
+      "Name": "Transforms.ToString",
+      "Desc": "Turns the given column into a column of its string representation",
+      "FriendlyName": "ToString Transform",
+      "ShortName": "tostr",
+      "Inputs": [
+        {
+          "Name": "Column",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": {
+              "Kind": "Struct",
+              "Fields": [
+                {
+                  "Name": "Name",
+                  "Type": "String",
+                  "Desc": "Name of the new column",
+                  "Aliases": [
+                    "name"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                },
+                {
+                  "Name": "Source",
+                  "Type": "String",
+                  "Desc": "Name of the source column",
+                  "Aliases": [
+                    "src"
+                  ],
+                  "Required": false,
+                  "SortOrder": 150.0,
+                  "IsNullable": false,
+                  "Default": null
+                }
+              ]
+            }
+          },
+          "Desc": "New column definition (optional form: name:src)",
+          "Aliases": [
+            "col"
+          ],
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
+      ]
+    },
+    {
       "Name": "Transforms.TrainTestDatasetSplitter",
       "Desc": "Split the dataset into train and test sets",
       "FriendlyName": "Dataset Train-Test Split",
@@ -22868,6 +24195,61 @@
           "Type": "PredictorModel",
           "Desc": "Predictor model"
         }
+      ]
+    },
+    {
+      "Name": "Transforms.VariableColumnTransform",
+      "Desc": "Combines the specified input columns in to a single variable length vectorized column.",
+      "FriendlyName": "Variable Column Creator",
+      "ShortName": "Variable Column Creator",
+      "Inputs": [
+        {
+          "Name": "Data",
+          "Type": "DataView",
+          "Desc": "Input dataset",
+          "Required": true,
+          "SortOrder": 1.0,
+          "IsNullable": false
+        },
+        {
+          "Name": "Features",
+          "Type": {
+            "Kind": "Array",
+            "ItemType": "String"
+          },
+          "Desc": "Features",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        },
+        {
+          "Name": "LengthColumnName",
+          "Type": "String",
+          "Desc": "Length Column Name",
+          "Required": false,
+          "SortOrder": 2.0,
+          "IsNullable": false,
+          "Default": null
+        }
+      ],
+      "Outputs": [
+        {
+          "Name": "OutputData",
+          "Type": "DataView",
+          "Desc": "Transformed dataset"
+        },
+        {
+          "Name": "Model",
+          "Type": "TransformModel",
+          "Desc": "Transform model"
+        }
+      ],
+      "InputKind": [
+        "ITransformInput"
+      ],
+      "OutputKind": [
+        "ITransformOutput"
       ]
     },
     {
@@ -23973,19 +25355,19 @@
             {
               "Name": "Slope",
               "Type": "Float",
-              "Desc": "The slope parameter of f(x) = 1 / (1 + exp(-slope * x + offset)",
+              "Desc": "The slope parameter of f(x) = 1 / (1 + exp(slope * x + offset)",
               "Aliases": [
                 "a"
               ],
               "Required": false,
               "SortOrder": 150.0,
               "IsNullable": false,
-              "Default": 1.0
+              "Default": -1.0
             },
             {
               "Name": "Offset",
               "Type": "Float",
-              "Desc": "The offset parameter of f(x) = 1 / (1 + exp(-slope * x + offset)",
+              "Desc": "The offset parameter of f(x) = 1 / (1 + exp(slope * x + offset)",
               "Aliases": [
                 "b"
               ],
@@ -28741,140 +30123,6 @@
           "Desc": "Single node machine learning process.",
           "FriendlyName": "Single",
           "Settings": []
-        }
-      ]
-    },
-    {
-      "Kind": "PartitionedPathParser",
-      "Components": [
-        {
-          "Name": "ParquetPathParser",
-          "Desc": "Extract name/value pairs from Parquet formatted directory names. Example path: Year=2018/Month=12/data1.parquet",
-          "FriendlyName": "Parquet Partitioned Path Parser",
-          "Aliases": [
-            "ParqPP"
-          ],
-          "Settings": []
-        },
-        {
-          "Name": "SimplePathParser",
-          "Desc": "A simple parser that extracts directory names as column values. Column names are defined as arguments.",
-          "FriendlyName": "Simple Partitioned Path Parser",
-          "Aliases": [
-            "SmplPP"
-          ],
-          "Settings": [
-            {
-              "Name": "Columns",
-              "Type": {
-                "Kind": "Array",
-                "ItemType": {
-                  "Kind": "Struct",
-                  "Fields": [
-                    {
-                      "Name": "Name",
-                      "Type": "String",
-                      "Desc": "Name of the column.",
-                      "Required": true,
-                      "SortOrder": 150.0,
-                      "IsNullable": false
-                    },
-                    {
-                      "Name": "Type",
-                      "Type": {
-                        "Kind": "Enum",
-                        "Values": [
-                          "I1",
-                          "U1",
-                          "I2",
-                          "U2",
-                          "I4",
-                          "U4",
-                          "I8",
-                          "U8",
-                          "R4",
-                          "Num",
-                          "R8",
-                          "TX",
-                          "Text",
-                          "TXT",
-                          "BL",
-                          "Bool",
-                          "TimeSpan",
-                          "TS",
-                          "DT",
-                          "DateTime",
-                          "DZ",
-                          "DateTimeZone",
-                          "UG",
-                          "U16"
-                        ]
-                      },
-                      "Desc": "Data type of the column.",
-                      "Required": false,
-                      "SortOrder": 150.0,
-                      "IsNullable": true,
-                      "Default": null
-                    },
-                    {
-                      "Name": "Source",
-                      "Type": "Int",
-                      "Desc": "Index of the directory representing this column.",
-                      "Required": true,
-                      "SortOrder": 150.0,
-                      "IsNullable": false,
-                      "Default": 0
-                    }
-                  ]
-                }
-              },
-              "Desc": "Column definitions used to override the Partitioned Path Parser. Expected with the format name:type:numeric-source, for example, col=MyFeature:R4:1",
-              "Aliases": [
-                "col"
-              ],
-              "Required": false,
-              "SortOrder": 1.0,
-              "IsNullable": false,
-              "Default": null
-            },
-            {
-              "Name": "Type",
-              "Type": {
-                "Kind": "Enum",
-                "Values": [
-                  "I1",
-                  "U1",
-                  "I2",
-                  "U2",
-                  "I4",
-                  "U4",
-                  "I8",
-                  "U8",
-                  "R4",
-                  "Num",
-                  "R8",
-                  "TX",
-                  "Text",
-                  "TXT",
-                  "BL",
-                  "Bool",
-                  "TimeSpan",
-                  "TS",
-                  "DT",
-                  "DateTime",
-                  "DZ",
-                  "DateTimeZone",
-                  "UG",
-                  "U16"
-                ]
-              },
-              "Desc": "Data type of each column.",
-              "Required": false,
-              "SortOrder": 150.0,
-              "IsNullable": false,
-              "Default": "TX"
-            }
-          ]
         }
       ]
     },

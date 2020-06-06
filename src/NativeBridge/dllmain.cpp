@@ -7,10 +7,13 @@
 #include "ManagedInterop.h"
 
 #define PARAM_SEED "seed"
+#define PARAM_MAX_SLOTS "max_slots"
 #define PARAM_GRAPH "graph"
 #define PARAM_VERBOSE "verbose"
-#define PARAM_NIMBUSML_PATH "nimbusmlPath"
+#define PARAM_MLNET_PATH "mlnetPath"
 #define PARAM_DOTNETCLR_PATH "dotnetClrPath"
+#define PARAM_DPREP_PATH "dprepPath"
+#define PARAM_PYTHON_PATH "pythonPath"
 #define PARAM_DATA "data"
 
 
@@ -44,14 +47,14 @@ static MlNetInterface *g_mlnetInterface = nullptr;
 static GENERICEXEC g_exec = nullptr;
 
 // Ensure that we have the DotNetBridge managed code entry point.
-GENERICEXEC EnsureExec(const char *nimbuslibspath, const char *coreclrpath)
+GENERICEXEC EnsureExec(const char *mlnetpath, const char *coreclrpath, const char *dpreppath)
 {
     if (g_mlnetInterface == nullptr)
         g_mlnetInterface = new MlNetInterface();
 
     if (g_exec == nullptr)
     {
-        FNGETTER getter = g_mlnetInterface->EnsureGetter(nimbuslibspath, coreclrpath);
+        FNGETTER getter = g_mlnetInterface->EnsureGetter(mlnetpath, coreclrpath, dpreppath);
         if (getter != nullptr)
             g_exec = (GENERICEXEC)getter(FnIdGenericExec);
     }
@@ -71,8 +74,10 @@ bp::dict pxCall(bp::dict& params)
     {
 #ifdef BOOST_PYTHON
         bp::extract<std::string> graph(params[PARAM_GRAPH]);
-        bp::extract<std::string> nimbusmlPath(params[PARAM_NIMBUSML_PATH]);
+        bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
         bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
+        bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
+        bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
         bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
 #else
         auto graph = bp::extract_or_cast<std::string>(params[PARAM_GRAPH]);
@@ -81,16 +86,19 @@ bp::dict pxCall(bp::dict& params)
         auto verbose = bp::extract_or_cast<std::int32_t>(params[PARAM_VERBOSE]);
 #endif
         std::int32_t i_verbose = std::int32_t(verbose);
-        std::string s_nimbusmlPath = std::string(nimbusmlPath);
+        std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
+        std::string s_dprepPath = std::string(dprepPath);
+        std::string s_pythonPath = std::string(pythonPath);
         std::string s_graph = std::string(graph);
-        const char *nimbuslibspath = s_nimbusmlPath.c_str();
+        const char *mlnetpath = s_mlnetPath.c_str();
         const char *coreclrpath = s_dotnetClrPath.c_str();
+        const char *dpreppath = s_dprepPath.c_str();
 
-        GENERICEXEC exec = EnsureExec(nimbuslibspath, coreclrpath);
+        GENERICEXEC exec = EnsureExec(mlnetpath, coreclrpath, dpreppath);
         if (exec == nullptr)
-            throw std::invalid_argument("Failed to communicate with the managed library. Path searched: "
-                + s_nimbusmlPath + " and " + s_dotnetClrPath);
+            throw std::invalid_argument("Failed to communicate with the managed library. Paths searched: "
+                + s_mlnetPath + " and " + s_dotnetClrPath);
 
         int seed = 42;
     #if BOOST_PYTHON
@@ -100,7 +108,11 @@ bp::dict pxCall(bp::dict& params)
     #endif
             seed = bp::extract_or_cast<int>(params[PARAM_SEED]);
 
-        EnvironmentBlock env(i_verbose, 0, seed);
+        int maxSlots = -1;
+        if (params.has_key(PARAM_MAX_SLOTS))
+            maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+
+        EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
 
 #if BOOST_PYTHON
@@ -121,8 +133,7 @@ bp::dict pxCall(bp::dict& params)
         res = env.GetData();
 
         if (retCode == -1)
-            // REVIEW: get the content of IChannel and add it the the error message.
-            throw std::runtime_error("Returned code is -1. Check the log for error messages.");
+            throw std::runtime_error(env.GetErrorMessage());
     }
     catch (const std::exception& e)
     {

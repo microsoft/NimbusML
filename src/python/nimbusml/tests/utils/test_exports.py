@@ -493,6 +493,17 @@ PredictedProba|<f2> Score",shape=record,fontsize=8];
                                  'Day'],
                 'type': 'start'},
                {'inputs': ['Ozone'],
+                'name': 'TypeConverter',
+                'outputs': ['Ozone'],
+                'schema_after': ['Unnamed0',
+                                 'Ozone',
+                                 'Solar_R',
+                                 'Wind',
+                                 'Temp',
+                                 'Month',
+                                 'Day'],
+                'type': 'transform'},
+               {'inputs': ['Ozone'],
                 'name': 'Filter',
                 'outputs': ['Ozone'],
                 'schema_after': ['Unnamed0',
@@ -506,7 +517,7 @@ PredictedProba|<f2> Score",shape=record,fontsize=8];
         for el in info[0]:
             if 'operator' in el:
                 del el['operator']
-        self.assertEqual(exp, info[0][:2])
+        self.assertEqual(exp, info[0][:3])
 
     def test_word_embedding(self):
 

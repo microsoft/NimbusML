@@ -25,8 +25,8 @@ class TestPcaAnomalyDetector(unittest.TestCase):
         scores = svm.predict(X_test)
         assert_almost_equal(
             scores.sum().sum(),
-            4.181632,
-            decimal=1,
+            4.1786637,
+            decimal=7,
             err_msg="Sum should be %s" %
                     4.181632)
 

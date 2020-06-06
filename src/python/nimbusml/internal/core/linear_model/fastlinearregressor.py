@@ -23,7 +23,7 @@ class FastLinearRegressor(
     """
 
     A Stochastic Dual Coordinate Ascent (SDCA) optimization trainer
-    for linear binary classification and regression.
+    for linear regression.
 
     .. remarks::
         ``FastLinearRegressor`` is a trainer based on the Stochastic Dual
@@ -78,8 +78,7 @@ class FastLinearRegressor(
             content/uploads/2016/06/main-3.pdf>`_
 
             `Stochastic Dual Coordinate Ascent Methods for Regularized Loss
-            Minimization <http://www.jmlr.org/papers/volume14/shalev-
-            shwartz13a/shalev-shwartz13a.pdf>`_
+            Minimization <http://www.jmlr.org/papers/volume14/shalev-shwartz13a/shalev-shwartz13a.pdf>`_
 
 
     :param l2_regularization: L2 regularizer constant. By default the l2

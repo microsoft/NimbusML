@@ -20,6 +20,17 @@ NG_1 = """from ...base_transform import BaseTransform"""
 NG_1_correct = """from ...base_transform import BaseTransform
 from .extractor import Ngram"""
 
+ensemble = """from ..base_predictor import BasePredictor"""
+ensemble_correct = """from ..base_predictor import BasePredictor
+from .subset_selector import BootstrapSelector
+from .feature_selector import AllFeatureSelector"""
+
+diverse_selector = """from ...internal.utils.utils import trace"""
+classifier_diverse_selector = """from ...internal.utils.utils import trace
+from .diversity_measure import ClassifierDisagreement"""
+regressor_diverse_selector = """from ...internal.utils.utils import trace
+from .diversity_measure import RegressorDisagreement"""
+
 FM = \
     """import numbers
 from sklearn.base import ClassifierMixin
@@ -91,7 +102,25 @@ signature_fixes = {
     'FactorizationMachineBinaryClassifier': (FM, FM_correct),
     'OneHotHashVectorizer': (OHE, OHE_correct),
     'CustomStopWordsRemover': (cust_stop, cust_stop_correct),
-    'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct)
+    'PredefinedStopWordsRemover': (pred_stop, pred_stop_correct),
+    'EnsembleClassifier': [(ensemble, ensemble_correct),
+                           ('sampling_type = bootstrap_selector',
+                            'sampling_type = BootstrapSelector'),
+                            ("feature_selector = {'Name': 'AllFeatureSelector'}",
+                             "feature_selector = AllFeatureSelector()")],
+    'EnsembleRegressor': [(ensemble, ensemble_correct),
+                           ('sampling_type = bootstrap_selector',
+                            'sampling_type = BootstrapSelector'),
+                            ("feature_selector = {'Name': 'AllFeatureSelector'}",
+                             "feature_selector = AllFeatureSelector()")],
+    'ClassifierBestDiverseSelector': [(diverse_selector,
+                                         classifier_diverse_selector),
+                                        ('diversity_metric_type = None',
+                                         'diversity_metric_type = ClassifierDisagreement()')],
+    'RegressorBestDiverseSelector': [(diverse_selector,
+                                         regressor_diverse_selector),
+                                        ('diversity_metric_type = None',
+                                         'diversity_metric_type = RegressorDisagreement()')]
 }
 
 
@@ -218,12 +247,18 @@ onevsrestclassifier_1_correct = """
         all_args['output_for_sub_graph'] = {'Model' : \
 all_args['predictor_model']}"""
 
+prefixcolumnconcatenator_1 = "output_columns = input_columns"
+prefixcolumnconcatenator_1_correct = """raise ValueError(
+                "'None' output passed when it cannot be none.")"""
+
 signature_fixes_core = {
     'NGramFeaturizer': (textTransform_1, textTransform_1_correct),
     'ColumnConcatenator': [(concatColumns_1, concatColumns_1_correct)],
     'ColumnSelector': [(columnselector_1, columnselector_1_correct)],
     'OneVsRestClassifier': [
         (onevsrestclassifier_1, onevsrestclassifier_1_correct)],
+    'PrefixColumnConcatenator': (prefixcolumnconcatenator_1,
+                                 prefixcolumnconcatenator_1_correct)
 }
 
 

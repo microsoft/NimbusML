@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
+import os
 import pickle
 import unittest
 
@@ -16,14 +17,14 @@ from nimbusml.feature_extraction.categorical import OneHotVectorizer
 from nimbusml.linear_model import FastLinearBinaryClassifier
 from nimbusml.linear_model import LogisticRegressionClassifier
 from nimbusml.preprocessing.normalization import MeanVarianceScaler
-from nimbusml.utils import check_accuracy_scikit, get_X_y
+from nimbusml.utils import get_X_y
 from sklearn.base import clone
 from sklearn.datasets import load_iris
 from sklearn.decomposition import PCA
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.utils.testing import assert_equal
+from sklearn.utils.testing import assert_equal, assert_greater
 
 try:
     from pandas.testing import assert_frame_equal
@@ -45,6 +46,19 @@ categorical_columns = [
     'native-country-region']
 selected_features = ['age', 'education-num']
 
+def check_accuracy_scikit(
+        test_file,
+        label_column,
+        predictions,
+        threshold,
+        sep=','):
+    (test, label) = get_X_y(test_file, label_column, sep=sep)
+    accuracy = np.mean(label[label_column].values == predictions.values)
+    assert_greater(
+        accuracy,
+        threshold,
+        "accuracy should be greater than %s" %
+        threshold)
 
 class TestUciAdultScikit(unittest.TestCase):
 
@@ -112,6 +126,7 @@ class TestUciAdultScikit(unittest.TestCase):
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(ftree)
+        os.remove(ftree.model_)
         ftree2 = pickle.loads(s)
         scores2 = ftree2.predict(X_test)
         accu2 = np.mean(y_test.values.ravel() == scores2.values)
@@ -131,6 +146,7 @@ class TestUciAdultScikit(unittest.TestCase):
         # Unpickle transform and generate output.
         # We should get the exact same output as above
         s = pickle.dumps(cat)
+        os.remove(cat.model_)
         cat2 = pickle.loads(s)
         out2 = cat2.transform(X_train)
         assert_equal(
@@ -159,7 +175,10 @@ class TestUciAdultScikit(unittest.TestCase):
         # Unpickle model and score. We should get the exact same accuracy as
         # above
         s = pickle.dumps(pipe)
+        os.remove(cat.model_)
+        os.remove(ftree.model_)
         pipe2 = pickle.loads(s)
+
         scores2 = pipe2.predict(X_test)
         accu2 = np.mean(y_test.values.ravel() == scores2.values)
         assert_equal(

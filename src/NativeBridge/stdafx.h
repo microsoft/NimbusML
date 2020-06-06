@@ -90,7 +90,7 @@ public:
     ~StopWatch()
     {
         auto endTime = std::chrono::high_resolution_clock::now();
-        
+
         std::stringstream buffer;
         buffer << m_description << ":" << ((endTime - m_startTime).count() / 1000000) << " msecs" << std::endl;
 

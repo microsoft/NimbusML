@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
     <DefineConstants>CORECLR</DefineConstants>
@@ -16,6 +16,7 @@
     <PackageProjectUrl>https://github.com/Microsoft/NimbusML</PackageProjectUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>DotNetBridge.snk</AssemblyOriginatorKeyFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,15 +32,23 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.ML" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.1.0" />    
-    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.13.0" />
-    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ML.Mkl.Redist" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="0.13.0" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="0.13.0" />
-    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.13.0" />
+    <PackageReference Include="Microsoft.ML" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.EntryPoints" Version="0.17.0-preview2" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.LightGBM" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.OnnxConverter" Version="0.17.0-preview2" />
+    <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.2.0" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.Vision" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.17.0-preview2" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.5.0-preview2" />
+    <PackageReference Include="Microsoft.ML.Featurizers" Version="0.17.0-preview2" />
+    <PackageReference Include="Microsoft.MLFeaturizers" Version="0.3.5" />
+    <PackageReference Include="Microsoft.DataPrep" Version="0.0.3.2-preview" />
+    <PackageReference Include="TensorFlow.NET" Version="0.11.8.1" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="1.14.0" />
   </ItemGroup>
 </Project>

@@ -19,8 +19,10 @@ from sklearn.utils.testing import assert_greater
 
 class TestLightGbmClassifier(unittest.TestCase):
 
-    @unittest.skipIf(platform.system() in ("Linux", "Darwin") and six.PY2,
-                     "encoding/decoding issues with linux py2.7, bug 286536")
+    @unittest.skipIf(platform.system() == "Darwin" and six.PY2,
+    "Disabled due to bug on Mac Python 2.7 build, more info: \
+    https://github.com/microsoft/NimbusML/issues/366, \
+    https://github.com/microsoft/NimbusML/pull/362")
     def test_lightgbmclassifier(self):
         np.random.seed(0)
         train_file = get_dataset('wiki_detox_train').as_filepath()

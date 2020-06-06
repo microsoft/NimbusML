@@ -1,0 +1,236 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.ML;
+using Microsoft.ML.CommandLine;
+using Microsoft.ML.DotNetBridge;
+using Microsoft.ML.Data;
+using Microsoft.ML.EntryPoints;
+using Microsoft.ML.Runtime;
+using Microsoft.ML.Transforms;
+
+[assembly: LoadableClass(typeof(void), typeof(DotNetBridgeEntrypoints), null, typeof(SignatureEntryPointModule), "DotNetBridgeEntrypoints")]
+
+[assembly: LoadableClass(VariableColumnTransform.Summary, typeof(VariableColumnTransform), null, typeof(SignatureLoadDataTransform),
+    "", VariableColumnTransform.LoaderSignature)]
+
+namespace Microsoft.ML.DotNetBridge
+{
+    internal static class DotNetBridgeEntrypoints
+    {
+        [TlcModule.EntryPoint(Name = "Transforms.PrefixColumnConcatenator", Desc = ColumnConcatenatingTransformer.Summary,
+            UserName = ColumnConcatenatingTransformer.UserName, ShortName = ColumnConcatenatingTransformer.LoadName)]
+        public static CommonOutputs.TransformOutput ConcatColumns(IHostEnvironment env, ColumnCopyingTransformer.Options input)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("PrefixConcatColumns");
+            host.CheckValue(input, nameof(input));
+            EntryPointUtils.CheckInputArgs(host, input);
+
+            // Get all column names with preserving order.
+            var colNames = new List<string>(input.Data.Schema.Count);
+            for (int i = 0; i < input.Data.Schema.Count; i++)
+                colNames.Add(input.Data.Schema[i].Name);
+
+            // Iterate through input options, find matching source columns, create new input options
+            var inputOptions = new ColumnConcatenatingTransformer.Options() { Data = input.Data };
+            var columns = new List<ColumnConcatenatingTransformer.Column>(input.Columns.Length);
+            foreach (var col in input.Columns)
+            {
+                var newCol = new ColumnConcatenatingTransformer.Column();
+                newCol.Name = col.Name;
+                var prefix = col.Source;
+                newCol.Source = colNames.Where(x => x.StartsWith(prefix, StringComparison.InvariantCulture)).ToArray();
+                if (newCol.Source.Length == 0)
+                    throw new ArgumentOutOfRangeException("No matching columns found for prefix: " + prefix);
+
+                columns.Add(newCol);
+            }
+            inputOptions.Columns = columns.ToArray();
+
+            var xf = ColumnConcatenatingTransformer.Create(env, inputOptions, inputOptions.Data);
+            return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
+        }
+
+        public sealed class TransformModelInput
+        {
+            [Argument(ArgumentType.Required, HelpText = "The transform model.", SortOrder = 1)]
+            public TransformModel Model;
+        }
+
+        public sealed class ModelSchemaOutput
+        {
+            [TlcModule.Output(Desc = "The model schema", SortOrder = 1)]
+            public IDataView Schema;
+        }
+
+        [TlcModule.EntryPoint(Name = "Models.Schema", Desc = "Retrieve output model schema")]
+        public static ModelSchemaOutput GetSchema(IHostEnvironment env, TransformModelInput input)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("GetSchema");
+            host.CheckValue(input, nameof(input));
+            EntryPointUtils.CheckInputArgs(host, input);
+
+            return new ModelSchemaOutput { Schema = new EmptyDataView(host, input.Model.OutputSchema) };
+        }
+
+        [TlcModule.EntryPoint(Name = "Transforms.VariableColumnTransform", Desc = VariableColumnTransform.Summary,
+            UserName = "Variable Column Creator", ShortName = "Variable Column Creator")]
+        public static CommonOutputs.TransformOutput CreateVariableColumn(IHostEnvironment env, VariableColumnTransform.Options inputOptions)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("VariableColumnCreator");
+            EntryPointUtils.CheckInputArgs(host, inputOptions);
+
+            var xf = VariableColumnTransform.Create(env, inputOptions, inputOptions.Data);
+            return new CommonOutputs.TransformOutput { Model = new TransformModelImpl(env, xf, inputOptions.Data), OutputData = xf };
+        }
+
+        public sealed class ScoringTransformInput
+        {
+            [Argument(ArgumentType.Required, HelpText = "The dataset to be scored", SortOrder = 1)]
+            public IDataView Data;
+
+            [Argument(ArgumentType.Required, HelpText = "The predictor model to apply to data", SortOrder = 2)]
+            public PredictorModel PredictorModel;
+
+            [Argument(ArgumentType.AtMostOnce, HelpText = "Suffix to append to the score columns", SortOrder = 3)]
+            public string Suffix;
+        }
+
+        public sealed class ScoringTransformOutput
+        {
+            [TlcModule.Output(Desc = "The scored dataset", SortOrder = 1)]
+            public IDataView ScoredData;
+
+            [TlcModule.Output(Desc = "The scoring transform", SortOrder = 2)]
+            public TransformModel ScoringTransform;
+        }
+
+        private static bool AreSchemasCompatible(DataViewSchema schema1, DataViewSchema schema2)
+        {
+            if (schema1 == null)
+                return schema2 == null;
+            if (schema2 == null)
+                return schema1 == null;
+            if (schema1.Count != schema2.Count)
+                return false;
+
+            for (int i = 0; i < schema1.Count; i++)
+            {
+                if(schema1[i].Type != schema2[i].Type)
+                    return false;
+            }
+
+            return true;
+        }
+
+        [TlcModule.EntryPoint(Name = "Transforms.DatasetScorerEx", Desc = "Score a dataset with a predictor model")]
+        public static ScoringTransformOutput Score(IHostEnvironment env, ScoringTransformInput input)
+        {
+            Contracts.CheckValue(env, nameof(env));
+            var host = env.Register("ScoreModel");
+            host.CheckValue(input, nameof(input));
+            EntryPointUtils.CheckInputArgs(host, input);
+
+            RoleMappedData data;
+            IPredictor predictor;
+            var inputData = input.Data;
+            try
+            {
+                input.PredictorModel.PrepareData(host, inputData, out data, out predictor);
+            }
+            catch (Exception)
+            {
+                // this can happen in csr_matrix case, try to use only trainer model.
+                host.Assert(inputData.Schema.Count == 1);
+                var inputColumnName = inputData.Schema[0].Name;
+                var trainingSchema = input.PredictorModel.GetTrainingSchema(host);
+                // get feature vector item type.
+                var trainingFeatureColumn = (DataViewSchema.Column)trainingSchema.Feature;
+                var requiredType = trainingFeatureColumn.Type.GetItemType().RawType;
+                var featuresColumnName = trainingFeatureColumn.Name;
+                predictor = input.PredictorModel.Predictor;
+                var xf = new TypeConvertingTransformer(host,
+                    new TypeConvertingEstimator.ColumnOptions(featuresColumnName, requiredType, inputColumnName)).Transform(inputData);
+                data = new RoleMappedData(xf, null, featuresColumnName);
+            }
+
+            IDataView scoredPipe;
+            using (var ch = host.Start("Creating scoring pipeline"))
+            {
+                ch.Trace("Creating pipeline");
+                var bindable = ScoreUtils.GetSchemaBindableMapper(host, predictor);
+                ch.AssertValue(bindable);
+
+                var mapper = bindable.Bind(host, data.Schema);
+                var scorer = ScoreUtils.GetScorerComponent(host, mapper, input.Suffix);
+                scoredPipe = scorer.CreateComponent(host, data.Data, mapper, input.PredictorModel.GetTrainingSchema(host));
+            }
+
+            return
+                new ScoringTransformOutput
+                {
+                    ScoredData = scoredPipe,
+                    ScoringTransform = new TransformModelImpl(host, scoredPipe, inputData)
+                };
+
+        }
+
+        public sealed class OnnxTransformInput : TransformInputBase
+        {
+            [Argument(ArgumentType.Required, HelpText = "Path to the onnx model file.", ShortName = "model", SortOrder = 0)]
+            public string ModelFile;
+
+            [Argument(ArgumentType.Multiple, HelpText = "Name of the input column.", SortOrder = 1)]
+            public string[] InputColumns;
+
+            [Argument(ArgumentType.Multiple, HelpText = "Name of the output column.", SortOrder = 2)]
+            public string[] OutputColumns;
+
+            [Argument(ArgumentType.AtMostOnce, HelpText = "GPU device id to run on (e.g. 0,1,..). Null for CPU. Requires CUDA 9.1.", SortOrder = 3)]
+            public int? GpuDeviceId = null;
+
+            [Argument(ArgumentType.AtMostOnce, HelpText = "If true, resumes execution on CPU upon GPU error. If false, will raise the GPU execption.", SortOrder = 4)]
+            public bool FallbackToCpu = false;
+        }
+
+        public sealed class OnnxTransformOutput
+        {
+            [TlcModule.Output(Desc = "ONNX transformed dataset", SortOrder = 1)]
+            public IDataView OutputData;
+
+            [TlcModule.Output(Desc = "Transform model", SortOrder = 2)]
+            public TransformModel Model;
+        }
+
+        [TlcModule.EntryPoint(Name = "Models.OnnxTransformer",
+                              Desc = "Applies an ONNX model to a dataset.",
+                              UserName = "Onnx Transformer",
+                              ShortName = "onnx-xf")]
+        public static OnnxTransformOutput ApplyOnnxModel(IHostEnvironment env, OnnxTransformInput input)
+        {
+            var host = EntryPointUtils.CheckArgsAndCreateHost(env, "OnnxTransform", input);
+
+            var inputColumns = input.InputColumns ?? (Array.Empty<string>());
+            var outputColumns = input.OutputColumns ?? (Array.Empty<string>());
+
+            var transformsCatalog = new TransformsCatalog(host);
+            var onnxScoringEstimator = OnnxCatalog.ApplyOnnxModel(transformsCatalog,
+                                                                  outputColumns,
+                                                                  inputColumns,
+                                                                  input.ModelFile,
+                                                                  input.GpuDeviceId,
+                                                                  input.FallbackToCpu);
+
+            var view = onnxScoringEstimator.Fit(input.Data).Transform(input.Data);
+            return new OnnxTransformOutput()
+            {
+                Model = new TransformModelImpl(host, view, input.Data),
+                OutputData = view
+            };
+        }
+    }
+}

@@ -4,6 +4,7 @@ parameters:
   buildMatrix: {}
   buildQueue: {}
   testDistro: ''
+  testOptions: ''
 
 phases:
 
@@ -12,6 +13,7 @@ phases:
     _buildScript: ${{ parameters.buildScript }}
     _dockerRun: docker run -e SYSTEM_TEAMFOUNDATIONCOLLECTIONURI="$(System.TeamFoundationCollectionUri)" -e BUILD_BUILDNUMBER="$(Build.BuildNumber)" -i -v $(Build.SourcesDirectory):/builddir -w="/builddir"
     _distro: ${{ parameters.testDistro }}
+    _testOptions: ${{ parameters.testOptions }}
   queue:
    parallel: 99
    matrix:
@@ -19,45 +21,36 @@ phases:
    ${{ insert }}: ${{ parameters.buildQueue }}
   steps:
 
-  # Install python
-  - ${{ if eq(parameters.installPython, '1') }}:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '$(python.version)'
-        architecture: 'x64'
-    - script: pip install pytest>=4.4.0 pytest-cov>=2.6.1 numpy>=1.16.2 pandas>=0.24.2 scikit-learn>=0.20.3 matplotlib
-      displayName: Install numpy, pandas, scikit-learn
-    - script: python -c "import sys;print(sys.prefix, sys.base_prefix, sys.executable, sys.base_exec_prefix)"
-      displayName: Display python versions
-    - script: python -c "import numpy;print(numpy.__version__, numpy.__file__)"
-      displayName: Display numpy versions
-
-  - ${{ if eq(parameters.installPython, '0') }}:
-    - script: "echo will download Python '$(installPython)'."
-      displayName: Will Download python.
-
   # Windows phases
   - ${{ if eq(parameters.name, 'Windows') }}:
-    - script: $(_buildScript) --configuration $(_configuration) --runTests
+    - script: $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
-    - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb mono-libgdiplus gettext && brew link gettext --force
+    # Note: Manual defining of the libomp URL below is needed to avoid error at runtime. Installing using 'brew install libomp' results in "Intel MKL FATAL ERROR: Cannot load libmkl_intel_thread.dylib."
+    - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb gettext && brew link gettext --force && brew unlink python@2 && brew install mono-libgdiplus
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
-      - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
+      - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Linux phases
-  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_Ubuntu16_PyBind11'), eq(parameters.name, 'Linux_CentOS7')) }}:
-    - script: sudo apt-get update && sudo apt-get install clang cmake libunwind8 curl liblttng-ust0 libcurl3 libssl1.0.0 libuuid1 libkrb5-3 zlib1g
-    - ${{ if eq(parameters.testDistro, 'noTests') }}:
-      - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
-    - ${{ if eq(parameters.testDistro, '') }}:
-      - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7')) }}:
+    - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
+      displayName: Build native bridge
+    - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
+      displayName: Build python wheel
+    - ${{ if eq(parameters.testDistro, 'ubuntu16') }}:
+      - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+        displayName: Run tests Ubuntu16
+    - ${{ if eq(parameters.testDistro, 'ubuntu14') }}:
+      - script: $(_dockerRun) mlnet/ubuntu14-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+        displayName: Run tests Ubuntu14
+    - ${{ if eq(parameters.testDistro, 'centos7') }}:
+      - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+        displayName: Run tests CentOS7
 
   # Publish build artifacts
-  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu16_PyBind11'), eq(parameters.name, 'Windows'), eq(parameters.name, 'Mac')) }}:
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Windows'), eq(parameters.name, 'Mac')) }}:
     - task: PublishBuildArtifacts@1
-      condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: Publish wheel file to VSTS artifacts
       inputs:
         pathToPublish: $(Build.SourcesDirectory)/target

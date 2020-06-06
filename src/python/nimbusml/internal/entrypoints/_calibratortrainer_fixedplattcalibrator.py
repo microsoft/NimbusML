@@ -10,16 +10,16 @@ from ..utils.utils import try_set
 
 
 def fixed_platt_calibrator(
-        slope=1.0,
+        slope=-1.0,
         offset=0.0,
         **params):
     """
     **Description**
         None
 
-    :param slope: The slope parameter of f(x) = 1 / (1 + exp(-slope *
+    :param slope: The slope parameter of f(x) = 1 / (1 + exp(slope *
         x + offset) (settings).
-    :param offset: The offset parameter of f(x) = 1 / (1 + exp(-slope
+    :param offset: The offset parameter of f(x) = 1 / (1 + exp(slope
         * x + offset) (settings).
     """
 

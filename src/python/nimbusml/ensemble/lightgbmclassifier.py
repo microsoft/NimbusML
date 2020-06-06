@@ -78,6 +78,9 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
 
     :param caching: Whether trainer should cache input training data.
 
+    :param unbalanced_sets: Use for multi-class classification when training
+        data is not balanced.
+
     :param use_softmax: Use softmax loss for the multi classification.
 
     :param sigmoid: Parameter for the sigmoid function.
@@ -101,6 +104,9 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
 
     :param handle_missing_value: Enable special handling of missing value or
         not.
+
+    :param use_zero_as_missing_value: Enable usage of zero (0) as missing
+        value.
 
     :param minimum_example_count_per_group: Minimum number of instances per
         categorical group.
@@ -145,6 +151,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             booster=None,
             normalize='Auto',
             caching='Auto',
+            unbalanced_sets=False,
             use_softmax=None,
             sigmoid=0.5,
             evaluation_metric='Error',
@@ -156,6 +163,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             batch_size=1048576,
             use_categorical_split=None,
             handle_missing_value=True,
+            use_zero_as_missing_value=False,
             minimum_example_count_per_group=100,
             maximum_categorical_split_point_count=32,
             categorical_smoothing=10.0,
@@ -198,6 +206,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             booster=booster,
             normalize=normalize,
             caching=caching,
+            unbalanced_sets=unbalanced_sets,
             use_softmax=use_softmax,
             sigmoid=sigmoid,
             evaluation_metric=evaluation_metric,
@@ -209,6 +218,7 @@ class LightGbmClassifier(core, BasePredictor, ClassifierMixin):
             batch_size=batch_size,
             use_categorical_split=use_categorical_split,
             handle_missing_value=handle_missing_value,
+            use_zero_as_missing_value=use_zero_as_missing_value,
             minimum_example_count_per_group=minimum_example_count_per_group,
             maximum_categorical_split_point_count=maximum_categorical_split_point_count,
             categorical_smoothing=categorical_smoothing,

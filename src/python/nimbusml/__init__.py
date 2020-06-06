@@ -2,7 +2,7 @@
 Microsoft Machine Learning for Python
 """
 
-__version__ = '1.1.0'
+__version__ = '1.7.1'
 
 # CoreCLR version of MicrosoftML is built on Windows.
 # But file permissions are not preserved when it's copied to Linux.
@@ -20,6 +20,7 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 from .internal.utils.data_roles import Role
 from .internal.utils.data_schema import DataSchema
 from .internal.utils.data_stream import BinaryDataStream
+from .internal.utils.data_stream import DprepDataStream
 from .internal.utils.data_stream import FileDataStream
 from .internal.utils.utils import run_tests
 from .pipeline import Pipeline

@@ -70,6 +70,9 @@ class LightGbmClassifier(
 
     :param caching: Whether trainer should cache input training data.
 
+    :param unbalanced_sets: Use for multi-class classification when training
+        data is not balanced.
+
     :param use_softmax: Use softmax loss for the multi classification.
 
     :param sigmoid: Parameter for the sigmoid function.
@@ -93,6 +96,9 @@ class LightGbmClassifier(
 
     :param handle_missing_value: Enable special handling of missing value or
         not.
+
+    :param use_zero_as_missing_value: Enable usage of zero (0) as missing
+        value.
 
     :param minimum_example_count_per_group: Minimum number of instances per
         categorical group.
@@ -137,6 +143,7 @@ class LightGbmClassifier(
             booster=None,
             normalize='Auto',
             caching='Auto',
+            unbalanced_sets=False,
             use_softmax=None,
             sigmoid=0.5,
             evaluation_metric='Error',
@@ -148,6 +155,7 @@ class LightGbmClassifier(
             batch_size=1048576,
             use_categorical_split=None,
             handle_missing_value=True,
+            use_zero_as_missing_value=False,
             minimum_example_count_per_group=100,
             maximum_categorical_split_point_count=32,
             categorical_smoothing=10.0,
@@ -165,6 +173,7 @@ class LightGbmClassifier(
         self.booster = booster
         self.normalize = normalize
         self.caching = caching
+        self.unbalanced_sets = unbalanced_sets
         self.use_softmax = use_softmax
         self.sigmoid = sigmoid
         self.evaluation_metric = evaluation_metric
@@ -176,6 +185,7 @@ class LightGbmClassifier(
         self.batch_size = batch_size
         self.use_categorical_split = use_categorical_split
         self.handle_missing_value = handle_missing_value
+        self.use_zero_as_missing_value = use_zero_as_missing_value
         self.minimum_example_count_per_group = minimum_example_count_per_group
         self.maximum_categorical_split_point_count = maximum_categorical_split_point_count
         self.categorical_smoothing = categorical_smoothing
@@ -201,6 +211,7 @@ class LightGbmClassifier(
             booster=self.booster,
             normalize_features=self.normalize,
             caching=self.caching,
+            unbalanced_sets=self.unbalanced_sets,
             use_softmax=self.use_softmax,
             sigmoid=self.sigmoid,
             evaluation_metric=self.evaluation_metric,
@@ -212,6 +223,7 @@ class LightGbmClassifier(
             batch_size=self.batch_size,
             use_categorical_split=self.use_categorical_split,
             handle_missing_value=self.handle_missing_value,
+            use_zero_as_missing_value=self.use_zero_as_missing_value,
             minimum_example_count_per_group=self.minimum_example_count_per_group,
             maximum_categorical_split_point_count=self.maximum_categorical_split_point_count,
             categorical_smoothing=self.categorical_smoothing,

@@ -8,13 +8,12 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Internal.Utilities;
 using System.Threading.Tasks;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     public unsafe static partial class Bridge
     {
@@ -142,6 +141,10 @@ namespace Microsoft.MachineLearning.DotNetBridge
                             break;
                         case InternalDataKind.Text:
                             columns.Add(new TextColumn(pdata, pdata->getters[c], c, name));
+                            break;
+                        case InternalDataKind.DT:
+                            if (pdata->vecCards[c] == -1)
+                                columns.Add(new DateTimeColumn(pdata, pdata->getters[c], c, name));
                             break;
                     }
                 }
@@ -413,7 +416,7 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     _waiterPublish = new OrderedWaiter(firstCleared: true);
 
                     _queue = new BlockingCollection<Batch>(QueueSize);
-                    _thdRead = Utils.RunOnBackgroundThread(ThreadProc);
+                    _thdRead = Utils.RunOnBackgroundThreadAsync(ThreadProc);
                 }
 
                 public void Release()
@@ -858,6 +861,31 @@ namespace Microsoft.MachineLearning.DotNetBridge
                     Contracts.Check(Data != null, AlreadyDisposed);
                     Contracts.Assert(0 <= index);
                     _getter(Data, ColIndex, index, out value);
+                }
+
+                public override void Dispose()
+                {
+                    _getter = null;
+                    base.Dispose();
+                }
+            }
+
+            private sealed class DateTimeColumn : Column<DateTime>
+            {
+                private I8Getter _getter;
+
+                public DateTimeColumn(DataSourceBlock* data, void* getter, int colIndex, string name)
+                    : base(data, colIndex, name, DateTimeDataViewType.Instance)
+                {
+                    _getter = MarshalDelegate<I8Getter>(getter);
+                }
+
+                public override void CopyOut(long index, Batch batch, ref DateTime value)
+                {
+                    Contracts.Check(Data != null, AlreadyDisposed);
+                    Contracts.Assert(0 <= index);
+                    _getter(Data, ColIndex, index, out var val);
+                    value = DateTimeOffset.FromUnixTimeMilliseconds(val).UtcDateTime;
                 }
 
                 public override void Dispose()

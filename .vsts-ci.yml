@@ -5,40 +5,28 @@ phases:
   parameters:
     name: Windows
     buildScript: build.cmd
-    installPython: 1
     buildMatrix:
       Py37:
         _configuration: RlsWinPy3.7
-        python.version: '3.7'
+      Py36:
+        _configuration: RlsWinPy3.6
+      Py35:
+        _configuration: RlsWinPy3.5
     buildQueue:
       name: Hosted VS2017
+    testOptions: --includeExtendedTests
 
 # Build all configurations for Mac
 - template: /build/ci/phase-template.yml
   parameters:
     name: Mac
     buildScript: ./build.sh
-    installpython: 1
     buildMatrix:
       Py37:
         _configuration: RlsMacPy3.7
-        python.version: '3.7'
     buildQueue:
       name: Hosted macOS
-
-# Build all configurations for Linux
-  # Run tests on Ubuntu16
-- template: /build/ci/phase-template.yml
-  parameters:
-    name: Linux_Ubuntu16_PyBind11
-    buildScript: ./build.sh
-    installPython: 1
-    buildMatrix:
-      Py37:
-        _configuration: RlsLinPy3.7
-        python.version: '3.7'
-    buildQueue:
-      name: Hosted Ubuntu 1604
+    testOptions: --includeExtendedTests
 
 # Build all configurations for Linux
   # Run tests on Ubuntu16
@@ -46,26 +34,24 @@ phases:
   parameters:
     name: Linux_Ubuntu16
     buildScript: ./build.sh
-    installPython: 0
+    testDistro: ubuntu16
     buildMatrix:
+      Py37:
+        _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
-        python.version: '3.6'
-      Py35:
-        _configuration: RlsLinPy3.5
-        python.version: '3.5'
     buildQueue:
       name: Hosted Ubuntu 1604
-
+    testOptions: --includeExtendedTests
   # Run tests on CentOS7
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_CentOS7
     buildScript: ./build.sh
-    installPython: 0
+    testDistro: centos7
     buildMatrix:
       Py27:
         _configuration: RlsLinPy2.7
-        python.version: '2.7'
     buildQueue:
       name: Hosted Ubuntu 1604
+ 

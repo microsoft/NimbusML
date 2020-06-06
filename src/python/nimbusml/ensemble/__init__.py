@@ -1,3 +1,5 @@
+from .ensembleclassifier import EnsembleClassifier
+from .ensembleregressor import EnsembleRegressor
 from .fastforestbinaryclassifier import FastForestBinaryClassifier
 from .fastforestregressor import FastForestRegressor
 from .fasttreesbinaryclassifier import FastTreesBinaryClassifier
@@ -9,8 +11,11 @@ from .lightgbmbinaryclassifier import LightGbmBinaryClassifier
 from .lightgbmclassifier import LightGbmClassifier
 from .lightgbmranker import LightGbmRanker
 from .lightgbmregressor import LightGbmRegressor
+from .votingensemble import VotingRegressor
 
 __all__ = [
+    'EnsembleClassifier',
+    'EnsembleRegressor',
     'FastForestBinaryClassifier',
     'FastForestRegressor',
     'FastTreesBinaryClassifier',
@@ -21,5 +26,6 @@ __all__ = [
     'LightGbmBinaryClassifier',
     'LightGbmClassifier',
     'LightGbmRanker',
-    'LightGbmRegressor'
+    'LightGbmRegressor',
+    'VotingRegressor'
 ]

@@ -5,10 +5,9 @@
 
 using System;
 using System.Globalization;
-using Microsoft.ML;
 using Microsoft.ML.Runtime;
 
-namespace Microsoft.MachineLearning.DotNetBridge
+namespace Microsoft.ML.DotNetBridge
 {
     internal class RmlEnvironment : HostEnvironmentBase<RmlEnvironment>
     {
@@ -53,15 +52,9 @@ namespace Microsoft.MachineLearning.DotNetBridge
         }
 
         public RmlEnvironment(Bridge.CheckCancelled checkDelegate, int? seed = null, bool verbose = false)
-            : this(RandomUtils.Create(seed), verbose)
+            : base(seed, verbose)
         {
-
             CheckCancelled = checkDelegate;
-        }
-
-        public RmlEnvironment(Random rand, bool verbose = false)
-            : base(rand, verbose)
-        {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             EnsureDispatcher<ChannelMessage>();
         }

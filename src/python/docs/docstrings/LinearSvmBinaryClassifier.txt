@@ -1,0 +1,55 @@
+    """
+
+    Linear Support Vector Machine (SVM) Binary Classifier
+
+    .. remarks::
+        Linear SVM implements an algorithm that finds a hyperplane in the
+		feature space for binary classification, by solving an SVM problem.
+		For instance, for a given feature vector, the prediction is given by
+		determining what side of the hyperplane the	point falls into. That is
+		the same as the sign of the feautures' weighted sum (the weights being
+		computed by the algorithm) plus the bias computed by the algorithm.
+
+		This algorithm implemented is the PEGASOS method, which alternates
+		between stochastic gradient descent steps and projection steps,
+		introduced by Shalev-Shwartz, Singer and Srebro.
+
+
+        **Reference**
+    
+            `Wikipedia entry for Support Vector Machine
+            <https://en.wikipedia.org/wiki/Support-vector_machine>`_
+    
+            `Pegasos: Primal Estimated sub-GrAdient SOlver for SVM
+            <https://ttic.uchicago.edu/~shai/papers/ShalevSiSr07.pdf>`_
+    
+		
+    :param normalize: Specifies the type of automatic normalization used:
+
+        * ``"Auto"``: if normalization is needed, it is performed
+          automatically. This is the default choice.
+        * ``"No"``: no normalization is performed.
+        * ``"Yes"``: normalization is performed.
+        * ``"Warn"``: if normalization is needed, a warning
+          message is displayed, but normalization is not performed.
+
+        Normalization rescales disparate data ranges to a standard scale.
+        Feature
+        scaling ensures the distances between data points are proportional
+        and
+        enables various optimization methods such as gradient descent to
+        converge
+        much faster. If normalization is performed, a ``MinMax`` normalizer
+        is
+        used. It normalizes values in an interval [a, b] where ``-1 <= a <=
+        0``
+        and ``0 <= b <= 1`` and ``b - a = 1``. This normalizer preserves
+        sparsity by mapping zero to zero.
+
+
+    .. index:: models, classification, svm
+
+    Example:
+       .. literalinclude:: /../nimbusml/examples/LinearSvmBinaryClassifier.py
+               :language: python
+    """

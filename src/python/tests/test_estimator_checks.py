@@ -7,15 +7,26 @@ run check_estimator tests
 """
 import json
 import os
+import platform
+import unittest
 
+from nimbusml.cluster import KMeansPlusPlus
+from nimbusml.decomposition import FactorizationMachineBinaryClassifier
+from nimbusml.ensemble import EnsembleClassifier
+from nimbusml.ensemble import EnsembleRegressor
 from nimbusml.ensemble import LightGbmBinaryClassifier
 from nimbusml.ensemble import LightGbmClassifier
 from nimbusml.ensemble import LightGbmRanker
 from nimbusml.ensemble import LightGbmRegressor
 from nimbusml.feature_extraction.text import NGramFeaturizer
 from nimbusml.internal.entrypoints._ngramextractor_ngram import n_gram
-from nimbusml.preprocessing import TensorFlowScorer
+from nimbusml.preprocessing import TensorFlowScorer, DateTimeSplitter
+from nimbusml.linear_model import SgdBinaryClassifier
 from nimbusml.preprocessing.filter import SkipFilter, TakeFilter
+from nimbusml.preprocessing.normalization import RobustScaler
+from nimbusml.timeseries import (IidSpikeDetector, IidChangePointDetector,
+                                 SsaSpikeDetector, SsaChangePointDetector,
+                                 SsaForecaster)
 from sklearn.utils.estimator_checks import _yield_all_checks, MULTI_OUTPUT
 
 this = os.path.abspath(os.path.dirname(__file__))
@@ -47,20 +58,44 @@ OMITTED_CHECKS = {
     # I8 should not have NA values
     'CountSelector':
         'check_estimators_dtypes',
+    # DateTimeSplitter does not work with floating point types.
+    'DateTimeSplitter':
+        'check_transformer_general, check_pipeline_consistency'
+        'check_estimators_pickle, check_estimators_dtypes'
+        'check_dict_unchanged, check_dtype_object, check_fit_score_takes_y'
+        'check_transformer_data_not_an_array, check_fit1d_1feature,'
+        'check_fit2d_1feature, check_fit2d_predict1d, check_estimators_overwrite_params,'
+        'check_estimator_sparse_data, check_fit2d_1sample, check_dont_overwrite_parameters,'
+        'check_estimators_fit_returns_self',
     # by design returns smaller number of rows
     'SkipFilter': 'check_transformer_general, '
                   'check_transformer_data_not_an_array',
     # fix pending in PR, bug cant handle csr matrix
     'RangeFilter': 'check_estimators_dtypes, '
                    'check_estimator_sparse_data',
+    # time series do not currently support sparse matrices
+    'IidSpikeDetector': 'check_estimator_sparse_data',
+    'IidChangePointDetector': 'check_estimator_sparse_data',
+    'SsaSpikeDetector': 'check_estimator_sparse_data'
+                        'check_fit2d_1sample', # SSA requires more than one sample
+    'SsaChangePointDetector': 'check_estimator_sparse_data'
+                              'check_fit2d_1sample', # SSA requires more than one sample
+    'SsaForecaster': 'check_estimator_sparse_data'
+                     'check_fit2d_1sample', # SSA requires more than one sample
     # bug, low tolerance
     'FastLinearRegressor': 'check_supervised_y_2d, '
                            'check_regressor_data_not_an_array, '
-                           'check_regressors_int',
+                           'check_regressors_int, '
+                           # todo: investigate
+                           'check_regressors_train',
     # bug decision function shape should be 1
     # dimensional arrays, tolerance
     'FastLinearClassifier': 'check_classifiers_train',
     'FastForestRegressor': 'check_fit_score_takes_y',  # bug
+    'EnsembleClassifier': 'check_supervised_y_2d, '
+                          'check_classifiers_train',
+    'EnsembleRegressor': 'check_supervised_y_2d, '
+                         'check_regressors_train',
     # bug in decision_function
     'FastTreesBinaryClassifier':
         'check_decision_proba_consistency',
@@ -75,6 +110,8 @@ OMITTED_CHECKS = {
         'check_estimators_dtypes',
     # tolerance
     'LogisticRegressionClassifier': 'check_classifiers_train',
+    # todo: investigate
+    'OnlineGradientDescentRegressor': 'check_regressors_train',
     # bug decision function shape, prediction bug
     'NaiveBayesClassifier':
         'check_classifiers_train, check_classifiers_classes',
@@ -131,15 +168,26 @@ OMITTED_CHECKS = {
         'check_estimators_overwrite_params, \
         check_estimator_sparse_data, check_estimators_pickle, '
         'check_estimators_nan_inf',
+    # RobustScaler does not support vectorized types
+    'RobustScaler': 'check_estimator_sparse_data',
+    'ToKeyImputer':
+        'check_estimator_sparse_data, check_estimators_dtypes',
+    # Most of these skipped tests are failing because the checks
+    # require numerical types. ToString returns object types.
+    # TypeError: ufunc 'isfinite' not supported for the input types
+    'ToString': 'check_estimator_sparse_data, check_pipeline_consistency'
+        'check_transformer_data_not_an_array, check_estimators_pickle'
+        'check_transformer_general',
+    'OrdinaryLeastSquaresRegressor': 'check_fit2d_1sample'
 }
 
 OMITTED_CHECKS_TUPLE = (
-    'OneHotHashVectorizer, FromKey, DssmFeaturizer, DnnFeaturizer, '
+    'OneHotHashVectorizer, FromKey, DnnFeaturizer, '
     'PixelExtractor, Loader, Resizer, \
                         GlobalContrastRowScaler, PcaTransformer, '
     'ColumnConcatenator, Sentiment, CharTokenizer, LightLda, '
-    'NGramFeaturizer, \
-                        WordEmbedding',
+    'NGramFeaturizer, WordEmbedding, LpScaler, WordTokenizer'
+    'NGramExtractor',
     'check_transformer_data_not_an_array, check_pipeline_consistency, '
     'check_fit2d_1feature, check_estimators_fit_returns_self,\
                        check_fit2d_1sample, '
@@ -152,7 +200,7 @@ OMITTED_CHECKS_TUPLE = (
                        check_estimator_sparse_data, '
     'check_estimators_pickle')
 
-OMITTED_CHECKS_ALWAYS = ['check_estimators_nan_inf']
+OMITTED_CHECKS_ALWAYS = 'check_estimators_nan_inf'
 
 NOBINARY_CHECKS = [
     'check_estimator_sparse_data',
@@ -169,6 +217,11 @@ NOBINARY_CHECKS = [
     'check_classifiers_train']
 
 INSTANCES = {
+    'DateTimeSplitter': DateTimeSplitter(prefix='dt', columns=['F0']),
+    'EnsembleClassifier': EnsembleClassifier(num_models=3),
+    'EnsembleRegressor': EnsembleRegressor(num_models=3),
+    'FactorizationMachineBinaryClassifier': FactorizationMachineBinaryClassifier(shuffle=False),
+    'KMeansPlusPlus': KMeansPlusPlus(n_clusters=2),
     'LightGbmBinaryClassifier': LightGbmBinaryClassifier(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'LightGbmClassifier': LightGbmClassifier(
@@ -178,8 +231,19 @@ INSTANCES = {
     'LightGbmRanker': LightGbmRanker(
         minimum_example_count_per_group=1, minimum_example_count_per_leaf=1),
     'NGramFeaturizer': NGramFeaturizer(word_feature_extractor=n_gram()),
+    'RobustScaler': RobustScaler(scale=False),
+    'SgdBinaryClassifier': SgdBinaryClassifier(number_of_threads=1, shuffle=False),
     'SkipFilter': SkipFilter(count=5),
     'TakeFilter': TakeFilter(count=100000),
+    'IidSpikeDetector': IidSpikeDetector(columns=['F0']),
+    'IidChangePointDetector': IidChangePointDetector(columns=['F0']),
+    'SsaSpikeDetector': SsaSpikeDetector(columns=['F0'], seasonal_window_size=2),
+    'SsaChangePointDetector': SsaChangePointDetector(columns=['F0'], seasonal_window_size=2),
+    'SsaForecaster': SsaForecaster(columns=['F0'],
+                                   window_size=2,
+                                   series_length=5,
+                                   train_size=5,
+                                   horizon=1),
     'TensorFlowScorer': TensorFlowScorer(
         model_location=os.path.join(
             this,
@@ -210,13 +274,22 @@ MULTI_OUTPUT_EX = [
 
 MULTI_OUTPUT.extend(MULTI_OUTPUT_EX)
 
+skip_epoints = set([
+    'OneVsRestClassifier',
+    'TreeFeaturizer',
+    # skip SymSgdBinaryClassifier for now, because of crashes.
+    'SymSgdBinaryClassifier',
+    'DatasetTransformer',
+    'OnnxRunner',
+    'TimeSeriesImputer'
+])
 
-def my_import(name):
-    components = name.split('.')
-    mod = __import__(components[0])
-    for comp in components[1:]:
-        mod = getattr(mod, comp)
-    return mod
+if 'centos' in platform.linux_distribution()[0].lower():
+    skip_epoints |= set([
+        'DateTimeSplitter',
+        'RobustScaler',
+        'ToKeyImputer',
+        'ToString'])
 
 
 def load_json(file_path):
@@ -226,89 +299,79 @@ def load_json(file_path):
         content_without_comments = '\n'.join(lines)
         return json.loads(content_without_comments)
 
+def get_epoints():
+    epoints = []
+    my_path = os.path.realpath(__file__)
+    my_dir = os.path.dirname(my_path)
+    manifest_diff_json = os.path.join(my_dir, '..', 'tools',
+                                      'manifest_diff.json')
+    manifest_diff = load_json(manifest_diff_json)
+    for e in manifest_diff['EntryPoints']:
+        if (e['NewName'] not in skip_epoints) and ('LightGbm' not in e['NewName']):
+            epoints.append((e['Module'], e['NewName']))
 
-skip_epoints = set(['OneVsRestClassifier', 'TreeFeaturizer'])
-epoints = []
-my_path = os.path.realpath(__file__)
-my_dir = os.path.dirname(my_path)
-manifest_diff_json = os.path.join(my_dir, '..', 'tools',
-                                  'manifest_diff.json')
-manifest_diff = load_json(manifest_diff_json)
-for e in manifest_diff['EntryPoints']:
-    if e['NewName'] not in skip_epoints:
-        epoints.append((e['Module'], e['NewName']))
+    return epoints
 
-all_checks = {}
-all_failed_checks = {}
-all_passed_checks = {}
-total_checks_passed = 0
 
-print("total entrypoints: {}", len(epoints))
+class TestEstimatorChecks(unittest.TestCase):
+    # This method is a static method of the class
+    # because there were pytest fixture related
+    # issues when the method was in the global scope.
+    @staticmethod
+    def generate_test_method(epoint):
+        def method(self):
+            failed_checks = set()
+            passed_checks = set()
+            class_name = epoint[1]
+            print("\n======== now Estimator is %s =========== " % class_name)
 
-for e in epoints:
-    checks = set()
-    failed_checks = set()
-    passed_checks = set()
-    class_name = e[1]
-    print("======== now Estimator is %s =========== " % class_name)
-    # skip LighGbm for now, because of random crashes.
-    if 'LightGbm' in class_name:
-        continue
-    # skip SymSgdBinaryClassifier for now, because of crashes.
-    if 'SymSgdBinaryClassifier' in class_name:
-        continue
+            mod = __import__('nimbusml.' + epoint[0], fromlist=[str(class_name)])
+            the_class = getattr(mod, class_name)
+            if class_name in INSTANCES:
+                estimator = INSTANCES[class_name]
+            else:
+                estimator = the_class()
 
-    mod = __import__('nimbusml.' + e[0], fromlist=[str(class_name)])
-    the_class = getattr(mod, class_name)
-    if class_name in INSTANCES:
-        estimator = INSTANCES[class_name]
-    else:
-        estimator = the_class()
+            if estimator._use_single_input_as_string():
+                estimator = estimator << 'F0'
 
-    if estimator._use_single_input_as_string():
-        estimator = estimator << 'F0'
+            for check in _yield_all_checks(class_name, estimator):
+                # Skip check_dict_unchanged for estimators which
+                # update the classes_ attribute. For more details
+                # see https://github.com/microsoft/NimbusML/pull/200
+                if (check.__name__ == 'check_dict_unchanged') and \
+                    (hasattr(estimator, 'predict_proba') or
+                     hasattr(estimator, 'decision_function')):
+                    continue
 
-    for check in _yield_all_checks(class_name, estimator):
-        try:
-            name = check.__name__
-        except AttributeError:
-            continue
-        if name in OMITTED_CHECKS_ALWAYS:
-            continue
-        if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
-            continue
-        if class_name in OMITTED_CHECKS and check.__name__ in \
-                OMITTED_CHECKS[class_name]:
-            continue
-        if class_name in OMITTED_CHECKS_TUPLE[0] and check.__name__ in \
-                OMITTED_CHECKS_TUPLE[1]:
-            continue
-        checks.add(check.__name__)
-        try:
-            check(class_name, estimator.clone())
-            passed_checks.add(check.__name__)
-            total_checks_passed = total_checks_passed + 1
-        except Exception as e:
-            failed_checks.add(check.__name__)
+                if check.__name__ in OMITTED_CHECKS_ALWAYS:
+                    continue
+                if 'Binary' in class_name and check.__name__ in NOBINARY_CHECKS:
+                    continue
+                if class_name in OMITTED_CHECKS and check.__name__ in \
+                        OMITTED_CHECKS[class_name]:
+                    continue
+                if class_name in OMITTED_CHECKS_TUPLE[0] and check.__name__ in \
+                        OMITTED_CHECKS_TUPLE[1]:
+                    continue
 
-    if frozenset(checks) not in all_checks:
-        all_checks[frozenset(checks)] = []
-    all_checks[frozenset(checks)].append(class_name)
+                try:
+                    check(class_name, estimator.clone())
+                    passed_checks.add(check.__name__)
+                except Exception as e:
+                    failed_checks.add(check.__name__)
 
-    if len(failed_checks) > 0:
-        if frozenset(failed_checks) not in all_failed_checks:
-            all_failed_checks[frozenset(failed_checks)] = []
-        all_failed_checks[frozenset(failed_checks)].append(class_name)
+            if len(failed_checks) > 0:
+                self.fail(msg=str(failed_checks))
 
-    if frozenset(passed_checks) not in all_passed_checks:
-        all_passed_checks[frozenset(passed_checks)] = []
-    all_passed_checks[frozenset(passed_checks)].append(class_name)
+        return method
 
-if len(all_failed_checks) > 0:
-    print("Following tests failed for components:")
-    for key, value in all_failed_checks.items():
-        print('========================')
-        print(key)
-        print(value)
-    raise RuntimeError("estimator checks failed")
-print("success, total checks passed %s ", total_checks_passed)
+
+for epoint in get_epoints():
+    test_name = 'test_%s' % epoint[1].lower()
+    method = TestEstimatorChecks.generate_test_method(epoint)
+    setattr(TestEstimatorChecks, test_name, method)
+
+
+if __name__ == '__main__':
+    unittest.main()

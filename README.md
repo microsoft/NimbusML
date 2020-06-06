@@ -1,10 +1,14 @@
 # NimbusML
 
-`nimbusml` is a Python module that provides experimental Python bindings for [ML.NET](https://github.com/dotnet/machinelearning). 
+`nimbusml` is a Python module that provides Python bindings for [ML.NET](https://github.com/dotnet/machinelearning). 
 
-ML.NET was originally developed in Microsoft Research and is used across many product groups in Microsoft like Windows, Bing, PowerPoint, Excel and others. `nimbusml` was built to enable data science teams that are more familiar with Python to take advantage of ML.NET's functionality and performance. 
+ML.NET was originally developed in Microsoft Research and is used across many product groups in Microsoft like Windows, Bing, PowerPoint, Excel, and others. `nimbusml` was built to enable data science teams that are more familiar with Python to take advantage of ML.NET's functionality and performance. 
 
-This package enables training ML.NET pipelines or integrating ML.NET components directly into [scikit-learn](https://scikit-learn.org/stable/) pipelines (it supports  `numpy.ndarray`, `scipy.sparse_cst`, and `pandas.DataFrame` as inputs).
+`nimbusml` enables training ML.NET pipelines or integrating ML.NET components directly into [scikit-learn](https://scikit-learn.org/stable/) pipelines. It adheres to existing `scikit-learn` conventions, allowing simple interoperability between `nimbusml` and `scikit-learn` components, while adding a suite of fast, highly optimized, and scalable algorithms, transforms, and components written in C++ and C\#.
+
+See examples below showing interoperability with `scikit-learn`. A more detailed example in the [documentation](https://docs.microsoft.com/en-us/nimbusml/tutorials/b_c-sentiment-analysis-3-combining-nimbusml-and-scikit-learn) shows how to use a `nimbusml` component in a `scikit-learn` pipeline, and create a pipeline using only `nimbusml` components.
+
+`nimbusml` supports `numpy.ndarray`, `scipy.sparse_cst`, and `pandas.DataFrame` as inputs. In addition, `nimbusml` also supports streaming from files without loading the dataset into memory with `FileDataStream`, which allows training on data significantly exceeding memory.
 
 Documentation can be found [here](https://docs.microsoft.com/en-us/NimbusML/overview) and additional notebook samples can be found [here](https://github.com/Microsoft/NimbusML-Samples).
 
@@ -12,7 +16,7 @@ Documentation can be found [here](https://docs.microsoft.com/en-us/NimbusML/over
 
 `nimbusml` runs on Windows, Linux, and macOS. 
 
-`nimbusml` requires Python **2.7**, **3.5**, **3.6** 64 bit version only.
+`nimbusml` requires Python **2.7**, **3.5**, **3.6**, **3.7** 64 bit version only.
 
 Install `nimbusml` using `pip` with:
 
@@ -84,7 +88,7 @@ To build `nimbusml` from source please visit our [developer guide](docs/develope
 
 ## Contributing
 
-The contributions guide can be found [here](CONTRIBUTING.md). Given the experimental nature of this project, support will be provided on a best-effort basis. We suggest opening an issue for discussion before starting a PR with big changes.
+The contributions guide can be found [here](CONTRIBUTING.md). 
 
 ## Support
 

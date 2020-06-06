@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 import numpy as np
 import six
-from pandas import DataFrame, Series, concat, Categorical
+from pandas import DataFrame, Series, concat, Categorical, to_datetime
 from pandas.api.types import infer_dtype
 from scipy.sparse import csr_matrix
 
@@ -47,6 +47,13 @@ def resolve_dataframe(dataframe):
                     # Workaround, empty dataframe needs to be sent as an array
                     # to convey type information
                     ret[name_i] = serie.values.reshape((len(serie), 1))
+
+                elif serie.dtype == np.dtype('datetime64[ns]'):
+                    values = serie.values.astype(np.int64, copy=False)
+                    values = values // 1000000 # convert from nanoseconds to milliseconds
+                    ret[str(i)] = values
+                    types.append(_global_dtype_to_char_dict[np.dtype('datetime64[ns]')])
+
                 elif serie.dtype == np.object or str(serie.dtype) == '<U1':
                     # This column might still be numeric, so we do another
                     # check.
@@ -56,7 +63,7 @@ def resolve_dataframe(dataframe):
                         ret[name_i] = serie.values
                         if infered_dtype == 'floating' or \
                                 infered_dtype == 'mixed-integer-float':
-                            s = serie.itemsize
+                            s = serie.dtype.itemsize
                             if s == 8:
                                 ret[str(i)] = serie.values.astype(
                                     np.float64, copy=False)
@@ -70,7 +77,7 @@ def resolve_dataframe(dataframe):
                                     [_global_dtype_to_char_dict[
                                          np.dtype(np.float32)]])
                         elif infered_dtype == 'integer':
-                            s = serie.itemsize
+                            s = serie.dtype.itemsize
                             if s == 8:
                                 ret[str(i)] = serie.values.astype(
                                     np.int64, copy=False)
@@ -200,16 +207,29 @@ def pd_concat(els, axis=0, join='inner'):
 
     return concat(els, axis=axis, join=join)
 
+def resolve_output_as_list(ret):
+    return list(ret.keys())
 
-def resolve_output(ret):
+def resolve_output_as_dataframe(ret):
     data = dict()
     for key in ret.keys():
         if not isinstance(ret[key], dict):
             data[key] = ret[key]
+        elif "..DateTime" in ret[key]:
+            data[key] = to_datetime(ret[key]["..DateTime"], unit='ms')
         else:
             data[key] = Categorical.from_codes(
                 ret[key]["..Data"], ret[key]["..KeyValues"])
     return DataFrame(data)
+
+
+def resolve_output_as_csrmatrix(ret):
+    matrix = csr_matrix((1, 1))
+
+    if all([k in ret for k in ('data', 'indices', 'indptr', 'shape')]):
+        matrix = csr_matrix((ret['data'], ret['indices'], ret['indptr']),
+                            shape=(ret['shape'][0], ret['shape'][1]))
+    return matrix
 
 
 # Any changes to this dictionary must also be done in the enum
@@ -230,5 +250,6 @@ _global_dtype_to_char_dict = {
     np.dtype(np.float64): 'd',
     np.dtype(np.string_): 't',
     np.dtype(np.unicode): 'u',
+    np.dtype('datetime64[ns]'): 'z',
     'unsupported': 'x'
 }
