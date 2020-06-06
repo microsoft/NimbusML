@@ -42,11 +42,14 @@ def data_textloader(
                 'AllowSparse',
                 'InputSize',
                 'Separator',
+                'Decimal Marker',
                 'TrimWhitespace',
                 'HasHeader',
                 'UseThreads',
+                'ReadMultilines',
                 'HeaderFile',
-                'MaxRows'])
+                'MaxRows',
+                'EscapeChar'])
     if data is not None:
         outputs['Data'] = try_set(
             obj=data,
