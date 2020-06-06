@@ -4,7 +4,6 @@
 #pragma once
 #include <map>
 #include <vector>
-#include <boost/optional.hpp>
 
 
 // Taken from ML.NET source code. These values should be stable.

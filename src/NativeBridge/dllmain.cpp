@@ -72,19 +72,13 @@ bp::dict pxCall(bp::dict& params)
     bp::dict res = bp::dict();
     try
     {
-#ifdef BOOST_PYTHON
-        bp::extract<std::string> graph(params[PARAM_GRAPH]);
-        bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
-        bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
-        bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
-        bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
-        bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
-#else
         auto graph = bp::extract_or_cast<std::string>(params[PARAM_GRAPH]);
-        auto nimbusmlPath = bp::extract_or_cast<std::string>(params[PARAM_NIMBUSML_PATH]);
+        auto mlnetPath = bp::extract_or_cast<std::string>(params[PARAM_MLNET_PATH]);
         auto dotnetClrPath = bp::extract_or_cast<std::string>(params[PARAM_DOTNETCLR_PATH]);
+        auto dprepPath = bp::extract_or_cast<std::string>(params[PARAM_DPREP_PATH]);
+        auto pythonPath = bp::extract_or_cast<std::string>(params[PARAM_PYTHON_PATH]);
         auto verbose = bp::extract_or_cast<std::int32_t>(params[PARAM_VERBOSE]);
-#endif
+
         std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
@@ -101,11 +95,7 @@ bp::dict pxCall(bp::dict& params)
                 + s_mlnetPath + " and " + s_dotnetClrPath);
 
         int seed = 42;
-    #if BOOST_PYTHON
-        if (params.has_key(PARAM_SEED))
-    #else
         if (params.has_key_or_contains(PARAM_SEED))
-    #endif
             seed = bp::extract_or_cast<int>(params[PARAM_SEED]);
 
         int maxSlots = -1;
@@ -115,11 +105,7 @@ bp::dict pxCall(bp::dict& params)
         EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
 
-#if BOOST_PYTHON
-        if (params.has_key(PARAM_DATA) && bp::extract_or_cast<bp::dict>(params[PARAM_DATA]).check())
-#else
         if (params.has_key_or_contains(PARAM_DATA) && bp::isinstance<bp::dict>(params[PARAM_DATA]))
-#endif
         {
             bp::dict d = bp::extract_or_cast<bp::dict>(params[PARAM_DATA]);
             DataSourceBlock data(d);
@@ -147,11 +133,7 @@ bp::dict pxCall(bp::dict& params)
     return res;
 }
 
-#ifdef BOOST_PYTHON
-BOOST_PYTHON_MODULE(pybridge)
-#else
 PYBIND11_MODULE(pybridge, m)
-#endif
 {
     //The managed code assumes that each pointer occupies 8 bytes.
     assert(sizeof(void*) == 8);
@@ -161,17 +143,8 @@ PYBIND11_MODULE(pybridge, m)
     //
     Py_Initialize();
 
-#ifdef BOOST_PYTHON
-    //
-    // initialize numpy types
-    //
-
-    np::initialize();
-    bp::register_exception_translator<MlNetExecutionError>(&translate_mlnet_exception);
-    def("px_call", pxCall);
-#else
     //static bp::register_exception<MlNetExecutionError>(m, "MlNetExecutionError");
-    static bp::exception<BridgeExecutionError> exc(m, "BridgeExecutionError");
+    static bp::exception<MlNetExecutionError> exc(m, "MlNetExecutionError");
     bp::register_exception_translator([](std::exception_ptr p) {
         try {
             if (p)
@@ -186,5 +159,4 @@ PYBIND11_MODULE(pybridge, m)
     });
 
     m.def("px_call", pxCall);
-#endif
 }

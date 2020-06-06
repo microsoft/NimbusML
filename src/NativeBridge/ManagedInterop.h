@@ -229,13 +229,3 @@ struct MlNetExecutionError : std::exception
 private:
     std::string msg_;
 };
-
-struct BridgeExecutionError : std::exception
-{
-    BridgeExecutionError(const char *message) : msg_(message) { }
-    virtual char const *what() const noexcept { return msg_.c_str(); }
-
-private:
-    std::string msg_;
-};
-
