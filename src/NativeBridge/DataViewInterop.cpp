@@ -13,7 +13,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 
     CxInt64 llTotalNumRows = -1;
     assert(data.contains(PYTHON_DATA_KEY_INFO));
-    bp::dict varInfo = bp::extract<bp::dict>(data[PYTHON_DATA_KEY_INFO]);
+    bp::dict varInfo = bp::extract_or_cast<bp::dict>(data[PYTHON_DATA_KEY_INFO]);
 
     assert(data.contains(PYTHON_DATA_COL_TYPES));
     bp::list colTypes = bp::extract_or_cast<bp::list>(data[PYTHON_DATA_COL_TYPES]);
@@ -51,7 +51,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         if (bp::isinstance<numpy_array>(value))
         {
             isNumeric = true;
-            np::ndarray val = bp::extract<np::ndarray>(value);
+            numpy_array val = bp::extract_or_cast<numpy_array>(value);
             switch (colType)
             {
             case (ML_PY_BOOL):
@@ -112,7 +112,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
             default:
                 throw std::invalid_argument("column " + colName + " has unsupported type");
             }
-            const char *data = val.data();
+            const char *data = (const char*)val.data();
             this->_vdata.push_back(data);
 
             assert(this->_mpnum.size() == dataframeColCount);
@@ -185,14 +185,14 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         // A sparse vector.
         else if (bp::isinstance<bp::dict>(value))
         {
-            bp::dict sparse = bp::extract<bp::dict>(value);
-            np::ndarray indices = bp::extract<np::ndarray>(sparse["indices"]);
+            bp::dict sparse = bp::extract_or_cast<bp::dict>(value);
+            numpy_array indices = bp::extract_or_cast<numpy_array>(sparse["indices"]);
             _sparseIndices = (int*)indices.data();
-            np::ndarray indptr = bp::extract<np::ndarray>(sparse["indptr"]);
+            numpy_array indptr = bp::extract_or_cast<numpy_array>(sparse["indptr"]);
             _indPtr = (int*)indptr.data();
 
-            np::ndarray values = bp::extract<np::ndarray>(sparse["values"]);
-            _sparseValues = values.data();
+            numpy_array values = bp::extract_or_cast<numpy_array>(sparse["values"]);
+            _sparseValues = (void*)values.data();
             switch (colType)
             {
             case (ML_PY_BOOL):
@@ -244,7 +244,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
             default:
                 throw std::invalid_argument("column " + colName + " has unsupported type");
             }
-            vecCard = bp::extract<int>(sparse["colCount"]);
+            vecCard = bp::extract_or_cast<int>(sparse["colCount"]);
             name = (char*)"Data";
 
             if (llTotalNumRows == -1)

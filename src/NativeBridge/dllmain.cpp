@@ -99,8 +99,8 @@ bp::dict pxCall(bp::dict& params)
             seed = bp::extract_or_cast<int>(params[PARAM_SEED]);
 
         int maxSlots = -1;
-        if (params.has_key(PARAM_MAX_SLOTS))
-            maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+        if (params.has_key_or_contains(PARAM_MAX_SLOTS))
+            maxSlots = bp::extract_or_cast<int>(params[PARAM_MAX_SLOTS]);
 
         EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;

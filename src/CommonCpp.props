@@ -50,7 +50,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.7'">
     <BoostRoot></BoostRoot>
-    <PythonRoot>$(PythonRoot)</PythonRoot>
+    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.7</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.6'">
     <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostDbg3.6</BoostRoot>
@@ -58,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.7'">
     <BoostRoot></BoostRoot>
-    <PythonRoot>$(PythonRoot)</PythonRoot>
+    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.7</PythonRoot>
   </PropertyGroup>
   <PropertyGroup>
     <ConfigurationOutputPath>$(SolutionDir)\bin\$(Configuration)\Win\</ConfigurationOutputPath>

@@ -126,7 +126,7 @@ private:
         CxInt64 numCol = pdata->_mpnum[col];
         assert(0 <= numCol && numCol < (CxInt64)pdata->_vdata.size());
         const double *charData = reinterpret_cast<const double*>(pdata->_vdata[numCol]);
-        if (bp::isnan(charData[index]))
+        if (isnan(charData[index]))
             dst = -1;
         else
             dst = (signed char)charData[index];
