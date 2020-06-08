@@ -224,7 +224,7 @@ if not exist "%PythonRoot%\.done" (
     del %DependenciesDir%python.zip
     echo Python executable: %PythonRoot%\python.exe
     echo "Installing pybind11 ..." 
-    %PythonRoot%\python.exe -m pip install pybind11
+    call "%PythonRoot%\python.exe" -m pip install pybind11
 )
 
 echo ""
