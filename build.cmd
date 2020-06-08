@@ -222,10 +222,9 @@ if not exist "%PythonRoot%\.done" (
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
-    set PythonExe=%PythonRoot%\python.exe
-    echo Python executable: %PythonExe%
+    echo Python executable: %PythonRoot%\python.exe
     echo "Installing pybind11 ..." 
-    "%PythonExe%" -m pip install pybind11
+    %PythonRoot%\python.exe -m pip install pybind11
 )
 
 echo ""
