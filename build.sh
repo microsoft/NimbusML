@@ -147,6 +147,8 @@ then
 	# Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
 	mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
 	touch "${PythonRoot}/.done"
+	echo "Install pybind11 ... "
+	"${PythonExe}" -m pip install pybind11
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
@@ -154,17 +156,7 @@ echo "Python executable: ${PythonExe}"
 if [ ${__buildNativeBridge} = true ]
 then 
     echo "Building Native Bridge ... "
-    # Download & unzip Boost
-    if [ ! -e "${BoostRoot}/.done" ]
-    then
-        mkdir -p "${BoostRoot}"
-        echo "Downloading and extracting Boost archive ... "
-        curl "${BoostUrl}" | tar xz -C "${BoostRoot}"
-        touch "${BoostRoot}/.done"
-    fi
-    bash "${__currentScriptDir}/src/NativeBridge/build.sh" --configuration $__configuration --pythonver "${PythonVersion}" --pythonpath "${PythonRoot}" --boostpath "${BoostRoot}" 
-    echo "Deleting ${BoostRoot} ${__currentScriptDir}/src/NativeBridge/x64"
-    rm -rf "${BoostRoot}"
+    bash "${__currentScriptDir}/src/NativeBridge/build.sh" --configuration $__configuration --pythonver "${PythonVersion}" --pythonpath "${PythonRoot}"
 	rm -rf "${__currentScriptDir}/src/NativeBridge/x64"
 fi
 
