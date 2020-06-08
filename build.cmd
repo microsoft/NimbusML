@@ -223,18 +223,9 @@ if not exist "%PythonRoot%\.done" (
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
     set PythonExe=%PythonRoot%\python.exe
+    echo Python executable: %PythonExe%
     echo "Installing pybind11 ..." 
-    call "%PythonExe%" -m pip install pybind11
-)
-:: Download & unzip Boost
-if not exist "%BoostRoot%\.done" (
-    md "%BoostRoot%"
-    echo Downloading boost zip ... 
-    powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%BoostUrl%', '%DependenciesDir%boost.zip');}"
-    echo Extracting boost zip ... 
-    powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%boost.zip', '%BoostRoot%'); }"
-    echo.>"%BoostRoot%\.done"
-    del %DependenciesDir%boost.zip
+    "%PythonExe%" -m pip install pybind11
 )
 
 echo ""
