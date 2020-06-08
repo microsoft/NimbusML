@@ -4,7 +4,6 @@
 #pragma once
 #include <map>
 #include <vector>
-#include <pybind11/stl.h>
 
 
 // Taken from ML.NET source code. These values should be stable.
@@ -135,7 +134,7 @@ inline size_t PyColumnSingle<T>::GetNumCols()
     return 1;
 }
 
-typedef bp::str NullableString;
+typedef bp::object NullableString;
 
 /*
  * Handles the variable value case.
@@ -225,5 +224,5 @@ inline NullableString PyColumnVariable<std::string, NullableString>::GetMissingV
 template <>
 inline NullableString PyColumnVariable<std::string, NullableString>::GetConvertedValue(const std::string& value)
 {
-    return value;
+    return bp::str(value);
 }

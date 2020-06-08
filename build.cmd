@@ -69,7 +69,7 @@ if /i [%1] == [--azureBuild]     (
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--installPythonPackages] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5)"
 echo "  --runTests                        Run tests after build"
 echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
@@ -113,17 +113,6 @@ if /i [%1] == [RlsWinPy3.5]     (
     set PythonTag=cp35
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy2.7]     (
-    set DebugBuild=False
-    set Configuration=RlsWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
-    shift && goto :Arg_Loop
-)
 if /i [%1] == [DbgWinPy3.7]     (
     set DebugBuild=True
     set Configuration=DbgWinPy3.7
@@ -157,17 +146,6 @@ if /i [%1] == [DbgWinPy3.5]     (
     set PythonTag=cp35
     shift && goto :Arg_Loop
 )
-if /i [%1] == [DbgWinPy2.7]     (
-    set DebugBuild=True
-    set Configuration=DbgWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
-    shift && goto :Arg_Loop
-)
 
 :Build
 :: Install dotnet SDK version, see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
@@ -188,7 +166,7 @@ echo "Building Managed code ... "
 echo "#################################"
 set _dotnet=%_dotnetRoot%\dotnet.exe
 
-if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
+if "%Configuration:~-5%" == "Py3.6" set VerifyManifest=True
 if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
 if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
 
@@ -338,7 +316,7 @@ md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
 if "%VerifyManifest%" == "True" (
-    :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
+    :: Running the check in one python is enough.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2
     cd "%__currentScriptDir%src\python"
@@ -354,21 +332,8 @@ echo Placing binaries in libs dir for wheel packaging
 copy  "%BuildOutputDir%%Configuration%\DotNetBridge.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 
-if %PythonVersion% == 2.7 (
-    copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
-    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
-	:: remove dataprep dlls as its not supported in python 2.7
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.ProgramSynthesis.*"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DataPrep.dll"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\ExcelDataReader.dll"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.WindowsAzure.Storage.dll"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
-) else (
-    for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
-    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
-)
+for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
 
 if "%DebugBuild%" == "True" (
     copy  "%BuildOutputDir%%Configuration%\DotNetBridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
@@ -396,14 +361,10 @@ if "%InstallPythonPackages%" == "True" (
     echo "Installing python packages ... "
     echo "#################################"
     call "%PythonExe%" -m pip install --upgrade "pip==19.3.1"
-    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
-    if %PythonVersion% == 2.7 (
-        call "%PythonExe%" -m pip install --upgrade pyzmq
-    ) else (
-        call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.33"
-        call "%PythonExe%" -m pip install --upgrade onnxruntime
-    )
+    call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+    call "%PythonExe%" -m pip install --upgrade onnxruntime
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
@@ -422,25 +383,24 @@ set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
 set TestsPath3=%__currentScriptDir%src\python\tests_extended
-set ReportPath=%__currentScriptDir%build\TestCoverageReport
 set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
 
-call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
 if errorlevel 1 (
     :: Rerun any failed tests to give them one more
     :: chance in case the errors were intermittent.
-    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
     if errorlevel 1 (
         goto :Exit_Error
     )
 )
 
 if "%RunExtendedTests%" == "True" (
-    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%"
     if errorlevel 1 (
         :: Rerun any failed tests to give them one more
         :: chance in case the errors were intermittent.
-        call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+        call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath3%"
         if errorlevel 1 (
             goto :Exit_Error
         )

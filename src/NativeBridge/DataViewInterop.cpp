@@ -29,9 +29,8 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         // pybind11 uses a bytes representation of the string and then call
         // PyUnicode_AsEncodedString which creates a new reference.
         bp::str skey = bp::cast<bp::str>(it->first.ptr());
-        std::string string_name = (std::string)skey;
-        const char* name = string_name.c_str();
-        if (strcmp(name, PYTHON_DATA_KEY_INFO) == 0 || strcmp(name, PYTHON_DATA_COL_TYPES) == 0)
+        std::string name = (std::string)skey;
+        if (name == PYTHON_DATA_KEY_INFO || name == PYTHON_DATA_COL_TYPES)
             continue;
 
         bp::object value = bp::cast<bp::object>(it->second);
@@ -257,7 +256,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 
         this->_vgetter.push_back(pgetter);
         this->_vname.push_back(name);
-        this->_vkind.push_back(kind);
+         this->_vkind.push_back(kind);
         _vvecCard.push_back(vecCard);
 
         if (!isNumeric)
@@ -290,7 +289,11 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
 
     if (this->ccol > 0)
     {
-        this->names = &this->_vname[0];
+        for (const std::string& string : this->_vname)
+            this->_cname.push_back(const_cast<char*>(string.c_str()));
+        this->_cname.push_back(nullptr);
+        this->names = (const char**)(this->_cname.data());
+
         this->kinds = &this->_vkind[0];
         this->keyCards = &this->_vkeyCard[0];
         this->vecCards = &this->_vvecCard[0];

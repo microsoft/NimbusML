@@ -67,7 +67,8 @@ private:
     // The vectors below here are parallel.
 
     // Column names.
-    std::vector<const char*> _vname;
+    std::vector<std::string> _vname;
+    std::vector<const char*> _cname;
     // Column DataKind values.
     std::vector<BYTE> _vkind;
     // Column key type cardinalities. Zero for unbounded, -1 for non-key-types.

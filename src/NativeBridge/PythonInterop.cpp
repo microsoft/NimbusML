@@ -106,11 +106,7 @@ void PyColumnSingle<T>::AddToDict(bp::dict& dict,
     case DataKind::BL:
     {
         bp::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        dict[bp::str(name)] = bp::from_data(
-            data,
-            bp::dtype::get_builtin<bool>(),
-            bp::make_tuple(_pData->size()),
-            bp::make_tuple(sizeof(bool)), bp::object(h));
+        dict[bp::str(name)] = bp::array(bp::dtype("bool"), _pData->size(), data, h);
     }
     break;
     case DataKind::I1:
@@ -118,11 +114,7 @@ void PyColumnSingle<T>::AddToDict(bp::dict& dict,
     case DataKind::I4:
     {
         bp::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        bp::array npdata = bp::from_data(
-            data,
-            bp::dtype::get_builtin<T>(),
-            bp::make_tuple(_pData->size()),
-            bp::make_tuple(sizeof(float)), bp::object(h));
+        bp::array npdata = bp::array(_pData->size(), data, h);
         if (keyNames == nullptr)
         {
             dict[bp::str(name)] = npdata;
@@ -138,7 +130,7 @@ void PyColumnSingle<T>::AddToDict(bp::dict& dict,
                 const std::string& value = keyNames->at(j);
                 if (!value.empty())
                 {
-                    obj = bp::object(value);
+                    obj = bp::str(value);
                 }
                 list.append(obj);
             }
@@ -155,21 +147,13 @@ void PyColumnSingle<T>::AddToDict(bp::dict& dict,
     case DataKind::R8:
     {
         bp::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        dict[bp::str(name)] = bp::from_data(
-            data,
-            bp::dtype::get_builtin<T>(),
-            bp::make_tuple(_pData->size()),
-            bp::make_tuple(sizeof(T)), bp::object(h));
+        dict[bp::str(name)] = bp::array(_pData->size(), data, h);
     }
     break;
     case DataKind::DT:
     {
-        bp::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        bp::array npdata = bp::from_data(
-            data,
-            bp::dtype::get_builtin<T>(),
-            bp::make_tuple(_pData->size()),
-            bp::make_tuple(sizeof(T)), bp::object(h));
+        bp::capsule h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
+        bp::array npdata = bp::array(_pData->size(), data, h);
 
         dict[bp::str(name)] = bp::dict();
         dict[bp::str(name)]["..DateTime"] = npdata;
@@ -189,10 +173,7 @@ void PyColumnSingle<std::string>::AddToDict(bp::dict& dict,
     {
         bp::object obj;
         const std::string& value = _pData->at(i);
-        if (!value.empty())
-        {
-            obj = bp::str(value);
-        }
+        obj = bp::str(value);
         list.append(obj);
     }
     dict[bp::str(name)] = list;
@@ -305,12 +286,8 @@ void PyColumnVariable<T, T2>::AddColumnToDict(bp::dict& dict,
     deleteData->instance = this;
     deleteData->column = index;
 
-    bp::handle<> h(::PyCapsule_New((void*)deleteData, NULL, (PyCapsule_Destructor)&Deleter));
-    dict[bp::str(name)] = bp::from_data(
-        data,
-        bp::dtype::get_builtin<T2>(),
-        bp::make_tuple(_data[index]->size()),
-        bp::make_tuple(sizeof(T2)), bp::object(h));
+    bp::handle h(::PyCapsule_New((void*)deleteData, NULL, (PyCapsule_Destructor)&Deleter));
+    dict[bp::str(name)] = bp::array(_data[index]->size(), data, h);
 }
 
 template<>
@@ -329,7 +306,7 @@ void PyColumnVariable<std::string, NullableString>::AddColumnToDict(bp::dict& di
 
         if (value)
         {
-            //obj = *value;
+            obj = value;
         }
 
         list.append(obj);

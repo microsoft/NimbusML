@@ -50,8 +50,8 @@ phases:
     buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
-      Py27:
-        _configuration: RlsLinPy2.7
+      Py37:
+        _configuration: RlsLinPy3.7
     buildQueue:
       name: Hosted Ubuntu 1604
  
