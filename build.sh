@@ -13,7 +13,7 @@ BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 PlatName=manylinux1_x86_64
 if [ "$(uname -s)" = "Darwin" ]
 then 
-	PlatName=macosx_10_11_x86_64
+    PlatName=macosx_10_11_x86_64
 fi
 mkdir -p "${DependenciesDir}"
 
@@ -22,7 +22,7 @@ usage()
     echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests] [--installPythonPackages]"
     echo ""
     echo "Options:"
-    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
+    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5)"
     echo "  --runTests                        Run tests after build"
     echo "  --installPythonPackages           Install python packages after build"
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
@@ -103,12 +103,6 @@ case $__configuration in
     PythonVersion=3.5
     PythonTag=cp35
     ;;
-*LinPy2.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Linux-5.0.1.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-2.7-1.64.0.0.tar.gz
-    PythonVersion=2.7
-    PythonTag=cp27
-    ;;
 *MacPy3.7)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2019.03.v2.tar.gz
     BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.69.0.0.tar.gz
@@ -127,12 +121,6 @@ case $__configuration in
     PythonVersion=3.5
     PythonTag=cp35
     ;;
-*MacPy2.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Mac-5.0.2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-2.7-1.64.0.0.tar.gz
-    PythonVersion=2.7
-    PythonTag=cp27
-    ;;
 *)
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
@@ -141,14 +129,14 @@ echo "Downloading Python Dependencies "
 # Download & unzip Python
 if [ ! -e "${PythonRoot}/.done" ]
 then
-	mkdir -p "${PythonRoot}"
-	echo "Downloading and extracting Python archive ... "
-	curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-	# Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-	mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-	touch "${PythonRoot}/.done"
-	echo "Install pybind11 ... "
-	"${PythonExe}" -m pip install pybind11
+    mkdir -p "${PythonRoot}"
+    echo "Downloading and extracting Python archive ... "
+    curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
+    # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
+    mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
+    touch "${PythonRoot}/.done"
+    echo "Install pybind11 ... "
+    "${PythonRoot}/bin/python" -m pip install pybind11
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"
@@ -157,7 +145,7 @@ if [ ${__buildNativeBridge} = true ]
 then 
     echo "Building Native Bridge ... "
     bash "${__currentScriptDir}/src/NativeBridge/build.sh" --configuration $__configuration --pythonver "${PythonVersion}" --pythonpath "${PythonRoot}"
-	rm -rf "${__currentScriptDir}/src/NativeBridge/x64"
+    rm -rf "${__currentScriptDir}/src/NativeBridge/x64"
 fi
 
 if [ ${__buildDotNetBridge} = true ]
@@ -198,43 +186,15 @@ then
     mv  "${BuildOutputDir}/${__configuration}"/pybridge.so "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
 
     # ls -l "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/
-    if [ ${PythonVersion} = 2.7 ]
-    then
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/*.dll "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/System.Native.a "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/createdump "${__currentScriptDir}/src/python/nimbusml/internal/libs/"  || :
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/sosdocsunix.txt "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
-        ext=*.so
-        if [ "$(uname -s)" = "Darwin" ]
-        then 
-            ext=*.dylib
-        fi    
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/${ext} "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        # Obtain "libtensorflow_framework.so.1", which is the upgraded version of "libtensorflow.so". This is required for tests TensorFlowScorer.py to pass in Linux distros with Python 2.7
-        if [ ! "$(uname -s)" = "Darwin" ]
-        then
-            mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/libtensorflow_framework.so.1 "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        fi
-        # remove dataprep dlls as its not supported in python 2.7
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DPrep.*"
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Data.*"
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.ProgramSynthesis.*"
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.DataPrep.dll"
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/ExcelDataReader.dll"
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.WindowsAzure.Storage.dll"
-        rm -f "${__currentScriptDir}/src/python/nimbusml/internal/libs/Microsoft.Workbench.Messaging.SDK.dll"
-    else
-        libs_txt=libs_linux.txt
-        if [ "$(uname -s)" = "Darwin" ]
-        then 
-            libs_txt=libs_mac.txt
-        fi
-        cat build/${libs_txt} | while read i; do
-            mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
-        done
-        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
+    libs_txt=libs_linux.txt
+    if [ "$(uname -s)" = "Darwin" ]
+    then 
+        libs_txt=libs_mac.txt
     fi
+    cat build/${libs_txt} | while read i; do
+        mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/$i "${__currentScriptDir}/src/python/nimbusml/internal/libs/"
+    done
+    mv  "${BuildOutputDir}/${__configuration}/Platform/${PublishDir}"/publish/Data "${__currentScriptDir}/src/python/nimbusml/internal/libs/."
     
     if [[ $__configuration = Dbg* ]]
     then
@@ -283,18 +243,13 @@ then
     fi
     # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
     "${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
-    if [ ${PythonVersion} = 2.7 ]
+    if [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
     then
-        "${PythonExe}" -m pip install --upgrade pyzmq
-    else
-        if [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
-        then
-            "${PythonExe}" -m pip install --upgrade pytest-remotedata
-        fi
-
-        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
-        "${PythonExe}" -m pip install --upgrade onnxruntime
+        "${PythonExe}" -m pip install --upgrade pytest-remotedata
     fi
+
+    "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+    "${PythonExe}" -m pip install --upgrade onnxruntime
     "${PythonExe}" -m pip install --upgrade "${Wheel}"
     "${PythonExe}" -m pip install "scikit-learn==0.19.2"
 fi
