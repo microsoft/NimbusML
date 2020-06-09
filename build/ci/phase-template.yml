@@ -27,7 +27,7 @@ phases:
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
     # Note: Manual defining of the libomp URL below is needed to avoid error at runtime. Installing using 'brew install libomp' results in "Intel MKL FATAL ERROR: Cannot load libmkl_intel_thread.dylib."
-    - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb gettext && brew link gettext --force && brew unlink python@2 && brew install mono-libgdiplus
+    - script: brew update && brew install cmake https://raw.githubusercontent.com/dotnet/machinelearning/master/build/libomp.rb mono-libgdiplus gettext && brew link gettext --force && brew link libomp --force
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
