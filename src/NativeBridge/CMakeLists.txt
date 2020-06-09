@@ -46,6 +46,8 @@ MESSAGE( STATUS "CMAKE_SOURCE_DIR: " ${CMAKE_SOURCE_DIR} )
 MESSAGE( STATUS "PYTHON_DIR: " ${PYTHON_DIR} )
 MESSAGE( STATUS "CMAKE_SYSTEM_NAME: " ${CMAKE_SYSTEM_NAME} )
 
+include_directories(${PYTHON_DIR}/include/python3.8m ${PYTHON_DIR}/include/python3.6m ${PYTHON_DIR}/include/python3.7m)
+
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=unused-variable -Wno-error=attributes -Wno-error=unused-value")
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'/Library/Frameworks/Python.framework/Versions/${PYTHON_VER}/lib'" )
