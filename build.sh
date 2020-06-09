@@ -85,7 +85,7 @@ done
 
 case $__configuration in
 *LinPy3.8)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-2020.03.v1.tar.gz
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-linux64.tar.gz
     PythonVersion=3.8
     PythonTag=cp38
     ;;
@@ -100,7 +100,7 @@ case $__configuration in
     PythonTag=cp36
     ;;
 *MacPy3.8)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2020.03.v1.tar.gz
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-mac64.tar.gz
     PythonVersion=3.8
     PythonTag=cp38
     ;;
