@@ -69,7 +69,7 @@ if /i [%1] == [--azureBuild]     (
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--installPythonPackages] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.8, DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.8, RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
 echo "  --runTests                        Run tests after build"
 echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
@@ -80,6 +80,17 @@ echo "  --azureBuild                      Building in azure devops (adds dotnet 
 goto :Exit_Success
 
 :Configuration
+if /i [%1] == [RlsWinPy3.8]     (
+    set DebugBuild=False
+    set Configuration=RlsWinPy3.8
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.8
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.8-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostRls3.8
+    set PythonVersion=3.8
+    set PythonTag=cp38
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [RlsWinPy3.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
@@ -111,6 +122,28 @@ if /i [%1] == [RlsWinPy3.5]     (
     set BoostRoot=%DependenciesDir%BoostRls3.5
     set PythonVersion=3.5
     set PythonTag=cp35
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [RlsWinPy2.7]     (
+    set DebugBuild=False
+    set Configuration=RlsWinPy2.7
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
+    set PythonRoot=%DependenciesDir%Python2.7
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostRls2.7
+    set PythonVersion=2.7
+    set PythonTag=cp27
+    shift && goto :Arg_Loop
+)
+if /i [%1] == [DbgWinPy3.8]     (
+    set DebugBuild=True
+    set Configuration=DbgWinPy3.8
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.8
+    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.8-1.69.0.0.zip
+    set BoostRoot=%DependenciesDir%BoostDbg3.8
+    set PythonVersion=3.8
+    set PythonTag=cp38
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.7]     (
@@ -244,10 +277,16 @@ if exist %_VSWHERE% (
 if not exist "%_VSCOMNTOOLS%" set _VSCOMNTOOLS=%VS140COMNTOOLS%
 if not exist "%_VSCOMNTOOLS%" goto :MissingVersion
 
+set _VSCOMNTOOLS=%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools
+echo here
 set "VSCMD_START_DIR=%__currentScriptDir%"
+echo here2
 call "%_VSCOMNTOOLS%\VsDevCmd.bat"
+echo here3
 
-if "%VisualStudioVersion%"=="15.0" (
+if "%VisualStudioVersion%"=="16.0" (
+    goto :VS2019
+) else if "%VisualStudioVersion%"=="15.0" (
     goto :VS2017
 ) else if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
@@ -258,6 +297,16 @@ if "%VisualStudioVersion%"=="15.0" (
 echo Error: Visual Studio 2015 or 2017 required
 echo        Please see https://github.com/dotnet/machinelearning/tree/master/Documentation for build instructions.
 goto :Exit_Error
+
+:VS2019
+:: Setup vars for VS2019
+set __PlatformToolset=v142
+set __VSVersion=16 2019
+if NOT "%__BuildArch%" == "arm64" (
+    :: Set the environment for the native build
+    call "%VS150COMNTOOLS%..\..\VC\Auxiliary\Build\vcvarsall.bat" %__VCBuildArch%
+)
+goto :NativeBridge
 
 :VS2017
 :: Setup vars for VS2017
