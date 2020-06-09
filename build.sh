@@ -135,8 +135,27 @@ then
     # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
     mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
     touch "${PythonRoot}/.done"
-    echo "Installing build-essential ... "
-	apt-get install build-essential
+    
+    if [ ! "$(uname -s)" = "Darwin" ]
+    then 
+        {
+            echo "Install libc6-dev ... "
+            apt-get update 
+            # Required for Image.py and Image_df.py to run successfully on Ubuntu.
+            apt-get install libc6-dev -y
+            #apt-get install libgdiplus -y
+            # Required for onnxruntime tests
+            #apt-get install -y locales
+            #locale-gen en_US.UTF-8
+        } || { 
+            # yum update --skip-broken
+            # Required for Image.py and Image_df.py to run successfully on CentOS.
+            # yum install glibc-devel -y
+            # Required for onnxruntime tests
+            # yum install glibc-all-langpacks
+            # localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
+        }
+    fi
     echo "Install pybind11 ... "
     "${PythonRoot}/bin/python" -m pip install pybind11
     echo "Done installing pybind11 ... "
