@@ -34,7 +34,7 @@ phases:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Linux phases
   - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7')) }}:
-    - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
+    - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
       displayName: Build native bridge
     - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
       displayName: Build python wheel
