@@ -136,7 +136,7 @@ then
     mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
     touch "${PythonRoot}/.done"
     echo "Installing build-essential ... "
-	sudo apt-get install build-essential
+	apt-get install build-essential
     echo "Install pybind11 ... "
     "${PythonRoot}/bin/python" -m pip install pybind11
     echo "Done installing pybind11 ... "
