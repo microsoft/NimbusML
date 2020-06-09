@@ -230,12 +230,8 @@ if exist %_VSWHERE% (
 if not exist "%_VSCOMNTOOLS%" set _VSCOMNTOOLS=%VS140COMNTOOLS%
 if not exist "%_VSCOMNTOOLS%" goto :MissingVersion
 
-set _VSCOMNTOOLS=%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools
-echo here
 set "VSCMD_START_DIR=%__currentScriptDir%"
-echo here2
 call "%_VSCOMNTOOLS%\VsDevCmd.bat"
-echo here3
 
 if "%VisualStudioVersion%"=="16.0" (
     goto :VS2019
@@ -246,7 +242,7 @@ if "%VisualStudioVersion%"=="16.0" (
 ) else goto :MissingVersion
 
 :MissingVersion
-:: Can't find VS 2015 or 2017
+:: Can't find VS 2015 or 2017 or 2019
 echo Error: Visual Studio 2015 or 2017 required
 echo        Please see https://github.com/dotnet/machinelearning/tree/master/Documentation for build instructions.
 goto :Exit_Error
