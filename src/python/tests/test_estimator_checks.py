@@ -7,7 +7,7 @@ run check_estimator tests
 """
 import json
 import os
-import platform
+import distro
 import unittest
 
 from nimbusml.cluster import KMeansPlusPlus
@@ -284,7 +284,7 @@ skip_epoints = set([
     'TimeSeriesImputer'
 ])
 
-if 'centos' in platform.linux_distribution()[0].lower():
+if 'centos' in distro.linux_distribution(full_distribution_name=False)[0].lower():
     skip_epoints |= set([
         'DateTimeSplitter',
         'RobustScaler',

@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
-import platform
+import distro
 import unittest
 
 import pandas
@@ -10,7 +10,7 @@ from nimbusml import Pipeline
 from nimbusml.preprocessing.normalization import RobustScaler
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
+@unittest.skipIf('centos' in distro.linux_distribution(full_distribution_name=False)[0].lower(), "centos is not supported")
 class TestRobustScaler(unittest.TestCase):
 
     def test_with_integer_inputs(self):
