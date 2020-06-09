@@ -135,8 +135,11 @@ then
     # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
     mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
     touch "${PythonRoot}/.done"
+    echo "Installing build-essential ... "
+	sudo apt-get install build-essential
     echo "Install pybind11 ... "
     "${PythonRoot}/bin/python" -m pip install pybind11
+    echo "Done installing pybind11 ... "
 fi
 PythonExe="${PythonRoot}/bin/python"
 echo "Python executable: ${PythonExe}"

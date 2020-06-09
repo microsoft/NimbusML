@@ -166,7 +166,7 @@ echo "Building Managed code ... "
 echo "#################################"
 set _dotnet=%_dotnetRoot%\dotnet.exe
 
-if "%Configuration:~-5%" == "Py3.6" set VerifyManifest=True
+if "%Configuration:~-5%" == "Py3.5" set VerifyManifest=True
 if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
 if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
 
