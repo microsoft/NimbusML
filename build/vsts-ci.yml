@@ -9,12 +9,8 @@ phases:
     config: RlsWinPy3.6
 - template: signed_build_phase.yml
   parameters:
-    name: Build_windows_RlsWinPy3_5
-    config: RlsWinPy3.5
-- template: signed_build_phase.yml
-  parameters:
-    name: Build_windows_RlsWinPy2_7
-    config: RlsWinPy2.7
+    name: Build_windows_RlsWinPy3_8
+    config: RlsWinPy3.8
 
 # Build all configurations for Linux
   # Run tests on Ubuntu16
@@ -28,10 +24,8 @@ phases:
         _configuration: RlsMacPy3.7
       Py36:
         _configuration: RlsMacPy3.6
-      Py35:
-        _configuration: RlsMacPy3.5
-      Py27:
-        _configuration: RlsMacPy2.7
+      Py38:
+        _configuration: RlsMacPy3.8
     buildQueue:
       name: Hosted macOS
 - template: /build/ci/phase-template.yml
@@ -44,9 +38,7 @@ phases:
         _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
+      Py38:
+        _configuration: RlsLinPy3.8
     buildQueue:
       name: Hosted Ubuntu 1604

@@ -46,8 +46,6 @@ MESSAGE( STATUS "CMAKE_SOURCE_DIR: " ${CMAKE_SOURCE_DIR} )
 MESSAGE( STATUS "PYTHON_DIR: " ${PYTHON_DIR} )
 MESSAGE( STATUS "CMAKE_SYSTEM_NAME: " ${CMAKE_SYSTEM_NAME} )
 
-include_directories(${PYTHON_DIR}/include/python2.7 ${PYTHON_DIR}/include/python3.5m ${PYTHON_DIR}/include/python3.6m ${PYTHON_DIR}/include/python3.7m)
-
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=unused-variable -Wno-error=attributes -Wno-error=unused-value")
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'/Library/Frameworks/Python.framework/Versions/${PYTHON_VER}/lib'" )
@@ -70,11 +68,7 @@ add_library(PyBridge_objects OBJECT ${PYBRIDGE_SOURCE_FILES})
 add_library(PyBridge SHARED $<TARGET_OBJECTS:PyBridge_objects>)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    if (${PYTHON_VER} STREQUAL "2.7")
-        set(LIB_PYTHON ${PYTHON_DIR}/lib/libpython2.7.so)
-    else()
-        set(LIB_PYTHON ${PYTHON_DIR}/lib/libpython${PYTHON_VER}m.so)
-    endif()
+    set(LIB_PYTHON ${PYTHON_DIR}/lib/libpython${PYTHON_VER}m.so)
 endif()
 
 set(PYBRIDGE_LIB_DEPS ${LIB_PYTHON})

@@ -8,16 +8,16 @@ set __currentScriptDir=%~dp0
 set DependenciesDir=%__currentScriptDir%dependencies\
 if not exist "%DependenciesDir%" (md "%DependenciesDir%")
 
-:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.7)
+:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.8)
 set __BuildArch=x64
 set __VCBuildArch=x86_amd64
-set Configuration=DbgWinPy3.7
+set Configuration=DbgWinPy3.8
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
-set PythonRoot=%DependenciesDir%Python3.7
-set PythonVersion=3.7
-set PythonTag=cp37
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
+set PythonRoot=%DependenciesDir%Python3.8
+set PythonVersion=3.8
+set PythonTag=cp38
 set RunTests=False
 set InstallPythonPackages=False
 set RunExtendedTests=False
