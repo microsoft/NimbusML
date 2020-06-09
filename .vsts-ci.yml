@@ -6,12 +6,12 @@ phases:
     name: Windows
     buildScript: build.cmd
     buildMatrix:
+      Py38:
+        _configuration: RlsWinPy3.8
       Py37:
         _configuration: RlsWinPy3.7
       Py36:
         _configuration: RlsWinPy3.6
-      Py35:
-        _configuration: RlsWinPy3.5
     buildQueue:
       name: Hosted VS2017
     testOptions: --includeExtendedTests
@@ -22,6 +22,8 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
+      Py38:
+        _configuration: RlsMacPy3.8
       Py37:
         _configuration: RlsMacPy3.7
     buildQueue:
@@ -36,6 +38,8 @@ phases:
     buildScript: ./build.sh
     testDistro: ubuntu16
     buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
       Py36:
@@ -50,6 +54,8 @@ phases:
     buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
     buildQueue:

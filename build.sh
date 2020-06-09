@@ -8,7 +8,6 @@ __currentScriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 BuildOutputDir=${__currentScriptDir}/x64/
 DependenciesDir=${__currentScriptDir}/dependencies
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
-BoostRoot=${DependenciesDir}/Boost${PythonVersion}
 # Platform name for python wheel based on OS
 PlatName=manylinux1_x86_64
 if [ "$(uname -s)" = "Darwin" ]
@@ -22,7 +21,7 @@ usage()
     echo "Usage: $0 --configuration <Configuration> [--runTests] [--includeExtendedTests] [--installPythonPackages]"
     echo ""
     echo "Options:"
-    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.8, DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.8,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.8,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.8,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
+    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.8, DbgLinPy3.7,DbgLinPy3.6,RlsLinPy3.8,RlsLinPy3.7,RlsLinPy3.6,DbgMacPy3.8,DbgMacPy3.7,DbgMacPy3.6,RlsMacPy3.8,RlsMacPy3.7,RlsMacPy3.6)"
     echo "  --runTests                        Run tests after build"
     echo "  --installPythonPackages           Install python packages after build"
     echo "  --runTestsOnly                    Run tests on a wheel file in default build location (<repo>/target/)"
@@ -87,57 +86,33 @@ done
 case $__configuration in
 *LinPy3.8)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-2020.03.v1.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.8-1.69.0.0.tar.gz
     PythonVersion=3.8
     PythonTag=cp38
     ;;
 *LinPy3.7)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-2019.03.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.7-1.69.0.0.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
     ;;
 *LinPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-5.0.1.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.6-1.64.0.0.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
     ;;
-*LinPy3.5)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Linux-4.2.0.v9.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-3.5-1.64.0.0.tar.gz
-    PythonVersion=3.5
-    PythonTag=cp35
-    ;;
-*LinPy2.7)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda2-Linux-5.0.1.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/linux/Boost-2.7-1.64.0.0.tar.gz
-    PythonVersion=2.7
-    PythonTag=cp27
-    ;;
 *MacPy3.8)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2020.03.v1.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.8-1.69.0.0.tar.gz
     PythonVersion=3.8
     PythonTag=cp38
     ;;
 *MacPy3.7)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-2019.03.v2.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.7-1.69.0.0.tar.gz
     PythonVersion=3.7
     PythonTag=cp37
     ;;
 *MacPy3.6)
     PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-5.0.1.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.6-1.64.0.0.tar.gz
     PythonVersion=3.6
     PythonTag=cp36
-    ;;
-*MacPy3.5)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/anaconda-full/Anaconda3-Mac-4.2.0.tar.gz
-    BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/mac/Boost-3.5-1.64.0.0.tar.gz
-    PythonVersion=3.5
-    PythonTag=cp35
     ;;
 *)
 echo "Unknown configuration '$__configuration'"; usage; exit 1

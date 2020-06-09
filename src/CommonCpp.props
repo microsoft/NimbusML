@@ -28,12 +28,6 @@
     <LinkIncremental>false</LinkIncremental>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.5'">
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.5</PythonRoot>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.5'">
-    <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.5</PythonRoot>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.6'">
     <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.6</PythonRoot>
   </PropertyGroup>
@@ -41,7 +35,6 @@
     <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.7</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'RlsWinPy3.8'">
-    <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostRls3.8</BoostRoot>
     <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.8</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.6'">
@@ -51,7 +44,6 @@
     <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.7</PythonRoot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'DbgWinPy3.8'">
-    <BoostRoot>$(MSBuildThisFileDirectory)..\dependencies\BoostDbg3.8</BoostRoot>
     <PythonRoot>$(MSBuildThisFileDirectory)..\dependencies\Python3.8</PythonRoot>
   </PropertyGroup>
   <PropertyGroup>

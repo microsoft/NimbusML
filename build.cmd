@@ -16,8 +16,6 @@ set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
 set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
 set PythonRoot=%DependenciesDir%Python3.7
-set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
-set BoostRoot=%DependenciesDir%BoostDbg3.7
 set PythonVersion=3.7
 set PythonTag=cp37
 set RunTests=False
@@ -69,7 +67,7 @@ if /i [%1] == [--azureBuild]     (
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--installPythonPackages] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.8, DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.8, RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.8,DbgWinPy3.7,DbgWinPy3.6,RlsWinPy3.8, RlsWinPy3.7,RlsWinPy3.6)"
 echo "  --runTests                        Run tests after build"
 echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
@@ -85,8 +83,6 @@ if /i [%1] == [RlsWinPy3.8]     (
     set Configuration=RlsWinPy3.8
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.8
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.8-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.8
     set PythonVersion=3.8
     set PythonTag=cp38
     shift && goto :Arg_Loop
@@ -96,8 +92,6 @@ if /i [%1] == [RlsWinPy3.7]     (
     set Configuration=RlsWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.7
     set PythonVersion=3.7
     set PythonTag=cp37
     shift && goto :Arg_Loop
@@ -107,32 +101,8 @@ if /i [%1] == [RlsWinPy3.6]     (
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.6-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.6
     set PythonVersion=3.6
     set PythonTag=cp36
-    shift && goto :Arg_Loop
-)
-if /i [%1] == [RlsWinPy3.5]     (
-    set DebugBuild=False
-    set Configuration=RlsWinPy3.5
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.5
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.5-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.5
-    set PythonVersion=3.5
-    set PythonTag=cp35
-    shift && goto :Arg_Loop
-)
-if /i [%1] == [RlsWinPy2.7]     (
-    set DebugBuild=False
-    set Configuration=RlsWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.8]     (
@@ -140,8 +110,6 @@ if /i [%1] == [DbgWinPy3.8]     (
     set Configuration=DbgWinPy3.8
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.8
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.8-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.8
     set PythonVersion=3.8
     set PythonTag=cp38
     shift && goto :Arg_Loop
@@ -151,8 +119,6 @@ if /i [%1] == [DbgWinPy3.7]     (
     set Configuration=DbgWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.7
     set PythonVersion=3.7
     set PythonTag=cp37
     shift && goto :Arg_Loop
@@ -162,21 +128,8 @@ if /i [%1] == [DbgWinPy3.6]     (
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.6
     set PythonVersion=3.6
     set PythonTag=cp36
-    shift && goto :Arg_Loop
-)
-if /i [%1] == [DbgWinPy3.5]     (
-    set DebugBuild=True
-    set Configuration=DbgWinPy3.5
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.5
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.5-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.5
-    set PythonVersion=3.5
-    set PythonTag=cp35
     shift && goto :Arg_Loop
 )
 
@@ -199,7 +152,7 @@ echo "Building Managed code ... "
 echo "#################################"
 set _dotnet=%_dotnetRoot%\dotnet.exe
 
-if "%Configuration:~-5%" == "Py3.5" set VerifyManifest=True
+if "%Configuration:~-5%" == "Py3.6" set VerifyManifest=True
 if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
 if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
 

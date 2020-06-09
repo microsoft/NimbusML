@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Platforms>x64</Platforms>
-    <Configurations>DbgWinPy3.7;DbgWinPy3.6;DbgWinPy3.5;DbgWinPy2.7;RlsWinPy3.7;RlsWinPy3.6;RlsWinPy3.5;RlsWinPy2.7;DbgLinPy3.7;DbgLinPy3.6;DbgLinPy3.5;DbgLinPy2.7;RlsLinPy3.7;RlsLinPy3.6;RlsLinPy3.5;RlsLinPy2.7;RlsMacPy3.7;RlsMacPy3.6</Configurations>
+    <Configurations>DbgWinPy3.7;DbgWinPy3.6;DbgWinPy3.8;RlsWinPy3.7;RlsWinPy3.6;RlsWinPy3.8;DbgLinPy3.7;DbgLinPy3.6;DbgLinPy3.8;RlsLinPy3.7;RlsLinPy3.6;RlsLinPy3.8;RlsMacPy3.7;RlsMacPy3.6;RlsMacPy3.8</Configurations>
     <OutputPath>$(ProjectDir)..\..\x64\$(Configuration)\Platform\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
