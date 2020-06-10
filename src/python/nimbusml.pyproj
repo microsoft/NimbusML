@@ -12,8 +12,8 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <Name>nimbusml</Name>
-    <InterpreterId>Global|VisualStudio|MinePy37</InterpreterId>
-    <InterpreterPath>..\..\dependencies\Python3.7\python.exe</InterpreterPath>
+    <InterpreterId>Global|VisualStudio|MinePy3.8</InterpreterId>
+    <InterpreterPath>..\..\dependencies\Python3.8\python.exe</InterpreterPath>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <StartupFile>nimbusml\tests\dprep\test_dprep.py</StartupFile>
   </PropertyGroup>
@@ -1306,7 +1306,7 @@
     <Content Include="tools\manifest_diff.json" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|MinePy37" />
+    <InterpreterReference Include="Global|VisualStudio|MinePy3.8" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
