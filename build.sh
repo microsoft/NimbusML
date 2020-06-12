@@ -7,7 +7,6 @@ ProductVersion=$(<version.txt)
 __currentScriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 BuildOutputDir=${__currentScriptDir}/x64/
 DependenciesDir=${__currentScriptDir}/dependencies
-PythonRoot=${DependenciesDir}/Python${PythonVersion}
 # Platform name for python wheel based on OS
 PlatName=manylinux1_x86_64
 if [ "$(uname -s)" = "Darwin" ]
@@ -34,9 +33,9 @@ usage()
 # Parameter defaults
 if [ "$(uname -s)" = "Darwin" ]
 then 
-    __configuration=DbgMacPy3.7
+    __configuration=DbgMacPy3.8
 else
-    __configuration=DbgLinPy3.7
+    __configuration=DbgLinPy3.8
 fi
 __runTests=false
 __installPythonPackages=false
@@ -118,6 +117,15 @@ case $__configuration in
 echo "Unknown configuration '$__configuration'"; usage; exit 1
 esac
 
+PythonRoot=${DependenciesDir}/Python${PythonVersion}
+echo "Python root: ${PythonRoot}"
+PythonExe="${PythonRoot}/bin/python"
+if [ ${PythonVersion} = 3.8 ]
+then 
+    PythonExe="${PythonRoot}/python"
+fi
+echo "Python executable: ${PythonExe}"
+
 echo "Downloading Python Dependencies "
 # Download & unzip Python
 if [ ! -e "${PythonRoot}/.done" ]
@@ -125,35 +133,37 @@ then
     mkdir -p "${PythonRoot}"
     echo "Downloading and extracting Python archive ... "
     curl "${PythonUrl}" | tar xz -C "${PythonRoot}"
-    # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
-    mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
-    touch "${PythonRoot}/.done"
-    echo "Install libc6-dev ... "
-    if [ ! "$(uname -s)" = "Darwin" ]
+    if [ ${PythonVersion} != 3.8 ]
     then 
-        {
-            apt-get update 
-            # Required for Image.py and Image_df.py to run successfully on Ubuntu.
-            apt-get install libc6-dev -y
-            #apt-get install libgdiplus -y
-            # Required for onnxruntime tests
-            #apt-get install -y locales
-            #locale-gen en_US.UTF-8
-        } || { 
-            yum update --skip-broken
-            # Required for Image.py and Image_df.py to run successfully on CentOS.
-            yum install glibc-devel -y
-            # Required for onnxruntime tests
-            # yum install glibc-all-langpacks
-            # localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
-        }
+        # Move all binaries out of "anaconda3", "anaconda2", or "anaconda", depending on naming convention for version
+        mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
+        touch "${PythonRoot}/.done"
+        echo "Install libc6-dev ... "
+        if [ ! "$(uname -s)" = "Darwin" ]
+        then 
+            {
+                apt-get update 
+                # Required for Image.py and Image_df.py to run successfully on Ubuntu.
+                apt-get install libc6-dev -y
+                #apt-get install libgdiplus -y
+                # Required for onnxruntime tests
+                #apt-get install -y locales
+                #locale-gen en_US.UTF-8
+            } || { 
+                yum update --skip-broken
+                # Required for Image.py and Image_df.py to run successfully on CentOS.
+                yum install glibc-devel -y
+                # Required for onnxruntime tests
+                # yum install glibc-all-langpacks
+                # localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
+            }
+        fi
+        echo "Install pybind11 ... "
+        "${PythonRoot}/bin/python" -m pip install pybind11
+        echo "Done installing pybind11 ... "
     fi
-    echo "Install pybind11 ... "
-    "${PythonRoot}/bin/python" -m pip install pybind11
-    echo "Done installing pybind11 ... "
+    touch "${PythonRoot}/.done"
 fi
-PythonExe="${PythonRoot}/bin/python"
-echo "Python executable: ${PythonExe}"
 
 if [ ${__buildNativeBridge} = true ]
 then 
