@@ -230,10 +230,10 @@ then
     rm -rf "${BuildOutputDir}"
     rm -rf "${__currentScriptDir}/cli"
 
+    cd "${__currentScriptDir}/src/python"
     if [ ${PythonVersion} != 3.8 ]
     then 
         "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
-        cd "${__currentScriptDir}/src/python"
         "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     else
         python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
