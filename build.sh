@@ -84,7 +84,7 @@ done
 
 case $__configuration in
 *LinPy3.8)
-    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-linux64.tar.gz
+    PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-linux64.v2.tar.gz
     PythonVersion=3.8
     PythonTag=cp38
     ;;
@@ -230,10 +230,14 @@ then
     rm -rf "${BuildOutputDir}"
     rm -rf "${__currentScriptDir}/cli"
 
-    "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
-    cd "${__currentScriptDir}/src/python"
-
-    "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
+    if [ ${PythonVersion} != 3.8 ]
+    then 
+        "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
+        cd "${__currentScriptDir}/src/python"
+        "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
+    else
+        python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
+    fi
     cd "${__currentScriptDir}"
 
     WheelFile=nimbusml-${ProductVersion}-${PythonTag}-none-${PlatName}.whl
