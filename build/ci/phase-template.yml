@@ -47,7 +47,7 @@ phases:
     - ${{ if eq(parameters.testDistro, 'centos7') }}:
       - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests CentOS7
-    - ${{ if and(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.pyversion, '3.8')) }}:
+    - ${{ if eq(parameters.testDistro, 'python3.8') }}:
       - script: $(_dockerRun) quay.io/python-devs/ci-image:master bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests Python3.8
 
