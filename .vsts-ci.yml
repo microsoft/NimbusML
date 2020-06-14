@@ -38,9 +38,6 @@ phases:
     buildScript: ./build.sh
     testDistro: ubuntu16
     buildMatrix:
-      Py38:
-        _configuration: RlsLinPy3.8
-        testDistro: python3.8
       Py37:
         _configuration: RlsLinPy3.7
       Py36:
@@ -60,3 +57,17 @@ phases:
         _configuration: RlsLinPy3.7
     buildQueue:
       name: Hosted Ubuntu 1604
+
+  # Run build & tests on Ubuntu16 for Python3.8
+- template: /build/ci/phase-template.yml
+  parameters:
+    name: Linux_Python3.8
+    buildScript: ./build.sh
+    testDistro: python3.8
+    buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
+        testDistro: python3.8
+    buildQueue:
+      name: Hosted Ubuntu 1604
+    testOptions: --includeExtendedTests
