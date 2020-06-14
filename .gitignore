@@ -348,5 +348,3 @@ data.csv
 data.txt
 
 /build/TestCoverageReport
-copy_bin.bat
-src/python/build

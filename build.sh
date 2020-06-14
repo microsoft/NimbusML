@@ -122,7 +122,7 @@ echo "Python root: ${PythonRoot}"
 PythonExe="${PythonRoot}/bin/python"
 if [ ${PythonVersion} = 3.8 ]
 then 
-    PythonExe="${PythonRoot}/python"
+    PythonExe="python3.8" # use prebuilt version of in docker image
 fi
 echo "Python executable: ${PythonExe}"
 
@@ -236,6 +236,7 @@ then
         "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
         "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     else
+        # this is actually python 3.6 preinstalled on system, it can do 3.8 package
         python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     fi
     cd "${__currentScriptDir}"

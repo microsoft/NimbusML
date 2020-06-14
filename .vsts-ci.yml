@@ -31,15 +31,13 @@ phases:
     testOptions: --includeExtendedTests
 
 # Build all configurations for Linux
-  # Run tests on Ubuntu16
+  # Run build & tests on Ubuntu16
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_Ubuntu16
     buildScript: ./build.sh
     testDistro: ubuntu16
     buildMatrix:
-      Py38:
-        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
       Py36:
@@ -47,17 +45,29 @@ phases:
     buildQueue:
       name: Hosted Ubuntu 1604
     testOptions: --includeExtendedTests
-  # Run tests on CentOS7
+
+  # Run build & tests on CentOS7
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_CentOS7
     buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
-      Py38:
-        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
     buildQueue:
       name: Hosted Ubuntu 1604
- 
+
+  # Run Python3.8 build & tests
+- template: /build/ci/phase-template.yml
+  parameters:
+    name: Linux_Ubuntu16
+    buildScript: ./build.sh
+    testDistro: ubuntu16
+    pyversion: 3.8
+    buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
+    buildQueue:
+      name: Hosted Ubuntu 1604
+    testOptions: --includeExtendedTests
