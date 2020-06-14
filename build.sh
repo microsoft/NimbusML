@@ -272,19 +272,19 @@ then
     fi
     if [ ${PythonVersion} = 3.8 ]
     then
-        "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist
-		"${PythonExe}" -m pip install --user --upgrade "azureml-dataprep>=1.1.33"
-		"${PythonExe}" -m pip install --user --upgrade onnxruntime
-		"${PythonExe}" -m pip install --user --upgrade "${Wheel}"
-		"${PythonExe}" -m pip install --user scipy "scikit-learn==0.19.2"
+        "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist graphviz
+        "${PythonExe}" -m pip install --user --upgrade "azureml-dataprep>=1.1.33"
+        "${PythonExe}" -m pip install --user --upgrade onnxruntime
+        "${PythonExe}" -m pip install --user --upgrade "${Wheel}"
+        "${PythonExe}" -m pip install --user scipy "scikit-learn==0.19.2"
     else
-		# Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-		"${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist
-		"${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
-		"${PythonExe}" -m pip install --upgrade onnxruntime
-		"${PythonExe}" -m pip install --upgrade "${Wheel}"
-		"${PythonExe}" -m pip install "scikit-learn==0.19.2"
-	fi
+        # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
+        "${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz
+        "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+        "${PythonExe}" -m pip install --upgrade onnxruntime
+        "${PythonExe}" -m pip install --upgrade "${Wheel}"
+        "${PythonExe}" -m pip install "scikit-learn==0.19.2"
+    fi
     if [ ${PythonVersion} = 3.6 ] && [ "$(uname -s)" = "Darwin" ]
     then
         "${PythonExe}" -m pip install --upgrade pytest-remotedata
@@ -303,8 +303,13 @@ then
     TestsPath2=${__currentScriptDir}/src/python/tests
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
-    "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
-        "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
+    if [ ${PythonVersion} = 3.8 ]
+    then
+        "${PythonExe}" -m pytest --verbose --maxfail=1000 --capture=sys --pyargs nimbusml
+    else
+        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
+            "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
+    fi
 
     if [ ${__runExtendedTests} = true ]
     then
