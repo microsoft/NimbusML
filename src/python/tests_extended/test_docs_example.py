@@ -87,6 +87,11 @@ def get_examples():
     for folder, name in folder_files:
         if name in ['__init__.py',]:
             continue
+        # skip for all linux & mac tests, windows is ok
+        if os.name != "nt":
+             if name in [
+                'ToKeyImputer.py']:
+                continue
         # skip for all linux tests, mac is ok
         if os.name == "posix" and distro.linux_distribution(full_distribution_name=False)[0] != '':
             if name in [
