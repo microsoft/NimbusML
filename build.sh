@@ -272,14 +272,14 @@ then
     fi
     if [ ${PythonVersion} = 3.8 ]
     then
-        "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+        "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist
 		"${PythonExe}" -m pip install --user --upgrade "azureml-dataprep>=1.1.33"
 		"${PythonExe}" -m pip install --user --upgrade onnxruntime
-		"${PythonExe}" -m pip install --user "scikit-learn==0.19.2"
 		"${PythonExe}" -m pip install --user --upgrade "${Wheel}"
+		"${PythonExe}" -m pip install --user scipy "scikit-learn==0.19.2"
     else
 		# Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-		"${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+		"${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist
 		"${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
 		"${PythonExe}" -m pip install --upgrade onnxruntime
 		"${PythonExe}" -m pip install --upgrade "${Wheel}"
