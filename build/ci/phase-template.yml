@@ -33,7 +33,7 @@ phases:
     - ${{ if eq(parameters.testDistro, '') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Linux phases
-  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7'), eq(parameters.name, 'Linux_Python3.8')) }}:
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7'), eq(parameters.name, 'Linux_Python38')) }}:
     - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
       displayName: Build native bridge
     - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
@@ -47,7 +47,7 @@ phases:
     - ${{ if eq(parameters.testDistro, 'centos7') }}:
       - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests CentOS7
-    - ${{ if eq(parameters.testDistro, 'python3.8') }}:
+    - ${{ if eq(parameters.testDistro, 'python38') }}:
       - script: $(_dockerRun) quay.io/python-devs/ci-image:master bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests Python3.8
 
