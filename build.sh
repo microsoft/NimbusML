@@ -231,13 +231,13 @@ then
     rm -rf "${__currentScriptDir}/cli"
 
     cd "${__currentScriptDir}/src/python"
-    if [ ${PythonVersion} != 3.8 ]
+    if [ ${PythonVersion} = 3.8 ]
     then 
-        "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
-        "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
-    else
         # this is actually python 3.6 preinstalled on system, it can do 3.8 package
         python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
+    else
+        "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
+        "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     fi
     cd "${__currentScriptDir}"
 
@@ -270,13 +270,13 @@ then
         echo "Unable to find ${Wheel}"
         exit 1
     fi
-    if [ ${PythonVersion} = 3.8 ]]
+    if [ ${PythonVersion} = 3.8 ]
     then
-        "${PythonExe}" -m pip --user install nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
-		"${PythonExe}" -m pip install --user "${Wheel}"
-		"${PythonExe}" -m pip install --user "azureml-dataprep>=1.1.33"
-		"${PythonExe}" -m pip install --user onnxruntime
+        "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+		"${PythonExe}" -m pip install --user --upgrade "azureml-dataprep>=1.1.33"
+		"${PythonExe}" -m pip install --user --upgrade onnxruntime
 		"${PythonExe}" -m pip install --user "scikit-learn==0.19.2"
+		"${PythonExe}" -m pip install --user --upgrade "${Wheel}"
     else
 		# Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
 		"${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz "pytest-cov>=2.6.1" "jupyter_client>=4.4.0" "nbconvert>=4.2.0"

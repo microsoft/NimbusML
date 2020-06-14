@@ -48,7 +48,7 @@ phases:
       - script: $(_dockerRun) mlnet/ubuntu14-general:0.1 bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests Ubuntu14
     - ${{ if eq(parameters.testDistro, 'centos7') }}:
-      - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /root/.bash_profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+      - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests CentOS7
 
   # Publish build artifacts
