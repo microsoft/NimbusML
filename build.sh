@@ -231,7 +231,7 @@ then
     rm -rf "${__currentScriptDir}/cli"
 
     cd "${__currentScriptDir}/src/python"
-    if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
+    if [ ${PythonVersion} = 3.8 ]
     then 
         # this is actually python 3.6 preinstalled on docker, it can do 3.8 package
         python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
