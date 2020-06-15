@@ -274,7 +274,7 @@ then
     then
         echo "Installing py38 for Mac!"
 		curl -O https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg
-        installer -pkg python-3.8.3-macosx10.9.pkg -target /
+        sudo installer -pkg python-3.8.3-macosx10.9.pkg -target /
 	fi
 
     if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
