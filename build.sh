@@ -233,7 +233,7 @@ then
     cd "${__currentScriptDir}/src/python"
     if [ ${PythonVersion} = 3.8 ]
     then 
-        # this is actually python 3.6 preinstalled on docker, it can do 3.8 package
+        # this is actually python 3.6 preinstalled, it can do 3.8 package
         python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     else
         "${PythonExe}" -m pip install "wheel>=0.31.0"
@@ -270,6 +270,13 @@ then
         echo "Unable to find ${Wheel}"
         exit 1
     fi
+    if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" = "Darwin" ]
+    then
+        echo "Installing py38 for Mac!"
+		curl -O https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg
+        installer -pkg python-3.8.3-macosx10.9.pkg -target /
+	fi
+
     if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
     then
         "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist graphviz
