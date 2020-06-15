@@ -305,7 +305,9 @@ then
     ReportPath=${__currentScriptDir}/build/TestCoverageReport
     if [ ${PythonVersion} = 3.8 ]
     then
-        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys --pyargs nimbusml
+        TestsPath1=${__currentScriptDir}/src/python/nimbusml/tests
+        echo "Test paths: ${TestsPath1} ${TestsPath2} "
+        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}"
     else
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
             "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
