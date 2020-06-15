@@ -272,10 +272,10 @@ then
     fi
     if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" = "Darwin" ]
     then
-        echo "Installing py38 for Mac!"
-		curl -O https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg
+        echo "Installing python 3.8 on Mac ... "
+        curl -O https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg
         sudo installer -pkg python-3.8.3-macosx10.9.pkg -target /
-	fi
+    fi
 
     if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
     then
@@ -286,7 +286,6 @@ then
         "${PythonExe}" -m pip install --user scipy "scikit-learn==0.19.2"
     else
         # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
-        echo "I am here !"
         "${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
         "${PythonExe}" -m pip install --upgrade onnxruntime
@@ -310,10 +309,15 @@ then
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
-    if [  ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
+    if [  ${PythonVersion} = 3.8 ]
     then
-        # Linux Python3.8 only here.
-	    TestsPath1=/home/runner/.local/lib/python3.8/site-packages/nimbusml/tests
+        if [ "$(uname -s)" = "Darwin" ]
+        then
+            TestsPath1=/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/nimbusml/tests
+        else
+            # Linux Python3.8 only here.
+            TestsPath1=/home/runner/.local/lib/python3.8/site-packages/nimbusml/tests
+        fi
         echo "Test paths: ${TestsPath1} ${TestsPath2} "
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
     else
