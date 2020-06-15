@@ -302,12 +302,11 @@ then
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
-    ReportPath=${__currentScriptDir}/build/TestCoverageReport
     if [ ${PythonVersion} = 3.8 ]
     then
-        TestsPath1=${__currentScriptDir}/src/python/nimbusml/tests
+        TestsPath1=/home/runner/.local/lib/python3.8/site-packages/nimbusml/tests
         echo "Test paths: ${TestsPath1} ${TestsPath2} "
-        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}"
+        "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
     else
         "${PythonExe}" -m pytest -n 4 --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" || \
             "${PythonExe}" -m pytest -n 4 --last-failed --verbose --maxfail=1000 --capture=sys "${TestsPath2}" "${TestsPath1}" 
