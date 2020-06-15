@@ -120,9 +120,9 @@ esac
 PythonRoot=${DependenciesDir}/Python${PythonVersion}
 echo "Python root: ${PythonRoot}"
 PythonExe="${PythonRoot}/bin/python"
-if [ ${PythonVersion} = 3.8 ]
+if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
 then 
-    PythonExe="python3.8" # use prebuilt version of in docker image
+    PythonExe="python3.8" # use prebuilt version of in docker image on Linux
 fi
 echo "Python executable: ${PythonExe}"
 
@@ -139,7 +139,7 @@ then
         mv "${PythonRoot}/anaconda"*/* "${PythonRoot}/"
         touch "${PythonRoot}/.done"
         echo "Install libc6-dev ... "
-        if [ ! "$(uname -s)" = "Darwin" ]
+        if [ "$(uname -s)" != "Darwin" ]
         then 
             {
                 apt-get update 
@@ -231,12 +231,12 @@ then
     rm -rf "${__currentScriptDir}/cli"
 
     cd "${__currentScriptDir}/src/python"
-    if [ ${PythonVersion} = 3.8 ]
+    if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
     then 
-        # this is actually python 3.6 preinstalled on system, it can do 3.8 package
+        # this is actually python 3.6 preinstalled on docker, it can do 3.8 package
         python3 setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     else
-        "${PythonExe}" -m pip install --upgrade "wheel>=0.31.0"
+        "${PythonExe}" -m pip install "wheel>=0.31.0"
         "${PythonExe}" setup.py bdist_wheel --python-tag ${PythonTag} --plat-name ${PlatName}
     fi
     cd "${__currentScriptDir}"
@@ -270,7 +270,7 @@ then
         echo "Unable to find ${Wheel}"
         exit 1
     fi
-    if [ ${PythonVersion} = 3.8 ]
+    if [ ${PythonVersion} = 3.8 ] && [ "$(uname -s)" != "Darwin" ]
     then
         "${PythonExe}" -m pip install --user nose "pytest>=4.4.0" pytest-xdist graphviz
         "${PythonExe}" -m pip install --user --upgrade "azureml-dataprep>=1.1.33"
@@ -279,6 +279,7 @@ then
         "${PythonExe}" -m pip install --user scipy "scikit-learn==0.19.2"
     else
         # Review: Adding "--upgrade" to pip install will cause problems when using Anaconda as the python distro because of Anaconda's quirks with pytest.
+        echo "I am here !"
         "${PythonExe}" -m pip install nose "pytest>=4.4.0" pytest-xdist graphviz
         "${PythonExe}" -m pip install --upgrade "azureml-dataprep>=1.1.33"
         "${PythonExe}" -m pip install --upgrade onnxruntime
@@ -302,7 +303,7 @@ then
     TestsPath1=${PackagePath}/tests
     TestsPath2=${__currentScriptDir}/src/python/tests
     TestsPath3=${__currentScriptDir}/src/python/tests_extended
-    if [ ${PythonVersion} = 3.8 ]
+    if [  "$(uname -s)" != "Darwin" ]
     then
         TestsPath1=/home/runner/.local/lib/python3.8/site-packages/nimbusml/tests
         echo "Test paths: ${TestsPath1} ${TestsPath2} "
@@ -315,7 +316,7 @@ then
     if [ ${__runExtendedTests} = true ]
     then
         echo "Running extended tests ... " 
-        if [ ! "$(uname -s)" = "Darwin" ]
+        if [ "$(uname -s)" != "Darwin" ]
         then 
             {
                 apt-get update 
