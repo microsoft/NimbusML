@@ -211,15 +211,16 @@ bp::dict EnvironmentBlock::GetData()
                 bp::object obj;
                 signed char value = shrd->at(i);
                 if (value < 0)
-                    obj = bp::object(NAN);
+                    obj = bp::cast<double>(NAN);
                 else if (value == 0)
-                    obj = bp::object(false);
+                    obj = bp::cast<bool>(false);
                 else
-                    obj = bp::object(true);
+                    obj = bp::cast<bool>(true);
 
                 list.append(obj);
             }
-            dict[_names[i]] = list;
+            dict[bp::str(_names[i])] = list;
+
         }
         break;
         case BL:

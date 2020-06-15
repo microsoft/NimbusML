@@ -6,12 +6,12 @@ phases:
     name: Windows
     buildScript: build.cmd
     buildMatrix:
+      Py38:
+        _configuration: RlsWinPy3.8
       Py37:
         _configuration: RlsWinPy3.7
       Py36:
         _configuration: RlsWinPy3.6
-      Py35:
-        _configuration: RlsWinPy3.5
     buildQueue:
       name: Hosted VS2017
     testOptions: --includeExtendedTests
@@ -22,6 +22,8 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
+      Py38:
+        _configuration: RlsMacPy3.8
       Py37:
         _configuration: RlsMacPy3.7
     buildQueue:
@@ -29,7 +31,20 @@ phases:
     testOptions: --includeExtendedTests
 
 # Build all configurations for Linux
-  # Run tests on Ubuntu16
+  # Run build & tests on Ubuntu16 for Python3.8
+- template: /build/ci/phase-template.yml
+  parameters:
+    name: Linux_Python38
+    buildScript: ./build.sh
+    testDistro: python38
+    buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
+    buildQueue:
+      name: Hosted Ubuntu 1604
+    testOptions: --includeExtendedTests
+
+  # Run build & tests on Ubuntu16
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_Ubuntu16
@@ -43,15 +58,15 @@ phases:
     buildQueue:
       name: Hosted Ubuntu 1604
     testOptions: --includeExtendedTests
-  # Run tests on CentOS7
+
+  # Run build & tests on CentOS7
 - template: /build/ci/phase-template.yml
   parameters:
     name: Linux_CentOS7
     buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
-      Py27:
-        _configuration: RlsLinPy2.7
+      Py37:
+        _configuration: RlsLinPy3.7
     buildQueue:
       name: Hosted Ubuntu 1604
- 

@@ -17,7 +17,12 @@ typedef MANAGED_CALLBACK_PTR(bool, GETLABELS)(DataSourceBlock *source, int col, 
 // REVIEW: boost_python is not updated at the same speed as swig or pybind11.
 // Both have a larger audience now, see about pybind11 https://github.com/davisking/dlib/issues/293
 // It handles csr_matrix: https://pybind11-rtdtest.readthedocs.io/en/stable/advanced.html#transparent-conversion-of-dense-and-sparse-eigen-data-types.
-using namespace boost::python;
+using namespace pybind11;
+#if !defined(extract_or_cast)
+#define extract_or_cast cast
+#define has_key_or_contains contains
+#endif
+
 
 // The data source wrapper used for managed interop. Some of the fields of this are visible to managed code.
 // As such, it is critical that this class NOT have a vtable, so virtual functions are illegal!
@@ -62,7 +67,8 @@ private:
     // The vectors below here are parallel.
 
     // Column names.
-    std::vector<const char*> _vname;
+    std::vector<std::string> _vname;
+    std::vector<const char*> _cname;
     // Column DataKind values.
     std::vector<BYTE> _vkind;
     // Column key type cardinalities. Zero for unbounded, -1 for non-key-types.
@@ -121,10 +127,7 @@ private:
         CxInt64 numCol = pdata->_mpnum[col];
         assert(0 <= numCol && numCol < (CxInt64)pdata->_vdata.size());
         const double *charData = reinterpret_cast<const double*>(pdata->_vdata[numCol]);
-        if (boost::math::isnan(charData[index]))
-            dst = -1;
-        else
-            dst = (signed char)charData[index];
+        dst = (signed char)charData[index];
     }
     static MANAGED_CALLBACK(void) GetU1(DataSourceBlock *pdata, int col, long index, /*out*/ unsigned char &dst)
     {
@@ -204,11 +207,11 @@ private:
         assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
         bp::object s = pdata->_vtextdata[txCol][index];
 
-        if (bp::extract<const char*>(s).check())
+        if (bp::isinstance<bp::str>(s))
         {
             size = -1;
             missing = -1;
-            pch = bp::extract<const char*>(s);
+            pch = (char*)PyUnicode_DATA(s.ptr()); 
             if (s.is_none())
             {
                 size = 0;
@@ -225,7 +228,7 @@ private:
         else
         {
             // Missing values in Python are float.NaN.
-            assert(bp::extract<float>(s).check());
+            assert(bp::extract_or_cast<float>(s) != NULL);
             missing = 1;
         }
     }
@@ -238,11 +241,11 @@ private:
         assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
         auto s = pdata->_vtextdata[txCol][index];
 
-        if (bp::extract<const char*>(str(s).encode("utf_8")).check())
+        if (bp::isinstance<bp::str>(s))
         {
             size = -1;
             missing = -1;
-            pch = bp::extract<const char*>(str(s).encode("utf_8"));
+            pch = (char*)PyUnicode_DATA(s.ptr());
 #if _MSC_VER
             Utf8ToUtf16le(pch, pch, size);
 #endif
@@ -251,7 +254,7 @@ private:
         else
         {
             // Missing values in Python are float.NaN.
-            assert(bp::extract<float>(s).check());
+            assert(bp::extract_or_cast<float>(s) != NULL);
             missing = 1;
         }
     }
@@ -296,7 +299,7 @@ private:
         auto & list = pdata->_vkeydata[keyCol];
         bp::object obj = pdata->SelectItemForType(list);
         assert(strcmp(obj.ptr()->ob_type->tp_name, "int") == 0);
-        dst = bp::extract<int>(list[index]);
+        dst = bp::extract_or_cast<int>(list[index]);
     }
 
     // Callback function for getting labels for key-type columns. Returns success.
@@ -333,7 +336,7 @@ private:
         }
 
         for (int i = 0; i < count; ++i, ++buffer)
-            *buffer = bp::extract<const char*>(names[i]);
+            *buffer = (char*)PyUnicode_DATA(names[i].ptr());
         return true;
     }
 

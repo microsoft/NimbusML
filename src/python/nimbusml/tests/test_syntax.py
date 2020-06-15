@@ -39,7 +39,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(),
             FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -59,7 +59,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(max_num_terms=2) << 'workclass',
             FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -79,7 +79,7 @@ class TestSyntax(unittest.TestCase):
             OneHotVectorizer(max_num_terms=2) << 'workclass',
             FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -105,7 +105,7 @@ class TestSyntax(unittest.TestCase):
             # every available column at one step.
             FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -127,7 +127,7 @@ class TestSyntax(unittest.TestCase):
             Concat() << {'Inputs': ['edu1', 'edu2', 'wki']},
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -149,7 +149,7 @@ class TestSyntax(unittest.TestCase):
             Concat() << {'Inputs': ['edu1', 'edu2', 'wki']},
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -171,7 +171,7 @@ class TestSyntax(unittest.TestCase):
             Concat() << {'Inputs': ['edu1', 'edu2', 'wki']},
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -193,7 +193,7 @@ class TestSyntax(unittest.TestCase):
             Concat(columns={'Inputs': ['edu1', 'edu2', 'wki']}),
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Inputs'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -218,7 +218,7 @@ class TestSyntax(unittest.TestCase):
                                                              'wki']
         ])
         try:
-            exp.fit(X, y)
+            exp.fit(X, y, verbose=0)
             assert False
         except RuntimeError as e:
             assert "ConcatTransform() << {'Input': ['edu1', 'edu2', 'wki']}" \
@@ -242,7 +242,7 @@ class TestSyntax(unittest.TestCase):
                                                              'wki']
         ])
         try:
-            exp.fit(X, y)
+            exp.fit(X, y, verbose=0)
             raise AssertionError("The test should not reach this line.")
         except Exception as e:
             assert "Feature column 'edu4' not found" in str(e)
@@ -261,7 +261,7 @@ class TestSyntax(unittest.TestCase):
             Concat() << {'Features': ['f%d' % i for i in range(1, 4)]},
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Features'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -289,7 +289,7 @@ class TestSyntax(unittest.TestCase):
             Concat() << {'Features': 'f[0-9]+'},
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'Features'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -312,7 +312,7 @@ class TestSyntax(unittest.TestCase):
             Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << ['Features']
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -335,7 +335,7 @@ class TestSyntax(unittest.TestCase):
             Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << 'FeaturesCustom'
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -364,7 +364,7 @@ class TestSyntax(unittest.TestCase):
             Drop() << ['education', 'workclass', 'f1', 'f2', 'f3'],
             FastLinearBinaryClassifier(maximum_number_of_iterations=1) << ['Features']
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -388,7 +388,7 @@ class TestSyntax(unittest.TestCase):
             Drop() << '~Features',
             FastLinearBinaryClassifier(maximum_number_of_iterations=1)
         ])
-        exp.fit(X, y)
+        exp.fit(X, y, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -458,7 +458,7 @@ class TestSyntax(unittest.TestCase):
         transform_1 = NGramFeaturizer(word_feature_extractor=n_gram())
         transform_2 = MutualInformationSelector()
         exp = Pipeline([transform_1, transform_2])
-        res = exp.fit_transform(X, y)
+        res = exp.fit_transform(X, y, verbose=0)
         assert res is not None
 
         # Scikit compatibility (Compose transforms inside Scikit Pipeline).
@@ -466,7 +466,7 @@ class TestSyntax(unittest.TestCase):
         transform_1 = NGramFeaturizer(word_feature_extractor=n_gram())
         transform_2 = MutualInformationSelector(slots_in_output=2)
         pipe = Pipeline([transform_1, transform_2])
-        res = pipe.fit_transform(X, y)
+        res = pipe.fit_transform(X, y, verbose=0)
         assert res is not None
 
     def test_syntax10_multi_output1(self):
@@ -482,7 +482,7 @@ class TestSyntax(unittest.TestCase):
         normed = LogMeanVarianceScaler() << {
             'Petal_Normed': 'Petal_Length',
             'Sepal_Normed': 'Sepal_Width'}
-        out_df = normed.fit_transform(in_df)
+        out_df = normed.fit_transform(in_df, verbose=0)
         self.assertEqual(sorted(list(out_df.columns)),
                          ['Petal_Length', 'Petal_Normed', 'Sepal_Length',
                           'Sepal_Normed', 'Sepal_Width', 'Species'])
@@ -501,7 +501,7 @@ class TestSyntax(unittest.TestCase):
             'Petal_Normed': 'Petal_Length',
             'Sepal_Normed': 'Sepal_Width'}
         normed = LogMeanVarianceScaler() << newcols
-        out_df = normed.fit_transform(in_df)
+        out_df = normed.fit_transform(in_df, verbose=0)
         self.assertEqual(sorted(list(out_df.columns)),
                          ['Petal_Length', 'Petal_Normed', 'Sepal_Length',
                           'Sepal_Normed', 'Sepal_Width', 'Species'])
@@ -520,7 +520,7 @@ class TestSyntax(unittest.TestCase):
                     'edu2': 'education'}, FastLinearBinaryClassifier(
                     maximum_number_of_iterations=1) << {
                         'Features': ['edu1', 'edu2'], Role.Label: 'y'}])
-        exp.fit(df)
+        exp.fit(df, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [
@@ -551,7 +551,7 @@ class TestSyntax(unittest.TestCase):
         del exp[-1]
         assert len(exp) == 3
 
-        exp.fit(df)
+        exp.fit(df, verbose=0)
         prediction = exp.predict(X)
         assert isinstance(prediction, pandas.DataFrame)
         assert sorted(list(prediction.columns)) == [

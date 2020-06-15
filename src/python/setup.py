@@ -45,7 +45,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on
     # single-sourcing the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.7.1',
+    version='1.8.0',
 
     description='NimbusML',
     long_description=long_description,
@@ -138,7 +138,7 @@ setup(
         'onnxruntime',
     ],
 
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.8.*',
+    python_requires='>3.5.*, <3.9.*',
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less,

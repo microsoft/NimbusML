@@ -9,6 +9,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from scipy.sparse.csr import csr_matrix
 from nimbusml import Pipeline as nimbusmlPipeline
 from nimbusml.datasets import get_dataset
 from nimbusml.ensemble import FastTreesBinaryClassifier
@@ -334,4 +335,5 @@ class TestUciAdultScikit(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    TestUciAdultScikit().test_feature_union()
     unittest.main()

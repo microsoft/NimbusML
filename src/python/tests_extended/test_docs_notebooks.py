@@ -7,7 +7,7 @@ test ipython notebooks in nimbusml
 """
 import json
 import os
-import platform
+import distro
 import sys
 import time
 import unittest
@@ -50,8 +50,8 @@ class TestDocsNotebooks(unittest.TestCase):
         os.name == 'nt',
         "Not supported on this platform without using Anaconda.")
     # REVIEW: Figure out how to spin off kernels on linux with no Anaconda
-    @unittest.skipIf(platform.linux_distribution()[0] == "Ubuntu" and
-                     platform.linux_distribution()[
+    @unittest.skipIf(distro.linux_distribution(full_distribution_name=False)[0] == "Ubuntu" and
+                     distro.linux_distribution(full_distribution_name=False)[
                          1] == "16.04", "not supported on this platform")
     def test_notebooks(self):
         # These tests are blocking PRs b/c they fail in linux build. Disabling

@@ -34,6 +34,8 @@ class TestNaiveBayesClassifier(unittest.TestCase):
         X_train = texttransform.fit_transform(X_train)
         X_test = texttransform.transform(X_test)
 
+        unique = set(X_train.columns)
+        assert len(unique) == X_train.shape[1]
         mymodel = NaiveBayesClassifier()
         mymodel.fit(X_train, y_train)
 

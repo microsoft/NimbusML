@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
-import platform
+import distro
 import unittest
 
 import numpy as np
@@ -162,7 +162,7 @@ class TestDataWithMissing(unittest.TestCase):
         assert_equal(result.dtypes['f1'], np.object)
         assert_equal(result.dtypes['f2.f2'], np.float32)
 
-    @unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
+    @unittest.skipIf('centos' in distro.linux_distribution(full_distribution_name=False)[0].lower(), "centos is not supported")
     def test_category_imputation(self):
         data={'f0': [4, 4, np.nan, 9],
               'f1': [4, 4, np.nan, np.nan]}

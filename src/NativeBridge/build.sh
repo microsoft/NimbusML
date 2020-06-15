@@ -7,10 +7,9 @@ usage()
     echo "Usage: $0 --configuration <Configuration> "
     echo ""
     echo "Options:"
-    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.7,DbgLinPy3.6,DbgLinPy3.5,DbgLinPy2.7,RlsLinPy3.7,RlsLinPy3.6,RlsLinPy3.5,RlsLinPy2.7,DbgMacPy3.7,DbgMacPy3.6,DbgMacPy3.5,DbgMacPy2.7,RlsMacPy3.7,RlsMacPy3.6,RlsMacPy3.5,RlsMacPy2.7)"
-    echo "  --pythonver <Python version>      Python version number (3.7, 3.6, 3.5, 2.7)"
+    echo "  --configuration <Configuration>   Build Configuration (DbgLinPy3.8,DbgLinPy3.7,DbgLinPy3.6,RlsLinPy3.8,RlsLinPy3.7,RlsLinPy3.6,DbgMacPy3.8,DbgMacPy3.7,DbgMacPy3.6,RlsMacPy3.8,RlsMacPy3.7,RlsMacPy3.6)"
+    echo "  --pythonver <Python version>      Python version number (3.8, 3.7, 3.6)"
     echo "  --pythonpath <Python path>        Path to python library."
-    echo "  --boostpath <Boost path>          Path to boost library."
     exit 1
 }
 
@@ -27,7 +26,6 @@ __configuration=DbgLinPy3.7
 __pythonver=3.7
 __rootBinPath="$RootRepo/x64"
 __pythonpath=""
-__boostpath=""
 
 while [ "$1" != "" ]; do
         lowerI="$(echo $1 | awk '{print tolower($0)}')"
@@ -51,10 +49,6 @@ while [ "$1" != "" ]; do
         --pythonpath)
             shift
             __pythonpath=$1
-            ;;
-        --boostpath)
-            shift
-            __boostpath=$1
             ;;
         *)
         echo "Unknown argument to build.sh $1"; usage; exit 1
@@ -81,7 +75,7 @@ else
     echo "Using default system compiler ... "	
 fi
 
-__cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath} -DBOOST_DIR=${__boostpath}"
+__cmake_defines="-DCMAKE_BUILD_TYPE=${__configuration} -DPYTHON_VER=${__pythonver} -DPYTHON_DIR=${__pythonpath}"
 
 __IntermediatesDir="$__rootBinPath/$__configuration/obj"
 rm -rf "$__IntermediatesDir"

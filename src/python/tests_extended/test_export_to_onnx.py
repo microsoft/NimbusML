@@ -157,7 +157,11 @@ SKIP = {
     'CountSelector',
     'KMeansPlusPlus',
     'ToKey',
-    'ColumnSelector'
+    'ColumnSelector',
+    # below are fixed in ML.NET 1.5, broken 1.5.preview2
+    'FastLinearClassifier',
+    'LogisticRegressionClassifier',
+    'OneHotVectorizer'
 }
 
 INSTANCES = {

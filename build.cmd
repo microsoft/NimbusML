@@ -8,18 +8,16 @@ set __currentScriptDir=%~dp0
 set DependenciesDir=%__currentScriptDir%dependencies\
 if not exist "%DependenciesDir%" (md "%DependenciesDir%")
 
-:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.7)
+:: Default configuration if no arguents passed to build.cmd (DbgWinPy3.8)
 set __BuildArch=x64
 set __VCBuildArch=x86_amd64
-set Configuration=DbgWinPy3.7
+set Configuration=DbgWinPy3.8
 set DebugBuild=True
 set BuildOutputDir=%__currentScriptDir%x64\
-set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
-set PythonRoot=%DependenciesDir%Python3.7
-set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
-set BoostRoot=%DependenciesDir%BoostDbg3.7
-set PythonVersion=3.7
-set PythonTag=cp37
+set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
+set PythonRoot=%DependenciesDir%Python3.8
+set PythonVersion=3.8
+set PythonTag=cp38
 set RunTests=False
 set InstallPythonPackages=False
 set RunExtendedTests=False
@@ -69,7 +67,7 @@ if /i [%1] == [--azureBuild]     (
 echo "Usage: build.cmd [--configuration <Configuration>] [--runTests] [--installPythonPackages] [--includeExtendedTests] [--buildDotNetBridgeOnly] [--skipDotNetBridge] [--azureBuild]"
 echo ""
 echo "Options:"
-echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.7,DbgWinPy3.6,DbgWinPy3.5,DbgWinPy2.7,RlsWinPy3.7,RlsWinPy3.6,RlsWinPy3.5,RlsWinPy2.7)"
+echo "  --configuration <Configuration>   Build Configuration (DbgWinPy3.8,DbgWinPy3.7,DbgWinPy3.6,RlsWinPy3.8, RlsWinPy3.7,RlsWinPy3.6)"
 echo "  --runTests                        Run tests after build"
 echo "  --installPythonPackages           Install python packages after build"
 echo "  --includeExtendedTests            Include the extended tests if the tests are run"
@@ -80,13 +78,20 @@ echo "  --azureBuild                      Building in azure devops (adds dotnet 
 goto :Exit_Success
 
 :Configuration
+if /i [%1] == [RlsWinPy3.8]     (
+    set DebugBuild=False
+    set Configuration=RlsWinPy3.8
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.8
+    set PythonVersion=3.8
+    set PythonTag=cp38
+    shift && goto :Arg_Loop
+)
 if /i [%1] == [RlsWinPy3.7]     (
     set DebugBuild=False
     set Configuration=RlsWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.7-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.7
     set PythonVersion=3.7
     set PythonTag=cp37
     shift && goto :Arg_Loop
@@ -96,32 +101,17 @@ if /i [%1] == [RlsWinPy3.6]     (
     set Configuration=RlsWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.6-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.6
     set PythonVersion=3.6
     set PythonTag=cp36
     shift && goto :Arg_Loop
 )
-if /i [%1] == [RlsWinPy3.5]     (
-    set DebugBuild=False
-    set Configuration=RlsWinPy3.5
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.5
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-3.5-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls3.5
-    set PythonVersion=3.5
-    set PythonTag=cp35
-    shift && goto :Arg_Loop
-)
-if /i [%1] == [RlsWinPy2.7]     (
-    set DebugBuild=False
-    set Configuration=RlsWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/release/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostRls2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
+if /i [%1] == [DbgWinPy3.8]     (
+    set DebugBuild=True
+    set Configuration=DbgWinPy3.8
+    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.8.3-amd64.zip
+    set PythonRoot=%DependenciesDir%Python3.8
+    set PythonVersion=3.8
+    set PythonTag=cp38
     shift && goto :Arg_Loop
 )
 if /i [%1] == [DbgWinPy3.7]     (
@@ -129,8 +119,6 @@ if /i [%1] == [DbgWinPy3.7]     (
     set Configuration=DbgWinPy3.7
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.7.3-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.7-1.69.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.7
     set PythonVersion=3.7
     set PythonTag=cp37
     shift && goto :Arg_Loop
@@ -140,32 +128,8 @@ if /i [%1] == [DbgWinPy3.6]     (
     set Configuration=DbgWinPy3.6
     set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.6.5-mohoov-amd64.zip
     set PythonRoot=%DependenciesDir%Python3.6
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.6-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.6
     set PythonVersion=3.6
     set PythonTag=cp36
-    shift && goto :Arg_Loop
-)
-if /i [%1] == [DbgWinPy3.5]     (
-    set DebugBuild=True
-    set Configuration=DbgWinPy3.5
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-3.5.4-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python3.5
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-3.5-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg3.5
-    set PythonVersion=3.5
-    set PythonTag=cp35
-    shift && goto :Arg_Loop
-)
-if /i [%1] == [DbgWinPy2.7]     (
-    set DebugBuild=True
-    set Configuration=DbgWinPy2.7
-    set PythonUrl=https://pythonpkgdeps.blob.core.windows.net/python/python-2.7.15-mohoov-amd64.zip
-    set PythonRoot=%DependenciesDir%Python2.7
-    set BoostUrl=https://pythonpkgdeps.blob.core.windows.net/boost/debug/windows/Boost-2.7-1.64.0.0.zip
-    set BoostRoot=%DependenciesDir%BoostDbg2.7
-    set PythonVersion=2.7
-    set PythonTag=cp27
     shift && goto :Arg_Loop
 )
 
@@ -188,7 +152,7 @@ echo "Building Managed code ... "
 echo "#################################"
 set _dotnet=%_dotnetRoot%\dotnet.exe
 
-if "%Configuration:~-5%" == "Py3.7" set VerifyManifest=True
+if "%Configuration:~-5%" == "Py3.6" set VerifyManifest=True
 if "%VerifyManifest%" == "True" set BuildManifestGenerator=True
 if "%UpdateManifest%" == "True" set BuildManifestGenerator=True
 
@@ -244,16 +208,9 @@ if not exist "%PythonRoot%\.done" (
     powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%python.zip', '%PythonRoot%'); }"
     echo.>"%PythonRoot%\.done"
     del %DependenciesDir%python.zip
-)
-:: Download & unzip Boost
-if not exist "%BoostRoot%\.done" (
-    md "%BoostRoot%"
-    echo Downloading boost zip ... 
-    powershell -command "& {$wc = New-Object System.Net.WebClient; $wc.DownloadFile('%BoostUrl%', '%DependenciesDir%boost.zip');}"
-    echo Extracting boost zip ... 
-    powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('%DependenciesDir%boost.zip', '%BoostRoot%'); }"
-    echo.>"%BoostRoot%\.done"
-    del %DependenciesDir%boost.zip
+    echo Python executable: %PythonRoot%\python.exe
+    echo "Installing pybind11 ..." 
+    call "%PythonRoot%\python.exe" -m pip install pybind11
 )
 
 echo ""
@@ -276,17 +233,29 @@ if not exist "%_VSCOMNTOOLS%" goto :MissingVersion
 set "VSCMD_START_DIR=%__currentScriptDir%"
 call "%_VSCOMNTOOLS%\VsDevCmd.bat"
 
-if "%VisualStudioVersion%"=="15.0" (
+if "%VisualStudioVersion%"=="16.0" (
+    goto :VS2019
+) else if "%VisualStudioVersion%"=="15.0" (
     goto :VS2017
 ) else if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
 ) else goto :MissingVersion
 
 :MissingVersion
-:: Can't find VS 2015 or 2017
+:: Can't find VS 2015 or 2017 or 2019
 echo Error: Visual Studio 2015 or 2017 required
 echo        Please see https://github.com/dotnet/machinelearning/tree/master/Documentation for build instructions.
 goto :Exit_Error
+
+:VS2019
+:: Setup vars for VS2019
+set __PlatformToolset=v142
+set __VSVersion=16 2019
+if NOT "%__BuildArch%" == "arm64" (
+    :: Set the environment for the native build
+    call "%VS150COMNTOOLS%..\..\VC\Auxiliary\Build\vcvarsall.bat" %__VCBuildArch%
+)
+goto :NativeBridge
 
 :VS2017
 :: Setup vars for VS2017
@@ -335,7 +304,7 @@ md %libs%
 echo.>"%__currentScriptDir%src\python\nimbusml\internal\libs\__init__.py"
 
 if "%VerifyManifest%" == "True" (
-    :: Running the check in one python is enough. Entrypoint compiler doesn't run in py2.7.
+    :: Running the check in one python is enough.
     echo Generating low-level Python API from mainifest.json ...
     call "%PythonExe%" -m pip install --upgrade autopep8 autoflake isort jinja2
     cd "%__currentScriptDir%src\python"
@@ -351,21 +320,8 @@ echo Placing binaries in libs dir for wheel packaging
 copy  "%BuildOutputDir%%Configuration%\DotNetBridge.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 copy  "%BuildOutputDir%%Configuration%\pybridge.pyd" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
 
-if %PythonVersion% == 2.7 (
-    copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\*.dll" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
-    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
-	:: remove dataprep dlls as its not supported in python 2.7
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DPrep.*"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Data.*"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.ProgramSynthesis.*"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.DataPrep.dll"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\ExcelDataReader.dll"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.WindowsAzure.Storage.dll"
-	del "%__currentScriptDir%src\python\nimbusml\internal\libs\Microsoft.Workbench.Messaging.SDK.dll"
-) else (
-    for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
-    xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
-)
+for /F "tokens=*" %%A in (build/libs_win.txt) do copy "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\%%A" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
+xcopy /S /E /I "%BuildOutputDir%%Configuration%\Platform\win-x64\publish\Data" "%__currentScriptDir%src\python\nimbusml\internal\libs\Data"
 
 if "%DebugBuild%" == "True" (
     copy  "%BuildOutputDir%%Configuration%\DotNetBridge.pdb" "%__currentScriptDir%src\python\nimbusml\internal\libs\"
@@ -393,14 +349,10 @@ if "%InstallPythonPackages%" == "True" (
     echo "Installing python packages ... "
     echo "#################################"
     call "%PythonExe%" -m pip install --upgrade "pip==19.3.1"
-    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio pytest-cov "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
+    call "%PythonExe%" -m pip install --upgrade nose pytest pytest-xdist graphviz imageio "jupyter_client>=4.4.0" "nbconvert>=4.2.0"
 
-    if %PythonVersion% == 2.7 (
-        call "%PythonExe%" -m pip install --upgrade pyzmq
-    ) else (
-        call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.33"
-        call "%PythonExe%" -m pip install --upgrade onnxruntime
-    )
+    call "%PythonExe%" -m pip install --upgrade "azureml-dataprep>=1.1.33"
+    call "%PythonExe%" -m pip install --upgrade onnxruntime
 
     call "%PythonExe%" -m pip install --upgrade "%__currentScriptDir%target\%WheelFile%"
     call "%PythonExe%" -m pip install "scikit-learn==0.19.2"
@@ -419,25 +371,24 @@ set PackagePath=%PythonRoot%\Lib\site-packages\nimbusml
 set TestsPath1=%PackagePath%\tests
 set TestsPath2=%__currentScriptDir%src\python\tests
 set TestsPath3=%__currentScriptDir%src\python\tests_extended
-set ReportPath=%__currentScriptDir%build\TestCoverageReport
 set NumConcurrentTests=%NUMBER_OF_PROCESSORS%
 
-call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
 if errorlevel 1 (
     :: Rerun any failed tests to give them one more
     :: chance in case the errors were intermittent.
-    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath2%" "%TestsPath1%"
     if errorlevel 1 (
         goto :Exit_Error
     )
 )
 
 if "%RunExtendedTests%" == "True" (
-    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+    call "%PythonExe%" -m pytest -n %NumConcurrentTests% --verbose --maxfail=1000 --capture=sys "%TestsPath3%"
     if errorlevel 1 (
         :: Rerun any failed tests to give them one more
         :: chance in case the errors were intermittent.
-        call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath3%" --cov="%PackagePath%" --cov-report term-missing --cov-report html:"%ReportPath%"
+        call "%PythonExe%" -m pytest -n %NumConcurrentTests% --last-failed --verbose --maxfail=1000 --capture=sys "%TestsPath3%"
         if errorlevel 1 (
             goto :Exit_Error
         )

@@ -27,25 +27,28 @@ phases:
   # Mac phases
   - ${{ if eq(parameters.name, 'Mac') }}:
     # Note: Manual defining of the libomp URL below is needed to avoid error at runtime. Installing using 'brew install libomp' results in "Intel MKL FATAL ERROR: Cannot load libmkl_intel_thread.dylib."
-    - script: brew update && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f5b1ac99a7fba27c19cee0bc4f036775c889b359/Formula/libomp.rb gettext && brew link gettext --force && brew unlink python@2 && brew install mono-libgdiplus
+    - script: brew update && brew install cmake https://raw.githubusercontent.com/dotnet/machinelearning/master/build/libomp.rb mono-libgdiplus gettext && brew link gettext --force && brew link libomp --force
     - ${{ if eq(parameters.testDistro, 'noTests') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration)
     - ${{ if eq(parameters.testDistro, '') }}:
       - script: chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTests $(_testOptions)
   # Linux phases
-  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7')) }}:
-    - script: $(_dockerRun) mlnet/ubuntu16-nativebuild:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
+  - ${{ if or(eq(parameters.name, 'Linux_Ubuntu16'), eq(parameters.name, 'Linux_Ubuntu14'), eq(parameters.name, 'Linux_CentOS7'), eq(parameters.name, 'Linux_Python38')) }}:
+    - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --buildNativeBridgeOnly"
       displayName: Build native bridge
-    - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
+    - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --skipNativeBridge"
       displayName: Build python wheel
+    - ${{ if eq(parameters.testDistro, 'python38') }}:
+      - script: $(_dockerRun) quay.io/python-devs/ci-image:master bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+        displayName: Run tests Python3.8
     - ${{ if eq(parameters.testDistro, 'ubuntu16') }}:
-      - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+      - script: $(_dockerRun) mlnet/ubuntu16-general:0.1 bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests Ubuntu16
     - ${{ if eq(parameters.testDistro, 'ubuntu14') }}:
-      - script: $(_dockerRun) mlnet/ubuntu14-general:0.1 bash -c "source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+      - script: $(_dockerRun) mlnet/ubuntu14-general:0.1 bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests Ubuntu14
     - ${{ if eq(parameters.testDistro, 'centos7') }}:
-      - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /root/.bash_profile && source /etc/profile && chmod 777 $(_buildScript) && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
+      - script: $(_dockerRun) mlnet/centos7-general:0.1 bash -c "source /etc/profile && $(_buildScript) --configuration $(_configuration) --runTestsOnly $(_testOptions)"
         displayName: Run tests CentOS7
 
   # Publish build artifacts
