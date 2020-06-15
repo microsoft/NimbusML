@@ -90,7 +90,8 @@ def get_examples():
         # skip for all linux & mac tests, windows is ok
         if os.name != "nt":
              if name in [
-                'ToKeyImputer.py']:
+                'ToKeyImputer.py',
+                'ToKeyImputer_df.py']:
                 continue
         # skip for all linux tests, mac is ok
         if os.name == "posix" and distro.linux_distribution(full_distribution_name=False)[0] != '':
