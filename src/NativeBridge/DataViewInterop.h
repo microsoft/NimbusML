@@ -14,15 +14,6 @@ class DataSourceBlock;
 // Callback function for getting labels for key-type columns. Returns success.
 typedef MANAGED_CALLBACK_PTR(bool, GETLABELS)(DataSourceBlock *source, int col, int count, const char **buffer);
 
-// REVIEW: boost_python is not updated at the same speed as swig or pybind11.
-// Both have a larger audience now, see about pybind11 https://github.com/davisking/dlib/issues/293
-// It handles csr_matrix: https://pybind11-rtdtest.readthedocs.io/en/stable/advanced.html#transparent-conversion-of-dense-and-sparse-eigen-data-types.
-using namespace pybind11;
-#if !defined(extract_or_cast)
-#define extract_or_cast cast
-#define has_key_or_contains contains
-#endif
-
 
 // The data source wrapper used for managed interop. Some of the fields of this are visible to managed code.
 // As such, it is critical that this class NOT have a vtable, so virtual functions are illegal!
@@ -79,10 +70,10 @@ private:
     std::vector<const void *> _vgetter;
 
     std::vector<const void*> _vdata;
-    std::vector<bp::list> _vtextdata;
+    std::vector<pb::list> _vtextdata;
     std::vector<char*> _vtextdata_cache;
-    std::vector<bp::list> _vkeydata;
-    std::vector<bp::list> _vkeynames;
+    std::vector<pb::list> _vkeydata;
+    std::vector<pb::list> _vkeynames;
 
     // Stores the sparse data.
     // REVIEW: need better documentatoin here - is this a pointer, or buffer ? If buffer, why this is not a vector ? Where do we store type of values ? What is indptr ?
@@ -91,18 +82,18 @@ private:
     int* _indPtr;
 
 public:
-    DataSourceBlock(bp::dict& data);
+    DataSourceBlock(pb::dict& data);
     ~DataSourceBlock();
 
 private:
 
-    bp::object SelectItemForType(bp::list& container)
+    pb::object SelectItemForType(pb::list& container)
     {
         auto length = len(container);
 
         for (auto index = 0; index < length; index++)
         {
-            bp::object item = container[index];
+            pb::object item = container[index];
 
             if (!item.is_none())
             {
@@ -110,7 +101,7 @@ private:
             }
         }
 
-        return bp::object();
+        return pb::object();
     }
 
     // Callback methods. These are only needed from managed code via the embedded function pointers above,
@@ -205,9 +196,9 @@ private:
     {
         CxInt64 txCol = pdata->_mptxt[col];
         assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
-        bp::object s = pdata->_vtextdata[txCol][index];
+        pb::object s = pdata->_vtextdata[txCol][index];
 
-        if (bp::isinstance<bp::str>(s))
+        if (pb::isinstance<pb::str>(s))
         {
             size = -1;
             missing = -1;
@@ -228,7 +219,7 @@ private:
         else
         {
             // Missing values in Python are float.NaN.
-            assert(bp::extract_or_cast<float>(s) != NULL);
+            assert(pb::cast<float>(s) != NULL);
             missing = 1;
         }
     }
@@ -241,7 +232,7 @@ private:
         assert(0 <= txCol && txCol < (CxInt64)pdata->_vtextdata.size());
         auto s = pdata->_vtextdata[txCol][index];
 
-        if (bp::isinstance<bp::str>(s))
+        if (pb::isinstance<pb::str>(s))
         {
             size = -1;
             missing = -1;
@@ -254,7 +245,7 @@ private:
         else
         {
             // Missing values in Python are float.NaN.
-            assert(bp::extract_or_cast<float>(s) != NULL);
+            assert(pb::cast<float>(s) != NULL);
             missing = 1;
         }
     }
@@ -297,9 +288,9 @@ private:
         assert(0 <= keyCol && keyCol < (CxInt64)pdata->_vkeydata.size());
 
         auto & list = pdata->_vkeydata[keyCol];
-        bp::object obj = pdata->SelectItemForType(list);
+        pb::object obj = pdata->SelectItemForType(list);
         assert(strcmp(obj.ptr()->ob_type->tp_name, "int") == 0);
-        dst = bp::extract_or_cast<int>(list[index]);
+        dst = pb::cast<int>(list[index]);
     }
 
     // Callback function for getting labels for key-type columns. Returns success.
@@ -328,7 +319,7 @@ private:
         }
 
         CxInt64 keyCol = pdata->_mpkey[col];
-        bp::list & names = pdata->_vkeynames[keyCol];
+        pb::list & names = pdata->_vkeynames[keyCol];
         if (len(names) != count)
         {
             // No labels for this column. This is not a logic error.

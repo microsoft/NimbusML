@@ -45,76 +45,9 @@ typedef unsigned char	BYTE;
 #include <string>
 #include <exception>
 #include <pybind11/numpy.h>
-//#include <pybind11/scope.h>
 #include <sysmodule.h>
-
-// #define MEASURE_PERFORMANCE 1
-
-#if defined(MEASURE_PERFORMANCE)
-
-#include <chrono>
-#include <functional>
-#include <iostream>
-#include <sstream>
-
-class StopWatch
-{
-public:
-    typedef std::function<void(const char *)> PrintFunction;
-
-    StopWatch(const char* description, PrintFunction function = nullptr) :
-        m_description(description),
-        m_printFunction(function)
-    {
-        m_startTime = std::chrono::high_resolution_clock::now();
-
-        if (m_printFunction == nullptr)
-        {
-            m_printFunction = [](const char * message) { std::cout << message;  };
-        }
-    }
-
-    ~StopWatch()
-    {
-        auto endTime = std::chrono::high_resolution_clock::now();
-
-        std::stringstream buffer;
-        buffer << m_description << ":" << ((endTime - m_startTime).count() / 1000000) << " msecs" << std::endl;
-
-        m_printFunction(buffer.str().c_str());
-    }
-
-private:
-
-    //
-    // data members
-    //
-    std::chrono::steady_clock::time_point m_startTime;
-    PrintFunction m_printFunction;
-    const char* m_description;
-};
-
-#define TOKENPASTE(x, y) x ## y
-#define TOKENPASTE2(x, y) TOKENPASTE(x, y)
-#define MEASURE_ELAPSED_TIME(description) StopWatch TOKENPASTE2(_stopWatch_, __LINE__)(description)
-
-#else
-
-#define MEASURE_ELAPSED_TIME(description) 
-
-#endif
 
 //
 // frequently used namespace aliases
 //
-namespace bp = pybind11;
-//namespace np = pybind11::
-#if !defined(extract_or_cast)
-#define extract_or_cast cast
-#define has_key_or_contains contains
-#define numpy_array bp::array
-#define numpy_array_bool bp::array_t<bool>
-#define numpy_array_int bp::array_t<int>
-#define numpy_array_double bp::array_t<double>
-#define numpy_array_float bp::array_t<float>
-#endif
+namespace pb = pybind11;

@@ -67,17 +67,17 @@ void translate_mlnet_exception(MlNetExecutionError const& exc)
     ::PyErr_SetString(::PyExc_RuntimeError, exc.what());
 }
 
-bp::dict pxCall(bp::dict& params)
+pb::dict pxCall(pb::dict& params)
 {
-    bp::dict res = bp::dict();
+    pb::dict res = pb::dict();
     try
     {
-        auto graph = bp::extract_or_cast<std::string>(params[PARAM_GRAPH]);
-        auto mlnetPath = bp::extract_or_cast<std::string>(params[PARAM_MLNET_PATH]);
-        auto dotnetClrPath = bp::extract_or_cast<std::string>(params[PARAM_DOTNETCLR_PATH]);
-        auto dprepPath = bp::extract_or_cast<std::string>(params[PARAM_DPREP_PATH]);
-        auto pythonPath = bp::extract_or_cast<std::string>(params[PARAM_PYTHON_PATH]);
-        auto verbose = bp::extract_or_cast<std::int32_t>(params[PARAM_VERBOSE]);
+        auto graph = pb::cast<std::string>(params[PARAM_GRAPH]);
+        auto mlnetPath = pb::cast<std::string>(params[PARAM_MLNET_PATH]);
+        auto dotnetClrPath = pb::cast<std::string>(params[PARAM_DOTNETCLR_PATH]);
+        auto dprepPath = pb::cast<std::string>(params[PARAM_DPREP_PATH]);
+        auto pythonPath = pb::cast<std::string>(params[PARAM_PYTHON_PATH]);
+        auto verbose = pb::cast<std::int32_t>(params[PARAM_VERBOSE]);
 
         std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_mlnetPath = std::string(mlnetPath);
@@ -95,19 +95,19 @@ bp::dict pxCall(bp::dict& params)
                 + s_mlnetPath + " and " + s_dotnetClrPath);
 
         int seed = 42;
-        if (params.has_key_or_contains(PARAM_SEED))
-            seed = bp::extract_or_cast<int>(params[PARAM_SEED]);
+        if (params.contains(PARAM_SEED))
+            seed = pb::cast<int>(params[PARAM_SEED]);
 
         int maxSlots = -1;
-        if (params.has_key_or_contains(PARAM_MAX_SLOTS))
-            maxSlots = bp::extract_or_cast<int>(params[PARAM_MAX_SLOTS]);
+        if (params.contains(PARAM_MAX_SLOTS))
+            maxSlots = pb::cast<int>(params[PARAM_MAX_SLOTS]);
 
         EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
 
-        if (params.has_key_or_contains(PARAM_DATA) && bp::isinstance<bp::dict>(params[PARAM_DATA]))
+        if (params.contains(PARAM_DATA) && pb::isinstance<pb::dict>(params[PARAM_DATA]))
         {
-            bp::dict d = bp::extract_or_cast<bp::dict>(params[PARAM_DATA]);
+            pb::dict d = pb::cast<pb::dict>(params[PARAM_DATA]);
             DataSourceBlock data(d);
             const DataSourceBlock *datas[1];
             datas[0] = &data;
@@ -125,7 +125,7 @@ bp::dict pxCall(bp::dict& params)
     {
         throw MlNetExecutionError(e.what());
     }
-    catch (bp::error_already_set const&)
+    catch (pb::error_already_set const&)
     {
         PyErr_Print();
     }
@@ -143,9 +143,8 @@ PYBIND11_MODULE(pybridge, m)
     //
     Py_Initialize();
 
-    //static bp::register_exception<MlNetExecutionError>(m, "MlNetExecutionError");
-    static bp::exception<MlNetExecutionError> exc(m, "MlNetExecutionError");
-    bp::register_exception_translator([](std::exception_ptr p) {
+    static pb::exception<MlNetExecutionError> exc(m, "MlNetExecutionError");
+    pb::register_exception_translator([](std::exception_ptr p) {
         try {
             if (p)
                 std::rethrow_exception(p);

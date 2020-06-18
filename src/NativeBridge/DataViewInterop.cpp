@@ -6,21 +6,21 @@
 #include "ManagedInterop.h"
 
 
-DataSourceBlock::DataSourceBlock(bp::dict& data)
+DataSourceBlock::DataSourceBlock(pb::dict& data)
 {
     // Assert that this class doesn't have a vtable.
     assert(offsetof(DataSourceBlock, ccol) == 0);
 
     CxInt64 llTotalNumRows = -1;
     assert(data.contains(PYTHON_DATA_KEY_INFO));
-    bp::dict varInfo = bp::extract_or_cast<bp::dict>(data[PYTHON_DATA_KEY_INFO]);
+    pb::dict varInfo = pb::cast<pb::dict>(data[PYTHON_DATA_KEY_INFO]);
 
     assert(data.contains(PYTHON_DATA_COL_TYPES));
-    bp::list colTypes = bp::extract_or_cast<bp::list>(data[PYTHON_DATA_COL_TYPES]);
+    pb::list colTypes = pb::cast<pb::list>(data[PYTHON_DATA_COL_TYPES]);
     CxInt64 dataframeColCount = -1;
     for (auto it = data.begin(); it != data.end(); ++it)
     {
-        if (!bp::isinstance<bp::str>(it->first))
+        if (!pb::isinstance<pb::str>(it->first))
             continue;
 
         // Function PyUnicode_AS_DATA is deprecated as getting the expected unicode
@@ -28,14 +28,14 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         // See https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_AS_DATA.
         // pybind11 uses a bytes representation of the string and then call
         // PyUnicode_AsEncodedString which creates a new reference.
-        bp::str skey = bp::cast<bp::str>(it->first.ptr());
+        pb::str skey = pb::cast<pb::str>(it->first.ptr());
         std::string name = (std::string)skey;
         if (name == PYTHON_DATA_KEY_INFO || name == PYTHON_DATA_COL_TYPES)
             continue;
 
-        bp::object value = bp::cast<bp::object>(it->second);
+        pb::object value = pb::cast<pb::object>(it->second);
         // now it should be a column names
-        std::string colName = bp::extract_or_cast<std::string>(it->first);
+        std::string colName = pb::cast<std::string>(it->first);
         dataframeColCount++;
         const char* tp = (char*)PyUnicode_DATA(colTypes[dataframeColCount].ptr());
         ML_PY_TYPE_MAP_ENUM colType = static_cast<ML_PY_TYPE_MAP_ENUM>(tp[0]);
@@ -47,10 +47,10 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
         bool isText = false;
         CxInt64 vecCard = -1;
         // Numeric or bool values.
-        if (bp::isinstance<numpy_array>(value))
+        if (pb::isinstance<numpy_array>(value))
         {
             isNumeric = true;
-            numpy_array val = bp::extract_or_cast<numpy_array>(value);
+            numpy_array val = pb::cast<numpy_array>(value);
             switch (colType)
             {
             case (ML_PY_BOOL):
@@ -122,19 +122,19 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
                 assert(llTotalNumRows == val.shape(0));
         }
         // Text or key values.
-        else if (bp::isinstance<bp::list>(value))
+        else if (pb::isinstance<pb::list>(value))
         {
-            bp::list list = bp::extract_or_cast<bp::list>(value);
+            pb::list list = pb::cast<pb::list>(value);
 
             // Key values.
             switch (colType)
             {
             case (ML_PY_CAT):
-                if (varInfo.contains(bp::str(colName)))
+                if (varInfo.contains(pb::str(colName)))
                 {
                     isKey = true;
-                    assert(bp::isinstance<bp::list>(varInfo[bp::str(colName)]));
-                    bp::list keyNames = bp::extract_or_cast<bp::list>(varInfo[bp::str(colName)]);
+                    assert(pb::isinstance<pb::list>(varInfo[pb::str(colName)]));
+                    pb::list keyNames = pb::cast<pb::list>(varInfo[pb::str(colName)]);
 
                     kind = U4;
                     pgetter = (void*)GetKeyInt;
@@ -182,15 +182,15 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
             }
         }
         // A sparse vector.
-        else if (bp::isinstance<bp::dict>(value))
+        else if (pb::isinstance<pb::dict>(value))
         {
-            bp::dict sparse = bp::extract_or_cast<bp::dict>(value);
-            numpy_array indices = bp::extract_or_cast<numpy_array>(sparse["indices"]);
+            pb::dict sparse = pb::cast<pb::dict>(value);
+            numpy_array indices = pb::cast<numpy_array>(sparse["indices"]);
             _sparseIndices = (int*)indices.data();
-            numpy_array indptr = bp::extract_or_cast<numpy_array>(sparse["indptr"]);
+            numpy_array indptr = pb::cast<numpy_array>(sparse["indptr"]);
             _indPtr = (int*)indptr.data();
 
-            numpy_array values = bp::extract_or_cast<numpy_array>(sparse["values"]);
+            numpy_array values = pb::cast<numpy_array>(sparse["values"]);
             _sparseValues = (void*)values.data();
             switch (colType)
             {
@@ -243,7 +243,7 @@ DataSourceBlock::DataSourceBlock(bp::dict& data)
             default:
                 throw std::invalid_argument("column " + colName + " has unsupported type");
             }
-            vecCard = bp::extract_or_cast<int>(sparse["colCount"]);
+            vecCard = pb::cast<int>(sparse["colCount"]);
             name = (char*)"Data";
 
             if (llTotalNumRows == -1)

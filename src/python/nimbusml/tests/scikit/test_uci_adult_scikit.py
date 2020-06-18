@@ -335,5 +335,4 @@ class TestUciAdultScikit(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    TestUciAdultScikit().test_feature_union()
     unittest.main()
