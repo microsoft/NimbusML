@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import platform
+import distro
 import unittest
 
 import numpy as np
@@ -135,8 +135,8 @@ class TestSweep(unittest.TestCase):
     # machines to download resources for wordembedding transform
     @unittest.skipIf(
         os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
+            distro.linux_distribution(full_distribution_name=False)[0] != "Ubuntu" or
+            distro.linux_distribution(full_distribution_name=False)[1] != "16.04"),
         "not supported on this platform")
     def test_NGramFeaturizer_sweep(self):
         # grid search over number_of_trees and then confirm the best number_of_trees by
@@ -188,8 +188,8 @@ class TestSweep(unittest.TestCase):
     # machines to download resources for wordembedding transform
     @unittest.skipIf(
         os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
+            distro.linux_distribution(full_distribution_name=False)[0] != "Ubuntu" or
+            distro.linux_distribution(full_distribution_name=False)[1] != "16.04"),
         "not supported on this platform")
     def test_NGramFeaturizer_glove(self):
         # grid search over number_of_trees and then confirm the best number_of_trees by

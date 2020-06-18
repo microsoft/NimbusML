@@ -82,7 +82,7 @@ public:
     EnvironmentBlock(int verbosity = 0, int maxSlots = -1, int seed = 42, const char* pythonPath = NULL);
     ~EnvironmentBlock();
     std::string GetErrorMessage() { return _errMessage; }
-    bp::dict GetData();
+    pb::dict GetData();
 
 private:
     static MANAGED_CALLBACK(void) DataSink(EnvironmentBlock *penv, const DataViewBlock *pdata, void **&setters, void *&keyValueSetter);

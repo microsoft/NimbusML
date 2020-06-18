@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
-import platform
+import distro
 import unittest
 
 import pandas
@@ -13,7 +13,7 @@ from nimbusml.preprocessing.schema import ColumnSelector
 from sklearn.utils.testing import assert_equal
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
+@unittest.skipIf('centos' in distro.linux_distribution(full_distribution_name=False)[0].lower(), "centos is not supported")
 class TestDateTimeSplitter(unittest.TestCase):
 
     def test_check_estimator_DateTimeSplitter(self):

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import platform
+import distro
 import unittest
 
 import pandas as pd
@@ -35,8 +35,8 @@ class TestWordEmbedding(unittest.TestCase):
     # (path? access rights?)
     @unittest.skipIf(
         os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
+            distro.linux_distribution(full_distribution_name=False)[0] != "Ubuntu" or
+            distro.linux_distribution(full_distribution_name=False)[1] != "16.04"),
         "not supported on this platform")
     def test_ssweembedding(self):
         wordvectors = pd.DataFrame(data=dict(w1=["like", "hate", "okay"],
@@ -69,8 +69,8 @@ class TestWordEmbedding(unittest.TestCase):
     # (path? access rights?)
     @unittest.skipIf(
         os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
+            distro.linux_distribution(full_distribution_name=False)[0] != "Ubuntu" or
+            distro.linux_distribution(full_distribution_name=False)[1] != "16.04"),
         "not supported on this platform")
     def test_word_embedding_example(self):
         path = get_dataset('infert').as_filepath()
@@ -110,8 +110,8 @@ class TestWordEmbedding(unittest.TestCase):
     # (path? access rights?)
     @unittest.skipIf(
         os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
+            distro.linux_distribution(full_distribution_name=False)[0] != "Ubuntu" or
+            distro.linux_distribution(full_distribution_name=False)[1] != "16.04"),
         "not supported on this platform")
     def test_word_embedding_example2(self):
         path = get_dataset('infert').as_filepath()
@@ -148,8 +148,8 @@ class TestWordEmbedding(unittest.TestCase):
     # (path? access rights?)
     @unittest.skipIf(
         os.name != "nt" and (
-            platform.linux_distribution()[0] != "Ubuntu" or
-            platform.linux_distribution()[1] != "16.04"),
+            distro.linux_distribution(full_distribution_name=False)[0] != "Ubuntu" or
+            distro.linux_distribution(full_distribution_name=False)[1] != "16.04"),
         "not supported on this platform")
     def test_word_embedding_example_dict_same_name(self):
         path = get_dataset('infert').as_filepath()

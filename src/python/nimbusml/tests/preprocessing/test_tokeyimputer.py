@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 # --------------------------------------------------------------------------------------------
 
-import platform
+import os
 import unittest
 
 import numpy as np
@@ -11,7 +11,7 @@ import pandas as pd
 from nimbusml.preprocessing import ToKeyImputer
 
 
-@unittest.skipIf('centos' in platform.linux_distribution()[0].lower(), "centos is not supported")
+@unittest.skipIf(os.name != "nt", "not supported on this platform")
 class TestToKeyImputer(unittest.TestCase):
 
     def test_tokeyimputer(self):

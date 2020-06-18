@@ -114,7 +114,7 @@ class TestPredictProba(unittest.TestCase):
 
     def test_pass_predict_proba_multiclass_3class(self):
         clf = FastLinearClassifier(number_of_threads=1)
-        clf.fit(X_train_3class, y_train_3class)
+        clf.fit(X_train_3class, y_train_3class, verbose=0)
         s = clf.predict_proba(X_test_3class).sum()
         assert_almost_equal(
             s,
@@ -228,7 +228,7 @@ class TestDecisionFunction(unittest.TestCase):
 
     def test_pass_decision_function_multiclass_3class(self):
         clf = FastLinearClassifier(number_of_threads=1)
-        clf.fit(X_train_3class, y_train_3class)
+        clf.fit(X_train_3class, y_train_3class, verbose=0)
         s = clf.decision_function(X_test_3class).sum()
         assert_almost_equal(
             s,

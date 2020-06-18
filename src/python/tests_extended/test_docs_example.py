@@ -3,7 +3,7 @@
 # Licensed under the MIT License. 
 # -------------------------------------------------------------------------
 import os
-import platform
+import distro
 import subprocess
 import sys
 import unittest
@@ -87,8 +87,14 @@ def get_examples():
     for folder, name in folder_files:
         if name in ['__init__.py',]:
             continue
+        # skip for all linux & mac tests, windows is ok
+        if os.name != "nt":
+             if name in [
+                'ToKeyImputer.py',
+                'ToKeyImputer_df.py']:
+                continue
         # skip for all linux tests, mac is ok
-        if os.name == "posix" and platform.linux_distribution()[0] != '':
+        if os.name == "posix" and distro.linux_distribution(full_distribution_name=False)[0] != '':
             if name in [
                 # SymSgdNative fails to load on linux
                 'SymSgdBinaryClassifier.py',

@@ -176,11 +176,11 @@ STATIC MANAGED_CALLBACK(bool) EnvironmentBlock::CheckCancel()
     return false;
 }
 
-bp::dict EnvironmentBlock::GetData()
+pb::dict EnvironmentBlock::GetData()
 {
     if (_columns.size() == 0)
     {
-        return bp::dict();
+        return pb::dict();
     }
 
     size_t maxRows = 0;
@@ -191,7 +191,7 @@ bp::dict EnvironmentBlock::GetData()
     }
 
     CxInt64 numKeys = 0;
-    bp::dict dict = bp::dict();
+    pb::dict dict = pb::dict();
     for (size_t i = 0; i < _columns.size(); i++)
     {
         PyColumnBase* column = _columns[i];
@@ -205,21 +205,22 @@ bp::dict EnvironmentBlock::GetData()
         {
             PyColumnSingle<signed char>* col = dynamic_cast<PyColumnSingle<signed char>*>(column);
             auto shrd = col->GetData();
-            bp::list list;
+            pb::list list;
             for (size_t i = 0; i < shrd->size(); i++)
             {
-                bp::object obj;
+                pb::object obj;
                 signed char value = shrd->at(i);
                 if (value < 0)
-                    obj = bp::object(NAN);
+                    obj = pb::cast<double>(NAN);
                 else if (value == 0)
-                    obj = bp::object(false);
+                    obj = pb::cast<bool>(false);
                 else
-                    obj = bp::object(true);
+                    obj = pb::cast<bool>(true);
 
                 list.append(obj);
             }
-            dict[_names[i]] = list;
+            dict[pb::str(_names[i])] = list;
+
         }
         break;
         case BL:

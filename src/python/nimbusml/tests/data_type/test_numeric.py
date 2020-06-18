@@ -166,4 +166,5 @@ class TestNumericDataType(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    TestNumericDataType().test_check_datatype_single_sparse_list_sparse()
     unittest.main()

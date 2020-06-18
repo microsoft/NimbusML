@@ -67,17 +67,18 @@ void translate_mlnet_exception(MlNetExecutionError const& exc)
     ::PyErr_SetString(::PyExc_RuntimeError, exc.what());
 }
 
-bp::dict pxCall(bp::dict& params)
+pb::dict pxCall(pb::dict& params)
 {
-    bp::dict res = bp::dict();
+    pb::dict res = pb::dict();
     try
     {
-        bp::extract<std::string> graph(params[PARAM_GRAPH]);
-        bp::extract<std::string> mlnetPath(params[PARAM_MLNET_PATH]);
-        bp::extract<std::string> dotnetClrPath(params[PARAM_DOTNETCLR_PATH]);
-        bp::extract<std::string> dprepPath(params[PARAM_DPREP_PATH]);
-        bp::extract<std::string> pythonPath(params[PARAM_PYTHON_PATH]);
-        bp::extract<std::int32_t> verbose(params[PARAM_VERBOSE]);
+        auto graph = pb::cast<std::string>(params[PARAM_GRAPH]);
+        auto mlnetPath = pb::cast<std::string>(params[PARAM_MLNET_PATH]);
+        auto dotnetClrPath = pb::cast<std::string>(params[PARAM_DOTNETCLR_PATH]);
+        auto dprepPath = pb::cast<std::string>(params[PARAM_DPREP_PATH]);
+        auto pythonPath = pb::cast<std::string>(params[PARAM_PYTHON_PATH]);
+        auto verbose = pb::cast<std::int32_t>(params[PARAM_VERBOSE]);
+
         std::int32_t i_verbose = std::int32_t(verbose);
         std::string s_mlnetPath = std::string(mlnetPath);
         std::string s_dotnetClrPath = std::string(dotnetClrPath);
@@ -94,18 +95,19 @@ bp::dict pxCall(bp::dict& params)
                 + s_mlnetPath + " and " + s_dotnetClrPath);
 
         int seed = 42;
-        if (params.has_key(PARAM_SEED))
-            seed = bp::extract<int>(params[PARAM_SEED]);
+        if (params.contains(PARAM_SEED))
+            seed = pb::cast<int>(params[PARAM_SEED]);
 
         int maxSlots = -1;
-        if (params.has_key(PARAM_MAX_SLOTS))
-            maxSlots = bp::extract<int>(params[PARAM_MAX_SLOTS]);
+        if (params.contains(PARAM_MAX_SLOTS))
+            maxSlots = pb::cast<int>(params[PARAM_MAX_SLOTS]);
 
         EnvironmentBlock env(i_verbose, maxSlots, seed, s_pythonPath.c_str());
         int retCode;
-        if (params.has_key(PARAM_DATA) && bp::extract<bp::dict>(params[PARAM_DATA]).check())
+
+        if (params.contains(PARAM_DATA) && pb::isinstance<pb::dict>(params[PARAM_DATA]))
         {
-            bp::dict d = bp::extract<bp::dict>(params[PARAM_DATA]);
+            pb::dict d = pb::cast<pb::dict>(params[PARAM_DATA]);
             DataSourceBlock data(d);
             const DataSourceBlock *datas[1];
             datas[0] = &data;
@@ -123,7 +125,7 @@ bp::dict pxCall(bp::dict& params)
     {
         throw MlNetExecutionError(e.what());
     }
-    catch (bp::error_already_set const&)
+    catch (pb::error_already_set const&)
     {
         PyErr_Print();
     }
@@ -131,7 +133,7 @@ bp::dict pxCall(bp::dict& params)
     return res;
 }
 
-BOOST_PYTHON_MODULE(pybridge)
+PYBIND11_MODULE(pybridge, m)
 {
     //The managed code assumes that each pointer occupies 8 bytes.
     assert(sizeof(void*) == 8);
@@ -141,11 +143,19 @@ BOOST_PYTHON_MODULE(pybridge)
     //
     Py_Initialize();
 
-    //
-    // initialize numpy types
-    //
-    np::initialize();
+    static pb::exception<MlNetExecutionError> exc(m, "MlNetExecutionError");
+    pb::register_exception_translator([](std::exception_ptr p) {
+        try {
+            if (p)
+                std::rethrow_exception(p);
+        }
+        catch (const MlNetExecutionError &em) {
+            ::PyErr_SetString(::PyExc_RuntimeError, em.what());
+        }
+        catch (const std::exception &e) {
+            exc(e.what());
+        }
+    });
 
-    bp::register_exception_translator<MlNetExecutionError>(&translate_mlnet_exception);
-    def("px_call", pxCall);
+    m.def("px_call", pxCall);
 }

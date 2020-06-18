@@ -35,81 +35,19 @@ typedef unsigned char		BYTE;
 #define MANAGED_CALLBACK_PTR(ret, name) ret ( *name)
 #define CLASS_ALIGN __attribute__((aligned(8)))
 
-#ifdef BOOST_NO_CXX11_NULLPTR
-#define nullptr 0
-#endif //BOOST_NO_CXX11_NULLPTR
-
 typedef long long	CxInt64;
 typedef unsigned long long	CxUInt64;
 typedef unsigned char	BYTE;
 
 #endif //_MSC_VER
 
-#include <boost/python.hpp>
+#include <pybind11/pybind11.h>
 #include <string>
 #include <exception>
-#include <boost/python/numpy.hpp>
-#include <boost/python/scope.hpp>
+#include <pybind11/numpy.h>
 #include <sysmodule.h>
-
-// #define MEASURE_PERFORMANCE 1
-
-#if defined(MEASURE_PERFORMANCE)
-
-#include <chrono>
-#include <functional>
-#include <iostream>
-#include <sstream>
-
-class StopWatch
-{
-public:
-    typedef std::function<void(const char *)> PrintFunction;
-
-    StopWatch(const char* description, PrintFunction function = nullptr) :
-        m_description(description),
-        m_printFunction(function)
-    {
-        m_startTime = std::chrono::high_resolution_clock::now();
-
-        if (m_printFunction == nullptr)
-        {
-            m_printFunction = [](const char * message) { std::cout << message;  };
-        }
-    }
-
-    ~StopWatch()
-    {
-        auto endTime = std::chrono::high_resolution_clock::now();
-
-        std::stringstream buffer;
-        buffer << m_description << ":" << ((endTime - m_startTime).count() / 1000000) << " msecs" << std::endl;
-
-        m_printFunction(buffer.str().c_str());
-    }
-
-private:
-
-    //
-    // data members
-    //
-    std::chrono::steady_clock::time_point m_startTime;
-    PrintFunction m_printFunction;
-    const char* m_description;
-};
-
-#define TOKENPASTE(x, y) x ## y
-#define TOKENPASTE2(x, y) TOKENPASTE(x, y)
-#define MEASURE_ELAPSED_TIME(description) StopWatch TOKENPASTE2(_stopWatch_, __LINE__)(description)
-
-#else
-
-#define MEASURE_ELAPSED_TIME(description) 
-
-#endif
 
 //
 // frequently used namespace aliases
 //
-namespace bp = boost::python;
-namespace np = boost::python::numpy;
+namespace pb = pybind11;

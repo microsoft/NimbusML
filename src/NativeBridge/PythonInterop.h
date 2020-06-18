@@ -4,7 +4,6 @@
 #pragma once
 #include <map>
 #include <vector>
-#include <boost/optional.hpp>
 
 
 // Taken from ML.NET source code. These values should be stable.
@@ -70,7 +69,7 @@ public:
     PyColumn(const int& kind) : PyColumnBase(kind) {}
     virtual ~PyColumn() {}
     virtual void SetAt(size_t nRow, size_t nCol, const T& value) = 0;
-    virtual void AddToDict(bp::dict& dict,
+    virtual void AddToDict(pb::dict& dict,
                            const std::string& name,
                            const std::vector<std::string>* keyNames,
                            const size_t expectedRows) = 0;
@@ -90,7 +89,7 @@ public:
     PyColumnSingle(const int& kind, size_t numRows = 0);
     virtual ~PyColumnSingle();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
-    virtual void AddToDict(bp::dict& dict,
+    virtual void AddToDict(pb::dict& dict,
                            const std::string& name,
                            const std::vector<std::string>* keyNames,
                            const size_t expectedRows);
@@ -135,8 +134,7 @@ inline size_t PyColumnSingle<T>::GetNumCols()
     return 1;
 }
 
-
-typedef boost::optional<std::string> NullableString;
+typedef pb::object NullableString;
 
 /*
  * Handles the variable value case.
@@ -154,7 +152,7 @@ public:
     PyColumnVariable(const int& kind, size_t numRows = 0);
     virtual ~PyColumnVariable();
     virtual void SetAt(size_t nRow, size_t nCol, const T& value);
-    virtual void AddToDict(bp::dict& dict,
+    virtual void AddToDict(pb::dict& dict,
                            const std::string& name,
                            const std::vector<std::string>* keyNames,
                            const size_t expectedRows);
@@ -164,7 +162,7 @@ public:
     T2 GetMissingValue();
     T2 GetConvertedValue(const T& value);
 
-    void AddColumnToDict(bp::dict& dict, const std::string& name, size_t index);
+    void AddColumnToDict(pb::dict& dict, const std::string& name, size_t index);
 
 public:
     typedef struct
@@ -220,11 +218,11 @@ inline T2 PyColumnVariable<T, T2>::GetConvertedValue(const T& value)
 template <>
 inline NullableString PyColumnVariable<std::string, NullableString>::GetMissingValue()
 {
-    return boost::none;
+    return pb::cast<pb::none>(Py_None);;
 }
 
 template <>
 inline NullableString PyColumnVariable<std::string, NullableString>::GetConvertedValue(const std::string& value)
 {
-    return value;
+    return pb::str(value);
 }

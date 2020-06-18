@@ -6,14 +6,12 @@ phases:
     name: Windows
     buildScript: build.cmd
     buildMatrix:
+      Py38:
+        _configuration: RlsWinPy3.8
       Py37:
         _configuration: RlsWinPy3.7
       Py36:
         _configuration: RlsWinPy3.6
-      Py35:
-        _configuration: RlsWinPy3.5
-      Py27:
-        _configuration: RlsWinPy2.7
     buildQueue:
       name: Hosted VS2017
     testOptions: --includeExtendedTests
@@ -24,14 +22,12 @@ phases:
     name: Mac
     buildScript: ./build.sh
     buildMatrix:
+      Py38:
+        _configuration: RlsMacPy3.8
       Py37:
         _configuration: RlsMacPy3.7
       Py36:
         _configuration: RlsMacPy3.6
-      Py35:
-        _configuration: RlsMacPy3.5
-      Py27:
-        _configuration: RlsMacPy2.7
     buildQueue:
       name: Hosted macOS
     testOptions: --includeExtendedTests
@@ -44,14 +40,12 @@ phases:
     buildScript: ./build.sh
     testDistro: ubuntu16
     buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
     testOptions: --includeExtendedTests
@@ -63,14 +57,12 @@ phases:
     buildScript: ./build.sh
     testDistro: ubuntu14
     buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
     testOptions: --includeExtendedTests
@@ -82,14 +74,12 @@ phases:
     buildScript: ./build.sh
     testDistro: centos7
     buildMatrix:
+      Py38:
+        _configuration: RlsLinPy3.8
       Py37:
         _configuration: RlsLinPy3.7
       Py36:
         _configuration: RlsLinPy3.6
-      Py35:
-        _configuration: RlsLinPy3.5
-      Py27:
-        _configuration: RlsLinPy2.7
     buildQueue:
       name: Hosted Ubuntu 1604
     testOptions: --includeExtendedTests

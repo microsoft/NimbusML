@@ -6,7 +6,7 @@
 test sparse
 """
 import unittest
-
+import warnings
 import numpy as np
 import pandas as pd
 from nimbusml.linear_model import FastLinearBinaryClassifier
@@ -135,7 +135,9 @@ def test_dtype(xtype=None, ytype=None, dense=False):
 class TestDTypes(unittest.TestCase):
     def test_data_types(self):
         types = [
+            # float16 is not supported, move it in first position to fail faster
             None,
+            np.float16,
             np.bool,
             np.int8,
             np.int16,
@@ -147,10 +149,9 @@ class TestDTypes(unittest.TestCase):
             np.uint64,
             np.double,
             np.float,
-            np.float16
         ]
-        for xtype in types:
-            for ytype in types:
+        for ytype in types:
+            for xtype in types:
                 print(
                     "================ Testing sparse xtype %s, ytype %s "
                     "================" %
