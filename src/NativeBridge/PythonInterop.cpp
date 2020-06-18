@@ -106,7 +106,7 @@ void PyColumnSingle<T>::AddToDict(pb::dict& dict,
     case DataKind::BL:
     {
         pb::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        dict[pb::str(name)] = pb::numpy_array(pb::dtype("bool"), _pData->size(), data, h);
+        dict[pb::str(name)] = pb::array(pb::dtype("bool"), _pData->size(), data, h);
     }
     break;
     case DataKind::I1:
@@ -114,7 +114,7 @@ void PyColumnSingle<T>::AddToDict(pb::dict& dict,
     case DataKind::I4:
     {
         pb::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        pb::numpy_array npdata = pb::numpy_array(_pData->size(), data, h);
+        pb::array npdata = pb::array(_pData->size(), data, h);
         if (keyNames == nullptr)
         {
             dict[pb::str(name)] = npdata;
@@ -147,13 +147,13 @@ void PyColumnSingle<T>::AddToDict(pb::dict& dict,
     case DataKind::R8:
     {
         pb::handle h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        dict[pb::str(name)] = pb::numpy_array(_pData->size(), data, h);
+        dict[pb::str(name)] = pb::array(_pData->size(), data, h);
     }
     break;
     case DataKind::DT:
     {
         pb::capsule h(::PyCapsule_New((void*)this, NULL, (PyCapsule_Destructor)&destroyManagerCObject));
-        pb::numpy_array npdata = pb::numpy_array(_pData->size(), data, h);
+        pb::array npdata = pb::array(_pData->size(), data, h);
 
         dict[pb::str(name)] = pb::dict();
         dict[pb::str(name)]["..DateTime"] = npdata;
@@ -287,7 +287,7 @@ void PyColumnVariable<T, T2>::AddColumnToDict(pb::dict& dict,
     deleteData->column = index;
 
     pb::handle h(::PyCapsule_New((void*)deleteData, NULL, (PyCapsule_Destructor)&Deleter));
-    dict[pb::str(name)] = pb::numpy_array(_data[index]->size(), data, h);
+    dict[pb::str(name)] = pb::array(_data[index]->size(), data, h);
 }
 
 template<>
