@@ -47,10 +47,10 @@ DataSourceBlock::DataSourceBlock(pb::dict& data)
         bool isText = false;
         CxInt64 vecCard = -1;
         // Numeric or bool values.
-        if (pb::isinstance<numpy_array>(value))
+        if (pb::isinstance<pb::numpy_array>(value))
         {
             isNumeric = true;
-            numpy_array val = pb::cast<numpy_array>(value);
+            pb::numpy_array val = pb::cast<pb::numpy_array>(value);
             switch (colType)
             {
             case (ML_PY_BOOL):
@@ -185,12 +185,12 @@ DataSourceBlock::DataSourceBlock(pb::dict& data)
         else if (pb::isinstance<pb::dict>(value))
         {
             pb::dict sparse = pb::cast<pb::dict>(value);
-            numpy_array indices = pb::cast<numpy_array>(sparse["indices"]);
+            pb::numpy_array indices = pb::cast<pb::numpy_array>(sparse["indices"]);
             _sparseIndices = (int*)indices.data();
-            numpy_array indptr = pb::cast<numpy_array>(sparse["indptr"]);
+            pb::numpy_array indptr = pb::cast<pb::numpy_array>(sparse["indptr"]);
             _indPtr = (int*)indptr.data();
 
-            numpy_array values = pb::cast<numpy_array>(sparse["values"]);
+            pb::numpy_array values = pb::cast<pb::numpy_array>(sparse["values"]);
             _sparseValues = (void*)values.data();
             switch (colType)
             {
